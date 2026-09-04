@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.DS_Store
+
+# Local visual QA and reference captures. Curated public media lives in docs/media.
+/qa-*.png
+/qa-*.mp4
+/idle-fluid-*.png
+/reference-fluidglass-*.png
+/design-compare*.png
+/design-qa-*.png
+/design-qa.md
+/audit-*/
+/competitive-audit-*/
+/swarm-audit-*/

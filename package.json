@@ -1,0 +1,37 @@
+{
+  "name": "pelagic-jellyfish-webgl",
+  "version": "1.0.0",
+  "description": "A silent interactive WebGL descent through a living jellyfish ocean.",
+  "private": true,
+  "type": "module",
+  "author": "Mani Marami Milani",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Denoax/pelagic-jellyfish-webgl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Denoax/pelagic-jellyfish-webgl/issues"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/prepare-sites-build.mjs",
+    "preview": "vite preview",
+    "test:sites": "node --test tests/sites-worker.test.mjs"
+  },
+  "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/instrument-sans": "^5.3.0",
+    "@phosphor-icons/react": "^2.1.10",
+    "@react-three/fiber": "^9.7.0",
+    "@vitejs/plugin-react": "5.0.4",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "simplex-noise": "^4.0.3",
+    "three": "0.175.0",
+    "vite": "6.4.2"
+  },
+  "devDependencies": {
+    "vite-plugin-tsl-operator": "^1.2.3"
+  }
+}
