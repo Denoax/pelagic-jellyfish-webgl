@@ -79,7 +79,7 @@ class DistantJellyField {
     this.group.add(this.rims);
 
     this.tentacleCount = 8;
-    this.pointsPerTentacle = 12;
+    this.pointsPerTentacle = 20;
     const vertexCount = count * this.tentacleCount * (this.pointsPerTentacle - 1) * 2;
     const positions = new Float32Array(vertexCount * 3);
     const colors = new Float32Array(vertexCount * 3);
@@ -118,6 +118,15 @@ class DistantJellyField {
     this.wobbleEuler = new THREE.Euler();
     this.travelTangent = new THREE.Vector3();
     this.localPoint = new THREE.Vector3();
+    this.rootPoint = new THREE.Vector3();
+    this.targetPoint = new THREE.Vector3();
+    this.flowVector = new THREE.Vector3();
+    const simulatedTentaclePoints = count * this.tentacleCount * this.pointsPerTentacle;
+    this.tentacleCurrent = new Float32Array(simulatedTentaclePoints * 3);
+    this.tentaclePrevious = new Float32Array(simulatedTentaclePoints * 3);
+    this.tentacleInitialized = new Uint8Array(count);
+    this.previousCenters = new Float32Array(count * 3);
+    this.previousRoutes = new Float32Array(count).fill(-1);
     this.routes = Array.from({ length: count }, (_, index) => {
       const heading = seeded(index, 41) * TWO_PI;
       const depthSlope = (seeded(index, 43) - 0.5) * 0.42;
@@ -267,38 +276,148 @@ class DistantJellyField {
 
       const bellRadius = baseScale * 0.72;
       const tentacleLength = baseScale * (2.35 + seeded(index, 23) * 2.5);
+      const centerOffset = index * 3;
+      const centerDx = this.position.x - this.previousCenters[centerOffset];
+      const centerDy = this.position.y - this.previousCenters[centerOffset + 1];
+      const centerDz = this.position.z - this.previousCenters[centerOffset + 2];
+      const routeWrapped = this.previousRoutes[index] >= 0
+        && route < this.previousRoutes[index] - 0.5;
+      const resetTentacles = this.tentacleInitialized[index] === 0
+        || routeWrapped
+        || centerDx * centerDx + centerDy * centerDy + centerDz * centerDz > 9;
+      const segmentLength = tentacleLength / (this.pointsPerTentacle - 1);
+      const tentacleDamping = Math.pow(reducedMotion ? 0.8 : 0.935, delta * 60);
+      const deltaSquared = delta * delta;
+
       for (let tentacle = 0; tentacle < this.tentacleCount; tentacle += 1) {
-        const angle = (tentacle / this.tentacleCount) * Math.PI * 2 + index * 0.37;
+        const angle = (tentacle / this.tentacleCount) * TWO_PI + index * 0.37;
+        const angleCos = Math.cos(angle);
+        const angleSin = Math.sin(angle);
+        const rootRadius = bellRadius * (1 - pulse * 0.13);
+        this.rootPoint.set(
+          angleCos * rootRadius,
+          -baseScale * 0.015,
+          angleSin * rootRadius,
+        ).applyQuaternion(this.orientation).add(this.position);
+        const firstPoint = (
+          index * this.tentacleCount * this.pointsPerTentacle
+          + tentacle * this.pointsPerTentacle
+        );
+
+        if (resetTentacles) {
+          for (let point = 0; point < this.pointsPerTentacle; point += 1) {
+            const t = point / (this.pointsPerTentacle - 1);
+            const radial = rootRadius * (1 - t * 0.3);
+            const initialSway = Math.sin(index * 1.7 + tentacle * 2.3 + t * 4.2)
+              * t * t * tentacleLength * 0.075;
+            this.localPoint.set(
+              angleCos * radial - angleSin * initialSway,
+              -t * tentacleLength,
+              angleSin * radial + angleCos * initialSway,
+            ).applyQuaternion(this.orientation).add(this.position);
+            const pointOffset = (firstPoint + point) * 3;
+            this.tentacleCurrent[pointOffset] = this.localPoint.x;
+            this.tentacleCurrent[pointOffset + 1] = this.localPoint.y;
+            this.tentacleCurrent[pointOffset + 2] = this.localPoint.z;
+            this.tentaclePrevious[pointOffset] = this.localPoint.x;
+            this.tentaclePrevious[pointOffset + 1] = this.localPoint.y;
+            this.tentaclePrevious[pointOffset + 2] = this.localPoint.z;
+          }
+        } else {
+          for (let point = 1; point < this.pointsPerTentacle; point += 1) {
+            const t = point / (this.pointsPerTentacle - 1);
+            const pointOffset = (firstPoint + point) * 3;
+            const currentX = this.tentacleCurrent[pointOffset];
+            const currentY = this.tentacleCurrent[pointOffset + 1];
+            const currentZ = this.tentacleCurrent[pointOffset + 2];
+            const velocityX = (currentX - this.tentaclePrevious[pointOffset]) * tentacleDamping;
+            const velocityY = (currentY - this.tentaclePrevious[pointOffset + 1]) * tentacleDamping;
+            const velocityZ = (currentZ - this.tentaclePrevious[pointOffset + 2]) * tentacleDamping;
+            this.tentaclePrevious[pointOffset] = currentX;
+            this.tentaclePrevious[pointOffset + 1] = currentY;
+            this.tentaclePrevious[pointOffset + 2] = currentZ;
+
+            const radial = rootRadius * (1 - t * 0.3);
+            this.targetPoint.set(
+              angleCos * radial,
+              -t * tentacleLength,
+              angleSin * radial,
+            ).applyQuaternion(this.orientation).add(this.position);
+            const flowPhase = elapsed * (0.36 + seeded(tentacle, index + 53) * 0.18)
+              + index * 1.31 + tentacle * 1.87 + t * 4.6;
+            this.flowVector.set(
+              Math.sin(flowPhase),
+              Math.sin(flowPhase * 0.63 + 1.8) * 0.22,
+              Math.cos(flowPhase * 0.81),
+            ).applyQuaternion(this.orientation);
+            const spring = (0.68 + swim.primaryThrust * 1.35) * (1 - t * 0.52);
+            const flow = tentacleLength * (0.5 + t * 1.25) * motion;
+            const thrustDrag = swim.primaryThrust * t * t * baseScale * 3.8;
+
+            this.tentacleCurrent[pointOffset] = currentX + velocityX
+              + (this.targetPoint.x - currentX) * spring * deltaSquared
+              + this.flowVector.x * flow * deltaSquared
+              - this.travelTangent.x * thrustDrag * deltaSquared;
+            this.tentacleCurrent[pointOffset + 1] = currentY + velocityY
+              + (this.targetPoint.y - currentY) * spring * deltaSquared
+              + this.flowVector.y * flow * deltaSquared
+              - this.travelTangent.y * thrustDrag * deltaSquared;
+            this.tentacleCurrent[pointOffset + 2] = currentZ + velocityZ
+              + (this.targetPoint.z - currentZ) * spring * deltaSquared
+              + this.flowVector.z * flow * deltaSquared
+              - this.travelTangent.z * thrustDrag * deltaSquared;
+          }
+
+          const rootOffset = firstPoint * 3;
+          this.tentacleCurrent[rootOffset] = this.rootPoint.x;
+          this.tentacleCurrent[rootOffset + 1] = this.rootPoint.y;
+          this.tentacleCurrent[rootOffset + 2] = this.rootPoint.z;
+          this.tentaclePrevious[rootOffset] = this.rootPoint.x - centerDx;
+          this.tentaclePrevious[rootOffset + 1] = this.rootPoint.y - centerDy;
+          this.tentaclePrevious[rootOffset + 2] = this.rootPoint.z - centerDz;
+
+          for (let pass = 0; pass < 3; pass += 1) {
+            this.tentacleCurrent[rootOffset] = this.rootPoint.x;
+            this.tentacleCurrent[rootOffset + 1] = this.rootPoint.y;
+            this.tentacleCurrent[rootOffset + 2] = this.rootPoint.z;
+            for (let point = 1; point < this.pointsPerTentacle; point += 1) {
+              const parentOffset = (firstPoint + point - 1) * 3;
+              const pointOffset = (firstPoint + point) * 3;
+              const dx = this.tentacleCurrent[pointOffset]
+                - this.tentacleCurrent[parentOffset];
+              const dy = this.tentacleCurrent[pointOffset + 1]
+                - this.tentacleCurrent[parentOffset + 1];
+              const dz = this.tentacleCurrent[pointOffset + 2]
+                - this.tentacleCurrent[parentOffset + 2];
+              const distance = Math.max(0.00001, Math.hypot(dx, dy, dz));
+              const correction = ((distance - segmentLength) / distance) * 0.78;
+              this.tentacleCurrent[pointOffset] -= dx * correction;
+              this.tentacleCurrent[pointOffset + 1] -= dy * correction;
+              this.tentacleCurrent[pointOffset + 2] -= dz * correction;
+            }
+          }
+        }
+
         for (let segment = 0; segment < this.pointsPerTentacle - 1; segment += 1) {
           for (let endpoint = 0; endpoint < 2; endpoint += 1) {
             const point = segment + endpoint;
+            const pointOffset = (firstPoint + point) * 3;
             const t = point / (this.pointsPerTentacle - 1);
-            const wave = Math.sin(elapsed * 0.43 + index * 1.3 + tentacle + t * 5.1)
-              * t * t * tentacleLength * 0.14 * motion;
-            const curl = Math.sin(elapsed * 0.27 - index * 0.6 + tentacle * 1.9 + t * 9.2)
-              * t * tentacleLength * 0.045 * motion;
-            const radial = bellRadius * (1 - t * 0.28);
-            this.localPoint.set(
-              Math.cos(angle) * radial
-              + Math.cos(angle + Math.PI * 0.5) * wave
-              + Math.cos(angle) * curl,
-              -t * tentacleLength
-              - swim.primaryThrust * t * t * baseScale * 0.32
-              + Math.sin(elapsed * 0.31 + t * 7.4 + tentacle) * baseScale * 0.045 * motion,
-              Math.sin(angle) * radial
-              + Math.sin(angle + Math.PI * 0.5) * wave
-              + Math.sin(angle) * curl,
-            ).applyQuaternion(this.orientation).add(this.position);
-            positions[cursor] = this.localPoint.x;
             const tipFade = 1 - t * 0.58;
+            positions[cursor] = this.tentacleCurrent[pointOffset];
             colors[cursor++] = this.color.r * tipFade;
-            positions[cursor] = this.localPoint.y;
+            positions[cursor] = this.tentacleCurrent[pointOffset + 1];
             colors[cursor++] = this.color.g * tipFade;
-            positions[cursor] = this.localPoint.z;
+            positions[cursor] = this.tentacleCurrent[pointOffset + 2];
             colors[cursor++] = this.color.b * tipFade;
           }
         }
       }
+      this.tentacleInitialized[index] = 1;
+      this.previousCenters[centerOffset] = this.position.x;
+      this.previousCenters[centerOffset + 1] = this.position.y;
+      this.previousCenters[centerOffset + 2] = this.position.z;
+      this.previousRoutes[index] = route;
     }
     this.bells.instanceMatrix.needsUpdate = true;
     if (this.bells.instanceColor) this.bells.instanceColor.needsUpdate = true;
