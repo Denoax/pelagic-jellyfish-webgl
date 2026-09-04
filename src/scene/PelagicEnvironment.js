@@ -286,7 +286,7 @@ class DistantJellyField {
         || routeWrapped
         || centerDx * centerDx + centerDy * centerDy + centerDz * centerDz > 9;
       const segmentLength = tentacleLength / (this.pointsPerTentacle - 1);
-      const tentacleDamping = Math.pow(reducedMotion ? 0.8 : 0.935, delta * 60);
+      const tentacleDamping = Math.pow(reducedMotion ? 0.72 : 0.88, delta * 60);
       const deltaSquared = delta * delta;
 
       for (let tentacle = 0; tentacle < this.tentacleCount; tentacle += 1) {
@@ -337,33 +337,37 @@ class DistantJellyField {
             this.tentaclePrevious[pointOffset + 1] = currentY;
             this.tentaclePrevious[pointOffset + 2] = currentZ;
 
+            const flowPhase = elapsed * (0.22 + seeded(tentacle, index + 53) * 0.1)
+              + index * 1.31 + tentacle * 1.87 + t * 2.6;
             const radial = rootRadius * (1 - t * 0.3);
+            const restWave = Math.sin(flowPhase) * t * t * tentacleLength * 0.1 * motion;
+            const restCurl = Math.sin(flowPhase * 0.61 + tentacle * 0.43)
+              * t * t * tentacleLength * 0.032 * motion;
             this.targetPoint.set(
-              angleCos * radial,
+              angleCos * (radial + restCurl) - angleSin * restWave,
               -t * tentacleLength,
-              angleSin * radial,
+              angleSin * (radial + restCurl) + angleCos * restWave,
             ).applyQuaternion(this.orientation).add(this.position);
-            const flowPhase = elapsed * (0.36 + seeded(tentacle, index + 53) * 0.18)
-              + index * 1.31 + tentacle * 1.87 + t * 4.6;
             this.flowVector.set(
               Math.sin(flowPhase),
               Math.sin(flowPhase * 0.63 + 1.8) * 0.22,
               Math.cos(flowPhase * 0.81),
             ).applyQuaternion(this.orientation);
-            const spring = (0.68 + swim.primaryThrust * 1.35) * (1 - t * 0.52);
-            const flow = tentacleLength * (0.5 + t * 1.25) * motion;
-            const thrustDrag = swim.primaryThrust * t * t * baseScale * 3.8;
+            const springRate = (1.05 + swim.primaryThrust * 1.25) * (1 - t * 0.42);
+            const springBlend = 1 - Math.exp(-delta * springRate);
+            const flow = tentacleLength * (0.12 + t * 0.24) * motion;
+            const thrustDrag = swim.primaryThrust * t * t * baseScale * 1.8;
 
             this.tentacleCurrent[pointOffset] = currentX + velocityX
-              + (this.targetPoint.x - currentX) * spring * deltaSquared
+              + (this.targetPoint.x - currentX) * springBlend
               + this.flowVector.x * flow * deltaSquared
               - this.travelTangent.x * thrustDrag * deltaSquared;
             this.tentacleCurrent[pointOffset + 1] = currentY + velocityY
-              + (this.targetPoint.y - currentY) * spring * deltaSquared
+              + (this.targetPoint.y - currentY) * springBlend
               + this.flowVector.y * flow * deltaSquared
               - this.travelTangent.y * thrustDrag * deltaSquared;
             this.tentacleCurrent[pointOffset + 2] = currentZ + velocityZ
-              + (this.targetPoint.z - currentZ) * spring * deltaSquared
+              + (this.targetPoint.z - currentZ) * springBlend
               + this.flowVector.z * flow * deltaSquared
               - this.travelTangent.z * thrustDrag * deltaSquared;
           }
@@ -380,6 +384,26 @@ class DistantJellyField {
             this.tentacleCurrent[rootOffset] = this.rootPoint.x;
             this.tentacleCurrent[rootOffset + 1] = this.rootPoint.y;
             this.tentacleCurrent[rootOffset + 2] = this.rootPoint.z;
+            for (let point = 1; point < this.pointsPerTentacle - 1; point += 1) {
+              const previousOffset = (firstPoint + point - 1) * 3;
+              const pointOffset = (firstPoint + point) * 3;
+              const nextOffset = (firstPoint + point + 1) * 3;
+              const bendBlend = 0.075 + point / this.pointsPerTentacle * 0.025;
+              this.tentacleCurrent[pointOffset] += (
+                (this.tentacleCurrent[previousOffset] + this.tentacleCurrent[nextOffset]) * 0.5
+                - this.tentacleCurrent[pointOffset]
+              ) * bendBlend;
+              this.tentacleCurrent[pointOffset + 1] += (
+                (this.tentacleCurrent[previousOffset + 1]
+                  + this.tentacleCurrent[nextOffset + 1]) * 0.5
+                - this.tentacleCurrent[pointOffset + 1]
+              ) * bendBlend;
+              this.tentacleCurrent[pointOffset + 2] += (
+                (this.tentacleCurrent[previousOffset + 2]
+                  + this.tentacleCurrent[nextOffset + 2]) * 0.5
+                - this.tentacleCurrent[pointOffset + 2]
+              ) * bendBlend;
+            }
             for (let point = 1; point < this.pointsPerTentacle; point += 1) {
               const parentOffset = (firstPoint + point - 1) * 3;
               const pointOffset = (firstPoint + point) * 3;
@@ -390,7 +414,7 @@ class DistantJellyField {
               const dz = this.tentacleCurrent[pointOffset + 2]
                 - this.tentacleCurrent[parentOffset + 2];
               const distance = Math.max(0.00001, Math.hypot(dx, dy, dz));
-              const correction = ((distance - segmentLength) / distance) * 0.78;
+              const correction = ((distance - segmentLength) / distance) * 0.82;
               this.tentacleCurrent[pointOffset] -= dx * correction;
               this.tentacleCurrent[pointOffset + 1] -= dy * correction;
               this.tentacleCurrent[pointOffset + 2] -= dz * correction;
