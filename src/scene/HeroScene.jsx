@@ -263,6 +263,9 @@ export function HeroScene({ reducedMotion = false }) {
               actors: schoolDirector.getActorState(),
             };
           },
+          getDistantSwarmState() {
+            return environment.distantJellies.getState();
+          },
           getJellyScreenPoint(index = 0) {
             const tissue = appendages[index];
             if (!tissue) return null;

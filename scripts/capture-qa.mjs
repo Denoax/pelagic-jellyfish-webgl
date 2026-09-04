@@ -173,6 +173,18 @@ try {
     });
     await sleep(420);
   }
+  if (new URL(targetUrl).searchParams.get("qaGel") === "1") {
+    for (let step = 0; step < 18; step += 1) {
+      const progress = step / 17;
+      await client.send("Input.dispatchMouseEvent", {
+        type: "mouseMoved",
+        x: width * (0.22 + progress * 0.42),
+        y: height * (0.5 + Math.sin(progress * Math.PI * 2) * 0.12),
+      });
+      await sleep(28);
+    }
+    await sleep(80);
+  }
   if (new URL(targetUrl).searchParams.get("qaSwimPerf") === "1") {
     const sample = await client.send("Runtime.evaluate", {
       expression: `new Promise((resolve) => {
@@ -359,6 +371,7 @@ try {
       sceneMeta: window.__JELLYFISH_WORLD__,
       cameraState: window.__JELLYFISH_WORLD__?.getCameraState?.(),
       swarmState: window.__JELLYFISH_WORLD__?.getSwarmState?.(),
+      distantSwarmState: window.__JELLYFISH_WORLD__?.getDistantSwarmState?.(),
       heroScreenPoint: window.__JELLYFISH_WORLD__?.getJellyScreenPoint?.(0),
       jellyScreenPoints: Array.from(
         { length: window.__JELLYFISH_WORLD__?.jellyfishCount ?? 0 },

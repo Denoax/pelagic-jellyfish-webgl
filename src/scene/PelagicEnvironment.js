@@ -1,4 +1,5 @@
 import * as THREE from "three/webgpu";
+import { sampleSwimCycle } from "./jellyMotion.js";
 
 function clamp01(value) {
   return Math.min(1, Math.max(0, value));
@@ -108,37 +109,80 @@ class DistantJellyField {
     this.color = new THREE.Color();
     this.innerColor = new THREE.Color();
     this.innerTarget = new THREE.Color(0xd8f7ff);
+    this.routeProgress = Float32Array.from(
+      { length: count },
+      (_, index) => seeded(index, 3),
+    );
+    this.routeVelocity = Float32Array.from(
+      { length: count },
+      (_, index) => 0.012 + seeded(index, 29) * 0.008,
+    );
+    this.kinematics = Array.from({ length: count }, () => ({}));
+    this.motionState = Array.from({ length: count }, () => ({
+      route: 0,
+      speed: 0,
+      pulse: 0,
+      x: 0,
+      y: 0,
+      z: 0,
+    }));
+    this.lastElapsed = null;
   }
 
   update(elapsed, progress, focus, reducedMotion) {
     const positions = this.tentacleGeometry.attributes.position.array;
     const colors = this.tentacleGeometry.attributes.color.array;
     const motion = reducedMotion ? 0.2 : 1;
+    const delta = this.lastElapsed === null
+      ? 1 / 60
+      : Math.min(0.08, Math.max(0, elapsed - this.lastElapsed));
+    this.lastElapsed = elapsed;
     let cursor = 0;
 
     for (let index = 0; index < this.count; index += 1) {
       const cluster = index % 4;
       const lane = Math.floor(index / 4);
-      const cycle = ((progress * (0.48 + cluster * 0.035)) + seeded(index, 3) + elapsed * 0.0025 * motion) % 1;
-      const arc = cycle * Math.PI * 2;
-      const radius = 6.8 + seeded(index, 7) * 8.5;
-      const clusterAngle = cluster * Math.PI * 0.5 + Math.sin(progress * 3.2 + cluster) * 0.22;
-      const visibility = smoothstep(0.02, 0.14, cycle) * (1 - smoothstep(0.86, 0.98, cycle));
+      const swim = sampleSwimCycle(
+        elapsed * (0.17 + seeded(index, 19) * 0.045) + seeded(index, 31),
+        this.kinematics[index],
+      );
+      const targetVelocity = 0.01 + swim.speedSignal * (0.115 + seeded(index, 33) * 0.025);
+      const velocityDamping = 1 - Math.exp(-delta * (swim.primaryThrust > 0.05 ? 10 : 2.1));
+      this.routeVelocity[index] += (targetVelocity - this.routeVelocity[index]) * velocityDamping;
+      this.routeProgress[index] = (
+        this.routeProgress[index] + this.routeVelocity[index] * delta * motion
+      ) % 1;
+
+      const route = (
+        this.routeProgress[index] + progress * (0.16 + cluster * 0.012)
+      ) % 1;
+      const arc = route * Math.PI * 2;
+      const direction = seeded(index, 5) > 0.5 ? 1 : -1;
+      const laneX = (seeded(index, 7) - 0.5) * 22;
+      const visibility = smoothstep(0.015, 0.12, route)
+        * (1 - smoothstep(0.88, 0.985, route));
       const depth = -4.5 - lane * 1.25 - seeded(index, 11) * 5.8;
+      const lateralRadius = 1.7 + seeded(index, 35) * 1.9;
+      const lateralPhase = seeded(index, 37) * Math.PI * 2;
 
       this.position.set(
-        focus.x + Math.cos(clusterAngle + arc * 0.3) * radius + Math.sin(arc) * 2.2,
-        focus.y + (seeded(index, 13) - 0.5) * 8.5 + Math.sin(arc * 0.7 + index) * 1.2,
-        focus.z + depth + Math.cos(arc * 0.46 + cluster) * 2.8,
+        focus.x + laneX + Math.sin(arc + lateralPhase) * lateralRadius
+          + direction * (route - 0.5) * 3.2,
+        focus.y - 8.6 + route * 17.2 + Math.sin(arc * 1.6 + index) * 0.58,
+        focus.z + depth + Math.cos(arc * 0.72 + cluster) * (1.3 + seeded(index, 39) * 1.2),
       );
-      const baseScale = (0.15 + seeded(index, 17) * 0.26) * (0.48 + visibility * 0.52);
-      const pulse = Math.pow(Math.max(0, Math.sin(elapsed * (0.58 + seeded(index, 19) * 0.2) + index)), 3);
+      const baseScale = 0.15 + seeded(index, 17) * 0.26;
+      const pulse = swim.bell;
+      const lateralSlope = Math.cos(arc + lateralPhase) * lateralRadius * Math.PI * 2
+        + direction * 3.2;
+      const verticalSlope = 17.2 + Math.cos(arc * 1.6 + index) * 0.58 * Math.PI * 3.2;
+      const travelLean = -Math.atan2(lateralSlope, Math.max(6, verticalSlope)) * 0.34;
 
       this.dummy.position.copy(this.position);
       this.dummy.rotation.set(
-        Math.sin(elapsed * 0.07 + index) * 0.12 * motion,
-        arc * 0.16,
-        Math.cos(elapsed * 0.06 + index * 0.7) * 0.11 * motion,
+        Math.sin(elapsed * 0.12 + index) * 0.1 * motion,
+        direction * 0.12 + Math.sin(arc * 0.5) * 0.08,
+        travelLean + Math.cos(elapsed * 0.1 + index * 0.7) * 0.055 * motion,
       );
       this.dummy.scale.set(
         baseScale * (1 - pulse * 0.13),
@@ -147,8 +191,16 @@ class DistantJellyField {
       );
       this.dummy.updateMatrix();
       this.bells.setMatrixAt(index, this.dummy.matrix);
-      this.color.copy(this.palette[index % this.palette.length]).multiplyScalar(0.48 + visibility * 0.52);
+      this.color.copy(this.palette[index % this.palette.length]).multiplyScalar(0.22 + visibility * 0.78);
       this.bells.setColorAt(index, this.color);
+
+      const state = this.motionState[index];
+      state.route = route;
+      state.speed = this.routeVelocity[index];
+      state.pulse = pulse;
+      state.x = this.position.x;
+      state.y = this.position.y;
+      state.z = this.position.z;
 
       this.innerDummy.position.copy(this.position);
       this.innerDummy.rotation.copy(this.dummy.rotation);
@@ -208,6 +260,20 @@ class DistantJellyField {
     if (this.rims.instanceColor) this.rims.instanceColor.needsUpdate = true;
     this.tentacleGeometry.attributes.position.needsUpdate = true;
     this.tentacleGeometry.attributes.color.needsUpdate = true;
+  }
+
+  getState() {
+    return this.motionState.map((state, index) => ({
+      id: index,
+      route: Number(state.route.toFixed(3)),
+      speed: Number(state.speed.toFixed(4)),
+      pulse: Number(state.pulse.toFixed(3)),
+      position: [
+        Number(state.x.toFixed(2)),
+        Number(state.y.toFixed(2)),
+        Number(state.z.toFixed(2)),
+      ],
+    }));
   }
 
   dispose() {

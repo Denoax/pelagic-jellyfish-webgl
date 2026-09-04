@@ -17,8 +17,10 @@ const fragmentShader = /* glsl */ `
   uniform float uTime;
   uniform float uClockMix;
   uniform float uPointerEnergy;
+  uniform float uGelStrength;
   uniform vec2 uResolution;
   uniform vec2 uPointer;
+  uniform vec2 uPointerVelocity;
   uniform sampler2D uClockFrom;
   uniform sampler2D uClockTo;
   varying vec2 vUv;
@@ -95,11 +97,32 @@ const fragmentShader = /* glsl */ `
     float pointerDistance = length(pointerDelta);
     float pointerWake = exp(-pointerDistance * 6.5) * uPointerEnergy;
     vec2 pointerNormal = normalize(pointerDelta + vec2(0.0001));
+    vec2 pointerVelocity = vec2(uPointerVelocity.x * aspect, uPointerVelocity.y);
+    float pointerSpeed = clamp(length(pointerVelocity), 0.0, 1.4);
+    vec2 travelDirection = normalize(pointerVelocity + vec2(0.0001));
+    float alongTravel = dot(pointerDelta, travelDirection);
+    float acrossTravel = dot(pointerDelta, vec2(-travelDirection.y, travelDirection.x));
+    float gelDistance = sqrt(
+      acrossTravel * acrossTravel * 1.55
+      + alongTravel * alongTravel * mix(1.0, 0.28, clamp(pointerSpeed, 0.0, 1.0))
+    );
+    float gelCore = exp(-pow(gelDistance / 0.235, 2.0) * 2.1) * uGelStrength;
+    float gelShell = exp(-pow((gelDistance - 0.19) / 0.045, 2.0)) * uGelStrength;
+    vec2 radialUv = vec2(pointerNormal.x / max(aspect, 1.0), pointerNormal.y);
+    vec2 dragUv = -uPointerVelocity * gelCore * (0.075 + pointerSpeed * 0.085);
+    float lensBulge = sin(clamp(gelDistance / 0.27, 0.0, 1.0) * 3.14159265)
+      * gelCore * (0.026 + pointerSpeed * 0.018);
+    float elasticWobble = sin(gelDistance * 34.0 - uTime * 3.4)
+      * gelCore * (0.010 + pointerSpeed * 0.009);
     vec2 glassUv = uv + slowFlow * 0.020;
     glassUv += vec2(
       fbm(uv * 8.0 + vec2(uTime * 0.055, 17.0)),
       fbm(uv.yx * 7.0 + vec2(31.0, -uTime * 0.048))
     ) * 0.010 - 0.005;
+    // Direct manipulation field: pull the sampled clock and fluid cells with
+    // the cursor, then curl their boundary into an elastic rebound wave.
+    glassUv += dragUv;
+    glassUv += radialUv * (lensBulge + elasticWobble - gelShell * 0.011);
     glassUv += pointerNormal * sin(pointerDistance * 28.0 - uTime * 0.12)
       * pointerWake * 0.0065;
 
@@ -157,11 +180,13 @@ const fragmentShader = /* glsl */ `
 
     float highlightSide = clamp(dot(normalize(gradient + vec2(0.0001)), normalize(vec2(-0.8, 0.6))) * 0.5 + 0.5, 0.0, 1.0);
     float body = smoothstep(0.08, 0.68, mask);
-    float glassAlpha = body * 0.92 + edge * 0.92 + droplets * 0.56 + dropletEdge * 0.48;
+    float glassAlpha = body * 0.92 + edge * 0.92 + droplets * 0.56 + dropletEdge * 0.48
+      + gelShell * 0.34;
     vec3 glassColor = deepGlass;
     glassColor += edge * mix(cobalt, ice, highlightSide) * 1.72;
     glassColor += droplets * vec3(0.012, 0.065, 0.11) + dropletEdge * mix(cyan, ice, highlightSide) * 0.92;
     glassColor += body * vec3(0.012, 0.045, 0.075) * (0.30 + cells * 0.55);
+    glassColor += gelShell * mix(cyan, ice, 0.62) * (0.46 + pointerSpeed * 0.42);
 
     float arcOne = circleRing(p, vec2(-aspect * 0.66, 0.72), 0.92, 0.010);
     float arcTwo = circleRing(p, vec2(aspect * 0.67, -0.66), 0.74, 0.007);
@@ -221,13 +246,18 @@ function LiquidClock({ now }) {
   const smoothPointer = useRef(new THREE.Vector2(0.5, 0.5));
   const previousPointer = useRef(new THREE.Vector2(0.5, 0.5));
   const pointerUv = useRef(new THREE.Vector2(0.5, 0.5));
+  const rawVelocity = useRef(new THREE.Vector2());
+  const pointerVelocity = useRef(new THREE.Vector2());
+  const gelStrength = useRef(0);
+  const pointerSeen = useRef(false);
+  const lastPointerEventAt = useRef(-10);
   const energy = useRef(0);
   const lastWakeAt = useRef(-10);
   const displayedTexture = useRef(null);
   const hiddenTexture = useRef(null);
   const lastClockKey = useRef("");
   const transitionStartedAt = useRef(-1);
-  const { size, pointer } = useThree();
+  const { size } = useThree();
   const portrait = size.height > size.width * 1.15;
   const clockTextures = useMemo(
     () => [createClockTexture(portrait), createClockTexture(portrait)],
@@ -238,8 +268,10 @@ function LiquidClock({ now }) {
     uTime: { value: 0 },
     uClockMix: { value: 1 },
     uPointerEnergy: { value: 0 },
+    uGelStrength: { value: 0 },
     uResolution: { value: new THREE.Vector2(size.width, size.height) },
     uPointer: { value: new THREE.Vector2(0.5, 0.5) },
+    uPointerVelocity: { value: new THREE.Vector2() },
     uClockFrom: { value: clockTextures[0] },
     uClockTo: { value: clockTextures[1] },
   }), [clockTextures, size.height, size.width]);
@@ -279,17 +311,32 @@ function LiquidClock({ now }) {
     uniforms.uResolution.value.set(size.width, size.height);
   }, [size.height, size.width, uniforms]);
 
+  useEffect(() => {
+    const updatePointer = (event) => {
+      pointerUv.current.set(
+        event.clientX / Math.max(1, window.innerWidth),
+        1 - event.clientY / Math.max(1, window.innerHeight),
+      );
+      pointerSeen.current = true;
+      lastPointerEventAt.current = performance.now() * 0.001;
+    };
+    window.addEventListener("pointermove", updatePointer, { passive: true });
+    return () => window.removeEventListener("pointermove", updatePointer);
+  }, []);
+
   useFrame((state, delta) => {
     if (!materialRef.current) return;
     if (transitionStartedAt.current >= 0) {
       const elapsed = performance.now() * 0.001 - transitionStartedAt.current;
-      const progress = THREE.MathUtils.clamp(elapsed / 0.82, 0, 1);
+      const progress = THREE.MathUtils.clamp(elapsed / 1.28, 0, 1);
       const eased = progress * progress * (3 - 2 * progress);
       materialRef.current.uniforms.uClockMix.value = eased;
       if (progress >= 1) transitionStartedAt.current = -1;
     }
-    pointerUv.current.set(pointer.x * 0.5 + 0.5, pointer.y * 0.5 + 0.5);
-    const speed = pointerUv.current.distanceTo(previousPointer.current) / Math.max(delta, 0.001);
+    rawVelocity.current.copy(pointerUv.current).sub(previousPointer.current)
+      .divideScalar(Math.max(delta, 0.001));
+    const speed = rawVelocity.current.length();
+    if (speed > 1.4) rawVelocity.current.multiplyScalar(1.4 / speed);
     previousPointer.current.copy(pointerUv.current);
     const rippleReady = state.clock.elapsedTime - lastWakeAt.current > 14;
     if (speed > 1.4 && rippleReady) {
@@ -298,10 +345,23 @@ function LiquidClock({ now }) {
     } else {
       energy.current *= Math.exp(-delta * 0.45);
     }
-    smoothPointer.current.lerp(pointerUv.current, 1 - Math.exp(-delta * 1.8));
+    const pointerFresh = pointerSeen.current
+      && performance.now() * 0.001 - lastPointerEventAt.current < 0.2;
+    const targetGel = pointerFresh
+      ? THREE.MathUtils.clamp(0.34 + speed * 0.5, 0.34, 1)
+      : 0;
+    gelStrength.current += (targetGel - gelStrength.current)
+      * (1 - Math.exp(-delta * (pointerFresh ? 14 : 3.2)));
+    pointerVelocity.current.lerp(
+      rawVelocity.current,
+      1 - Math.exp(-delta * (pointerFresh ? 18 : 4.4)),
+    );
+    smoothPointer.current.lerp(pointerUv.current, 1 - Math.exp(-delta * 11));
     materialRef.current.uniforms.uTime.value = state.clock.elapsedTime;
     materialRef.current.uniforms.uPointer.value.copy(smoothPointer.current);
+    materialRef.current.uniforms.uPointerVelocity.value.copy(pointerVelocity.current);
     materialRef.current.uniforms.uPointerEnergy.value = energy.current;
+    materialRef.current.uniforms.uGelStrength.value = gelStrength.current;
   });
 
   return (
