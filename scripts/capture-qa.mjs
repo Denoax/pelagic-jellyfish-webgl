@@ -17,7 +17,7 @@ const browserArgs = [
   "--no-sandbox",
   "--hide-scrollbars",
   "--use-gl=angle",
-  "--use-angle=swiftshader",
+  `--use-angle=${process.env.QA_ANGLE_BACKEND || "swiftshader-webgl"}`,
   "--enable-unsafe-swiftshader",
   "--enable-webgl",
   `--remote-debugging-port=${port}`,
@@ -341,6 +341,29 @@ try {
       returnByValue: true,
     });
     performanceSample = sample.result.value;
+  }
+  const sequenceFrameCount = Math.max(
+    0,
+    Math.min(12, Number(new URL(targetUrl).searchParams.get("qaFrames") || 0)),
+  );
+  const sequenceFrameDelay = Math.max(
+    100,
+    Math.min(3000, Number(new URL(targetUrl).searchParams.get("qaFrameDelay") || 800)),
+  );
+  if (sequenceFrameCount > 0) {
+    for (let frame = 0; frame < sequenceFrameCount; frame += 1) {
+      const sequenceCapture = await client.send("Page.captureScreenshot", {
+        format: "png",
+        fromSurface: true,
+        captureBeyondViewport: false,
+      });
+      const suffix = `-${String(frame + 1).padStart(2, "0")}`;
+      const sequencePath = /\.[^./]+$/.test(outputPath)
+        ? outputPath.replace(/(\.[^./]+)$/, `${suffix}$1`)
+        : `${outputPath}${suffix}.png`;
+      writeFileSync(sequencePath, Buffer.from(sequenceCapture.data, "base64"));
+      if (frame < sequenceFrameCount - 1) await sleep(sequenceFrameDelay);
+    }
   }
   const capture = await client.send("Page.captureScreenshot", {
     format: "png",
