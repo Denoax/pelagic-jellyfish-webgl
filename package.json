@@ -12,6 +12,7 @@
   "bugs": {
     "url": "https://github.com/Denoax/pelagic-jellyfish-webgl/issues"
   },
+  "homepage": "https://denoax.github.io/pelagic-jellyfish-webgl/",
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/prepare-sites-build.mjs",

@@ -183,11 +183,11 @@ export class JellySchoolDirector {
       const [start, authoredEnd] = definition.life;
       const end = this.mobile && index === 5 ? 1.08 : authoredEnd;
       const local = clamp01((progress - start) / Math.max(0.0001, end - start));
-      const arrival = smootherstep(local / 0.22);
+      const arrival = smootherstep(local / 0.3);
       // Stay full-sized while swimming beyond the composition. Once the exit
       // route is complete, retain a faint full-scale silhouette in the water
       // instead of shrinking or popping the animal out of existence.
-      const depthHaze = 1 - smootherstep((local - 0.94) / 0.06) * 0.88;
+      const depthHaze = 1 - smootherstep((local - 0.84) / 0.16) * 0.9;
       actor.presence = progress < start ? 0 : Math.min(arrival, depthHaze);
 
       quadraticBezier(actor.entry, actor.center, actor.exit, smootherstep(local), actor.desired);

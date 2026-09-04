@@ -4,6 +4,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 const FLOOR_Y = -5.45;
 const BLADE_COUNT = 54;
 const BLADE_SEGMENTS = 12;
+const PUBLIC_BASE = import.meta.env.BASE_URL;
 
 function seeded(index, salt = 0) {
   const value = Math.sin(index * 91.73 + salt * 37.11) * 43758.5453;
@@ -110,7 +111,7 @@ export class ReefEnvironment {
   async loadSpecimenCoral() {
     const definitions = [
       {
-        url: "/assets/models/smithsonian-pocillopora.glb",
+        url: `${PUBLIC_BASE}assets/models/smithsonian-pocillopora.glb`,
         size: 1.75,
         placements: [
           [-7.8, -5.4, 1.12, -0.4],
@@ -118,7 +119,7 @@ export class ReefEnvironment {
         ],
       },
       {
-        url: "/assets/models/smithsonian-diploria.glb",
+        url: `${PUBLIC_BASE}assets/models/smithsonian-diploria.glb`,
         size: 1.55,
         placements: [
           [7.4, -6.9, 1.04, 0.45],
@@ -126,7 +127,7 @@ export class ReefEnvironment {
         ],
       },
       {
-        url: "/assets/models/smithsonian-acropora-palmata.glb",
+        url: `${PUBLIC_BASE}assets/models/smithsonian-acropora-palmata.glb`,
         size: 2.05,
         placements: [
           [-2.8, -10.4, 1.05, -1.05],

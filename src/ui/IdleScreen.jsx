@@ -3,6 +3,16 @@ import { IdleGlassScene } from "../scene/IdleGlassScene.jsx";
 
 export function IdleScreen({ active, onDismiss }) {
   const [now, setNow] = useState(() => new Date());
+  const [mounted, setMounted] = useState(active);
+
+  useEffect(() => {
+    if (active) {
+      setMounted(true);
+      return undefined;
+    }
+    const unmountTimer = window.setTimeout(() => setMounted(false), 2600);
+    return () => window.clearTimeout(unmountTimer);
+  }, [active]);
 
   useEffect(() => {
     if (!active) return undefined;
@@ -18,13 +28,13 @@ export function IdleScreen({ active, onDismiss }) {
 
   return (
     <div
-      className={`idle-screen ${active ? "is-active" : ""}`}
+      className={`idle-screen ${active ? "is-active" : mounted ? "is-leaving" : ""}`}
       aria-hidden={!active}
       aria-label="Dismiss the liquid clock"
       onClick={onDismiss}
       data-testid="idle-screen"
     >
-      {active ? <IdleGlassScene now={now} /> : null}
+      {mounted ? <IdleGlassScene now={now} /> : null}
     </div>
   );
 }

@@ -3,6 +3,9 @@
 > A silent, interactive descent through a living WebGL jellyfish ocean.
 
 [![Verify Pelagic](https://github.com/Denoax/pelagic-jellyfish-webgl/actions/workflows/ci.yml/badge.svg)](https://github.com/Denoax/pelagic-jellyfish-webgl/actions/workflows/ci.yml)
+[![GitHub Pages](https://github.com/Denoax/pelagic-jellyfish-webgl/actions/workflows/pages.yml/badge.svg)](https://denoax.github.io/pelagic-jellyfish-webgl/)
+
+**[Enter the live ocean →](https://denoax.github.io/pelagic-jellyfish-webgl/)**
 
 An interactive WebGL ocean, a living jellyfish swarm, and an original liquid-glass clock built as a text-free digital art study.
 

@@ -26,6 +26,8 @@ When implementing from a selected generated mock, treat that image as the source
 - This repository is now presented as a visual art project. Keep the scroll chapters as invisible choreography tracks and do not reintroduce visible middle-page headlines, descriptions, project labels, service copy, depth readouts, or scroll instructions. The only persistent visible DOM chrome is `MANI MARAMI MILANI` plus `GITHUB` at the top-right, `@DENOAX`/copyright at the bottom-left, and `RETURN TO THE SURFACE` at the bottom-right. The top-right GitHub label opens `https://github.com/Denoax`.
 - The idle pointer ripple is an occasional, extremely slow disturbance rather than continuous cursor feedback: require purposeful pointer speed, enforce roughly a 14-second cooldown, and decay the impulse gently.
 - Jellyfish leave a shot by swimming beyond the frame at stable physical scale. Never use lifecycle scale-down as a disappearance effect; reserve opacity loss for the final off-screen depth-haze interval.
+- Mount the idle renderer through its full 2.6-second exit transition; never remove the canvas on the same frame that idle state is dismissed.
+- GitHub Pages builds use `VITE_BASE_PATH=/pelagic-jellyfish-webgl/`. All public runtime assets must resolve through `import.meta.env.BASE_URL`, never a root-only `/assets/...` path.
 - The idle transition must never produce an opaque black frame or cover the living ocean before its visual layer is ready. Preserve the live scene beneath the idle treatment and reveal only a successfully prepared enhancement.
 - The FluidGlass project is interaction inspiration only; its unlicensed source, shaders, assets, composition, and clock design must not be copied.
 - Reduced-motion users do not receive the animated idle screen.

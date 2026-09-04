@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import tslOperatorPlugin from "vite-plugin-tsl-operator";
 
 export default defineConfig({
+  base: process.env.VITE_BASE_PATH || "/",
   build: {
     outDir: "dist/client",
   },
