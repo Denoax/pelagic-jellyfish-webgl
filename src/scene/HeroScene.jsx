@@ -266,6 +266,9 @@ export function HeroScene({ reducedMotion = false }) {
           getDistantSwarmState() {
             return environment.distantJellies.getState();
           },
+          getDeepState() {
+            return environment.getDeepState();
+          },
           getJellyScreenPoint(index = 0) {
             const tissue = appendages[index];
             if (!tissue) return null;
@@ -286,7 +289,7 @@ export function HeroScene({ reducedMotion = false }) {
           tissue.setPresence(1, 1);
           tissue.update(1 / 60, clock.elapsedTime, current.value, null, 0, false);
         });
-        environment.update(clock.elapsedTime, 0.78, current.value, journeyFocus, false);
+        environment.update(clock.elapsedTime, 0.78, current.value, journeyFocus, false, true);
 
         // Compile both the full cinematic pass and the lightweight scrolling
         // pass before exposing the scene.

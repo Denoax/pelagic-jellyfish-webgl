@@ -1,8 +1,11 @@
 import * as THREE from "three/webgpu";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { sampleSwimCycle } from "./jellyMotion.js";
 
 const SWIM_AXIS = new THREE.Vector3(0, 1, 0);
 const TWO_PI = Math.PI * 2;
+const PUBLIC_BASE = import.meta.env.BASE_URL;
+const DEEP_FLOOR_Y = -7.85;
 
 function clamp01(value) {
   return Math.min(1, Math.max(0, value));
@@ -16,6 +19,68 @@ function smoothstep(min, max, value) {
 function seeded(index, salt = 0) {
   const value = Math.sin(index * 91.73 + salt * 37.11) * 43758.5453;
   return value - Math.floor(value);
+}
+
+function deepTerrainHeight(x, z) {
+  const shelfNoise =
+    Math.sin(x * 0.27 + z * 0.14) * 0.22
+    + Math.sin(x * 0.71 - z * 0.19) * 0.1
+    + Math.cos(z * 0.38) * 0.08;
+  const leftRidge = Math.max(0, 1 - Math.hypot((x + 11.5) / 5.8, (z + 14) / 10.5));
+  const rightRidge = Math.max(0, 1 - Math.hypot((x - 11.2) / 6.2, (z + 18) / 9.5));
+  const centerBasin = Math.max(0, 1 - Math.hypot(x / 7.5, (z + 13) / 11));
+  return shelfNoise + leftRidge * 1.05 + rightRidge * 0.82 - centerBasin * 0.22;
+}
+
+function createSedimentNormalTexture(size = 128) {
+  const data = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y += 1) {
+    for (let x = 0; x < size; x += 1) {
+      const index = (y * size + x) * 4;
+      const waveX = Math.sin(x * 0.73 + Math.sin(y * 0.17)) * 0.5;
+      const waveY = Math.cos(y * 0.61 + Math.sin(x * 0.13)) * 0.5;
+      const grain = (seeded(x + y * size, 307) - 0.5) * 0.36;
+      data[index] = Math.round(128 + (waveX + grain) * 28);
+      data[index + 1] = Math.round(128 + (waveY + grain) * 28);
+      data[index + 2] = 238;
+      data[index + 3] = 255;
+    }
+  }
+  const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(7, 6);
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function createWeatheredStoneGeometry(seedSalt, detail = 1) {
+  const geometry = new THREE.IcosahedronGeometry(1, detail);
+  const positions = geometry.attributes.position;
+  const point = new THREE.Vector3();
+  for (let index = 0; index < positions.count; index += 1) {
+    point.fromBufferAttribute(positions, index);
+    const direction = point.clone().normalize();
+    const strata = Math.sin(direction.y * 8.5 + seedSalt) * 0.055;
+    const fracture = (seeded(index, seedSalt) - 0.5) * 0.12;
+    point.multiplyScalar(1 + strata + fracture);
+    point.y *= 0.72;
+    positions.setXYZ(index, point.x, point.y, point.z);
+  }
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function orientCylinderMatrix(dummy, start, end, radius = 1) {
+  const midpoint = start.clone().add(end).multiplyScalar(0.5);
+  const direction = end.clone().sub(start);
+  dummy.position.copy(midpoint);
+  dummy.quaternion.setFromUnitVectors(
+    new THREE.Vector3(0, 1, 0),
+    direction.clone().normalize(),
+  );
+  dummy.scale.set(radius, direction.length(), radius);
+  dummy.updateMatrix();
 }
 
 class DistantJellyField {
@@ -528,41 +593,485 @@ export class PelagicEnvironment {
     this.distantJellies = new DistantJellyField(scene, mobile ? 7 : reducedMotion ? 8 : 14);
 
     this.deepGroup = new THREE.Group();
-    this.deepGroup.name = "abyssal-shelf-silhouette";
+    this.deepGroup.name = "abyssal-basalt-garden";
     scene.add(this.deepGroup);
+    this.deepMaterials = new Set();
+    this.deepGeometries = new Set();
+    this.deepTextures = new Set();
+    this.deepLights = [];
+    this.deepAssetsRequested = false;
+    this.deepAssetsReady = false;
+    this.disposed = false;
     this.createShelf();
     this.createKelp();
   }
 
+  trackDeep(geometry, material, baseOpacity = 1) {
+    if (geometry) this.deepGeometries.add(geometry);
+    const materials = Array.isArray(material) ? material : [material];
+    materials.filter(Boolean).forEach((entry) => {
+      entry.transparent = true;
+      entry.opacity = 0;
+      entry.userData.deepBaseOpacity = baseOpacity;
+      this.deepMaterials.add(entry);
+    });
+  }
+
+  trackSourceTextures(material) {
+    [
+      "map",
+      "normalMap",
+      "aoMap",
+      "roughnessMap",
+      "metalnessMap",
+      "emissiveMap",
+      "alphaMap",
+    ].forEach((key) => {
+      if (material?.[key]?.isTexture) this.deepTextures.add(material[key]);
+    });
+  }
+
   createShelf() {
-    const geometry = new THREE.DodecahedronGeometry(1, 1);
-    const material = new THREE.MeshStandardMaterial({
-      color: 0x061b26,
-      emissive: 0x020c16,
-      emissiveIntensity: 0.4,
-      roughness: 0.98,
-      metalness: 0,
+    this.createSedimentFloor();
+    this.createContactShadows();
+    this.createRubbleFields();
+    this.createSessileLife();
+    this.createBenthicSnow();
+    this.createDeepLights();
+  }
+
+  createSedimentFloor() {
+    const geometry = new THREE.PlaneGeometry(42, 38, 48, 42);
+    const positions = geometry.attributes.position;
+    const colors = new Float32Array(positions.count * 3);
+    const trenchColor = new THREE.Color(0x06141c);
+    const siltColor = new THREE.Color(0x1a3b47);
+    const mineralColor = new THREE.Color(0x315461);
+    const color = new THREE.Color();
+
+    for (let index = 0; index < positions.count; index += 1) {
+      const x = positions.getX(index);
+      const worldZ = -positions.getY(index) - 14;
+      const height = deepTerrainHeight(x, worldZ);
+      positions.setZ(index, height);
+      const shelfMix = clamp01(0.34 + height * 0.26 + seeded(index, 333) * 0.16);
+      color.copy(trenchColor).lerp(siltColor, shelfMix);
+      if (seeded(index, 337) > 0.84) color.lerp(mineralColor, 0.12);
+      colors[index * 3] = color.r;
+      colors[index * 3 + 1] = color.g;
+      colors[index * 3 + 2] = color.b;
+    }
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    geometry.computeVertexNormals();
+    geometry.rotateX(-Math.PI * 0.5);
+
+    const normalMap = createSedimentNormalTexture(this.mobile ? 64 : 128);
+    this.deepTextures.add(normalMap);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xffffff,
+      vertexColors: true,
+      normalMap,
+      normalScale: new THREE.Vector2(0.28, 0.28),
+      emissive: 0x0a2633,
+      emissiveIntensity: 0.46,
+      specular: 0x071c25,
+      shininess: 3,
+      depthWrite: true,
+      side: THREE.FrontSide,
+    });
+    this.floorMaterial = material;
+    this.floor = new THREE.Mesh(geometry, material);
+    this.floor.position.set(0, DEEP_FLOOR_Y, -14);
+    this.floor.renderOrder = -5;
+    this.deepGroup.add(this.floor);
+    this.trackDeep(geometry, material, 0.96);
+  }
+
+  createRubbleFields() {
+    const rubbleDefinitions = [
+      { geometry: createWeatheredStoneGeometry(351, 1), count: this.mobile ? 14 : 24, salt: 353 },
+      { geometry: createWeatheredStoneGeometry(359, 1), count: this.mobile ? 10 : 18, salt: 367 },
+    ];
+    const colors = [
+      new THREE.Color(0x102b35),
+      new THREE.Color(0x183943),
+      new THREE.Color(0x223f4a),
+    ];
+    this.rubble = [];
+
+    rubbleDefinitions.forEach(({ geometry, count, salt }, fieldIndex) => {
+      const material = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        emissive: 0x071c26,
+        emissiveIntensity: 0.34,
+        specular: 0x0a2530,
+        shininess: 4,
+        vertexColors: true,
+      });
+      const field = new THREE.InstancedMesh(geometry, material, count);
+      const dummy = new THREE.Object3D();
+      for (let index = 0; index < count; index += 1) {
+        const x = (seeded(index, salt) - 0.5) * 35;
+        const z = -1 - seeded(index, salt + 2) * 31;
+        const corridor = Math.max(0, 1 - Math.abs(x) / 5.2);
+        const size = (0.12 + seeded(index, salt + 4) * 0.43) * (1 - corridor * 0.46);
+        dummy.position.set(
+          x,
+          DEEP_FLOOR_Y + deepTerrainHeight(x, z) + size * 0.18,
+          z,
+        );
+        dummy.rotation.set(
+          seeded(index, salt + 6) * 1.7,
+          seeded(index, salt + 8) * TWO_PI,
+          seeded(index, salt + 10) * 1.1,
+        );
+        dummy.scale.set(
+          size * (0.75 + seeded(index, salt + 12) * 0.9),
+          size * (0.55 + seeded(index, salt + 14) * 0.8),
+          size * (0.8 + seeded(index, salt + 16) * 0.72),
+        );
+        dummy.updateMatrix();
+        field.setMatrixAt(index, dummy.matrix);
+        field.setColorAt(index, colors[(index + fieldIndex) % colors.length]);
+      }
+      field.instanceMatrix.needsUpdate = true;
+      if (field.instanceColor) field.instanceColor.needsUpdate = true;
+      this.rubble.push(field);
+      this.deepGroup.add(field);
+      this.trackDeep(geometry, material, fieldIndex === 0 ? 0.9 : 0.76);
+    });
+  }
+
+  createContactShadows() {
+    const placements = [
+      [-4.8, -11.1, 3.25, 2.05],
+      [7.2, -4.8, 2.1, 1.35],
+      [-3.8, -7.2, 2.1, 1.35],
+      [5.9, -12.8, 3.15, 1.9],
+      [-7.7, -5.7, 1.9, 1.15],
+      [4.2, -8.8, 1.65, 1],
+      [-7.4, -3.8, 0.72, 0.46],
+      [7.8, -1.5, 0.58, 0.4],
+    ];
+    const geometry = new THREE.CircleGeometry(1, 32);
+    geometry.rotateX(-Math.PI * 0.5);
+    const material = new THREE.MeshBasicMaterial({
+      color: 0x010509,
       transparent: true,
       opacity: 0,
-      depthWrite: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
     });
-    this.shelfMaterial = material;
-    this.shelf = new THREE.InstancedMesh(geometry, material, 15);
+    this.contactShadows = new THREE.InstancedMesh(geometry, material, placements.length);
     const dummy = new THREE.Object3D();
-    for (let index = 0; index < 15; index += 1) {
-      const side = index % 2 === 0 ? -1 : 1;
-      const x = side * (5.6 + seeded(index, 91) * 8.5);
-      const y = -6.2 - seeded(index, 93) * 2.5;
-      const z = -8 - seeded(index, 95) * 17;
-      const scale = 0.8 + seeded(index, 97) * 2.4;
-      dummy.position.set(x, y, z);
-      dummy.rotation.set(seeded(index, 99) * 1.2, seeded(index, 101) * Math.PI, seeded(index, 103));
-      dummy.scale.set(scale * 1.8, scale * 0.7, scale * 1.25);
+    placements.forEach(([x, z, width, depth], index) => {
+      dummy.position.set(x, DEEP_FLOOR_Y + deepTerrainHeight(x, z) + 0.018, z);
+      dummy.rotation.y = seeded(index, 373) * TWO_PI;
+      dummy.scale.set(width, 1, depth);
       dummy.updateMatrix();
-      this.shelf.setMatrixAt(index, dummy.matrix);
+      this.contactShadows.setMatrixAt(index, dummy.matrix);
+    });
+    this.contactShadows.instanceMatrix.needsUpdate = true;
+    this.contactShadows.renderOrder = -4;
+    this.deepGroup.add(this.contactShadows);
+    this.trackDeep(geometry, material, 0.34);
+  }
+
+  createSessileLife() {
+    const spongeGeometry = new THREE.SphereGeometry(1, 12, 8);
+    const spongeMaterial = new THREE.MeshPhongMaterial({
+      color: 0x7b9fa7,
+      emissive: 0x092b37,
+      emissiveIntensity: 0.4,
+      specular: 0x173946,
+      shininess: 6,
+      vertexColors: true,
+    });
+    const spongeCount = this.mobile ? 8 : 14;
+    this.sponges = new THREE.InstancedMesh(spongeGeometry, spongeMaterial, spongeCount);
+    const dummy = new THREE.Object3D();
+    const spongeColors = [
+      new THREE.Color(0x7da7ad),
+      new THREE.Color(0x657f9f),
+      new THREE.Color(0x8b91ab),
+    ];
+    for (let index = 0; index < spongeCount; index += 1) {
+      const side = index % 2 === 0 ? -1 : 1;
+      const x = side * (6.4 + seeded(index, 383) * 9.5);
+      const z = -4.5 - seeded(index, 389) * 25;
+      const size = 0.11 + seeded(index, 397) * 0.28;
+      dummy.position.set(x, DEEP_FLOOR_Y + deepTerrainHeight(x, z) + size * 0.55, z);
+      dummy.rotation.set(0, seeded(index, 401) * TWO_PI, (seeded(index, 409) - 0.5) * 0.26);
+      dummy.scale.set(size * (0.65 + seeded(index, 419) * 0.36), size * (1.2 + seeded(index, 421)), size);
+      dummy.updateMatrix();
+      this.sponges.setMatrixAt(index, dummy.matrix);
+      this.sponges.setColorAt(index, spongeColors[index % spongeColors.length]);
     }
-    this.shelf.instanceMatrix.needsUpdate = true;
-    this.deepGroup.add(this.shelf);
+    this.sponges.instanceMatrix.needsUpdate = true;
+    if (this.sponges.instanceColor) this.sponges.instanceColor.needsUpdate = true;
+    this.deepGroup.add(this.sponges);
+    this.trackDeep(spongeGeometry, spongeMaterial, 0.72);
+
+    const branchGeometry = new THREE.CylinderGeometry(1, 1, 1, 6, 1, false);
+    const branchMaterial = new THREE.MeshPhongMaterial({
+      color: 0x7696a4,
+      emissive: 0x0a2b40,
+      emissiveIntensity: 0.42,
+      specular: 0x173a48,
+      shininess: 5,
+    });
+    const clusters = this.mobile ? 3 : 5;
+    const segmentsPerCluster = 7;
+    this.coralBranches = new THREE.InstancedMesh(
+      branchGeometry,
+      branchMaterial,
+      clusters * segmentsPerCluster,
+    );
+    let instance = 0;
+    for (let cluster = 0; cluster < clusters; cluster += 1) {
+      const side = cluster % 2 === 0 ? -1 : 1;
+      const x = side * (7.2 + seeded(cluster, 431) * 7.2);
+      const z = -7 - seeded(cluster, 433) * 20;
+      const base = new THREE.Vector3(x, DEEP_FLOOR_Y + deepTerrainHeight(x, z), z);
+      for (let segment = 0; segment < segmentsPerCluster; segment += 1) {
+        const angle = (segment / segmentsPerCluster) * TWO_PI + seeded(segment, cluster + 439) * 0.5;
+        const start = base.clone().add(new THREE.Vector3(
+          Math.cos(angle) * 0.08,
+          0.03,
+          Math.sin(angle) * 0.08,
+        ));
+        const length = 0.32 + seeded(segment, cluster + 443) * 0.54;
+        const end = start.clone().add(new THREE.Vector3(
+          Math.cos(angle) * length * 0.28,
+          length,
+          Math.sin(angle) * length * 0.28,
+        ));
+        orientCylinderMatrix(dummy, start, end, 0.026 + seeded(segment, cluster + 449) * 0.018);
+        this.coralBranches.setMatrixAt(instance, dummy.matrix);
+        instance += 1;
+      }
+    }
+    this.coralBranches.instanceMatrix.needsUpdate = true;
+    this.deepGroup.add(this.coralBranches);
+    this.trackDeep(branchGeometry, branchMaterial, 0.62);
+  }
+
+  createDeepLights() {
+    const cyan = new THREE.PointLight(0x4cbde6, 0, 13, 2.1);
+    const violet = new THREE.PointLight(0x7478d8, 0, 11, 2.2);
+    this.deepAmbient = new THREE.HemisphereLight(0x4f8094, 0x010407, 0);
+    this.deepLights.push(cyan, violet);
+    this.deepGroup.add(cyan, violet, this.deepAmbient);
+  }
+
+  createBenthicSnow() {
+    const count = this.mobile ? 80 : 150;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const pale = new THREE.Color(0x8fc8d3);
+    const violet = new THREE.Color(0x7181b1);
+    const mixed = new THREE.Color();
+    for (let index = 0; index < count; index += 1) {
+      const x = (seeded(index, 467) - 0.5) * 36;
+      const z = -1 - seeded(index, 469) * 31;
+      positions[index * 3] = x;
+      positions[index * 3 + 1] = DEEP_FLOOR_Y
+        + deepTerrainHeight(x, z)
+        + 0.16
+        + seeded(index, 479) * 2.6;
+      positions[index * 3 + 2] = z;
+      mixed.copy(pale).lerp(violet, seeded(index, 487));
+      colors[index * 3] = mixed.r;
+      colors[index * 3 + 1] = mixed.g;
+      colors[index * 3 + 2] = mixed.b;
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    const material = new THREE.PointsMaterial({
+      size: this.mobile ? 0.035 : 0.027,
+      sizeAttenuation: true,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    this.benthicSnow = new THREE.Points(geometry, material);
+    this.benthicSnow.renderOrder = 3;
+    this.deepGroup.add(this.benthicSnow);
+    this.trackDeep(geometry, material, 0.26);
+  }
+
+  async loadDeepAssets() {
+    if (this.deepAssetsRequested || this.disposed) return;
+    this.deepAssetsRequested = true;
+    const loader = new GLTFLoader();
+    const rockDefinitions = [
+      {
+        url: `${PUBLIC_BASE}assets/models/polyhaven/rock_09/rock_09_1k.gltf`,
+        tint: 0x91b4bd,
+        placements: [
+          [-4.8, -11.1, 5.2, -0.42, 0.98, 1.28],
+          [7.2, -4.8, 3.25, 1.9, 0.82, 1.08],
+          [-3.8, -7.2, 3.45, 0.26, 0.92, 1.16],
+        ],
+      },
+      {
+        url: `${PUBLIC_BASE}assets/models/polyhaven/rock_07/rock_07_1k.gltf`,
+        tint: 0x789aa5,
+        placements: [
+          [5.9, -12.8, 4.9, 0.74, 1.02, 1.08],
+          [-7.7, -5.7, 3.1, -1.38, 0.9, 1.04],
+          [4.2, -8.8, 2.75, -0.28, 0.86, 1.08],
+        ],
+      },
+      {
+        url: `${PUBLIC_BASE}assets/models/polyhaven/moon_rock_02/moon_rock_02_1k.gltf`,
+        tint: 0x829fa8,
+        placements: [
+          [-7.4, -3.8, 1.15, 0.36, 1.18, 1.04],
+          [7.8, -1.5, 0.9, -0.86, 1.12, 1.08],
+        ],
+      },
+    ];
+
+    await Promise.all(rockDefinitions.map(async (definition) => {
+      try {
+        const gltf = await loader.loadAsync(definition.url);
+        if (this.disposed) return;
+        const source = gltf.scene;
+        source.traverse((object) => {
+          if (!object.isMesh) return;
+          object.castShadow = false;
+          object.receiveShadow = false;
+          if (object.geometry) this.deepGeometries.add(object.geometry);
+          const sourceMaterials = Array.isArray(object.material) ? object.material : [object.material];
+          const materials = sourceMaterials.filter(Boolean).map((entry) => {
+            this.trackSourceTextures(entry);
+            const material = new THREE.MeshPhongMaterial({
+              color: definition.tint,
+              map: entry.map ?? null,
+              normalMap: entry.normalMap ?? null,
+              normalScale: entry.normalScale?.clone().multiplyScalar(0.72)
+                ?? new THREE.Vector2(0.72, 0.72),
+              aoMap: entry.aoMap ?? null,
+              aoMapIntensity: 0.78,
+              emissive: 0x214957,
+              emissiveMap: entry.map ?? null,
+              emissiveIntensity: 0.42,
+              specular: 0x183843,
+              shininess: 7,
+            });
+            this.trackDeep(null, material, 0.93);
+            return material;
+          });
+          object.material = Array.isArray(object.material) ? materials : materials[0];
+        });
+
+        const rawBox = new THREE.Box3().setFromObject(source);
+        const rawSize = rawBox.getSize(new THREE.Vector3());
+        const normalization = 1 / Math.max(rawSize.x, rawSize.y, rawSize.z);
+        source.scale.setScalar(normalization);
+        source.updateMatrixWorld(true);
+        const normalizedBox = new THREE.Box3().setFromObject(source);
+        const center = normalizedBox.getCenter(new THREE.Vector3());
+        source.position.set(-center.x, -normalizedBox.min.y, -center.z);
+        const normalized = new THREE.Group();
+        normalized.add(source);
+
+        definition.placements.forEach(([x, z, scale, rotation, width, height]) => {
+          const rock = normalized.clone(true);
+          rock.position.set(
+            x,
+            DEEP_FLOOR_Y + deepTerrainHeight(x, z) - scale * 0.14,
+            z,
+          );
+          rock.rotation.set(
+            (seeded(Math.round(z * 10), 457) - 0.5) * 0.18,
+            rotation,
+            (seeded(Math.round(x * 10), 463) - 0.5) * 0.24,
+          );
+          rock.scale.set(scale * width, scale * height, scale);
+          this.deepGroup.add(rock);
+        });
+      } catch (error) {
+        console.warn(`Abyssal rock could not be loaded: ${definition.url}`, error);
+      }
+    }));
+
+    if (!this.disposed) {
+      await this.loadSpecimenCoral(loader);
+      if (!this.disposed) this.deepAssetsReady = true;
+    }
+  }
+
+  getDeepState() {
+    return {
+      name: this.deepGroup.name,
+      assetsRequested: this.deepAssetsRequested,
+      assetsReady: this.deepAssetsReady,
+      materialCount: this.deepMaterials.size,
+      geometryCount: this.deepGeometries.size,
+      rockSources: 3,
+      scannedRockPlacements: 8,
+      rubbleInstances: this.rubble?.reduce((sum, field) => sum + field.count, 0) ?? 0,
+    };
+  }
+
+  async loadSpecimenCoral(loader) {
+    try {
+      const gltf = await loader.loadAsync(`${PUBLIC_BASE}assets/models/smithsonian-acropora-palmata.glb`);
+      if (this.disposed) return;
+      const specimen = gltf.scene;
+      specimen.traverse((object) => {
+        if (!object.isMesh) return;
+        if (object.geometry) this.deepGeometries.add(object.geometry);
+        const sources = Array.isArray(object.material) ? object.material : [object.material];
+        const materials = sources.filter(Boolean).map((entry) => {
+          this.trackSourceTextures(entry);
+          const material = new THREE.MeshPhongMaterial({
+            color: 0x688c9b,
+            map: entry.map ?? null,
+            normalMap: entry.normalMap ?? null,
+            normalScale: entry.normalScale?.clone().multiplyScalar(0.64)
+              ?? new THREE.Vector2(0.64, 0.64),
+            aoMap: entry.aoMap ?? null,
+            aoMapIntensity: 0.7,
+            emissive: 0x061822,
+            emissiveIntensity: 0.14,
+            specular: 0x153845,
+            shininess: 6,
+          });
+          this.trackDeep(null, material, 0.54);
+          return material;
+        });
+        object.material = Array.isArray(object.material) ? materials : materials[0];
+      });
+      const rawBox = new THREE.Box3().setFromObject(specimen);
+      const rawSize = rawBox.getSize(new THREE.Vector3());
+      specimen.scale.setScalar(1 / Math.max(rawSize.x, rawSize.y, rawSize.z));
+      specimen.updateMatrixWorld(true);
+      const normalizedBox = new THREE.Box3().setFromObject(specimen);
+      const center = normalizedBox.getCenter(new THREE.Vector3());
+      specimen.position.set(-center.x, -normalizedBox.min.y, -center.z);
+      const normalized = new THREE.Group();
+      normalized.add(specimen);
+      const placements = [
+        [-8.1, -11.4, 0.74, 0.4],
+        [8.2, -15.1, 0.62, -0.8],
+        [-11.1, -24.5, 0.5, 1.7],
+      ];
+      placements.forEach(([x, z, scale, rotation]) => {
+        const coral = normalized.clone(true);
+        coral.position.set(x, DEEP_FLOOR_Y + deepTerrainHeight(x, z) + 0.06, z);
+        coral.rotation.y = rotation;
+        coral.scale.setScalar(scale);
+        this.deepGroup.add(coral);
+      });
+    } catch (error) {
+      console.warn("The sparse Smithsonian coral specimen could not be loaded", error);
+    }
   }
 
   createKelp() {
@@ -591,8 +1100,8 @@ export class PelagicEnvironment {
     for (let blade = 0; blade < this.bladeCount; blade += 1) {
       const side = blade % 2 === 0 ? -1 : 1;
       const baseX = side * (5.4 + seeded(blade, 111) * 8.2);
-      const baseY = -6.35 - seeded(blade, 113) * 1.3;
       const baseZ = -8.5 - seeded(blade, 115) * 16;
+      const baseY = DEEP_FLOOR_Y + deepTerrainHeight(baseX, baseZ) - 0.03;
       const height = 1.2 + seeded(blade, 117) * 2.8;
       const phase = seeded(blade, 119) * Math.PI * 2;
       for (let segment = 0; segment <= this.bladeSegments; segment += 1) {
@@ -612,7 +1121,7 @@ export class PelagicEnvironment {
     this.kelpGeometry.computeVertexNormals();
   }
 
-  update(elapsed, progress, current, focus, interactionMode = false) {
+  update(elapsed, progress, current, focus, interactionMode = false, prewarm = false) {
     this.frame += 1;
     const backgroundStride = interactionMode ? 3 : 2;
     const motion = this.reducedMotion ? 0.12 : 1;
@@ -633,9 +1142,37 @@ export class PelagicEnvironment {
     if (this.frame % backgroundStride === 0) {
       this.distantJellies.update(elapsed, progress, focus, this.reducedMotion);
     }
+    if (!prewarm && progress > 0.46 && !this.deepAssetsRequested) {
+      void this.loadDeepAssets();
+    }
     const deepReveal = smoothstep(0.5, 0.76, progress);
-    this.shelfMaterial.opacity = deepReveal * 0.62;
+    this.deepMaterials.forEach((material) => {
+      material.opacity = deepReveal * (material.userData.deepBaseOpacity ?? 1);
+    });
     this.kelpMaterial.opacity = deepReveal * 0.44;
+    if (this.benthicSnow) {
+      this.benthicSnow.position.x = current.x * 0.16;
+      this.benthicSnow.position.z = Math.sin(elapsed * 0.025) * 0.08;
+      this.benthicSnow.rotation.y = Math.sin(elapsed * 0.018) * 0.006;
+    }
+    if (this.deepLights.length === 2) {
+      const lightMotion = this.reducedMotion ? 0.2 : 1;
+      this.deepLights[0].position.set(
+        focus.x - 3.8,
+        Math.max(DEEP_FLOOR_Y + 1.3, focus.y - 1.6),
+        focus.z + 1.8,
+      );
+      this.deepLights[1].position.set(
+        focus.x + 4.6,
+        Math.max(DEEP_FLOOR_Y + 1.1, focus.y - 2.1),
+        focus.z - 3.2,
+      );
+      this.deepLights[0].intensity = deepReveal
+        * (4.1 + Math.sin(elapsed * 0.19) * 0.4 * lightMotion);
+      this.deepLights[1].intensity = deepReveal
+        * (2.7 + Math.sin(elapsed * 0.14 + 1.7) * 0.3 * lightMotion);
+      this.deepAmbient.intensity = deepReveal * 0.62;
+    }
     if (deepReveal > 0.01 && this.frame % backgroundStride === 0) {
       this.updateKelp(elapsed, current);
     }
@@ -648,8 +1185,10 @@ export class PelagicEnvironment {
     });
     this.currentVeil.geometry.dispose();
     this.currentVeil.material.dispose();
-    this.shelf.geometry.dispose();
-    this.shelfMaterial.dispose();
+    this.disposed = true;
+    this.deepGeometries.forEach((geometry) => geometry.dispose());
+    this.deepMaterials.forEach((material) => material.dispose());
+    this.deepTextures.forEach((texture) => texture.dispose());
     this.kelpGeometry.dispose();
     this.kelpMaterial.dispose();
     this.distantJellies.dispose();
