@@ -1,6 +1,9 @@
 import * as THREE from "three/webgpu";
 import { sampleSwimCycle } from "./jellyMotion.js";
 
+const SWIM_AXIS = new THREE.Vector3(0, 1, 0);
+const TWO_PI = Math.PI * 2;
+
 function clamp01(value) {
   return Math.min(1, Math.max(0, value));
 }
@@ -109,6 +112,33 @@ class DistantJellyField {
     this.color = new THREE.Color();
     this.innerColor = new THREE.Color();
     this.innerTarget = new THREE.Color(0xd8f7ff);
+    this.orientation = new THREE.Quaternion();
+    this.rollQuaternion = new THREE.Quaternion();
+    this.wobbleQuaternion = new THREE.Quaternion();
+    this.wobbleEuler = new THREE.Euler();
+    this.travelTangent = new THREE.Vector3();
+    this.localPoint = new THREE.Vector3();
+    this.routes = Array.from({ length: count }, (_, index) => {
+      const heading = seeded(index, 41) * TWO_PI;
+      const depthSlope = (seeded(index, 43) - 0.5) * 0.42;
+      const direction = new THREE.Vector3(
+        Math.cos(heading),
+        Math.sin(heading),
+        depthSlope,
+      ).normalize();
+      const side = new THREE.Vector3(-direction.y, direction.x, 0).normalize();
+      return {
+        direction,
+        side,
+        span: 27 + seeded(index, 45) * 8,
+        offset: (seeded(index, 47) - 0.5) * 11,
+        depth: -5.1 - Math.floor(index / 4) * 1.15 - seeded(index, 11) * 4.4,
+        curve: 0.75 + seeded(index, 35) * 1.45,
+        depthCurve: 0.65 + seeded(index, 39) * 1.25,
+        phase: seeded(index, 37) * TWO_PI,
+        roll: (seeded(index, 49) - 0.5) * Math.PI,
+      };
+    });
     this.routeProgress = Float32Array.from(
       { length: count },
       (_, index) => seeded(index, 3),
@@ -125,6 +155,9 @@ class DistantJellyField {
       x: 0,
       y: 0,
       z: 0,
+      dx: 0,
+      dy: 1,
+      dz: 0,
     }));
     this.lastElapsed = null;
   }
@@ -141,7 +174,6 @@ class DistantJellyField {
 
     for (let index = 0; index < this.count; index += 1) {
       const cluster = index % 4;
-      const lane = Math.floor(index / 4);
       const swim = sampleSwimCycle(
         elapsed * (0.17 + seeded(index, 19) * 0.045) + seeded(index, 31),
         this.kinematics[index],
@@ -156,34 +188,43 @@ class DistantJellyField {
       const route = (
         this.routeProgress[index] + progress * (0.16 + cluster * 0.012)
       ) % 1;
-      const arc = route * Math.PI * 2;
-      const direction = seeded(index, 5) > 0.5 ? 1 : -1;
-      const laneX = (seeded(index, 7) - 0.5) * 22;
+      const arc = route * TWO_PI;
+      const routeDefinition = this.routes[index];
       const visibility = smoothstep(0.015, 0.12, route)
         * (1 - smoothstep(0.88, 0.985, route));
-      const depth = -4.5 - lane * 1.25 - seeded(index, 11) * 5.8;
-      const lateralRadius = 1.7 + seeded(index, 35) * 1.9;
-      const lateralPhase = seeded(index, 37) * Math.PI * 2;
+      const routeWave = Math.sin(arc + routeDefinition.phase) * routeDefinition.curve;
+      const depthWave = Math.cos(arc * 1.3 + routeDefinition.phase) * routeDefinition.depthCurve;
+      this.position.copy(focus)
+        .addScaledVector(routeDefinition.direction, (route - 0.5) * routeDefinition.span)
+        .addScaledVector(routeDefinition.side, routeDefinition.offset + routeWave);
+      this.position.z += routeDefinition.depth + depthWave;
 
-      this.position.set(
-        focus.x + laneX + Math.sin(arc + lateralPhase) * lateralRadius
-          + direction * (route - 0.5) * 3.2,
-        focus.y - 8.6 + route * 17.2 + Math.sin(arc * 1.6 + index) * 0.58,
-        focus.z + depth + Math.cos(arc * 0.72 + cluster) * (1.3 + seeded(index, 39) * 1.2),
-      );
+      this.travelTangent.copy(routeDefinition.direction).multiplyScalar(routeDefinition.span)
+        .addScaledVector(
+          routeDefinition.side,
+          Math.cos(arc + routeDefinition.phase) * TWO_PI * routeDefinition.curve,
+        );
+      this.travelTangent.z += -Math.sin(arc * 1.3 + routeDefinition.phase)
+        * TWO_PI * 1.3 * routeDefinition.depthCurve;
+      this.travelTangent.normalize();
+
       const baseScale = 0.15 + seeded(index, 17) * 0.26;
       const pulse = swim.bell;
-      const lateralSlope = Math.cos(arc + lateralPhase) * lateralRadius * Math.PI * 2
-        + direction * 3.2;
-      const verticalSlope = 17.2 + Math.cos(arc * 1.6 + index) * 0.58 * Math.PI * 3.2;
-      const travelLean = -Math.atan2(lateralSlope, Math.max(6, verticalSlope)) * 0.34;
+      this.orientation.setFromUnitVectors(SWIM_AXIS, this.travelTangent);
+      this.rollQuaternion.setFromAxisAngle(
+        SWIM_AXIS,
+        routeDefinition.roll + Math.sin(elapsed * 0.16 + index) * 0.16 * motion,
+      );
+      this.wobbleEuler.set(
+        Math.sin(elapsed * 0.19 + index * 0.8) * 0.055 * motion,
+        0,
+        Math.cos(elapsed * 0.17 + index * 1.1) * 0.045 * motion,
+      );
+      this.wobbleQuaternion.setFromEuler(this.wobbleEuler);
+      this.orientation.multiply(this.rollQuaternion).multiply(this.wobbleQuaternion);
 
       this.dummy.position.copy(this.position);
-      this.dummy.rotation.set(
-        Math.sin(elapsed * 0.12 + index) * 0.1 * motion,
-        direction * 0.12 + Math.sin(arc * 0.5) * 0.08,
-        travelLean + Math.cos(elapsed * 0.1 + index * 0.7) * 0.055 * motion,
-      );
+      this.dummy.quaternion.copy(this.orientation);
       this.dummy.scale.set(
         baseScale * (1 - pulse * 0.13),
         baseScale * (0.56 + pulse * 0.12),
@@ -201,9 +242,12 @@ class DistantJellyField {
       state.x = this.position.x;
       state.y = this.position.y;
       state.z = this.position.z;
+      state.dx = this.travelTangent.x;
+      state.dy = this.travelTangent.y;
+      state.dz = this.travelTangent.z;
 
       this.innerDummy.position.copy(this.position);
-      this.innerDummy.rotation.copy(this.dummy.rotation);
+      this.innerDummy.quaternion.copy(this.orientation);
       this.innerDummy.scale.set(
         baseScale * 0.84 * (1 - pulse * 0.1),
         baseScale * (0.47 + pulse * 0.1),
@@ -215,7 +259,7 @@ class DistantJellyField {
       this.innerBells.setColorAt(index, this.innerColor);
 
       this.rimDummy.position.copy(this.position);
-      this.rimDummy.rotation.copy(this.dummy.rotation);
+      this.rimDummy.quaternion.copy(this.orientation);
       this.rimDummy.scale.setScalar(baseScale * (1 - pulse * 0.13));
       this.rimDummy.updateMatrix();
       this.rims.setMatrixAt(index, this.rimDummy.matrix);
@@ -234,19 +278,23 @@ class DistantJellyField {
             const curl = Math.sin(elapsed * 0.27 - index * 0.6 + tentacle * 1.9 + t * 9.2)
               * t * tentacleLength * 0.045 * motion;
             const radial = bellRadius * (1 - t * 0.28);
-            positions[cursor] = this.position.x
-              + Math.cos(angle) * radial
+            this.localPoint.set(
+              Math.cos(angle) * radial
               + Math.cos(angle + Math.PI * 0.5) * wave
-              + Math.cos(angle) * curl;
+              + Math.cos(angle) * curl,
+              -t * tentacleLength
+              - swim.primaryThrust * t * t * baseScale * 0.32
+              + Math.sin(elapsed * 0.31 + t * 7.4 + tentacle) * baseScale * 0.045 * motion,
+              Math.sin(angle) * radial
+              + Math.sin(angle + Math.PI * 0.5) * wave
+              + Math.sin(angle) * curl,
+            ).applyQuaternion(this.orientation).add(this.position);
+            positions[cursor] = this.localPoint.x;
             const tipFade = 1 - t * 0.58;
             colors[cursor++] = this.color.r * tipFade;
-            positions[cursor] = this.position.y - t * tentacleLength
-              + Math.sin(elapsed * 0.31 + t * 7.4 + tentacle) * baseScale * 0.045 * motion;
+            positions[cursor] = this.localPoint.y;
             colors[cursor++] = this.color.g * tipFade;
-            positions[cursor] = this.position.z
-              + Math.sin(angle) * radial
-              + Math.sin(angle + Math.PI * 0.5) * wave
-              + Math.sin(angle) * curl;
+            positions[cursor] = this.localPoint.z;
             colors[cursor++] = this.color.b * tipFade;
           }
         }
@@ -272,6 +320,11 @@ class DistantJellyField {
         Number(state.x.toFixed(2)),
         Number(state.y.toFixed(2)),
         Number(state.z.toFixed(2)),
+      ],
+      direction: [
+        Number(state.dx.toFixed(3)),
+        Number(state.dy.toFixed(3)),
+        Number(state.dz.toFixed(3)),
       ],
     }));
   }
