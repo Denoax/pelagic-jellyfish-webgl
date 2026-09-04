@@ -21,13 +21,20 @@ class DistantJellyField {
     this.group.name = "distant-jelly-field";
     scene.add(this.group);
 
-    const bellGeometry = new THREE.SphereGeometry(1, 18, 9, 0, Math.PI * 2, 0, Math.PI * 0.5);
-    const bellMaterial = new THREE.MeshBasicMaterial({
-      color: 0x8ddfff,
+    // The far school is instanced, so substantially smoother shared geometry
+    // costs very little compared with running another set of soft-body animals.
+    const bellGeometry = new THREE.SphereGeometry(1, 48, 24, 0, Math.PI * 2, 0, Math.PI * 0.5);
+    const bellMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      emissive: 0x123c54,
+      emissiveIntensity: 0.72,
+      roughness: 0.34,
+      metalness: 0,
       transparent: true,
-      opacity: 0.16,
+      opacity: 0.24,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      blending: THREE.NormalBlending,
       vertexColors: true,
     });
     this.bells = new THREE.InstancedMesh(bellGeometry, bellMaterial, count);
@@ -36,8 +43,39 @@ class DistantJellyField {
     this.bells.renderOrder = 5;
     this.group.add(this.bells);
 
-    this.tentacleCount = 5;
-    this.pointsPerTentacle = 5;
+    const innerBellMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.1,
+      depthWrite: false,
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
+      vertexColors: true,
+    });
+    this.innerBells = new THREE.InstancedMesh(bellGeometry, innerBellMaterial, count);
+    this.innerBells.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    this.innerBells.frustumCulled = false;
+    this.innerBells.renderOrder = 4;
+    this.group.add(this.innerBells);
+
+    const rimGeometry = new THREE.TorusGeometry(1, 0.028, 8, 64);
+    rimGeometry.rotateX(Math.PI * 0.5);
+    const rimMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.22,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      vertexColors: true,
+    });
+    this.rims = new THREE.InstancedMesh(rimGeometry, rimMaterial, count);
+    this.rims.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    this.rims.frustumCulled = false;
+    this.rims.renderOrder = 6;
+    this.group.add(this.rims);
+
+    this.tentacleCount = 8;
+    this.pointsPerTentacle = 12;
     const vertexCount = count * this.tentacleCount * (this.pointsPerTentacle - 1) * 2;
     const positions = new Float32Array(vertexCount * 3);
     const colors = new Float32Array(vertexCount * 3);
@@ -48,7 +86,7 @@ class DistantJellyField {
     const tentacleMaterial = new THREE.LineBasicMaterial({
       vertexColors: true,
       transparent: true,
-      opacity: 0.16,
+      opacity: 0.2,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
     });
@@ -64,8 +102,12 @@ class DistantJellyField {
       new THREE.Color(0x7ae8d2),
     ];
     this.dummy = new THREE.Object3D();
+    this.innerDummy = new THREE.Object3D();
+    this.rimDummy = new THREE.Object3D();
     this.position = new THREE.Vector3();
     this.color = new THREE.Color();
+    this.innerColor = new THREE.Color();
+    this.innerTarget = new THREE.Color(0xd8f7ff);
   }
 
   update(elapsed, progress, focus, reducedMotion) {
@@ -89,7 +131,7 @@ class DistantJellyField {
         focus.y + (seeded(index, 13) - 0.5) * 8.5 + Math.sin(arc * 0.7 + index) * 1.2,
         focus.z + depth + Math.cos(arc * 0.46 + cluster) * 2.8,
       );
-      const baseScale = (0.09 + seeded(index, 17) * 0.2) * (0.3 + visibility * 0.7);
+      const baseScale = (0.15 + seeded(index, 17) * 0.26) * (0.48 + visibility * 0.52);
       const pulse = Math.pow(Math.max(0, Math.sin(elapsed * (0.58 + seeded(index, 19) * 0.2) + index)), 3);
 
       this.dummy.position.copy(this.position);
@@ -108,27 +150,62 @@ class DistantJellyField {
       this.color.copy(this.palette[index % this.palette.length]).multiplyScalar(0.48 + visibility * 0.52);
       this.bells.setColorAt(index, this.color);
 
-      const bellRadius = baseScale * 0.7;
-      const tentacleLength = baseScale * (2.1 + seeded(index, 23) * 2.4);
+      this.innerDummy.position.copy(this.position);
+      this.innerDummy.rotation.copy(this.dummy.rotation);
+      this.innerDummy.scale.set(
+        baseScale * 0.84 * (1 - pulse * 0.1),
+        baseScale * (0.47 + pulse * 0.1),
+        baseScale * 0.84 * (1 - pulse * 0.1),
+      );
+      this.innerDummy.updateMatrix();
+      this.innerBells.setMatrixAt(index, this.innerDummy.matrix);
+      this.innerColor.copy(this.color).lerp(this.innerTarget, 0.36);
+      this.innerBells.setColorAt(index, this.innerColor);
+
+      this.rimDummy.position.copy(this.position);
+      this.rimDummy.rotation.copy(this.dummy.rotation);
+      this.rimDummy.scale.setScalar(baseScale * (1 - pulse * 0.13));
+      this.rimDummy.updateMatrix();
+      this.rims.setMatrixAt(index, this.rimDummy.matrix);
+      this.rims.setColorAt(index, this.color);
+
+      const bellRadius = baseScale * 0.72;
+      const tentacleLength = baseScale * (2.35 + seeded(index, 23) * 2.5);
       for (let tentacle = 0; tentacle < this.tentacleCount; tentacle += 1) {
         const angle = (tentacle / this.tentacleCount) * Math.PI * 2 + index * 0.37;
         for (let segment = 0; segment < this.pointsPerTentacle - 1; segment += 1) {
           for (let endpoint = 0; endpoint < 2; endpoint += 1) {
             const point = segment + endpoint;
             const t = point / (this.pointsPerTentacle - 1);
-            const sway = Math.sin(elapsed * 0.45 + index * 1.3 + tentacle + t * 5.4) * t * tentacleLength * 0.16 * motion;
-            positions[cursor] = this.position.x + Math.cos(angle) * bellRadius * (1 - t * 0.25) + sway;
-            colors[cursor++] = this.color.r;
-            positions[cursor] = this.position.y - t * tentacleLength;
-            colors[cursor++] = this.color.g;
-            positions[cursor] = this.position.z + Math.sin(angle) * bellRadius * (1 - t * 0.25) + sway * 0.4;
-            colors[cursor++] = this.color.b;
+            const wave = Math.sin(elapsed * 0.43 + index * 1.3 + tentacle + t * 5.1)
+              * t * t * tentacleLength * 0.14 * motion;
+            const curl = Math.sin(elapsed * 0.27 - index * 0.6 + tentacle * 1.9 + t * 9.2)
+              * t * tentacleLength * 0.045 * motion;
+            const radial = bellRadius * (1 - t * 0.28);
+            positions[cursor] = this.position.x
+              + Math.cos(angle) * radial
+              + Math.cos(angle + Math.PI * 0.5) * wave
+              + Math.cos(angle) * curl;
+            const tipFade = 1 - t * 0.58;
+            colors[cursor++] = this.color.r * tipFade;
+            positions[cursor] = this.position.y - t * tentacleLength
+              + Math.sin(elapsed * 0.31 + t * 7.4 + tentacle) * baseScale * 0.045 * motion;
+            colors[cursor++] = this.color.g * tipFade;
+            positions[cursor] = this.position.z
+              + Math.sin(angle) * radial
+              + Math.sin(angle + Math.PI * 0.5) * wave
+              + Math.sin(angle) * curl;
+            colors[cursor++] = this.color.b * tipFade;
           }
         }
       }
     }
     this.bells.instanceMatrix.needsUpdate = true;
     if (this.bells.instanceColor) this.bells.instanceColor.needsUpdate = true;
+    this.innerBells.instanceMatrix.needsUpdate = true;
+    if (this.innerBells.instanceColor) this.innerBells.instanceColor.needsUpdate = true;
+    this.rims.instanceMatrix.needsUpdate = true;
+    if (this.rims.instanceColor) this.rims.instanceColor.needsUpdate = true;
     this.tentacleGeometry.attributes.position.needsUpdate = true;
     this.tentacleGeometry.attributes.color.needsUpdate = true;
   }
@@ -136,6 +213,9 @@ class DistantJellyField {
   dispose() {
     this.bells.geometry.dispose();
     this.bells.material.dispose();
+    this.innerBells.material.dispose();
+    this.rims.geometry.dispose();
+    this.rims.material.dispose();
     this.tentacleGeometry.dispose();
     this.tentacles.material.dispose();
     this.group.removeFromParent();
