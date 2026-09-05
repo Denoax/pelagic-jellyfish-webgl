@@ -213,17 +213,17 @@ main {
 
 .chapter {
   position: relative;
-  min-height: 132svh;
+  min-height: 154svh;
   padding: 120px var(--gutter);
   pointer-events: none;
 }
 
 .chapter-intro {
-  min-height: 118svh;
+  min-height: 132svh;
 }
 
 .chapter-contact {
-  min-height: 112svh;
+  min-height: 138svh;
 }
 
 .scene-copy {
@@ -431,7 +431,7 @@ main {
   }
 
   .chapter {
-    min-height: 122svh;
+    min-height: 140svh;
     padding: 92px var(--gutter);
   }
 
@@ -472,7 +472,7 @@ main {
   }
 
   .chapter-contact {
-    min-height: 100svh;
+    min-height: 122svh;
   }
 
   .scene-copy--contact {

@@ -128,6 +128,18 @@ try {
     });
     await sleep(Math.max(1800, waitMs));
   }
+  const requestedProgress = Number(new URL(targetUrl).searchParams.get("qaProgress"));
+  if (Number.isFinite(requestedProgress) && requestedProgress >= 0 && requestedProgress <= 1) {
+    await client.send("Runtime.evaluate", {
+      expression: `(() => {
+        document.documentElement.style.scrollBehavior = "auto";
+        const maximum = document.documentElement.scrollHeight - innerHeight;
+        window.scrollTo(0, maximum * ${requestedProgress});
+      })()`,
+      returnByValue: true,
+    });
+    await sleep(Math.max(2200, waitMs));
+  }
   if (new URL(targetUrl).searchParams.get("qaMenu") === "1") {
     await client.send("Runtime.evaluate", {
       expression: `document.querySelector('.menu-toggle')?.click()`,

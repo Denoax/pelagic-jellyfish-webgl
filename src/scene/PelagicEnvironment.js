@@ -1,5 +1,12 @@
 import * as THREE from "three/webgpu";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import {
+  color as tslColor,
+  mix as tslMix,
+  positionLocal,
+  smoothstep as tslSmoothstep,
+  vertexColor,
+} from "three/tsl";
 import { sampleSwimCycle } from "./jellyMotion.js";
 
 const SWIM_AXIS = new THREE.Vector3(0, 1, 0);
@@ -22,10 +29,14 @@ function seeded(index, salt = 0) {
 }
 
 function deepTerrainHeight(x, z) {
+  const warpedX = x + Math.sin(z * 0.16) * 1.25;
+  const warpedZ = z + Math.sin(x * 0.13) * 1.1;
   const shelfNoise =
-    Math.sin(x * 0.27 + z * 0.14) * 0.22
-    + Math.sin(x * 0.71 - z * 0.19) * 0.1
-    + Math.cos(z * 0.38) * 0.08;
+    Math.sin(warpedX * 0.27 + warpedZ * 0.14) * 0.2
+    + Math.sin(warpedX * 0.71 - warpedZ * 0.19) * 0.09
+    + Math.cos(warpedZ * 0.38) * 0.07
+    + Math.sin(warpedX * 1.72 + warpedZ * 1.21) * 0.026
+    + Math.cos(warpedX * 2.83 - warpedZ * 2.15) * 0.012;
   const leftRidge = Math.max(0, 1 - Math.hypot((x + 11.5) / 5.8, (z + 14) / 10.5));
   const rightRidge = Math.max(0, 1 - Math.hypot((x - 11.2) / 6.2, (z + 18) / 9.5));
   const centerBasin = Math.max(0, 1 - Math.hypot(x / 7.5, (z + 13) / 11));
@@ -49,7 +60,27 @@ function createSedimentNormalTexture(size = 128) {
   const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(7, 6);
+  texture.repeat.set(13, 11);
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function createSoftParticleTexture(size = 48) {
+  const data = new Uint8Array(size * size * 4);
+  const center = (size - 1) * 0.5;
+  for (let y = 0; y < size; y += 1) {
+    for (let x = 0; x < size; x += 1) {
+      const distance = Math.hypot(x - center, y - center) / center;
+      const core = clamp01(1 - distance);
+      const alpha = Math.pow(core, 1.7);
+      const index = (y * size + x) * 4;
+      data[index] = 255;
+      data[index + 1] = Math.round(126 + core * 88);
+      data[index + 2] = Math.round(54 + core * 82);
+      data[index + 3] = Math.round(alpha * 255);
+    }
+  }
+  const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
   texture.needsUpdate = true;
   return texture;
 }
@@ -67,6 +98,44 @@ function createWeatheredStoneGeometry(seedSalt, detail = 1) {
     point.y *= 0.72;
     positions.setXYZ(index, point.x, point.y, point.z);
   }
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function createFissureRibbon(path, width, seedSalt, segmentChance = 1) {
+  const positions = new Float32Array(path.length * 2 * 3);
+  const indices = [];
+  const previous = new THREE.Vector3();
+  const next = new THREE.Vector3();
+  const tangent = new THREE.Vector3();
+  const perpendicular = new THREE.Vector3();
+  let cursor = 0;
+  path.forEach(([x, z], index) => {
+    const previousPoint = path[Math.max(0, index - 1)];
+    const nextPoint = path[Math.min(path.length - 1, index + 1)];
+    previous.set(previousPoint[0], 0, previousPoint[1]);
+    next.set(nextPoint[0], 0, nextPoint[1]);
+    tangent.subVectors(next, previous).normalize();
+    perpendicular.set(-tangent.z, 0, tangent.x);
+    const localWidth = width * (0.52 + seeded(index, seedSalt) * 0.72);
+    const y = DEEP_FLOOR_Y + deepTerrainHeight(x, z) + 0.035;
+    positions[cursor++] = x + perpendicular.x * localWidth;
+    positions[cursor++] = y;
+    positions[cursor++] = z + perpendicular.z * localWidth;
+    positions[cursor++] = x - perpendicular.x * localWidth;
+    positions[cursor++] = y + 0.002;
+    positions[cursor++] = z - perpendicular.z * localWidth;
+    if (
+      index < path.length - 1
+      && (segmentChance >= 1 || seeded(index, seedSalt + 97) < segmentChance)
+    ) {
+      const row = index * 2;
+      indices.push(row, row + 2, row + 1, row + 2, row + 3, row + 1);
+    }
+  });
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geometry.setIndex(indices);
   geometry.computeVertexNormals();
   return geometry;
 }
@@ -635,18 +704,27 @@ export class PelagicEnvironment {
     this.createSedimentFloor();
     this.createContactShadows();
     this.createRubbleFields();
+    this.createMicroRubble();
     this.createSessileLife();
+    this.createVolcanicField();
     this.createBenthicSnow();
     this.createDeepLights();
   }
 
   createSedimentFloor() {
-    const geometry = new THREE.PlaneGeometry(42, 38, 48, 42);
+    const floorSize = 96;
+    const terrainSegments = this.mobile ? 96 : 160;
+    const geometry = new THREE.PlaneGeometry(
+      floorSize,
+      floorSize,
+      terrainSegments,
+      terrainSegments,
+    );
     const positions = geometry.attributes.position;
     const colors = new Float32Array(positions.count * 3);
-    const trenchColor = new THREE.Color(0x06141c);
-    const siltColor = new THREE.Color(0x1a3b47);
-    const mineralColor = new THREE.Color(0x315461);
+    const trenchColor = new THREE.Color(0x030b12);
+    const siltColor = new THREE.Color(0x102934);
+    const mineralColor = new THREE.Color(0x204754);
     const color = new THREE.Color();
 
     for (let index = 0; index < positions.count; index += 1) {
@@ -654,7 +732,7 @@ export class PelagicEnvironment {
       const worldZ = -positions.getY(index) - 14;
       const height = deepTerrainHeight(x, worldZ);
       positions.setZ(index, height);
-      const shelfMix = clamp01(0.34 + height * 0.26 + seeded(index, 333) * 0.16);
+      const shelfMix = clamp01(0.27 + height * 0.22 + seeded(index, 333) * 0.13);
       color.copy(trenchColor).lerp(siltColor, shelfMix);
       if (seeded(index, 337) > 0.84) color.lerp(mineralColor, 0.12);
       colors[index * 3] = color.r;
@@ -665,26 +743,106 @@ export class PelagicEnvironment {
     geometry.computeVertexNormals();
     geometry.rotateX(-Math.PI * 0.5);
 
-    const normalMap = createSedimentNormalTexture(this.mobile ? 64 : 128);
+    const normalMap = createSedimentNormalTexture(this.mobile ? 128 : 256);
     this.deepTextures.add(normalMap);
-    const material = new THREE.MeshPhongMaterial({
+    const material = new THREE.MeshPhongNodeMaterial({
       color: 0xffffff,
       vertexColors: true,
       normalMap,
-      normalScale: new THREE.Vector2(0.28, 0.28),
-      emissive: 0x0a2633,
-      emissiveIntensity: 0.46,
-      specular: 0x071c25,
-      shininess: 3,
+      normalScale: new THREE.Vector2(0.36, 0.36),
+      emissive: 0x04131b,
+      emissiveIntensity: 0.2,
+      specular: 0x06151c,
+      shininess: 2,
       depthWrite: true,
       side: THREE.FrontSide,
     });
+    const edgeDistance = positionLocal.x.abs().div(floorSize * 0.5)
+      .max(positionLocal.z.abs().div(floorSize * 0.5));
+    const edgeDarkening = tslSmoothstep(0.58, 0.94, edgeDistance);
+    // Two non-aligned fragment-frequency bands keep broad terrain patches from
+    // reading as a flat low-resolution plane while preserving the quiet abyss.
+    const fineStrata = positionLocal.x.mul(2.37)
+      .add(positionLocal.z.mul(1.73)).sin().mul(0.5).add(0.5);
+    const mineralGrain = positionLocal.x.mul(4.91)
+      .sub(positionLocal.z.mul(3.17)).sin().mul(0.5).add(0.5);
+    const sedimentMask = fineStrata.mul(0.62).add(mineralGrain.mul(0.38));
+    const surfaceVariation = sedimentMask.mul(0.13);
+    const detailedColor = tslMix(
+      vertexColor(),
+      tslColor(0x315967),
+      surfaceVariation,
+    );
+    material.colorNode = tslMix(
+      detailedColor,
+      tslColor(0x000309),
+      edgeDarkening,
+    );
+    const detailedEmissive = tslMix(
+      tslColor(0x071e27),
+      tslColor(0x0c3139),
+      sedimentMask.mul(0.2),
+    );
+    material.emissiveNode = tslMix(
+      detailedEmissive,
+      tslColor(0x000104),
+      edgeDarkening,
+    );
     this.floorMaterial = material;
     this.floor = new THREE.Mesh(geometry, material);
     this.floor.position.set(0, DEEP_FLOOR_Y, -14);
     this.floor.renderOrder = -5;
     this.deepGroup.add(this.floor);
     this.trackDeep(geometry, material, 0.96);
+  }
+
+  createMicroRubble() {
+    const geometry = createWeatheredStoneGeometry(347, 0);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xffffff,
+      emissive: 0x04141b,
+      emissiveIntensity: 0.24,
+      specular: 0x071a20,
+      shininess: 2,
+      vertexColors: true,
+    });
+    const count = this.mobile ? 72 : 150;
+    const field = new THREE.InstancedMesh(geometry, material, count);
+    const dummy = new THREE.Object3D();
+    const colors = [
+      new THREE.Color(0x10252c),
+      new THREE.Color(0x183039),
+      new THREE.Color(0x20363d),
+      new THREE.Color(0x12202a),
+    ];
+    for (let index = 0; index < count; index += 1) {
+      const x = (seeded(index, 341) - 0.5) * 43;
+      const z = 1 - seeded(index, 343) * 38;
+      const corridor = Math.max(0, 1 - Math.abs(x) / 4.6);
+      const size = (0.035 + seeded(index, 349) * 0.13) * (1 - corridor * 0.34);
+      dummy.position.set(
+        x,
+        DEEP_FLOOR_Y + deepTerrainHeight(x, z) + size * 0.24,
+        z,
+      );
+      dummy.rotation.set(
+        seeded(index, 357) * 1.3,
+        seeded(index, 363) * TWO_PI,
+        seeded(index, 369) * 0.9,
+      );
+      dummy.scale.set(
+        size * (0.75 + seeded(index, 371) * 0.72),
+        size * (0.38 + seeded(index, 377) * 0.38),
+        size * (0.72 + seeded(index, 379) * 0.66),
+      );
+      dummy.updateMatrix();
+      field.setMatrixAt(index, dummy.matrix);
+      field.setColorAt(index, colors[index % colors.length]);
+    }
+    field.instanceMatrix.needsUpdate = true;
+    if (field.instanceColor) field.instanceColor.needsUpdate = true;
+    this.deepGroup.add(field);
+    this.trackDeep(geometry, material, 0.7);
   }
 
   createRubbleFields() {
@@ -854,6 +1012,167 @@ export class PelagicEnvironment {
     this.coralBranches.instanceMatrix.needsUpdate = true;
     this.deepGroup.add(this.coralBranches);
     this.trackDeep(branchGeometry, branchMaterial, 0.62);
+  }
+
+  createVolcanicField() {
+    const fissurePaths = [
+      [[-8.4, -13.6], [-7.5, -13.2], [-6.9, -13.45], [-6, -12.85], [-5.35, -13.34], [-4.55, -13.08], [-3.75, -13.46], [-3.1, -12.9]],
+      [[2.8, -10.2], [3.55, -10.72], [4.15, -10.55], [4.85, -11.18], [5.55, -10.82], [6.25, -11.25], [7.25, -11.16], [8.5, -12.1]],
+      [[-1.5, -5.1], [-1.05, -5.74], [-0.48, -5.6], [0.05, -6.32], [0.72, -6.26], [1.15, -7.12], [1.72, -7.48], [2.1, -8.8]],
+    ];
+    this.lavaMaterials = [];
+    this.ventBases = [];
+
+    fissurePaths.forEach((path, pathIndex) => {
+      const points = path.map(([x, z]) => new THREE.Vector3(
+        x,
+        DEEP_FLOOR_Y + deepTerrainHeight(x, z) + 0.045,
+        z,
+      ));
+      const crustGeometry = createFissureRibbon(path, 0.095, 601 + pathIndex * 11);
+      const coreGeometry = createFissureRibbon(path, 0.014, 607 + pathIndex * 13, 0.66);
+      const crustMaterial = new THREE.MeshBasicMaterial({
+        color: pathIndex === 1 ? 0x531713 : 0x391014,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      });
+      const coreMaterial = new THREE.MeshBasicMaterial({
+        color: pathIndex === 2 ? 0xff8b42 : 0xe94b27,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      });
+      const crust = new THREE.Mesh(crustGeometry, crustMaterial);
+      const core = new THREE.Mesh(coreGeometry, coreMaterial);
+      crust.renderOrder = 1;
+      core.renderOrder = 2;
+      this.deepGroup.add(crust, core);
+      this.trackDeep(crustGeometry, crustMaterial, 0.16);
+      this.trackDeep(coreGeometry, coreMaterial, 0.34);
+      this.lavaMaterials.push(
+        { material: crustMaterial, baseOpacity: 0.16, phase: pathIndex * 1.7 },
+        { material: coreMaterial, baseOpacity: 0.34, phase: pathIndex * 1.7 + 0.65 },
+      );
+      this.ventBases.push(points[Math.floor(points.length * 0.55)].clone());
+    });
+
+    const glowRockGeometry = createWeatheredStoneGeometry(503, 2);
+    const glowRockMaterial = new THREE.MeshPhongMaterial({
+      color: 0x17191b,
+      emissive: 0x4a130c,
+      emissiveIntensity: 0.13,
+      specular: 0x6b2a18,
+      shininess: 10,
+      vertexColors: true,
+    });
+    const glowRockCount = this.mobile ? 10 : 18;
+    this.glowRocks = new THREE.InstancedMesh(
+      glowRockGeometry,
+      glowRockMaterial,
+      glowRockCount,
+    );
+    const dummy = new THREE.Object3D();
+    const crustColors = [
+      new THREE.Color(0x202629),
+      new THREE.Color(0x2b2220),
+      new THREE.Color(0x252a2d),
+    ];
+    for (let index = 0; index < glowRockCount; index += 1) {
+      const vent = this.ventBases[index % this.ventBases.length];
+      const angle = seeded(index, 509) * TWO_PI;
+      const radius = 0.22 + seeded(index, 521) * 1.18;
+      const x = vent.x + Math.cos(angle) * radius;
+      const z = vent.z + Math.sin(angle) * radius;
+      const size = 0.1 + seeded(index, 523) * 0.25;
+      dummy.position.set(x, DEEP_FLOOR_Y + deepTerrainHeight(x, z) + size * 0.3, z);
+      dummy.rotation.set(
+        seeded(index, 541) * 1.3,
+        seeded(index, 547) * TWO_PI,
+        seeded(index, 557) * 0.8,
+      );
+      dummy.scale.set(size * 1.35, size * 0.62, size * 1.08);
+      dummy.updateMatrix();
+      this.glowRocks.setMatrixAt(index, dummy.matrix);
+      this.glowRocks.setColorAt(index, crustColors[index % crustColors.length]);
+    }
+    this.glowRocks.instanceMatrix.needsUpdate = true;
+    if (this.glowRocks.instanceColor) this.glowRocks.instanceColor.needsUpdate = true;
+    this.deepGroup.add(this.glowRocks);
+    this.trackDeep(glowRockGeometry, glowRockMaterial, 0.92);
+    this.glowRockMaterial = glowRockMaterial;
+
+    const bubbleCount = this.mobile ? 22 : 42;
+    const bubbleGeometry = new THREE.BufferGeometry();
+    const bubblePositions = new Float32Array(bubbleCount * 3);
+    bubbleGeometry.setAttribute("position", new THREE.BufferAttribute(bubblePositions, 3));
+    bubbleGeometry.attributes.position.setUsage(THREE.DynamicDrawUsage);
+    const bubbleTexture = createSoftParticleTexture();
+    this.deepTextures.add(bubbleTexture);
+    const bubbleMaterial = new THREE.PointsMaterial({
+      color: 0xff7140,
+      map: bubbleTexture,
+      alphaMap: bubbleTexture,
+      size: this.mobile ? 0.1 : 0.075,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    this.lavaBubbleState = Array.from({ length: bubbleCount }, (_, index) => ({
+      vent: index % this.ventBases.length,
+      phase: seeded(index, 563),
+      speed: 0.045 + seeded(index, 569) * 0.075,
+      height: 0.55 + seeded(index, 571) * 1.45,
+      drift: 0.04 + seeded(index, 577) * 0.12,
+      angle: seeded(index, 587) * TWO_PI,
+    }));
+    this.lavaBubbles = new THREE.Points(bubbleGeometry, bubbleMaterial);
+    this.lavaBubbles.frustumCulled = false;
+    this.lavaBubbles.renderOrder = 4;
+    this.deepGroup.add(this.lavaBubbles);
+    this.trackDeep(bubbleGeometry, bubbleMaterial, 0.58);
+    this.lavaBubbleMaterial = bubbleMaterial;
+
+    this.ventLight = new THREE.PointLight(0xff5e2f, 0, 7.5, 2.2);
+    this.ventLight.position.copy(this.ventBases[1]).add(new THREE.Vector3(0, 0.72, 0));
+    this.deepGroup.add(this.ventLight);
+  }
+
+  updateVolcanicField(elapsed, deepReveal) {
+    const motion = this.reducedMotion ? 0.22 : 1;
+    this.lavaMaterials?.forEach(({ material, baseOpacity, phase }) => {
+      const pulse = 0.76 + Math.sin(elapsed * 0.34 * motion + phase) * 0.16;
+      material.opacity = deepReveal * baseOpacity * pulse;
+    });
+    if (this.glowRockMaterial) {
+      this.glowRockMaterial.emissiveIntensity = deepReveal
+        * (0.12 + Math.sin(elapsed * 0.27 * motion + 0.8) * 0.025);
+    }
+    if (this.lavaBubbles) {
+      const positions = this.lavaBubbles.geometry.attributes.position.array;
+      this.lavaBubbleState.forEach((state, index) => {
+        const vent = this.ventBases[state.vent];
+        const travel = (state.phase + elapsed * state.speed * motion) % 1;
+        const spread = state.drift * (0.2 + travel);
+        positions[index * 3] = vent.x
+          + Math.cos(state.angle + elapsed * 0.18 * motion) * spread
+          + Math.sin(travel * Math.PI * 3) * 0.025;
+        positions[index * 3 + 1] = vent.y + 0.08 + travel * state.height;
+        positions[index * 3 + 2] = vent.z
+          + Math.sin(state.angle + elapsed * 0.15 * motion) * spread;
+      });
+      this.lavaBubbles.geometry.attributes.position.needsUpdate = true;
+      this.lavaBubbleMaterial.opacity = deepReveal
+        * (0.28 + Math.sin(elapsed * 0.23 * motion) * 0.04);
+    }
+    if (this.ventLight) {
+      this.ventLight.intensity = deepReveal
+        * (0.62 + Math.sin(elapsed * 0.31 * motion + 0.4) * 0.1);
+    }
   }
 
   createDeepLights() {
@@ -1142,10 +1461,10 @@ export class PelagicEnvironment {
     if (this.frame % backgroundStride === 0) {
       this.distantJellies.update(elapsed, progress, focus, this.reducedMotion);
     }
-    if (!prewarm && progress > 0.46 && !this.deepAssetsRequested) {
+    if (!prewarm && progress > 0.54 && !this.deepAssetsRequested) {
       void this.loadDeepAssets();
     }
-    const deepReveal = smoothstep(0.5, 0.76, progress);
+    const deepReveal = smoothstep(0.62, 0.9, progress);
     this.deepMaterials.forEach((material) => {
       material.opacity = deepReveal * (material.userData.deepBaseOpacity ?? 1);
     });
@@ -1173,6 +1492,7 @@ export class PelagicEnvironment {
         * (2.7 + Math.sin(elapsed * 0.14 + 1.7) * 0.3 * lightMotion);
       this.deepAmbient.intensity = deepReveal * 0.62;
     }
+    this.updateVolcanicField(elapsed, smoothstep(0.72, 0.93, progress));
     if (deepReveal > 0.01 && this.frame % backgroundStride === 0) {
       this.updateKelp(elapsed, current);
     }

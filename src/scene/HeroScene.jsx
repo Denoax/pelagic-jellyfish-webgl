@@ -360,7 +360,9 @@ export function HeroScene({ reducedMotion = false }) {
             Background.pointer.value.copy(pointer);
             Background.current.value.copy(current.value);
             Background.currentStrength.value = clamp(current.value.length() * 1.35, 0, 1);
-            Background.depth.value = scrollProgress;
+            // Keep the mesopelagic blue alive through more of the journey;
+            // darkness now gathers gradually instead of tracking scroll 1:1.
+            Background.depth.value = Math.pow(scrollProgress, 1.68);
 
             const pointerStrength = pointerActive
               ? clamp(0.24 + current.value.length() * 3.4, 0, 1)
