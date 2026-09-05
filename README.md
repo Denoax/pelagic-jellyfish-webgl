@@ -13,7 +13,7 @@ An interactive WebGL ocean, a living jellyfish swarm, and an original liquid-gla
 
 ## The finished journey
 
-| Surface encounter | Mid-water handoff | Deep departure |
+| Surface | Mid-water | Deep-water |
 | --- | --- | --- |
 | ![Surface encounter with the hero jellyfish](docs/media/07-art-surface.png) | ![Mid-water swarm and featured jellyfish](docs/media/08-art-depth.png) | ![Dark departure frame near the seabed](docs/media/09-art-departure.png) |
 
