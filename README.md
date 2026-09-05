@@ -13,13 +13,19 @@ An interactive WebGL ocean, a living jellyfish swarm, and an original liquid-gla
 
 The experience is deliberately not a conventional portfolio page. Scrolling acts as a silent camera timeline: it changes the featured animal, orbit, depth, light and swarm composition without putting headings or paragraphs over the artwork. Only Mani Marami Milani and GitHub remain at the top-right, `@DENOAX · © 2026` remains at the bottom-left, and Return to the Surface remains at the bottom-right.
 
-## The finished journey
+## The journey
 
 | Surface encounter | Mid-water handoff | Deep departure |
 | --- | --- | --- |
 | ![Surface encounter with the hero jellyfish](docs/media/07-art-surface.png) | ![Mid-water swarm and featured jellyfish](docs/media/08-art-depth.png) | ![Dark departure frame near the seabed](docs/media/09-art-departure.png) |
 
 The persistent labels are real links; every other visible page label was removed. Empty semantic chapters remain in the document only as scroll-length and camera-timing tracks, so the scene can still travel through an authored beginning, encounters and departure.
+
+## Water and glass refinement
+
+![Persistent liquid-glass clock after interaction](docs/implementation/screens/glass-drag.png)
+
+The newest rendering pass adds stateful elastic glass, a prepared idle transition, shared underwater visibility, layered geology and visible graphics recovery. [See the implementation, current captures and measured test results](docs/implementation/2026-09-05-rendering-pass.md). The original GIFs and evolution gallery below document earlier stages; they are not new performance evidence.
 
 ## What is built in
 
@@ -36,14 +42,16 @@ The persistent labels are real links; every other visible page label was removed
 
 ### 1. A persistent 3D ocean
 
-`HeroScene.jsx` owns a single fixed Three.js scene that remains alive for the whole experience. It selects WebGPU when available and forces Three.js's WebGL 2 backend in Brave or other unsupported environments. Pixel ratio is capped at `1.35` on desktop and `1` on mobile to keep the scene responsive.
+`HeroScene.jsx` owns the persistent Three.js scene. It reads the actual backend after initialization, including automatic WebGPU-to-WebGL fallback. Both backends use the direct render path; the inherited MRT bloom chain is disabled. Pixel ratio starts at a maximum of `1.25` on desktop and `1` on mobile, and can step down after sustained slow frames. Graphics denial/loss shows recovery artwork and a compatibility retry instead of a silent black canvas.
+
+The seabed and animals share directional water radiance and distance-dependent, channel-specific attenuation. A nonuniform terrain grid concentrates detail around the camera path. Triplanar scanned albedo, multi-scale sediment noise, terrain-integrated contact shading and localized hot crust replace the old bright plane and circular shadow stickers. See the [implementation and verification record](docs/implementation/2026-09-05-rendering-pass.md).
 
 The environment is built from:
 
 - several depth bands of marine snow;
 - animated current veils and god-ray lighting;
 - a hero jellyfish plus independent background organisms;
-- dark physical lighting, selective emission, and restrained bloom;
+- dark physical lighting and selective tissue/crust emission;
 - scroll-controlled depth, exposure, and camera framing.
 
 ### 2. Jellyfish that swim instead of sliding
@@ -80,25 +88,24 @@ Pointer movement becomes a decaying current vector. It influences nearby tissue 
 
 ![Pelagic liquid clock in motion](docs/media/liquid-clock-showcase.gif)
 
-`IdleGlassScene.jsx` is a second transparent React Three Fiber canvas mounted only while the idle experience is active. The live ocean remains underneath it.
+`IdleGlassScene.jsx` is a transparent Three.js renderer prepared before idle entry and retained between visits. The live ocean remains underneath. The fade waits for the first rendered enhancement frame; dormant glass does not continuously draw.
 
-For every time value:
+The original glass pipeline:
 
-1. Canvas 2D draws the clock into an offscreen monochrome texture.
-2. The fragment shader samples that texture as a signed visual mask.
-3. Fractional Brownian motion distorts the mask into a slow liquid edge.
-4. Neighboring texture samples estimate an edge gradient for the bright bevel.
-5. A domain-warped cellular field produces irregular glass droplets across the entire viewport.
-6. Three procedural ring lights create moving reflections without an image asset.
-7. Purposeful pointer velocity adds a short-lived circular wake through the liquid.
+1. Canvas 2D caches softened clock masks, updating only when needed.
+2. Small paired render targets retain velocity and displacement between frames.
+3. Cursor-segment impulses pull the field; advection, neighbor coupling and spring restoration carry and settle the wake.
+4. Smooth droplet level sets cover the viewport and share the clock's displacement.
+5. Thickness gradients drive rounded highlights, rim light and transparency.
+6. Signed half-float storage preserves precision near rest. A packed 16-bit RGBA8 displacement path supports devices without float render targets.
 
 Desktop draws `HH:MM` as one composition. Portrait screens use a separate texture and stack hours and minutes vertically.
 
-The pointer wake is intentionally restrained. Its phase now moves at less than one tenth of the original speed, its target follows the cursor with heavy damping, it needs a deliberate pointer movement to begin, and it cannot retrigger for `14s`. Ordinary cursor drift therefore leaves the glass calm instead of continuously firing ripples.
+Ambient movement stays slow. Direct manipulation is continuous, with a bounded field that remembers a sweep and then returns to rest. This is an original elastic-flow model, not a full Navier–Stokes solver. The transparent overlay does not yet refract the ocean framebuffer itself.
 
 ### 6. Smooth minute changes
 
-Two clock textures are kept in memory. When the minute changes, the next time is drawn into the hidden texture. The shader then moves an irregular noise boundary from the old texture to the new one over `0.82s`. This produces a liquid dissolve rather than a hard one-frame cut or a simple opacity crossfade. After the transition, the textures swap roles and are reused.
+Two clock textures are kept in memory. When the minute changes, the next time is drawn into the hidden texture and a spatially staggered transition takes `2.8s`. Textures swap roles and are reused. Hidden clocks refresh ahead of entry so a stale-minute upload is not normally coupled to the visible fade.
 
 ### 7. Idle and accessibility behavior
 
@@ -137,10 +144,10 @@ React application
 └── transparent idle renderer
     ├── dual CanvasTexture clock masks
     ├── original GLSL liquid/droplet shader
-    └── cooldown-limited pointer wake + responsive composition
+    └── persistent spring/advection field + packed compatibility path
 ```
 
-The high-frequency animation path stays outside React state. React handles lifecycle and the low-frequency clock value; vectors, materials, textures, geometry buffers, and render-loop state are reused in place.
+The high-frequency animation path stays outside React state. React handles readiness and visibility; the clock masks, field, vectors, materials and buffers are reused in place. Reduced motion uses the project poster without starting either graphics renderer.
 
 ## Stack
 

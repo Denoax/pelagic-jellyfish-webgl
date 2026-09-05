@@ -37,10 +37,11 @@ class App {
 
     simulationEnabled = true;
 
-    constructor(renderer, { jellyfishCount = 10 } = {}){
+    constructor(renderer, { jellyfishCount = 10, presentationOnly = false } = {}){
         console.time("firstFrame");
         this.renderer = renderer;
         this.jellyfishCount = jellyfishCount;
+        this.presentationOnly = presentationOnly;
     }
 
     async init(progressCallback) {
@@ -64,7 +65,7 @@ class App {
 
         await progressCallback(0.1);
 
-        this.physics = new VerletPhysics(this.renderer);
+        if (!this.presentationOnly) this.physics = new VerletPhysics(this.renderer);
 
         await progressCallback(0.3);
 
@@ -75,34 +76,47 @@ class App {
         this.scene.environmentNode = Background.envFunction;
         this.scene.environmentIntensity = 0.3;
         this.scene.backgroundNode = Background.fogFunction;
+        this.scene.fogNode = Background.waterFog;
 
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1.0;
 
         await progressCallback(0.4);
 
-        await Medusa.initStatic(this.physics);
+        if (!this.presentationOnly) await Medusa.initStatic(this.physics);
 
         await progressCallback(0.5);
 
-        this.bridge = new MedusaVerletBridge(this.physics);
+        this.bridge = this.presentationOnly ? { medusae: [] } : new MedusaVerletBridge(this.physics);
 
         for (let i=0; i<this.jellyfishCount; i++) {
+            if (this.presentationOnly) {
+                // The current art uses LivingAppendages' own soft-body state.
+                // Keep the director's actor interface, not a second invisible
+                // animal, spring buffers and compute kernels behind each one.
+                this.bridge.medusae.push({
+                    transformationObject: new THREE.Object3D(),
+                    bell: { object: new THREE.Object3D() },
+                    arms: { object: new THREE.Object3D() },
+                    tentacles: { object: new THREE.Object3D() },
+                });
+                continue;
+            }
             const medusa = new Medusa(this.renderer, this.physics, this.bridge);
             this.scene.add(medusa.object);
             this.physics.addObject(medusa);
         }
-        this.physics.addObject(this.bridge);
+        this.physics?.addObject(this.bridge);
 
         await progressCallback(0.6);
 
-        await this.physics.bake();
+        if (this.physics) await this.physics.bake();
 
         await progressCallback(0.7);
 
-        this.vertexVisualizer = new VertexVisualizer(this.physics);
+        this.vertexVisualizer = this.physics ? new VertexVisualizer(this.physics) : null;
         //this.scene.add(this.vertexVisualizer.object);
-        this.springVisualizer = new SpringVisualizer(this.physics);
+        this.springVisualizer = this.physics ? new SpringVisualizer(this.physics) : { object: new THREE.Object3D() };
         this.scene.add(this.springVisualizer.object);
 
         await progressCallback(0.8);
@@ -111,7 +125,7 @@ class App {
         this.scene.add(this.plankton.object);
 
         await progressCallback(0.9);
-        this.godrays = new Godrays(this.bridge);
+        this.godrays = this.physics ? new Godrays(this.bridge) : { object: new THREE.Object3D() };
         this.scene.add(this.godrays.object);
 
         const scenePass = pass(this.scene, this.camera);
@@ -162,7 +176,7 @@ class App {
         pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
         pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
         this.raycaster.setFromCamera(pointer, this.camera);
-        this.physics.setMouseRay(this.raycaster.ray.origin, this.raycaster.ray.direction);
+        this.physics?.setMouseRay(this.raycaster.ray.origin, this.raycaster.ray.direction);
     }
 
     resize(width, height) {
@@ -206,7 +220,7 @@ class App {
 
         conf.update();
         if (this.controls.enabled) this.controls.update(delta);
-        Medusa.updateStatic();
+        if (!this.presentationOnly) Medusa.updateStatic();
 
         this.background.update(elapsed);
         this.lights.update(elapsed);
@@ -232,7 +246,7 @@ class App {
 
     dispose() {
         this.renderer.domElement.removeEventListener("pointermove", this.pointerHandler);
-        this.controls.dispose();
+        this.controls?.dispose();
     }
 }
 export default App;

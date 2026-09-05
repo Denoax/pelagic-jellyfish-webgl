@@ -128,7 +128,8 @@ try {
     });
     await sleep(Math.max(1800, waitMs));
   }
-  const requestedProgress = Number(new URL(targetUrl).searchParams.get("qaProgress"));
+  const progressParameter = new URL(targetUrl).searchParams.get("qaProgress");
+  const requestedProgress = progressParameter === null ? NaN : Number(progressParameter);
   if (Number.isFinite(requestedProgress) && requestedProgress >= 0 && requestedProgress <= 1) {
     await client.send("Runtime.evaluate", {
       expression: `(() => {
@@ -448,9 +449,9 @@ try {
     });
     idleAfterClick = dismissed.result.value;
   }
-  process.stdout.write(
-    `${JSON.stringify({ ...state.result.value, performanceSample, idleAfterClick, errors: client.errors })}\n`,
-  );
+  const report = { ...state.result.value, performanceSample, idleAfterClick, errors: client.errors };
+  writeFileSync(`${outputPath}.json`, JSON.stringify(report, null, 2));
+  process.stdout.write(`${JSON.stringify(report)}\n`);
 } finally {
   client?.close();
   browser.kill("SIGTERM");

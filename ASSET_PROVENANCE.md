@@ -11,7 +11,7 @@ Reviewed: 2026-09-03
 - Creator: Niklas Niehus / Holtsetio
 - License: MIT; full notice bundled at `licenses/Aurelia-MIT.txt`
 - Date integrated: 2026-09-03
-- Production use: real-time WebGPU bell geometry with an automatic WebGL 2 backend for Brave/unsupported browsers, GPU Verlet tentacle/oral-arm physics, procedural background, plankton, god rays, and selective bloom
+- Production use: Three.js scene foundation, lights and plankton with WebGPU/WebGL 2 backends. Visible animals now use `LivingAppendages` and `JellySchoolDirector`; hidden legacy animals and their GPU spring buffers are not initialized. Production uses the direct render path, not the inherited MRT bloom chain.
 - Modifications: removed the debug/info interface; added configurable population count, cleanup hooks, blue-white bioluminescent material colors, authored camera/swarm choreography, scroll depth, and cursor-current uniforms
 - Required attribution: retain the bundled copyright and MIT permission notice in distributions containing substantial portions of the source
 
@@ -26,9 +26,9 @@ Reviewed: 2026-09-03
 - Modifications: textures resized from 2048px to 1024px and background-detail meshes simplified for web delivery; normalized scale and origin at runtime; cooler underwater material tint, reduced environment intensity, partial seabed burial, varied scale and rotation
 - Required attribution: none; provenance is retained here for transparency
 
-### Retired abyssal bioluminescent jellyfish scene
+### Accessibility and graphics-recovery artwork
 
-- Files: `public/assets/generated/abyssal-jellyfish-poster-v1.webp` and `public/assets/generated/abyssal-jellyfish-icon-v1.webp` (not rendered by the live site)
+- Files: `public/assets/generated/abyssal-jellyfish-poster-v1.webp` and `public/assets/generated/abyssal-jellyfish-icon-v1.webp`. The poster appears during loading, with reduced motion, or when graphics are unavailable. It does not replace the successfully running 3D scene.
 - Creator: OpenAI ImageGen, directed by Codex for Mani Marami Milani
 - Source: generated specifically for this project on 2026-09-03 after Mani selected the third displayed abyssal concept
 - Reference inputs: the selected project mock and a CC BY moon-jelly research image by foxcc
@@ -61,6 +61,18 @@ Reviewed: 2026-09-03
 - Source: Mani's local portfolio repository, `attractors-main/attractors-main/img/preview.jpg`
 - Creator/owner: Mani Marami Milani
 - Use: selected-work image for Mani's own project
+
+### Poly Haven geology
+
+- Existing CC0 sources: [Rock 07](https://polyhaven.com/a/rock_07), [Rock 09](https://polyhaven.com/a/rock_09), [Moon Rock 02](https://polyhaven.com/a/moon_rock_02).
+- Earlier processing is documented in `public/assets/models/README.md`.
+- This pass reuses the existing Rock 07 albedo as a triplanar layer blended with procedural sediment. No new third-party asset was downloaded. Filenames retain `1k`, but the earlier optimized textures are 640px.
+
+### Original liquid field
+
+- `IdleGlassScene.jsx`: original fixed-step spring/advection simulation, paired render targets, smooth droplet level sets, clock texture morph and normal-based shading.
+- Half-float devices store signed velocity/displacement around zero. Other WebGL 2 devices use packed 16-bit displacement in RGBA8 and a simpler damped flow model.
+- No FluidGlass or third-party fluid shaders were copied. This is not full Navier–Stokes or refraction of the actual ocean framebuffer.
 
 ## Fonts and icons
 

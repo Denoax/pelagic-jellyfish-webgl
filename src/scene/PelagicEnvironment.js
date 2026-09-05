@@ -1,11 +1,15 @@
 import * as THREE from "three/webgpu";
+import { createSoftParticles } from "./SoftParticles.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import {
   color as tslColor,
   mix as tslMix,
   positionLocal,
   smoothstep as tslSmoothstep,
-  vertexColor,
+  positionWorld,
+  mx_noise_float,
+  texture as tslTexture,
+  triplanarTexture,
 } from "three/tsl";
 import { sampleSwimCycle } from "./jellyMotion.js";
 
@@ -93,7 +97,10 @@ function createWeatheredStoneGeometry(seedSalt, detail = 1) {
     point.fromBufferAttribute(positions, index);
     const direction = point.clone().normalize();
     const strata = Math.sin(direction.y * 8.5 + seedSalt) * 0.055;
-    const fracture = (seeded(index, seedSalt) - 0.5) * 0.12;
+    // The same spatial vertex receives the same displacement on every face.
+    // Per-index randomness cracked this non-indexed geometry at its seams.
+    const fracture = Math.sin(direction.x * 13.7 + direction.z * 9.3 + seedSalt)
+      * Math.cos(direction.y * 11.1 - direction.x * 5.3) * 0.045;
     point.multiplyScalar(1 + strata + fracture);
     point.y *= 0.72;
     positions.setXYZ(index, point.x, point.y, point.z);
@@ -575,7 +582,7 @@ function createParticleLayer(count, spread, color, size, opacity, seedSalt) {
   }
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  const material = new THREE.PointsMaterial({
+  const points = createSoftParticles(geometry, {
     color,
     size,
     sizeAttenuation: true,
@@ -584,7 +591,6 @@ function createParticleLayer(count, spread, color, size, opacity, seedSalt) {
     depthWrite: false,
     blending: THREE.AdditiveBlending,
   });
-  const points = new THREE.Points(geometry, material);
   points.frustumCulled = false;
   return points;
 }
@@ -605,7 +611,7 @@ function createCurrentVeil() {
   }
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  const material = new THREE.PointsMaterial({
+  const veil = createSoftParticles(geometry, {
     color: 0x4cb9e9,
     size: 0.026,
     sizeAttenuation: true,
@@ -614,7 +620,6 @@ function createCurrentVeil() {
     depthWrite: false,
     blending: THREE.AdditiveBlending,
   });
-  const veil = new THREE.Points(geometry, material);
   veil.frustumCulled = false;
   return veil;
 }
@@ -702,7 +707,6 @@ export class PelagicEnvironment {
 
   createShelf() {
     this.createSedimentFloor();
-    this.createContactShadows();
     this.createRubbleFields();
     this.createMicroRubble();
     this.createSessileLife();
@@ -712,7 +716,7 @@ export class PelagicEnvironment {
   }
 
   createSedimentFloor() {
-    const floorSize = 96;
+    const floorSize = 144;
     const terrainSegments = this.mobile ? 96 : 160;
     const geometry = new THREE.PlaneGeometry(
       floorSize,
@@ -728,8 +732,12 @@ export class PelagicEnvironment {
     const color = new THREE.Color();
 
     for (let index = 0; index < positions.count; index += 1) {
-      const x = positions.getX(index);
-      const worldZ = -positions.getY(index) - 14;
+      // Concentrate samples inside the visible basin, coarse outside it.
+      const x = Math.sign(positions.getX(index)) * Math.pow(Math.abs(positions.getX(index)) / (floorSize / 2), 1.55) * floorSize / 2;
+      const localY = Math.sign(positions.getY(index)) * Math.pow(Math.abs(positions.getY(index)) / (floorSize / 2), 1.55) * floorSize / 2;
+      positions.setX(index, x);
+      positions.setY(index, localY);
+      const worldZ = -localY - 14;
       const height = deepTerrainHeight(x, worldZ);
       positions.setZ(index, height);
       const shelfMix = clamp01(0.27 + height * 0.22 + seeded(index, 333) * 0.13);
@@ -747,9 +755,9 @@ export class PelagicEnvironment {
     this.deepTextures.add(normalMap);
     const material = new THREE.MeshPhongNodeMaterial({
       color: 0xffffff,
-      vertexColors: true,
+      vertexColors: false,
       normalMap,
-      normalScale: new THREE.Vector2(0.36, 0.36),
+      normalScale: new THREE.Vector2(0.65, 0.65),
       emissive: 0x04131b,
       emissiveIntensity: 0.2,
       specular: 0x06151c,
@@ -757,37 +765,23 @@ export class PelagicEnvironment {
       depthWrite: true,
       side: THREE.FrontSide,
     });
-    const edgeDistance = positionLocal.x.abs().div(floorSize * 0.5)
-      .max(positionLocal.z.abs().div(floorSize * 0.5));
-    const edgeDarkening = tslSmoothstep(0.58, 0.94, edgeDistance);
-    // Two non-aligned fragment-frequency bands keep broad terrain patches from
-    // reading as a flat low-resolution plane while preserving the quiet abyss.
-    const fineStrata = positionLocal.x.mul(2.37)
-      .add(positionLocal.z.mul(1.73)).sin().mul(0.5).add(0.5);
-    const mineralGrain = positionLocal.x.mul(4.91)
-      .sub(positionLocal.z.mul(3.17)).sin().mul(0.5).add(0.5);
-    const sedimentMask = fineStrata.mul(0.62).add(mineralGrain.mul(0.38));
-    const surfaceVariation = sedimentMask.mul(0.13);
-    const detailedColor = tslMix(
-      vertexColor(),
-      tslColor(0x315967),
-      surfaceVariation,
-    );
-    material.colorNode = tslMix(
-      detailedColor,
-      tslColor(0x000309),
-      edgeDarkening,
-    );
-    const detailedEmissive = tslMix(
-      tslColor(0x071e27),
-      tslColor(0x0c3139),
-      sedimentMask.mul(0.2),
-    );
-    material.emissiveNode = tslMix(
-      detailedEmissive,
-      tslColor(0x000104),
-      edgeDarkening,
-    );
+    const deposits = mx_noise_float(positionWorld.mul(0.48)).mul(0.5).add(0.5);
+    const grain = mx_noise_float(positionWorld.mul(17)).mul(0.5).add(0.5);
+    const sedimentMask = tslSmoothstep(0.28, 0.76, deposits);
+    const scan = new THREE.TextureLoader().load(`${PUBLIC_BASE}assets/models/polyhaven/rock_07/textures/rock_07_diff_1k.jpg`);
+    scan.colorSpace = THREE.SRGBColorSpace;
+    scan.wrapS = scan.wrapT = THREE.RepeatWrapping;
+    scan.anisotropy = 4;
+    this.deepTextures.add(scan);
+    const rockTexture = triplanarTexture(tslTexture(scan), null, null, 0.7);
+    material.colorNode = tslMix(rockTexture.rgb.mul(tslColor(0x839aa4)), tslColor(0x47585c), sedimentMask.mul(0.68))
+      .mul(grain.mul(0.24).add(0.76));
+    // Contact shade is embedded in terrain rather than hard floating discs.
+    for (const [x, z, radius] of [[-4.8,-11.1,2.3],[7.2,-4.8,1.5],[-3.8,-7.2,1.5],[5.9,-12.8,2.1],[-7.7,-5.7,1.4],[4.2,-8.8,1.3]]) {
+      const distance = positionLocal.x.sub(x).abs().pow(2).add(positionLocal.z.sub(z + 14).abs().pow(2));
+      material.colorNode = material.colorNode.mul(distance.div(radius * radius).negate().exp().mul(-0.6).add(1));
+    }
+    material.emissiveNode = tslColor(0x010609).mul(sedimentMask.mul(0.25).add(0.4));
     this.floorMaterial = material;
     this.floor = new THREE.Mesh(geometry, material);
     this.floor.position.set(0, DEEP_FLOOR_Y, -14);
@@ -1059,8 +1053,8 @@ export class PelagicEnvironment {
       this.ventBases.push(points[Math.floor(points.length * 0.55)].clone());
     });
 
-    const glowRockGeometry = createWeatheredStoneGeometry(503, 2);
-    const glowRockMaterial = new THREE.MeshPhongMaterial({
+    const glowRockGeometry = createWeatheredStoneGeometry(503, 3);
+    const glowRockMaterial = new THREE.MeshPhongNodeMaterial({
       color: 0x17191b,
       emissive: 0x4a130c,
       emissiveIntensity: 0.13,
@@ -1068,6 +1062,9 @@ export class PelagicEnvironment {
       shininess: 10,
       vertexColors: true,
     });
+    const crust = mx_noise_float(positionLocal.mul(7.5)).abs();
+    const hotSeams = tslSmoothstep(0.075, 0.012, crust);
+    glowRockMaterial.emissiveNode = tslColor(0xff652b).mul(hotSeams.pow(2)).mul(0.38);
     const glowRockCount = this.mobile ? 10 : 18;
     this.glowRocks = new THREE.InstancedMesh(
       glowRockGeometry,
@@ -1086,7 +1083,7 @@ export class PelagicEnvironment {
       const radius = 0.22 + seeded(index, 521) * 1.18;
       const x = vent.x + Math.cos(angle) * radius;
       const z = vent.z + Math.sin(angle) * radius;
-      const size = 0.1 + seeded(index, 523) * 0.25;
+      const size = 0.16 + seeded(index, 523) * 0.32;
       dummy.position.set(x, DEEP_FLOOR_Y + deepTerrainHeight(x, z) + size * 0.3, z);
       dummy.rotation.set(
         seeded(index, 541) * 1.3,
@@ -1207,7 +1204,7 @@ export class PelagicEnvironment {
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-    const material = new THREE.PointsMaterial({
+    this.benthicSnow = createSoftParticles(geometry, {
       size: this.mobile ? 0.035 : 0.027,
       sizeAttenuation: true,
       vertexColors: true,
@@ -1216,10 +1213,9 @@ export class PelagicEnvironment {
       depthWrite: false,
       blending: THREE.AdditiveBlending,
     });
-    this.benthicSnow = new THREE.Points(geometry, material);
     this.benthicSnow.renderOrder = 3;
     this.deepGroup.add(this.benthicSnow);
-    this.trackDeep(geometry, material, 0.26);
+    this.trackDeep(this.benthicSnow.geometry, this.benthicSnow.material, 0.26);
   }
 
   async loadDeepAssets() {
@@ -1278,7 +1274,7 @@ export class PelagicEnvironment {
               aoMapIntensity: 0.78,
               emissive: 0x214957,
               emissiveMap: entry.map ?? null,
-              emissiveIntensity: 0.42,
+              emissiveIntensity: 0.16,
               specular: 0x183843,
               shininess: 7,
             });
@@ -1332,6 +1328,8 @@ export class PelagicEnvironment {
       assetsReady: this.deepAssetsReady,
       materialCount: this.deepMaterials.size,
       geometryCount: this.deepGeometries.size,
+      floorOpacity: this.floorMaterial.opacity,
+      floorPosition: this.floor.position.toArray(),
       rockSources: 3,
       scannedRockPlacements: 8,
       rubbleInstances: this.rubble?.reduce((sum, field) => sum + field.count, 0) ?? 0,

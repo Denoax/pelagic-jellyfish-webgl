@@ -1,0 +1,79 @@
+[
+  {
+    "label": "rest",
+    "time": 2.6832666666666656,
+    "current": 0,
+    "clockKey": "2:12",
+    "transition": 1,
+    "floatTargets": true,
+    "maxDisplacement": 0,
+    "rmsDisplacement": 0,
+    "idle": "idle-screen is-active"
+  },
+  {
+    "label": "drag",
+    "time": 3.6998666666666646,
+    "current": 1,
+    "clockKey": "2:12",
+    "transition": 1,
+    "floatTargets": true,
+    "maxDisplacement": 0.2117657992741463,
+    "rmsDisplacement": 0.044683845726816315,
+    "idle": "idle-screen is-active"
+  },
+  {
+    "label": "wake",
+    "time": 4.816466666666673,
+    "current": 0,
+    "clockKey": "2:12",
+    "transition": 1,
+    "floatTargets": true,
+    "maxDisplacement": 0.06064018831044213,
+    "rmsDisplacement": 0.009491200535884745,
+    "idle": "idle-screen is-active"
+  },
+  {
+    "label": "settled",
+    "time": 10.016266666666677,
+    "current": 0,
+    "clockKey": "2:12",
+    "transition": 1,
+    "floatTargets": true,
+    "maxDisplacement": 0.000023197956711862925,
+    "rmsDisplacement": 0.0000041355338462902,
+    "idle": "idle-screen is-active"
+  },
+  {
+    "label": "minute",
+    "time": 13.59946666666661,
+    "current": 1,
+    "clockKey": "2:13",
+    "transition": 1,
+    "floatTargets": true,
+    "maxDisplacement": 0,
+    "rmsDisplacement": 0,
+    "idle": "idle-screen is-active"
+  },
+  {
+    "label": "dismissed",
+    "time": 16.18266666666656,
+    "current": 0,
+    "clockKey": "2:13",
+    "transition": 1,
+    "floatTargets": true,
+    "maxDisplacement": 0,
+    "rmsDisplacement": 0,
+    "idle": "idle-screen "
+  },
+  {
+    "label": "repeat",
+    "time": 19.68256666666647,
+    "current": 0,
+    "clockKey": "2:13",
+    "transition": 1,
+    "floatTargets": true,
+    "maxDisplacement": 0,
+    "rmsDisplacement": 0,
+    "idle": "idle-screen is-active"
+  }
+]

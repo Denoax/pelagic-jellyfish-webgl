@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 import { IdleScreen } from "./ui/IdleScreen.jsx";
 import { useMotionPreference } from "./core/useMotionPreference.js";
 import { useIdleScreen } from "./core/useIdleScreen.js";
@@ -12,7 +12,9 @@ const chapterIds = ["intro", "work", "services", "about", "contact"];
 
 export function App() {
   const motion = useMotionPreference();
-  const idle = useIdleScreen(!motion.reduced);
+  const [sceneStatus, setSceneStatus] = useState("loading");
+  const idleEnabled = !motion.reduced && sceneStatus === "ready";
+  const idle = useIdleScreen(idleEnabled);
 
   return (
     <>
@@ -21,7 +23,7 @@ export function App() {
       </a>
 
       <Suspense fallback={<div className="ocean-stage ocean-stage--loading" aria-hidden="true" />}>
-        <HeroScene reducedMotion={motion.reduced} />
+        <HeroScene reducedMotion={motion.reduced} onStatusChange={setSceneStatus} />
       </Suspense>
 
       <header className="site-header" aria-label="Artist">
@@ -60,7 +62,7 @@ export function App() {
         <a href="#intro">RETURN TO THE SURFACE ↑</a>
       </footer>
 
-      <IdleScreen active={idle.active} onDismiss={idle.dismiss} />
+      <IdleScreen enabled={idleEnabled} active={idle.active} onDismiss={idle.dismiss} />
     </>
   );
 }

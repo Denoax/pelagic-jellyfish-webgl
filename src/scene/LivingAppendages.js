@@ -1,5 +1,7 @@
 import * as THREE from "three/webgpu";
 import { sampleSwimCycle } from "./jellyMotion.js";
+import { createSoftParticles } from "./SoftParticles.js";
+import { FreeParticleDrift } from "./FreeParticleDrift.js";
 
 const HERO_TENTACLES = 22;
 const BACKGROUND_TENTACLES = 14;
@@ -651,7 +653,8 @@ export class LivingAppendages {
       }
       this.haloGeometry = new THREE.BufferGeometry();
       this.haloGeometry.setAttribute("position", new THREE.BufferAttribute(haloPositions, 3));
-      this.haloMaterial = new THREE.PointsMaterial({
+      this.haloGeometry.setAttribute("particleAlpha", new THREE.BufferAttribute(new Float32Array(haloCount), 1));
+      this.halo = createSoftParticles(this.haloGeometry, {
         color: 0xb6a2ff,
         size: 0.019,
         sizeAttenuation: true,
@@ -659,10 +662,11 @@ export class LivingAppendages {
         opacity: 0.2,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-      });
-      this.halo = new THREE.Points(this.haloGeometry, this.haloMaterial);
+      }, 0);
+      this.haloGeometry = this.halo.geometry;
+      this.haloMaterial = this.halo.material;
       this.halo.renderOrder = 18;
-      this.group.add(this.halo);
+      this.haloDrift = new FreeParticleDrift(this.halo);
     }
 
     this.baseVisuals = {
@@ -1125,9 +1129,8 @@ export class LivingAppendages {
     this.activationRing.scale.setScalar(1 + Math.min(this.activationAge, 1.3) * (this.hero ? 7.5 : 5.2));
 
     if (this.halo) {
-      this.haloMaterial.opacity = (this.baseVisuals.haloOpacity + anatomy * 0.2 + this.feature * 0.05) * visibility;
+      this.haloMaterial.opacity = this.baseVisuals.haloOpacity + anatomy * 0.2 + this.feature * 0.05;
       this.haloMaterial.size = 0.019 + anatomy * 0.016;
-      this.halo.scale.setScalar(1 + anatomy * 0.045);
     }
     if (this.tissueLight) {
       this.tissueLight.position.lerp(this.activationNode.position, 0.12);
@@ -1144,6 +1147,7 @@ export class LivingAppendages {
     interactionMode = false,
   ) {
     const active = this.presence > 0.008;
+    if (this.halo && !this.halo.parent && this.group.parent) this.group.parent.add(this.halo);
     this.group.visible = true;
     if (!active) {
       this.group.position.copy(this.medusa.transformationObject.position);
@@ -1152,6 +1156,7 @@ export class LivingAppendages {
       this.group.updateMatrixWorld(true);
       this.bodyInitialized = false;
       this.deformAccumulator = 0;
+      this.haloDrift?.update(deltaTime, elapsed, this.group.matrixWorld, false, current);
       return;
     }
     const wasBodyInitialized = this.bodyInitialized;
@@ -1178,6 +1183,7 @@ export class LivingAppendages {
     this.group.quaternion.copy(this.medusa.transformationObject.quaternion);
     this.group.scale.copy(this.medusa.transformationObject.scale);
     this.group.updateMatrixWorld(true);
+    this.haloDrift?.update(deltaTime, elapsed, this.group.matrixWorld, true, current);
 
     let pointerRay = null;
     if (worldRay && pointerStrength > 0.01) {
@@ -1195,10 +1201,6 @@ export class LivingAppendages {
     const shouldDeform = !wasBodyInitialized
       || (this.deformFrame + this.deformOffset) % deformStride === 0;
     if (!shouldDeform) {
-      if (this.halo) {
-        this.halo.rotation.y = elapsed * 0.018;
-        this.halo.rotation.z = Math.sin(elapsed * 0.08) * 0.035;
-      }
       return;
     }
     const deformDelta = Math.min(this.deformAccumulator, 1 / 24);
@@ -1242,10 +1244,6 @@ export class LivingAppendages {
     this.updateBellDetails(shape);
     this.updateBellSurface(shape, elapsed, current, refreshNormals);
     this.updateFrill(shape, elapsed, refreshNormals);
-    if (this.halo) {
-      this.halo.rotation.y = elapsed * 0.018;
-      this.halo.rotation.z = Math.sin(elapsed * 0.08) * 0.035;
-    }
   }
 
   dispose() {
@@ -1278,6 +1276,7 @@ export class LivingAppendages {
     this.innerBellMaterial.dispose();
     this.haloGeometry?.dispose();
     this.haloMaterial?.dispose();
+    this.halo?.removeFromParent();
     this.group.removeFromParent();
   }
 }

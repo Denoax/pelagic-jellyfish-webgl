@@ -11,14 +11,22 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
-export function HeroScene({ reducedMotion = false }) {
+export function HeroScene({ reducedMotion = false, onStatusChange }) {
   const mountRef = useRef(null);
   const [status, setStatus] = useState("loading");
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    onStatusChange?.(status);
+  }, [status, onStatusChange]);
+
+  useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return undefined;
+    if (reducedMotion) {
+      setStatus("still");
+      return undefined;
+    }
 
     let disposed = false;
     let app;
@@ -37,11 +45,28 @@ export function HeroScene({ reducedMotion = false }) {
     let lastHoverCheck = 0;
     let hoveredTissue = null;
     let pointerDown = null;
+    let actualWebGL = true;
+    let renderFailures = 0;
+    let qualityRatio = Math.min(
+      window.devicePixelRatio,
+      window.innerWidth < 760 ? 1 : 1.25,
+    );
+    let sampleFrames = 0;
+    let sampleDuration = 0;
+    let lastQualityChange = performance.now();
+    const graphicsLost = (event) => {
+      event?.preventDefault?.();
+      window.cancelAnimationFrame(frameId);
+      if (!disposed) setStatus("error");
+    };
     const socialTimers = [];
     const pointer = new THREE.Vector2(0.5, 0.5);
     const previousPointer = new THREE.Vector2(0.5, 0.5);
     const pointerNdc = new THREE.Vector2();
-    const pointerClient = new THREE.Vector2(window.innerWidth * 0.5, window.innerHeight * 0.5);
+    const pointerClient = new THREE.Vector2(
+      window.innerWidth * 0.5,
+      window.innerHeight * 0.5,
+    );
     const pointerGoal = new THREE.Vector2();
     const currentTarget = new THREE.Vector2();
     const current = { value: new THREE.Vector2() };
@@ -52,27 +77,31 @@ export function HeroScene({ reducedMotion = false }) {
     const clock = new THREE.Clock();
 
     const updateScrollTarget = (event) => {
-      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const maxScroll = Math.max(
+        1,
+        document.documentElement.scrollHeight - window.innerHeight,
+      );
       scrollTarget = clamp(window.scrollY / maxScroll, 0, 1);
       if (event?.type === "scroll") lastScrollTime = performance.now();
     };
 
     const updatePointer = (event) => {
       pointerClient.set(event.clientX, event.clientY);
-      pointer.set(event.clientX / window.innerWidth, 1 - event.clientY / window.innerHeight);
+      pointer.set(
+        event.clientX / window.innerWidth,
+        1 - event.clientY / window.innerHeight,
+      );
       pointerNdc.set(pointer.x * 2 - 1, pointer.y * 2 - 1);
       const deltaX = pointer.x - previousPointer.x;
       const deltaY = pointer.y - previousPointer.y;
-      pointerGoal.set(
-        deltaX * 3.2,
-        deltaY * 3.2,
-      );
+      pointerGoal.set(deltaX * 3.2, deltaY * 3.2);
       currentTarget.lerp(pointerGoal, 0.48);
       previousPointer.copy(pointer);
       lastPointerTime = performance.now();
       pointerSeen = true;
       hoverDirty = event.pointerType !== "touch";
-      if (app?.camera && app.raycaster) app.raycaster.setFromCamera(pointerNdc, app.camera);
+      if (app?.camera && app.raycaster)
+        app.raycaster.setFromCamera(pointerNdc, app.camera);
     };
 
     const findJellyAt = (clientX, clientY) => {
@@ -84,7 +113,9 @@ export function HeroScene({ reducedMotion = false }) {
       app.camera.updateMatrixWorld();
       appendages.forEach((tissue) => tissue.group.updateMatrixWorld(true));
       pickRaycaster.setFromCamera(pointerNdc, app.camera);
-      const meshes = appendages.flatMap((tissue) => tissue.getInteractionMeshes());
+      const meshes = appendages.flatMap((tissue) =>
+        tissue.getInteractionMeshes(),
+      );
       const hit = pickRaycaster.intersectObjects(meshes, false)[0];
       if (!hit) return null;
       return { tissue: hit.object.userData.livingAppendages, point: hit.point };
@@ -112,15 +143,21 @@ export function HeroScene({ reducedMotion = false }) {
 
     const endPointer = (event) => {
       if (!pointerDown || pointerDown.id !== event.pointerId) return;
-      const travel = Math.hypot(event.clientX - pointerDown.x, event.clientY - pointerDown.y);
+      const travel = Math.hypot(
+        event.clientX - pointerDown.x,
+        event.clientY - pointerDown.y,
+      );
       const duration = performance.now() - pointerDown.time;
       pointerDown = null;
       const target = event.target instanceof Element ? event.target : null;
       if (
-        travel > 9
-        || duration > 520
-        || target?.closest("a, button, input, textarea, select, .scene-copy, .idle-screen")
-      ) return;
+        travel > 9 ||
+        duration > 520 ||
+        target?.closest(
+          "a, button, input, textarea, select, .scene-copy, .idle-screen",
+        )
+      )
+        return;
       const hit = findJellyAt(event.clientX, event.clientY);
       if (!hit?.tissue) return;
       hit.tissue.activate(hit.point);
@@ -134,12 +171,15 @@ export function HeroScene({ reducedMotion = false }) {
         .sort((first, second) => first.distance - second.distance)
         .slice(0, 3)
         .forEach(({ tissue }, index) => {
-          const timer = window.setTimeout(() => {
-            if (disposed || tissue.presence <= 0.008) return;
-            socialPoint.set(0.18, tissue.species.height * 0.62, 0.06);
-            tissue.group.localToWorld(socialPoint);
-            tissue.activate(socialPoint, 0.24 - index * 0.045);
-          }, 130 + index * 125);
+          const timer = window.setTimeout(
+            () => {
+              if (disposed || tissue.presence <= 0.008) return;
+              socialPoint.set(0.18, tissue.species.height * 0.62, 0.06);
+              tissue.group.localToWorld(socialPoint);
+              tissue.activate(socialPoint, 0.24 - index * 0.045);
+            },
+            130 + index * 125,
+          );
           socialTimers.push(timer);
         });
       if (window.__JELLYFISH_WORLD__) {
@@ -157,7 +197,7 @@ export function HeroScene({ reducedMotion = false }) {
 
     const resize = () => {
       if (!renderer || !app) return;
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 760 ? 1 : 1.35));
+      renderer.setPixelRatio(qualityRatio);
       renderer.setSize(window.innerWidth, window.innerHeight);
       app.resize(window.innerWidth, window.innerHeight);
     };
@@ -176,7 +216,7 @@ export function HeroScene({ reducedMotion = false }) {
           forceWebGL,
         });
         renderer.outputColorSpace = THREE.SRGBColorSpace;
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 760 ? 1 : 1.35));
+        renderer.setPixelRatio(qualityRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.domElement.className = "ocean-canvas";
         renderer.domElement.dataset.renderer = forceWebGL
@@ -186,11 +226,23 @@ export function HeroScene({ reducedMotion = false }) {
 
         const isMobile = window.innerWidth < 760;
         const jellyfishCount = window.innerWidth < 1180 ? 6 : 8;
-        app = new AureliaApp(renderer, { jellyfishCount });
+        app = new AureliaApp(renderer, {
+          jellyfishCount,
+          presentationOnly: true,
+        });
         await app.init(async (fraction) => {
           if (!disposed) setProgress(Math.round(fraction * 100));
         });
         if (disposed) return;
+
+        // init() can choose WebGL even when WebGPU was requested. Never choose
+        // the post pipeline from a browser sniff or the pre-init preference.
+        actualWebGL = Boolean(renderer.backend.isWebGLBackend);
+        renderer.domElement.dataset.renderer = actualWebGL
+          ? "webgl-aurelia"
+          : "webgpu-aurelia";
+        renderer.domElement.addEventListener("webglcontextlost", graphicsLost);
+        renderer.onDeviceLost = graphicsLost;
 
         app.controls.enabled = false;
         app.camera.fov = window.innerWidth < 760 ? 58 : 47;
@@ -220,7 +272,12 @@ export function HeroScene({ reducedMotion = false }) {
           current.value,
           journeyFocus,
         );
-        cameraRig.update(scrollProgress, 1 / 60, clock.elapsedTime, initialDirective);
+        cameraRig.update(
+          scrollProgress,
+          1 / 60,
+          clock.elapsedTime,
+          initialDirective,
+        );
 
         const featuredFidelity = new Set(isMobile ? [0, 2, 5] : [0, 2, 4, 5]);
         appendages = app.bridge.medusae.map((medusa, index) => {
@@ -234,23 +291,35 @@ export function HeroScene({ reducedMotion = false }) {
           app.scene.add(tissue.group);
           return tissue;
         });
-        environment = new PelagicEnvironment(app.scene, { mobile: isMobile, reducedMotion });
+        environment = new PelagicEnvironment(app.scene, {
+          mobile: isMobile,
+          reducedMotion,
+        });
         updateScrollTarget();
-        window.addEventListener("scroll", updateScrollTarget, { passive: true });
+        window.addEventListener("scroll", updateScrollTarget, {
+          passive: true,
+        });
         window.addEventListener("resize", resize);
-        window.addEventListener("pointermove", updatePointer, { passive: true });
+        window.addEventListener("pointermove", updatePointer, {
+          passive: true,
+        });
         window.addEventListener("pointerdown", beginPointer, { passive: true });
         window.addEventListener("pointerup", endPointer, { passive: true });
-        window.addEventListener("pointercancel", clearPointer, { passive: true });
+        window.addEventListener("pointercancel", clearPointer, {
+          passive: true,
+        });
         document.documentElement.addEventListener("mouseleave", clearPointer);
 
         window.__JELLYFISH_WORLD__ = {
-          renderer: forceWebGL ? "WebGL 2" : "WebGPU",
+          renderer: actualWebGL ? "WebGL 2" : "WebGPU",
+          pixelRatio: qualityRatio,
           jellyfishCount,
           distantJellyfishCount: environment.distantJellies.count,
-          physics: "Verlet soft body + procedural water",
+          physics:
+            "pulse-coupled soft tissue + persistent constrained appendages",
           procedural: true,
-          interaction: "raycast bioluminescence + localized recoil + social glow echo",
+          interaction:
+            "raycast bioluminescence + localized recoil + social glow echo",
           camera: "pelagic camera story director + multi-subject handoffs",
           activationCount: 0,
           lastActivated: null,
@@ -281,39 +350,89 @@ export function HeroScene({ reducedMotion = false }) {
             };
           },
         };
+        // Non-enumerable so the existing JSON QA metadata stays compact.
+        if (query.has("qaDebug"))
+          Object.defineProperty(window.__JELLYFISH_WORLD__, "scene", {
+            value: app.scene,
+          });
+
+        // Load and compile the geology before interaction. Parsing scans and
+        // compiling their first lit frame during the dive caused scroll hitches.
+        await environment.loadDeepAssets();
+        if (disposed) return;
 
         // Populate every dynamic buffer once while the loading veil is still
         // present. Otherwise later high-fidelity actors pay their first geometry
         // upload in the middle of a wheel gesture.
         appendages.forEach((tissue) => {
           tissue.setPresence(1, 1);
-          tissue.update(1 / 60, clock.elapsedTime, current.value, null, 0, false);
+          tissue.update(
+            1 / 60,
+            clock.elapsedTime,
+            current.value,
+            null,
+            0,
+            false,
+          );
         });
-        environment.update(clock.elapsedTime, 0.78, current.value, journeyFocus, false, true);
+        environment.update(
+          clock.elapsedTime,
+          0.78,
+          current.value,
+          journeyFocus,
+          false,
+          true,
+        );
 
         // Compile both the full cinematic pass and the lightweight scrolling
         // pass before exposing the scene.
         await renderer.compileAsync(app.scene, app.camera);
         await renderer.renderAsync(app.scene, app.camera);
-        // The TSL bloom/MRT chain is not reliable on Brave's forced WebGL
-        // backend and can resolve to an opaque black target. Prewarm only the
-        // render path this browser will actually use.
-        await app.update(1 / 60, clock.elapsedTime, { interactionMode: forceWebGL });
+        // Use the validated direct path on both backends. The inherited MRT
+        // bloom pipeline is not a requirement for tissue glow and must not
+        // silently replace a good frame with an unsupported black target.
+        await app.update(1 / 60, clock.elapsedTime, { interactionMode: true });
         if (disposed) return;
 
         schoolDirector.actors.forEach((actor, index) => {
           appendages[index]?.setPresence(actor.presence, actor.feature);
         });
-        environment.update(clock.elapsedTime, 0, current.value, journeyFocus, false);
+        environment.update(
+          clock.elapsedTime,
+          0,
+          current.value,
+          journeyFocus,
+          false,
+        );
         setStatus("ready");
 
         const animate = async () => {
           if (disposed) return;
           frameId = window.requestAnimationFrame(animate);
+          if (document.hidden) {
+            clock.getDelta();
+            return;
+          }
           if (frameBusy) return;
           frameBusy = true;
           try {
             const rawDelta = clock.getDelta();
+            sampleFrames += 1;
+            sampleDuration += Math.min(rawDelta, 0.1);
+            if (
+              sampleFrames >= 120 &&
+              performance.now() - lastQualityChange > 4500
+            ) {
+              if (sampleDuration / sampleFrames > 0.024 && qualityRatio > 0.7) {
+                qualityRatio = Math.max(0.7, qualityRatio * 0.84);
+                renderer.setPixelRatio(qualityRatio);
+                if (window.__JELLYFISH_WORLD__)
+                  window.__JELLYFISH_WORLD__.pixelRatio = qualityRatio;
+              }
+              sampleFrames = 0;
+              sampleDuration = 0;
+              lastQualityChange = performance.now();
+            }
             const delta = Math.min(rawDelta, 1 / 24);
             const motionDelta = Math.min(rawDelta, 0.12);
             // Never let a late renderer frame turn into a large camera catch-up
@@ -321,14 +440,19 @@ export function HeroScene({ reducedMotion = false }) {
             // eases back into the shot over subsequent frames.
             const cameraDelta = Math.min(rawDelta, 1 / 30);
             const elapsed = clock.elapsedTime;
-            const scrollDamping = 1 - Math.exp(-cameraDelta * (reducedMotion ? 5.8 : 3.5));
+            const scrollDamping =
+              1 - Math.exp(-cameraDelta * (reducedMotion ? 5.8 : 3.5));
             scrollProgress += (scrollTarget - scrollProgress) * scrollDamping;
-            const interactionMode = performance.now() - lastScrollTime < 180
-              || Math.abs(scrollTarget - scrollProgress) > 0.0015;
+            const interactionMode =
+              performance.now() - lastScrollTime < 180 ||
+              Math.abs(scrollTarget - scrollProgress) > 0.0015;
 
-            const pointerActive = pointerSeen && performance.now() - lastPointerTime < 720;
-            const currentDamping = 1 - Math.exp(-motionDelta * (pointerActive ? 4.8 : 1.4));
-            if (!pointerActive) currentTarget.multiplyScalar(Math.exp(-motionDelta * 3.4));
+            const pointerActive =
+              pointerSeen && performance.now() - lastPointerTime < 720;
+            const currentDamping =
+              1 - Math.exp(-motionDelta * (pointerActive ? 4.8 : 1.4));
+            if (!pointerActive)
+              currentTarget.multiplyScalar(Math.exp(-motionDelta * 3.4));
             current.value.lerp(currentTarget, currentDamping);
 
             if (hoverDirty && elapsed - lastHoverCheck > 0.07) {
@@ -359,7 +483,11 @@ export function HeroScene({ reducedMotion = false }) {
 
             Background.pointer.value.copy(pointer);
             Background.current.value.copy(current.value);
-            Background.currentStrength.value = clamp(current.value.length() * 1.35, 0, 1);
+            Background.currentStrength.value = clamp(
+              current.value.length() * 1.35,
+              0,
+              1,
+            );
             // Keep the mesopelagic blue alive through more of the journey;
             // darkness now gathers gradually instead of tracking scroll 1:1.
             Background.depth.value = Math.pow(scrollProgress, 1.68);
@@ -367,22 +495,24 @@ export function HeroScene({ reducedMotion = false }) {
             const pointerStrength = pointerActive
               ? clamp(0.24 + current.value.length() * 3.4, 0, 1)
               : 0;
-            appendages.forEach((tissue) => tissue.update(
-              delta,
-              elapsed,
-              current.value,
-              pointerSeen ? app.raycaster.ray : null,
-              pointerStrength,
-              interactionMode,
-            ));
-
-            await app.update(
-              reducedMotion ? delta * 0.28 : delta,
-              elapsed,
-              { interactionMode: forceWebGL || interactionMode },
+            appendages.forEach((tissue) =>
+              tissue.update(
+                delta,
+                elapsed,
+                current.value,
+                pointerSeen ? app.raycaster.ray : null,
+                pointerStrength,
+                interactionMode,
+              ),
             );
+
+            await app.update(reducedMotion ? delta * 0.28 : delta, elapsed, {
+              interactionMode: true,
+            });
+            renderFailures = 0;
           } catch (error) {
             console.error("Living ocean frame failed", error);
+            if (++renderFailures >= 3) graphicsLost();
           } finally {
             frameBusy = false;
           }
@@ -414,19 +544,42 @@ export function HeroScene({ reducedMotion = false }) {
       environment?.dispose();
       app?.dispose();
       renderer?.dispose();
+      renderer?.domElement?.removeEventListener(
+        "webglcontextlost",
+        graphicsLost,
+      );
       renderer?.domElement?.remove();
     };
   }, [reducedMotion]);
 
   return (
-    <div
-      ref={mountRef}
-      className={`ocean-stage ocean-stage--${status}`}
-      data-scene-status={status}
-      data-scene-progress={progress}
-      aria-hidden="true"
-    >
-      <div className="ocean-depth-haze" />
-    </div>
+    <>
+      <div
+        ref={mountRef}
+        className={`ocean-stage ocean-stage--${status}`}
+        data-scene-status={status}
+        data-scene-progress={progress}
+        aria-hidden="true"
+      >
+        <div className="ocean-depth-haze" />
+        {status !== "ready" && (
+          <img
+            className="ocean-fallback"
+            src={`${import.meta.env.BASE_URL}assets/generated/abyssal-jellyfish-poster-v1.webp`}
+            alt=""
+          />
+        )}
+      </div>
+      {status === "error" && (
+        <div className="graphics-recovery" role="status">
+          <p>The live ocean couldn’t reach your graphics hardware.</p>
+          <a
+            href={`${window.location.pathname}?renderer=webgl${window.location.hash}`}
+          >
+            Try the compatibility renderer ↗
+          </a>
+        </div>
+      )}
+    </>
   );
 }

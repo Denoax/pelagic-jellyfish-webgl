@@ -30,3 +30,6 @@ jobs:
 
       - name: Test static hosting worker
         run: npm run test:sites
+
+      - name: Test independent particle motion
+        run: node --test tests/particle-drift.test.mjs

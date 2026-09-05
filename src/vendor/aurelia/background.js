@@ -20,7 +20,7 @@ import {
     If,
     uniform,
     Loop,
-    mix
+    mix, output, vec4
 } from "three/tsl";
 import {Lights} from "./lights";
 
@@ -38,37 +38,32 @@ export class Background {
     static currentStrength = uniform(0);
     static depth = uniform(0);
 
+    // The background and submerged fragments share one directional radiance.
+    // No unrelated mesh-edge color, and no expensive raymarch at every pixel.
+    static waterRadiance = Fn(([ray]) => {
+        const up = ray.y.mul(0.5).add(0.5).clamp(0, 1);
+        const surface = mix(vec3(0.003, 0.023, 0.050), vec3(0.001, 0.008, 0.015), Background.depth);
+        const water = surface.mul(up.pow(1.6).mul(0.85).add(0.15)).toVar();
+        const shaft = sin(ray.x.mul(26).add(ray.z.mul(12)).add(time.mul(0.035)))
+            .mul(0.5).add(0.5).pow(24);
+        water.addAssign(vec3(0.006, 0.027, 0.040).mul(shaft).mul(up.pow(5))
+            .mul(Background.depth.oneMinus()).mul(0.28));
+        return water;
+    });
+
     static fogFunction = Fn(() => {
-        const rayDir = positionWorld.xyz.sub(cameraPosition.xyz).normalize();
-        const value = float(0).toVar();
-        const uvRay = vec3(rayDir.xz.normalize().mul(3), 0.0).toVar();
-        const initialRayOffset = mix(rayDir.xz, uvRay.xy, 0.5);
-        const p = vec3(cameraPosition.xz.add(initialRayOffset.mul(3.0)), rayDir.y.mul(2)).toVar();
-        p.x.addAssign(Background.current.x.mul(Background.currentStrength).mul(0.8));
-        p.y.addAssign(Background.current.y.mul(Background.currentStrength).mul(0.8));
-        const factor = 0.005;
-        p.mulAssign(factor);
-        uvRay.mulAssign(factor);
-        Loop(5, () => {
-            const noise = triNoise3D(p, 0.2, time);
-            value.addAssign(noise);
-            p.addAssign(uvRay);
-        });
-        value.divAssign(5);
-        value.mulAssign(1.3);
+        const ray = positionWorld.sub(cameraPosition).normalize();
+        return Background.waterRadiance(ray).add(hash23(screenUV).sub(0.5).mul(0.00018));
+    })();
 
-        const y = rayDir.y.mul(0.5).add(0.5);
-        const colorTop = mix(vec3(.012, .085, .22), vec3(.001, .009, .032), Background.depth);
-        const color = colorTop.mul(y).mul(value).toVar();
-
-        const shaftA = sin(screenUV.x.mul(18).add(screenUV.y.mul(3)).add(time.mul(0.07))).mul(0.5).add(0.5).pow(14);
-        const shaftB = sin(screenUV.x.mul(11).sub(screenUV.y.mul(2)).sub(time.mul(0.045))).mul(0.5).add(0.5).pow(18);
-        const shaftFade = screenUV.y.oneMinus().pow(2).mul(Background.depth.oneMinus());
-        color.addAssign(vec3(0.04, 0.18, 0.36).mul(shaftA.add(shaftB)).mul(shaftFade).mul(0.12));
-
-        const dither = hash23(screenUV).sub(0.5).mul(1.0/255);
-        color.xyz.addAssign(dither);
-        return color;
+    static waterFog = Fn(() => {
+        const ray = positionWorld.sub(cameraPosition);
+        const distance = ray.length().sub(12).max(0);
+        const extinction = vec3(0.11, 0.078, 0.060).mul(mix(0.5, 1.0, Background.depth));
+        const transmission = extinction.mul(distance.pow(1.5)).negate().exp();
+        // Capture Output before the material assigns its final Output again.
+        // An inline reference would evaluate absorption a second time.
+        return vec4(mix(Background.waterRadiance(ray.normalize()), output.rgb, transmission), output.a).toVar();
     })();
 
     static getFog = Fn(() => {
