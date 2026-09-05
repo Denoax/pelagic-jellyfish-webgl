@@ -11,8 +11,6 @@ An interactive WebGL ocean, a living jellyfish swarm, and an original liquid-gla
 
 ![Pelagic ocean journey in motion](docs/media/pelagic-art-journey.gif)
 
-The experience is deliberately not a conventional portfolio page. Scrolling acts as a silent camera timeline: it changes the featured animal, orbit, depth, light and swarm composition without putting headings or paragraphs over the artwork. Only Mani Marami Milani and GitHub remain at the top-right, `@DENOAX · © 2026` remains at the bottom-left, and Return to the Surface remains at the bottom-right.
-
 ## The finished journey
 
 | Surface encounter | Mid-water handoff | Deep departure |
