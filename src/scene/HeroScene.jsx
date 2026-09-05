@@ -361,8 +361,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         await environment.loadDeepAssets();
         if (disposed) return;
 
-        // Populate every dynamic buffer once while the loading veil is still
-        // present. Otherwise later high-fidelity actors pay their first geometry
+        // Populate every dynamic buffer before revealing the live canvas.
+        // Otherwise later high-fidelity actors pay their first geometry
         // upload in the middle of a wheel gesture.
         appendages.forEach((tissue) => {
           tissue.setPresence(1, 1);
@@ -562,7 +562,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         aria-hidden="true"
       >
         <div className="ocean-depth-haze" />
-        {status !== "ready" && (
+        {(status === "still" || status === "error") && (
           <img
             className="ocean-fallback"
             src={`${import.meta.env.BASE_URL}assets/generated/abyssal-jellyfish-poster-v1.webp`}

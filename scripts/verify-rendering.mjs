@@ -91,6 +91,10 @@ try {
   await send("Page.addScriptToEvaluateOnNewDocument", {
     source: `
     window.__audit={frames:[],long:[],contexts:[],draws:0,started:performance.now()};
+    window.__audit.startupPosterSeen=false;
+    new MutationObserver(()=>{
+      if(document.querySelector('.ocean-stage--loading .ocean-fallback'))window.__audit.startupPosterSeen=true;
+    }).observe(document,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
     window.__audit.shaders=[];
     const shaderSource=WebGL2RenderingContext.prototype.shaderSource;
     WebGL2RenderingContext.prototype.shaderSource=function(shader,source){window.__audit.shaders.push(source);return shaderSource.call(this,shader,source);};
@@ -263,12 +267,14 @@ try {
   const report = await evaluate(
     `(()=>{const a=window.__audit;const stats=(lo,hi)=>{const f=a.frames.filter(x=>x.at>=lo&&x.at<hi);const times=f.map(x=>x.dt).sort((a,b)=>a-b);return {frames:f.length,mean:times.reduce((s,n)=>s+n,0)/(times.length||1),p95:times[Math.floor(times.length*.95)],max:times.at(-1),drawFrames:f.filter(x=>x.draws>0).length,draws:f.reduce((s,x)=>s+x.draws,0)};};return {status:document.querySelector('[data-scene-status]')?.dataset.sceneStatus,worldRenderer:window.__JELLYFISH_WORLD__?.renderer,canvasCount:document.querySelectorAll('canvas').length,contexts:a.contexts.map(({type,at,renderer})=>({type,at,renderer})),windows:[{label:'startup',...stats(0,5000)},{label:'ocean',...stats(5000,11000)},{label:'entry',...stats(11500,15000)},{label:'idle',...stats(15000,19000)},{label:'exit',...stats(19000,24000)}],longTasks:a.long,frames:a.frames,assets:performance.getEntriesByType('resource').map(x=>({name:x.name,duration:x.duration,transfer:x.transferSize})),text:document.body.innerText};})()`,
   );
+  report.startupPosterSeen = await evaluate("window.__audit.startupPosterSeen");
   writeFileSync(
     out + ".json",
     JSON.stringify({ mode, url, width, height, ...report, errors }, null, 2),
   );
   const { frames, assets, ...brief } = report;
   console.log(JSON.stringify({ ...brief, errorCount: errors.length }));
+  if (report.startupPosterSeen) throw Error("Startup displayed the rejected static poster");
   if (
     mode === "fallback" &&
     (report.status !== "ready" || report.worldRenderer !== "WebGL 2")

@@ -28,7 +28,7 @@ Reviewed: 2026-09-03
 
 ### Accessibility and graphics-recovery artwork
 
-- Files: `public/assets/generated/abyssal-jellyfish-poster-v1.webp` and `public/assets/generated/abyssal-jellyfish-icon-v1.webp`. The poster appears during loading, with reduced motion, or when graphics are unavailable. It does not replace the successfully running 3D scene.
+- Files: `public/assets/generated/abyssal-jellyfish-poster-v1.webp` and `public/assets/generated/abyssal-jellyfish-icon-v1.webp`. The poster appears only with reduced motion or when graphics are unavailable, never during normal startup. It does not replace the successfully running 3D scene.
 - Creator: OpenAI ImageGen, directed by Codex for Mani Marami Milani
 - Source: generated specifically for this project on 2026-09-03 after Mani selected the third displayed abyssal concept
 - Reference inputs: the selected project mock and a CC BY moon-jelly research image by foxcc
