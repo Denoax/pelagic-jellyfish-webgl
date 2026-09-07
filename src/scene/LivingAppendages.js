@@ -695,14 +695,15 @@ export class LivingAppendages {
       this.armMaterial=createJellyTissue({membrane:true});this.arms.material=this.armMaterial;
       this.frillMaterial.transmission=0;this.frillMaterial.blending=THREE.NormalBlending;
       this.frillMaterial.emissiveIntensity=.16;this.frillMaterial.opacity=.38;
-      this.tentacleMaterial.transmission=0;this.tentacleMaterial.emissiveIntensity=.18;
+      this.tentacleMaterial.transmission=0;this.tentacleMaterial.emissiveIntensity=.42;
       this.tentacleMaterial.opacity=.4;
       this.rim.visible=false; this.ribs.visible=false; this.crown.visible=false;
       this.frill.visible=false; // the margin is now welded into the mantle mesh
       this.innerBell.visible=false; // no co-located additive shell over the tissue
-      this.organMaterial.color.set(0xad8aa2);this.organMaterial.emissive.set(0x49334e);
-      this.organMaterial.emissiveIntensity=.10;this.organMaterial.opacity=.2;
-      this.organMaterial.roughness=.62;this.organMaterial.specularIntensity=.18;
+      this.organMaterial.color.set(0xe1bedb);this.organMaterial.emissive.set(0xe378a8);
+      this.organMaterial.emissiveIntensity=.95;this.organMaterial.opacity=.24;
+      this.organMaterial.emissiveMap=this.tissueTexture;
+      this.organMaterial.roughness=.33;this.organMaterial.specularIntensity=.35;
       this.organMaterial.ior=1.18;
       this.organMaterial.blending=THREE.NormalBlending;this.organMaterial.transmission=0;
       this.organGeometry.dispose();
@@ -723,7 +724,7 @@ export class LivingAppendages {
       });
       this.activationShell.visible=false;this.activationRing.visible=false;this.activationNode.visible=false;
       if(this.signalPearls)this.signalPearls.visible=false;
-      if(this.filamentMaterial){this.filamentMaterial.transmission=0;this.filamentMaterial.emissiveIntensity=.22;this.filamentMaterial.opacity=.28;}
+      if(this.filamentMaterial){this.filamentMaterial.transmission=0;this.filamentMaterial.emissiveIntensity=.65;this.filamentMaterial.opacity=.28;}
     }
     this.baseVisuals = {
       bellEmissive: this.bellMaterial.emissiveIntensity,
