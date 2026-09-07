@@ -20,12 +20,13 @@ export class PopulationDetail {
     }
     // Fixed resource budgets, assigned by importance instead of original ID.
     this.halos = []; this.lights = [];
+    this.capacity = options.mobile ? 3 : 4;
     for (const t of tissues) {
-      if (this.halos.length < 4) this.halos.push({ mesh: t.halo, drift: t.haloDrift, owner: null });
+      if (this.halos.length < this.capacity) this.halos.push({ mesh: t.halo, drift: t.haloDrift, owner: null });
       else { t.haloGeometry.dispose(); t.haloMaterial.dispose(); }
       t.halo = null; t.haloDrift = null; t.haloGeometry = null; t.haloMaterial = null;
       t.group.remove(t.tissueLight);
-      if (this.lights.length < 4) {
+      if (this.lights.length < this.capacity) {
         const light = t.tissueLight.clone(); app.scene.add(light); this.lights.push(light);
       }
     }
@@ -64,7 +65,7 @@ export class PopulationDetail {
       t.inspectImportance(px, visible, dt);
     }
     const ranked = this.tissues.filter(t => t.onScreen && t.presence > .15 && t.pixels > 80)
-      .sort((a, b) => b.pixels - a.pixels).slice(0, 4);
+      .sort((a, b) => b.pixels - a.pixels).slice(0, this.capacity);
     this.tissues.forEach(t => { t.halo = null; t.haloDrift = null; t.haloMaterial = null; t.haloGeometry = null; });
     const available = ranked.filter(t => !this.halos.some(s => s.owner === t));
     this.halos.forEach(slot => {
@@ -99,7 +100,8 @@ export class PopulationDetail {
           + t.tentacleGeometry.index.count) / 3 };
     });
     return { basis: 'CSS bell diameter; DPR independent', counts, animals,
-      renderer: { calls: this.app.renderer.info.render.calls, triangles: this.app.renderer.info.render.triangles },
+      renderer: { renderCallsTotal: this.app.renderer.info.render.calls,
+        drawCalls: this.app.renderer.info.render.drawCalls, triangles: this.app.renderer.info.render.triangles },
       memory: this.app.renderer.info.memory };
   }
   dispose() {

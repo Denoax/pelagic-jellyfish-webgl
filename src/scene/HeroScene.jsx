@@ -318,7 +318,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         if (populationRequested) {
           const { PopulationDetail } = await import('./population/PopulationDetail.js');
           if (disposed) return;
-          population = new PopulationDetail(app, environment, appendages, { reducedMotion, chamber: query.get('specimen') === '1' });
+          population = new PopulationDetail(app, environment, appendages, { reducedMotion, mobile: isMobile, chamber: query.get('specimen') === '1' });
         }
         updateScrollTarget();
         window.addEventListener("scroll", updateScrollTarget, {

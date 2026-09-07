@@ -34,7 +34,7 @@ try {
      return context;
    };
  })();`});
- await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:process.env.EVIDENCE_MOBILE==='1'});
+ await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:Number(process.env.EVIDENCE_DPR || 1),mobile:process.env.EVIDENCE_MOBILE==='1'});
  // Read-only measurement in the actual shipped page. The ocean's asynchronous
  // rAF callback resolves after await app.update(). Observe that completion,
  // not a second independent rAF loop. Reject hidden/busy callbacks.
@@ -70,7 +70,7 @@ try {
      await evaluate(`new Promise(resolve=>{function tick(){if(window.__SPECIMEN__.state().time>=17.5){window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*${Number(process.env.EVIDENCE_PROGRESS || .35)});resolve();}else requestAnimationFrame(tick);}tick();})`);
    }
    await evaluate(`new Promise(resolve=>{function tick(){if(window.__SPECIMEN__.state().time>=${hold}-1e-7)resolve();else requestAnimationFrame(tick);}tick();})`);
-   await evaluate(`(async()=>{const url=performance.getEntriesByType('resource').map(r=>r.name).find(n=>n.includes('/three_tsl.js'));const {time}=await import(url);time.update=()=>{time.value=${hold};};window.__LIVE_LENS__?.anchor();})()`);
+   await evaluate(`(async()=>{const url=performance.getEntriesByType('resource').map(r=>r.name).find(n=>n.includes('/three_tsl.js'));const {time}=await import(url);const update=time.update;window.__BENCH_RESTORE_TIME__=()=>{time.update=update;};time.update=()=>{time.value=${hold};};window.__LIVE_LENS__?.anchor();})()`);
    await sleep(1000);
    await evaluate(`window.__BENCH_STATE__={time:window.__SPECIMEN__.state().time,camera:window.__JELLYFISH_WORLD__.getCameraState(),actors:window.__JELLYFISH_WORLD__.getSwarmState(),field:window.__CONNECTED_OCEAN__.state(),shaderClock:${hold}}`);
  }
@@ -178,7 +178,7 @@ try {
        await evaluate(`window.__BUBBLE_PASSAGE__.optics(false)`);await sleep(100);await capture('matched-ambient-only');
        await evaluate(`window.__BUBBLE_PASSAGE__.optics(true)`);
        await evaluate(`window.__BUBBLE_PASSAGE__.enable(false)`);await sleep(100);await capture('matched-clear');
-       await evaluate(`window.__BUBBLE_PASSAGE__.enable(true);window.__RESTORE_QA_TIME__();window.__SPECIMEN__.resume()`);
+       await evaluate(`window.__BUBBLE_PASSAGE__.enable(true);window.__RESTORE_QA_TIME__();window.__BENCH_RESTORE_TIME__?.();window.__SPECIMEN__.resume()`);
        await send('Emulation.setVisibleSize',{width,height});
        await send('Page.startScreencast',{format:'jpeg',quality:88,maxWidth:width,maxHeight:height,everyNthFrame:2});
        await sleep(8000);await capture('settled');
