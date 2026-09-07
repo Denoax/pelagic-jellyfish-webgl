@@ -88,7 +88,17 @@ export class PopulationDetail {
     });
     if (this.cpu.length < 20000) this.cpu.push(performance.now() - this.started);
   }
-  setCurrentField(field) { this.halos.forEach(s => s.drift.setCurrentField(field)); }
+  setCurrentField(field) {
+    this.halos.forEach(s => s.drift.setCurrentField(field));
+    this.currentField = field; this.originalWake = field.wake;
+    // A sub-pixel/offscreen propulsion disturbance should not spend the shared
+    // field's bounded wake capacity. Direct activation/echoes remain untouched.
+    field.wake = (...args) => {
+      const t = this.tissues[args[4]];
+      if (t && (!t.onScreen || t.pixels < 80)) return false;
+      return this.originalWake.apply(field, args);
+    };
+  }
   state() {
     const counts = { near: 0, medium: 0, far: 0, hidden: 0, transitioning: 0 };
     const animals = this.tissues.map(t => {
@@ -105,6 +115,7 @@ export class PopulationDetail {
       memory: this.app.renderer.info.memory };
   }
   dispose() {
+    if (this.currentField) this.currentField.wake = this.originalWake;
     this.field.group.visible = this.savedVisible;
     this.tissues.forEach(t => { t.halo = null; t.haloDrift = null; t.haloMaterial = null; t.haloGeometry = null; });
     this.halos.forEach(s => { s.drift.setCurrentField(null); s.mesh.removeFromParent(); s.mesh.geometry.dispose(); s.mesh.material.dispose(); });

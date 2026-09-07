@@ -1,7 +1,7 @@
 import * as THREE from 'three/webgpu';
 import { LivingAppendages } from '../LivingAppendages.js';
 import { biologicalVariation, DetailState, canInteract } from './Importance.js';
-import { mantleGrid, armGrid, morphSurface } from './SurfaceLod.js';
+import { mantleGrid, armGrid, morphSurface, sampleVisibleMantle, sampleVisibleMembranes } from './SurfaceLod.js';
 
 // An adapter of the approved implementation, NOT another animal engine.
 // Near calls its exact geometry/material/physics methods. Lower tiers resample
@@ -47,6 +47,7 @@ export class PopulationAnimal extends LivingAppendages {
   }
 
   inspectImportance(pixels, visible, dt) {
+    this.enteredView ||= visible && !this.onScreen;
     this.pixels = pixels; this.onScreen = visible;
     this.detail = this.detailState.update(pixels, visible && this.presence > .008, dt);
     const ease = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
@@ -75,6 +76,7 @@ export class PopulationAnimal extends LivingAppendages {
     super.simulateChains(chains, ...args);
   }
   updateTubeGeometry(chains, geometry, sides, width) {
+    if (this.detailState?.initialized && !this.onScreen) return;
     if (!this.tubeViews) return super.updateTubeGeometry(chains, geometry, sides, width);
     if (chains === this.filamentChains && this.detail <= 1) return;
     const views = this.tubeViews.get(geometry);
@@ -86,18 +88,20 @@ export class PopulationAnimal extends LivingAppendages {
   }
 
   updateBellSurface(...args) {
+    if (this.detailState?.initialized && !this.onScreen) return;
     if (!this.bellLevels) return super.updateBellSurface(...args);
     const high = Math.ceil(this.detail), low = Math.floor(this.detail);
     for (const tier of high === low ? [high] : [low, high]) {
       this.bellGeometry = this.bellLevels[tier]; this.baseBellColors = this.bellColors[tier];
       const sampleArgs = [...args];
       if (tier !== 2 && !this.bellGeometry.userData.sampled) sampleArgs[3] = true;
-      super.updateBellSurface(...sampleArgs); this.bellGeometry.userData.sampled = true;
+      sampleVisibleMantle(this, sampleArgs[0], sampleArgs[2], sampleArgs[3]); this.bellGeometry.userData.sampled = true;
     }
     if (high !== low) morphSurface(this.bellLevels[high], this.bellLevels[low], high - this.detail);
     this.bell.geometry = this.bellGeometry;
   }
   updateArmGeometry(elapsed, normals) {
+    if (this.detailState?.initialized && !this.onScreen) return;
     if (!this.armLevels) return super.updateArmGeometry(elapsed, normals);
     const high = Math.ceil(this.detail), low = Math.floor(this.detail);
     for (const tier of high === low ? [high] : [low, high]) {
@@ -108,7 +112,7 @@ export class PopulationAnimal extends LivingAppendages {
         const a = Math.floor(x), b = Math.min(a + 1, this.masterArms[i].particles.length - 1);
         p.position.copy(this.masterArms[i].particles[a].position).lerp(this.masterArms[i].particles[b].position, x - a);
       }));
-      super.updateArmGeometry(elapsed, normals || (tier !== 2 && !this.armGeometry.userData.sampled));
+      sampleVisibleMembranes(this, elapsed, normals || (tier !== 2 && !this.armGeometry.userData.sampled));
       this.armGeometry.userData.sampled = true;
       this.armChains = this.masterArms;
     }
@@ -121,8 +125,9 @@ export class PopulationAnimal extends LivingAppendages {
     // too, without receiving the featured shot's extra material illumination.
     const feature = this.feature;
     this.visualFeature = feature;
-    if (this.detail > 1) this.feature = Math.max(.46, feature);
+    if (this.detail > 1 || this.enteredView) this.feature = Math.max(.46, feature);
     try { super.update(...args); } finally { this.feature = feature; this.visualFeature = undefined; }
+    this.enteredView = false;
     if (this.filaments) this.filaments.visible = this.detail > 1;
     this.organs.rotation.y = this.variation.organTurn;
   }
@@ -130,6 +135,13 @@ export class PopulationAnimal extends LivingAppendages {
     const schedulingFeature = this.feature;
     if (this.visualFeature !== undefined) this.feature = this.visualFeature;
     try { super.updateVisualResponse(...args); } finally { this.feature = schedulingFeature; }
+  }
+  updateSignalPearls() { /* Approved improved animal never draws these legacy instances. */ }
+  updateBellDetails(shape) {
+    // Only the gastric body is visible in the approved improved implementation.
+    // Skip legacy hidden ribs, torus rim, crown and concentric-shell updates.
+    this.organs.scale.set(shape.radius, shape.height, shape.radius);
+    this.organs.position.y = shape.height * .48;
   }
   dispose() {
     // Base owns the original near resources; lower tiers are adapter-owned.

@@ -6,6 +6,7 @@ import { projectedDiameter, selectTier, DetailState, biologicalVariation, canInt
 import { PopulationAnimal } from '../src/scene/population/PopulationAnimal.js';
 import { LivingAppendages } from '../src/scene/LivingAppendages.js';
 import { sampleSwimCycle } from '../src/scene/jellyMotion.js';
+import { CurrentField } from '../src/scene/ocean/CurrentField.js';
 
 test('projected CSS diameter follows radius, FOV and resize, not DPR or identity', () => {
   const p = projectedDiameter(1, 10, 900, 60);
@@ -50,8 +51,8 @@ test('near reference adapter preserves approved buffers, spines and activation e
       t.update(1 / 60, frame / 60, new Vector2(.03, -.01));
     }
     if (frame % 30 === 0) for (const key of ['bellGeometry', 'armGeometry', 'tentacleGeometry', 'filamentGeometry']) {
-      assert.deepEqual(b[key].attributes.position.array, a[key].attributes.position.array, key);
-      assert.deepEqual(b[key].attributes.normal.array, a[key].attributes.normal.array, `${key} normals`);
+      for (const attribute of Object.keys(a[key].attributes))
+        assert.deepEqual(b[key].attributes[attribute].array, a[key].attributes[attribute].array, `${key}.${attribute}`);
     }
   }
   assert.equal(a.activation, b.activation); a.dispose(); b.dispose();
@@ -79,6 +80,8 @@ test('population pool keeps material ownership coherent through assignment and c
   tissues.forEach(t => scene.add(t.group));
   const field = { count: 0, group: new Object3D(), kinematics: [] };
   const controller = new PopulationDetail({ camera, scene }, { distantJellies: field }, tissues, {});
+  const current = new CurrentField(), wake = current.wake, activate = current.activate;
+  controller.setCurrentField(current);
   for (let i = 0; i < 5; i++) {
     controller.beforeTissue(1 / 60);
     tissues.forEach(t => t.update(1 / 60, i / 60, new Vector2())); controller.afterTissue(i / 60);
@@ -86,7 +89,13 @@ test('population pool keeps material ownership coherent through assignment and c
   }
   tissues[0].medusa.transformationObject.position.z = -100;
   controller.beforeTissue(1 / 60); tissues.forEach(t => t.update(1 / 60, 1, new Vector2()));
+  const origin = new Vector3(), axis = new Vector3(0, 1, 0);
+  assert.equal(current.wake(origin, axis, 1, .5, 0), false, 'tiny ordinary wake is not inserted');
+  assert.ok(current.wake(origin, axis, 1, .5, 1), 'prominent ordinary wake stays in shared field');
+  assert.equal(current.activate, activate);
+  assert.ok(current.activate(origin, 0), 'direct activation is never LOD-filtered');
   controller.dispose(); tissues.forEach(t => t.dispose());
+  assert.equal(current.wake, wake, 'restore original method at teardown');
   assert.equal(window.__POPULATION__, undefined);
   delete globalThis.window; delete globalThis.innerHeight; delete globalThis.innerWidth;
 });
@@ -99,4 +108,20 @@ test('large non-featured IDs receive full deformation cadence without featured i
     assert.ok(Math.abs(t.bellMaterial.emissiveIntensity - t.baseVisuals.bellEmissive) < 1e-6);
   }
   t.dispose();
+});
+test('offscreen mesh sampling sleeps but live spines persist and refresh on entry', () => {
+  const t = new PopulationAnimal({ transformationObject: new Object3D() }, 15);
+  t.setPresence(1, 0); t.inspectImportance(50, true, 1 / 60);
+  t.update(1 / 60, 0, new Vector2());
+  const positions = t.bell.geometry.attributes.position, version = positions.version;
+  const spine = t.masterArms[0].particles[20].position.clone();
+  for (let i = 1; i < 30; i++) {
+    t.inspectImportance(50, false, 1 / 60); t.update(1 / 60, i / 60, new Vector2(.02, 0));
+  }
+  assert.equal(positions.version, version);
+  assert.notDeepEqual(t.masterArms[0].particles[20].position, spine);
+  t.inspectImportance(50, true, 1 / 60); t.update(1 / 60, .5, new Vector2());
+  assert.equal(t.deformAccumulator, 0);
+  assert.ok(t.bell.geometry.attributes.position.array.every(Number.isFinite));
+  assert.ok(positions.version > version); t.dispose();
 });
