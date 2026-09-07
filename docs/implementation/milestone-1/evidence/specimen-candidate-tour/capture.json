@@ -1,0 +1,72 @@
+{
+  "url": "http://127.0.0.1:5178/?specimen=1&renderer=webgl&idle=300",
+  "info": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "backend": "WebGL 2",
+    "ratio": 1,
+    "viewport": [
+      1280,
+      900
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "specimen": {
+      "time": 5.909099999994037,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": true,
+      "bloom": "off (normal production path)",
+      "phase": 0.31070495843791845,
+      "activation": 0,
+      "frames": 353
+    },
+    "hardware": {
+      "backend": "WebGL 2",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+      "drawBuffer": [
+        1280,
+        900
+      ]
+    },
+    "bloom": "production direct rendering; bloom disabled",
+    "sourceRevision": "3bff13872ce10b6e29f99433e082b13120ca1f3e",
+    "uncommittedSource": ""
+  },
+  "system": {
+    "adapter": null,
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/152.0.7977.76",
+      "revision": "@06afeb20b5998e787a432fe536c662317517854",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "jsVersion": "15.2.124.19"
+    }
+  },
+  "seconds": 44,
+  "frames": 1324,
+  "errors": [],
+  "after": {
+    "state": {
+      "time": 52.873899999990414,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": true,
+      "bloom": "off (normal production path)",
+      "phase": 0.3761932061097788,
+      "activation": 0,
+      "frames": 3171
+    },
+    "activationCount": 1,
+    "lastActivated": 0
+  }
+}

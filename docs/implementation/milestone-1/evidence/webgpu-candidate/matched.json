@@ -1,0 +1,70 @@
+{
+  "url": "http://127.0.0.1:5178/?specimen=1&hold=9&idle=300&renderer=webgpu",
+  "info": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "backend": "WebGPU",
+    "ratio": 1,
+    "viewport": [
+      1280,
+      900
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "specimen": {
+      "time": 0.7833333333333341,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": true,
+      "bloom": "off (normal production path)",
+      "phase": 0.2121514855478932,
+      "activation": 0,
+      "frames": 46
+    },
+    "hardware": {
+      "backend": "WebGPU",
+      "gpu": "not exposed",
+      "drawBuffer": [
+        1280,
+        900
+      ]
+    },
+    "bloom": "production direct rendering; bloom disabled"
+  },
+  "system": {
+    "adapter": {
+      "vendor": "google",
+      "device": "",
+      "architecture": "swiftshader",
+      "description": ""
+    },
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/152.0.7977.76",
+      "revision": "@06afeb20b5998e787a432fe536c662317517854",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "jsVersion": "15.2.124.19"
+    }
+  },
+  "matched": true,
+  "state": {
+    "time": 9,
+    "angle": "oblique",
+    "distance": "far",
+    "candidate": true,
+    "chamber": true,
+    "bloom": "off (normal production path)",
+    "phase": 0.9731461404463879,
+    "activation": 0,
+    "frames": 539
+  },
+  "errors": []
+}

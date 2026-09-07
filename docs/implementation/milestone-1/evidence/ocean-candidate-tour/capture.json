@@ -1,0 +1,61 @@
+{
+  "url": "http://127.0.0.1:5178/?oceanPreview=1&idle=300&renderer=webgl",
+  "info": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "backend": "WebGL 2",
+    "ratio": 1,
+    "viewport": [
+      1280,
+      900
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "specimen": {
+      "time": 6.0005000000000015,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": false,
+      "bloom": "off (normal production path)",
+      "phase": 0.3302937914766475,
+      "activation": 0,
+      "frames": 359
+    },
+    "hardware": {
+      "backend": "WebGL 2",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+      "drawBuffer": [
+        1280,
+        900
+      ]
+    },
+    "bloom": "production direct rendering; bloom disabled"
+  },
+  "system": null,
+  "seconds": 36,
+  "frames": 1091,
+  "errors": [],
+  "after": {
+    "state": {
+      "time": 45.648899999998115,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": false,
+      "bloom": "off (normal production path)",
+      "phase": 0.8277323888730983,
+      "activation": 0,
+      "frames": 2738
+    },
+    "activationCount": 1,
+    "lastActivated": 0
+  }
+}
