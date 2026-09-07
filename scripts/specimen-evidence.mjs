@@ -2,6 +2,7 @@
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { installOceanCompletionProbe } from './ocean-completion-probe.mjs';
 const [url='http://127.0.0.1:5178/?idle=300', label='baseline', mode='capture', seconds='24'] = process.argv.slice(2);
 const out=resolve(process.env.EVIDENCE_ROOT || 'docs/implementation/milestone-1/evidence',label);
 const width=Number(process.env.EVIDENCE_WIDTH || 1280), height=Number(process.env.EVIDENCE_HEIGHT || 900);
@@ -36,36 +37,17 @@ try {
  await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:process.env.EVIDENCE_MOBILE==='1'});
  // Read-only measurement in the actual shipped page. The ocean's asynchronous
  // rAF callback resolves after await app.update(). Observe that completion,
- // not a second independent rAF loop. Reject hidden/busy/no-step callbacks.
- if(mode==='perf')await send('Page.addScriptToEvaluateOnNewDocument',{source:`(()=>{
-   const raf=window.requestAnimationFrame.bind(window), wrappers=new WeakMap();
-   let last=0, intervals=[], matched=0;
-   const clock=()=>window.__SPECIMEN__?.state().time ?? window.__CONNECTED_OCEAN__?.state().time;
-   window.__AUDIT_RENDER__={reset(){last=0;intervals=[];},read(){return {matched,intervals:intervals.slice()};}};
-   window.requestAnimationFrame=callback=>{
-     if(!wrappers.has(callback)){
-       const source=Function.prototype.toString.call(callback);
-       const ocean=callback.constructor.name==='AsyncFunction' && source.includes('__JELLYFISH_WORLD__') && source.includes('.getDelta()');
-       if(ocean)matched++;
-       wrappers.set(callback,ocean?function(t){
-         const before=clock(), result=callback(t), advanced=clock()>before;
-         if(advanced && result?.then)result.then(()=>{
-           if(document.hidden)return;
-           const now=performance.now();if(last && intervals.length<20000)intervals.push(now-last);last=now;
-         });
-         return result;
-       }:callback);
-     }
-     return raf(wrappers.get(callback));
-   };
- })();`});
+ // not a second independent rAF loop. Reject hidden/busy callbacks.
+ if(mode==='perf')await send('Page.addScriptToEvaluateOnNewDocument',{source:`(${installOceanCompletionProbe.toString()})();`});
  await send('Page.addScriptToEvaluateOnNewDocument',{source:`let seed=7183;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};`});
  await send('Page.addScriptToEvaluateOnNewDocument',{source:`if(navigator.gpu){const request=navigator.gpu.requestAdapter.bind(navigator.gpu);navigator.gpu.requestAdapter=async (...args)=>{const a=await request(...args);window.__actualAdapter=a?{vendor:a.info?.vendor,device:a.info?.device,architecture:a.info?.architecture,description:a.info?.description,isFallbackAdapter:a.isFallbackAdapter}:null;return a;};}`});
  await send('Page.navigate',{url});
+ await send('Page.bringToFront');
  let ready=false;
  if(mode==='reference'){await sleep(8000);ready=true;}
  else for(let i=0;i<300;i++){ready=await evaluate(`document.querySelector('[data-scene-status]')?.dataset.sceneStatus==='ready'`);if(ready)break;await sleep(100);}
  if(!ready)throw Error('Scene did not become ready: '+JSON.stringify(errors));
+ await send('Page.bringToFront');
  await sleep(6000);
  const info=await evaluate(`({userAgent:navigator.userAgent,backend:window.__JELLYFISH_WORLD__?.renderer,ratio:window.__JELLYFISH_WORLD__?.pixelRatio,viewport:[innerWidth,innerHeight],buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),hardware:window.__SPECIMEN__?.rendererInfo(),bloom:'production direct rendering; bloom disabled'})`);
  info.driverRevision=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).stdout.trim();
@@ -73,6 +55,8 @@ try {
  info.sourceIdentity=process.env.EVIDENCE_SOURCE_REV?'explicit source checkout/release; verify against deployment or worktree':'driver checkout only; may differ from target URL';
  info.release=await evaluate(`window.__JELLYFISH_WORLD__?.oceanRelease`);
  info.hasSpecimenControls=await evaluate(`Boolean(window.__SPECIMEN__)`);
+ info.visibility=await evaluate(`document.visibilityState`);
+ if(info.visibility!=='visible')throw Error('Evidence page lost foreground visibility during warm-up');
  info.actualGL=await evaluate(`window.__AUDIT_GL__||null`);
  info.loadedScripts=await evaluate(`[...document.scripts].map(s=>s.src).filter(Boolean)`);
  info.uncommittedSource=spawnSync('git',['diff','--name-only','--','src'],{encoding:'utf8'}).stdout.trim();
@@ -86,7 +70,13 @@ try {
    const sorted=[...intervals].sort((a,b)=>a-b);
    writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),auditRender:await evaluate(`window.__AUDIT_RENDER__.read()`),featureCpuIntervals:await evaluate(`window.__CONNECTED_OCEAN__?.cost()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state()})`)},null,2));
  }else{
-   const shot=async name=>{const r=await send('Page.captureScreenshot',{format:'png'});writeFileSync(`${out}/${name}.png`,Buffer.from(r.data,'base64'));};
+   const shot=async name=>{
+     const r=await send('Page.captureScreenshot',{format:'png'});
+     writeFileSync(`${out}/${name}.png`,Buffer.from(r.data,'base64'));
+     // Capture can restore container dimensions despite overridden CSS metrics.
+     // Keep subsequent screencast frames at the requested size, without padding.
+     await send('Emulation.setVisibleSize',{width,height});
+   };
    const clickJelly=async(index=0)=>{
      const point=await evaluate(`window.__JELLYFISH_WORLD__.getJellyScreenPoint(${index})`);
      const before=await evaluate(`window.__JELLYFISH_WORLD__.activationCount`);
@@ -94,7 +84,7 @@ try {
      const after=await evaluate(`window.__JELLYFISH_WORLD__.activationCount`);
      return {point,before,after,hit:after>before};
    };
-   const state=()=>evaluate(`({specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount})`);
+   const state=()=>evaluate(`({visibility:document.visibilityState,specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount})`);
    const nearbyPair=()=>evaluate(`(()=>{const a=window.__JELLYFISH_WORLD__.getSwarmState().actors;let pair=null,best=5.2;for(let i=0;i<a.length;i++){if(a[i].presence<.2)continue;const p=window.__JELLYFISH_WORLD__.getJellyScreenPoint(i);if(p.x<20||p.x>innerWidth-20||p.y<20||p.y>innerHeight-20)continue;for(let j=0;j<a.length;j++){if(i===j||a[j].presence<.2)continue;const d=Math.hypot(...a[i].position.map((v,k)=>v-a[j].position[k]));if(d<best){best=d;pair={index:i,neighbor:j,distance:d};}}}return pair;})()`);
    if(mode==='ocean-matched'||mode==='pulse-matched'){
      const snapshots=[];
@@ -127,7 +117,11 @@ try {
        await sleep(2000);step++;
      }
      await shot('long-observation-end');
-     writeFileSync(`${out}/observation.json`,JSON.stringify({url,info,system,durationSeconds:(performance.now()-start)/1000,clicks,checkpoints,errors},null,2));
+     const durationSeconds=(performance.now()-start)/1000;
+     const simulationAdvance=checkpoints.at(-1).state.connected.time-checkpoints[0].state.connected.time;
+     const valid=simulationAdvance>durationSeconds*.8&&checkpoints.every(c=>c.state.visibility==='visible');
+     writeFileSync(`${out}/observation.json`,JSON.stringify({url,info,system,durationSeconds,simulationAdvance,valid,clicks,checkpoints,errors},null,2));
+     if(!valid)throw Error('Observation invalid: simulation stalled or page lost foreground visibility');
    }else if(mode==='lifecycle'){
      const key=async key=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code:key,windowsVirtualKeyCode:27});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code:key,windowsVirtualKeyCode:27});};
      await shot('idle-entry');
@@ -227,7 +221,7 @@ try {
    await send('Page.stopScreencast');await sleep(300);
    await shot('ending');
    if(frames.length>1){let concat='';frames.forEach((f,i)=>{concat+=`file '${f.name}'\nduration ${i+1<frames.length?Math.max(.001,frames[i+1].time-f.time):.033}\n`;});writeFileSync(`${out}/motion.txt`,concat);const result=spawnSync('/usr/bin/ffmpeg',['-y','-loglevel','error','-f','concat','-safe','0','-i',`${out}/motion.txt`,'-vf','pad=ceil(iw/2)*2:ceil(ih/2)*2','-fps_mode','vfr','-c:v','libx264','-crf','20','-pix_fmt','yuv420p','-movflags','+faststart',`${out}/motion.mp4`],{encoding:'utf8'});if(result.status)throw Error(result.stderr);}
-   writeFileSync(`${out}/capture.json`,JSON.stringify({url,info,system,seconds:Number(seconds),frames:frames.length,errors,after:await evaluate(`({state:window.__SPECIMEN__?.state(),activationCount:window.__JELLYFISH_WORLD__?.activationCount,lastActivated:window.__JELLYFISH_WORLD__?.lastActivated})`)},null,2));
+   writeFileSync(`${out}/capture.json`,JSON.stringify({url,info,system,seconds:Number(seconds),frames:frames.length,errors,after:await evaluate(`({state:window.__SPECIMEN__?.state(),ratio:window.__JELLYFISH_WORLD__?.pixelRatio,buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),activationCount:window.__JELLYFISH_WORLD__?.activationCount,lastActivated:window.__JELLYFISH_WORLD__?.lastActivated})`)},null,2));
    }
  }
  console.log(JSON.stringify({out,mode,errors:errors.length,info}));
