@@ -90,3 +90,13 @@ test('population pool keeps material ownership coherent through assignment and c
   assert.equal(window.__POPULATION__, undefined);
   delete globalThis.window; delete globalThis.innerHeight; delete globalThis.innerWidth;
 });
+test('large non-featured IDs receive full deformation cadence without featured illumination', () => {
+  const t = new PopulationAnimal({ transformationObject: new Object3D() }, 12);
+  t.setPresence(1, 0); t.inspectImportance(180, true, 1 / 60);
+  for (let i = 0; i < 8; i++) {
+    t.update(1 / 60, i / 60, new Vector2());
+    assert.equal(t.deformAccumulator, 0); assert.equal(t.feature, 0);
+    assert.ok(Math.abs(t.bellMaterial.emissiveIntensity - t.baseVisuals.bellEmissive) < 1e-6);
+  }
+  t.dispose();
+});

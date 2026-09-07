@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 const root = process.argv[2];
+const candidate = process.argv[3] || 'candidate';
 const read = path => JSON.parse(readFileSync(`${root}/${path}`, 'utf8'));
 function stats(values) {
   if (!values?.length) return null;
@@ -9,8 +10,8 @@ function stats(values) {
 }
 const cases = ['opening', 'school', 'bubbles', 'far-school', 'distant', 'secondary'];
 const results = cases.map(scene => {
-  const before = read(`perf-baseline-${scene}/performance.json`), after = read(`perf-candidate-${scene}/performance.json`);
-  const population = read(`perf-candidate-${scene}/population-cost.json`);
+  const before = read(`perf-baseline-${scene}/performance.json`), after = read(`perf-${candidate}-${scene}/performance.json`);
+  const population = read(`perf-${candidate}-${scene}/population-cost.json`);
   return { scene, before: stats(before.auditRender.intervals), after: stats(after.auditRender.intervals),
     beforeCamera: before.info.controlledState.camera, afterCamera: after.info.controlledState.camera,
     dimensions: after.info.buffers[0], dpr: after.info.ratio, counts: population.state.counts,

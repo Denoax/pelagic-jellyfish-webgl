@@ -116,9 +116,20 @@ export class PopulationAnimal extends LivingAppendages {
     this.arms.geometry = this.armGeometry;
   }
   update(...args) {
-    super.update(...args);
+    // The legacy scheduler used the director's featured-shot flag for full
+    // deformation cadence. Large former background IDs deserve that cadence
+    // too, without receiving the featured shot's extra material illumination.
+    const feature = this.feature;
+    this.visualFeature = feature;
+    if (this.detail > 1) this.feature = Math.max(.46, feature);
+    try { super.update(...args); } finally { this.feature = feature; this.visualFeature = undefined; }
     if (this.filaments) this.filaments.visible = this.detail > 1;
     this.organs.rotation.y = this.variation.organTurn;
+  }
+  updateVisualResponse(...args) {
+    const schedulingFeature = this.feature;
+    if (this.visualFeature !== undefined) this.feature = this.visualFeature;
+    try { super.updateVisualResponse(...args); } finally { this.feature = schedulingFeature; }
   }
   dispose() {
     // Base owns the original near resources; lower tiers are adapter-owned.
