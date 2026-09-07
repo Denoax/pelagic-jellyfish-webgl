@@ -80,6 +80,18 @@ test('simulation rejects background-tab jumps instead of catching up seconds',()
   assert.equal(boundedTissueDelta(1/120),1/120);
   assert.equal(boundedTissueDelta(.1),.05);
 });
+test('activation travels on the mantle rather than a detached glow sphere',()=>{
+  const tissue=create();tissue.update(1/60,0,new Vector2());
+  tissue.activate(new Vector3(.4,.5,.1));
+  for(let i=1;i<=30;i++)tissue.update(1/60,i/60,new Vector2());
+  const signal=tissue.bellGeometry.attributes.tissueSignal.array;
+  assert.ok(signal.every(Number.isFinite));
+  assert.ok(Math.max(...signal)>.1);
+  assert.ok(Math.min(...signal)<.001,'response remains localized');
+  assert.equal(tissue.activationNode.visible,false);
+  assert.equal(tissue.getInteractionMeshes()[0],tissue.bell);
+  tissue.dispose();
+});
 test('candidate geometry and activation remain finite through multiple cycles and a turn',()=>{
   const tissue=create();const current=new Vector2();
   for(let frame=0;frame<1080;frame++){

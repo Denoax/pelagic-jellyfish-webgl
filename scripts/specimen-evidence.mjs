@@ -26,13 +26,15 @@ try {
  await send('Page.addScriptToEvaluateOnNewDocument',{source:`if(navigator.gpu){const request=navigator.gpu.requestAdapter.bind(navigator.gpu);navigator.gpu.requestAdapter=async (...args)=>{const a=await request(...args);window.__actualAdapter=a?{vendor:a.info?.vendor,device:a.info?.device,architecture:a.info?.architecture,description:a.info?.description,isFallbackAdapter:a.isFallbackAdapter}:null;return a;};}`});
  await send('Page.navigate',{url});
  let ready=false;
- for(let i=0;i<300;i++){ready=await evaluate(`document.querySelector('[data-scene-status]')?.dataset.sceneStatus==='ready'`);if(ready)break;await sleep(100);}
+ if(mode==='reference'){await sleep(8000);ready=true;}
+ else for(let i=0;i<300;i++){ready=await evaluate(`document.querySelector('[data-scene-status]')?.dataset.sceneStatus==='ready'`);if(ready)break;await sleep(100);}
  if(!ready)throw Error('Scene did not become ready: '+JSON.stringify(errors));
  await sleep(6000);
  const info=await evaluate(`({userAgent:navigator.userAgent,backend:window.__JELLYFISH_WORLD__?.renderer,ratio:window.__JELLYFISH_WORLD__?.pixelRatio,viewport:[innerWidth,innerHeight],buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),hardware:window.__SPECIMEN__?.rendererInfo(),bloom:'production direct rendering; bloom disabled'})`);
  info.sourceRevision=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).stdout.trim();
  info.uncommittedSource=spawnSync('git',['diff','--name-only','--','src'],{encoding:'utf8'}).stdout.trim();
  const system={adapter:await evaluate(`window.__actualAdapter||null`),browser:await send('Browser.getVersion')};
+ if(process.env.EVIDENCE_EVAL)await evaluate(process.env.EVIDENCE_EVAL);
  if(mode==='perf'){
    await evaluate(`window.__SPECIMEN__?.resetIntervals()`);
    const intervals=await evaluate(`new Promise(resolve=>{const a=[];let last=0;const start=performance.now();function tick(t){if(last)a.push(t-last);last=t;if(t-start<${Number(seconds)*1000})requestAnimationFrame(tick);else resolve(a);}requestAnimationFrame(tick);})`);

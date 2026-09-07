@@ -304,6 +304,7 @@ function createBellGeometry(hero, species, improved = false) {
   geometry.setAttribute("normal", new THREE.BufferAttribute(normals, 3));
   geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+  if(improved)geometry.setAttribute('tissueSignal',new THREE.BufferAttribute(new Float32Array(vertexCount),1).setUsage(THREE.DynamicDrawUsage));
   geometry.setIndex(indices);
   geometry.attributes.position.setUsage(THREE.DynamicDrawUsage);
   geometry.attributes.normal.setUsage(THREE.DynamicDrawUsage);
@@ -706,7 +707,7 @@ export class LivingAppendages {
       this.organMaterial.blending=THREE.NormalBlending;this.organMaterial.transmission=0;
       this.organGeometry.dispose();
       // A joined, four-lobed gastric body, rather than four open pipe fittings.
-      // Its equatorial lobes are the oral-arm insertion sites.
+      // Its lower lobes are the oral-arm insertion sites.
       this.organGeometry=new THREE.SphereGeometry(1,48,20);
       const organPositions=this.organGeometry.attributes.position;
       for(let index=0;index<organPositions.count;index++){
@@ -720,7 +721,7 @@ export class LivingAppendages {
         mesh.geometry=this.organGeometry;mesh.scale.setScalar(1);
         mesh.rotation.set(0,0,0);mesh.position.set(0,0,0);mesh.visible=i===0;
       });
-      this.activationShell.visible=false;this.activationRing.visible=false;
+      this.activationShell.visible=false;this.activationRing.visible=false;this.activationNode.visible=false;
       if(this.signalPearls)this.signalPearls.visible=false;
       if(this.filamentMaterial){this.filamentMaterial.transmission=0;this.filamentMaterial.emissiveIntensity=.22;this.filamentMaterial.opacity=.28;}
     }
@@ -823,7 +824,8 @@ export class LivingAppendages {
         if (pointIndex === 0) return;
         const t = pointIndex / (chain.particles.length - 1);
         const lengthFalloff = Math.exp(-t * 2.4);
-        const impulse = (this.hero ? 0.12 : 0.18) * angularFalloff * lengthFalloff * activationStrength;
+        const impulse = (this.hero ? 0.12 : 0.18) * angularFalloff * lengthFalloff * activationStrength
+          * (this.improved ? .4 : 1);
         this.recoilDirection.set(
           Math.cos(chain.angle) * 0.72,
           -0.32 - t * 0.18,
@@ -994,6 +996,7 @@ export class LivingAppendages {
 
   updateArmGeometry(elapsed, refreshNormals = true) {
     const positions = this.armGeometry.attributes.position.array;
+    const cycle=this.medusa.swimKinematics?.cycle ?? elapsed*this.pulseRate+this.pulseOffset;
     let pointer = 0;
 
     this.armChains.forEach((chain, chainIndex) => {
@@ -1014,7 +1017,7 @@ export class LivingAppendages {
           this.side.normalize();
           this.binormal.crossVectors(this.tangent,this.side).normalize();
           for(let col=0;col<17;col++){
-            const section=membraneSection(t,col/8-1,elapsed*this.pulseRate+this.pulseOffset,chainIndex,this.membraneScratch);
+            const section=membraneSection(t,col/8-1,cycle,chainIndex,this.membraneScratch);
             positions[pointer++]=particle.position.x+this.side.x*section.width+this.binormal.x*section.fold;
             positions[pointer++]=particle.position.y+this.side.y*section.width+this.binormal.y*section.fold;
             positions[pointer++]=particle.position.z+this.side.z*section.width+this.binormal.z*section.fold;
@@ -1135,6 +1138,7 @@ export class LivingAppendages {
         );
         const waveFront = this.activationAge * 0.48;
         const wave = Math.exp(-Math.pow((surfaceDistance - waveFront) / 0.075, 2)) * this.activation;
+        if(this.improved)this.bellGeometry.attributes.tissueSignal.array[pointer/3]=wave;
         const radial = Math.sin(polar) * shape.radius * radiusPulse * scallop
           + tissueNoise + asymmetry + wave * (this.hero ? 0.035 : 0.055);
         const canopy = Math.pow(Math.max(0, Math.cos(polar)), 0.62) * shape.height * heightPulse;
@@ -1165,6 +1169,7 @@ export class LivingAppendages {
     }
     this.bellGeometry.attributes.position.needsUpdate = true;
     this.bellGeometry.attributes.color.needsUpdate = true;
+    if(this.improved)this.bellGeometry.attributes.tissueSignal.needsUpdate=true;
     if (refreshNormals) {
       this.bellGeometry.computeVertexNormals();
       if(this.improved){
