@@ -11,7 +11,7 @@ export const densityAt = (progress, age) =>
 // Shared silhouette vocabulary for cheap films and real optical interfaces.
 // Multi-frequency, size-dependent deformation; no independent optical wobble.
 export function bubbleShape(b, out) {
-  const size = b.hero ? 1 : b.sizeClass === 'small' ? .10 : .55;
+  const size = b.sizeClass === 'large' ? 1 : b.sizeClass === 'small' ? .10 : .55;
   const q = b.age * b.frequency + b.phase;
   const wobble = (Math.sin(q) * .65 + Math.sin(q * 1.73 + b.phase) * .35) * size;
   out.x = 1 + size * .16 + wobble * .10;
@@ -42,7 +42,7 @@ export class BubblePopulation {
     b.speed = b.hero ? .72 + this.random() * .35 : small ? 1.25 + this.random() * .65 : .86 + this.random() * .45;
     b.life = b.hero ? 7 + this.random() * 2 : 9 + this.random() * 3;
     b.phase = this.random() * Math.PI * 2; b.frequency = .9 + this.random() * .8;
-    b.wobble = (small ? .012 : b.hero ? .15 : .075) * (.6 + this.random() * .8);
+    b.wobble = (small ? .012 : b.sizeClass === 'large' ? .15 : .075) * (.6 + this.random() * .8);
     b.drift = (this.random() - .5) * .12; b.opacity = .3 + this.random() * .25;
     // Air-like divergent sign, softened optical contrast rather than literal
     // 1.33 water/air (whose grazing TIR needs unavailable reflected scene rays).

@@ -16,15 +16,19 @@ export class BubblePassage {
     this.geometry.setAttribute('bubbleOpacity', this.opacity);
     this.glint = new THREE.InstancedBufferAttribute(new Float32Array(PLUME.ambient), 1);
     this.geometry.setAttribute('bubbleGlint', this.glint);
+    this.edgeWidth = new THREE.InstancedBufferAttribute(new Float32Array(PLUME.ambient), 1);
+    this.geometry.setAttribute('bubbleEdgeWidth', this.edgeWidth);
     const material = this.material = new THREE.MeshBasicNodeMaterial({ transparent: true,
       depthWrite: false, side: THREE.FrontSide, blending: THREE.AdditiveBlending });
     const facing = max(dot(normalView, normalize(positionView.negate())), 0);
-    const rim = facing.oneMinus().pow(9);
+    // A sub-pixel small interface needs a broader integrated rim, otherwise
+    // only the medium arcs survive rasterisation and the stream looks empty.
+    const rim = facing.oneMinus().pow(attribute('bubbleEdgeWidth'));
     const light = normalize(vec3(attribute('bubbleGlint').mul(.7).sub(.7), .85, .35));
     // Only the edge reflects light: no central specular dot or dark alpha fill.
     const crescent = max(dot(normalView, light), 0).pow(5);
     material.colorNode = vec3(.70, .88, .95);
-    material.opacityNode = rim.mul(crescent.mul(2.6).add(.025)).mul(attribute('bubbleOpacity'));
+    material.opacityNode = rim.mul(crescent.mul(2.6).add(.10)).mul(attribute('bubbleOpacity'));
     this.mesh = new THREE.InstancedMesh(this.geometry, material, PLUME.ambient);
     this.mesh.frustumCulled = false; this.mesh.visible = false;
     this.mesh.name = 'M3 rising ambient bubble films'; app.scene.add(this.mesh);
@@ -125,6 +129,7 @@ export class BubblePassage {
       this.mesh.setMatrixAt(count, this.matrix);
       this.opacity.setX(count, b.alpha * b.opacity * Math.min(1, 8 / camera.position.distanceTo(this.position)));
       this.glint.setX(count, b.glint);
+      this.edgeWidth.setX(count, b.sizeClass === 'small' ? 3.5 : 7);
       count++;
     }
     // r175 InstanceNode sizes its matrix UBO from count at first compilation.
@@ -140,6 +145,7 @@ export class BubblePassage {
       this.mesh.setMatrixAt(i, this.matrix); this.opacity.setX(i, 0);
     }
     this.mesh.instanceMatrix.needsUpdate = true; this.opacity.needsUpdate = true; this.glint.needsUpdate = true;
+    this.edgeWidth.needsUpdate = true;
     for (const b of this.heroOrder) b.distance = camera.position.distanceToSquared(this.position.set(b.x, b.y, b.z));
     this.heroOrder.sort((a, b) => b.distance - a.distance);
     this.lens.slots.forEach((slot, i) => {

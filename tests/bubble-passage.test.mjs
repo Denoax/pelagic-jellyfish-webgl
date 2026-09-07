@@ -72,4 +72,13 @@ test('source cores are fixed per traversal and ambient material cannot add dark 
   assert.match(source,/blending: THREE.AdditiveBlending/);
   assert.match(source,/material.opacityNode = rim.mul/);
   assert.doesNotMatch(source,/pow\(22\)/);
+  assert.match(source,/this.edgeWidth.needsUpdate = true/);
+});
+test('optical tier does not override size-dependent medium versus large deformation', () => {
+  const b={age:2,phase:.3,frequency:1.2,hero:true};
+  const medium=bubbleShape({...b,sizeClass:'medium'},{});
+  const large=bubbleShape({...b,sizeClass:'large'},{});
+  assert.ok(Math.abs(large.x-1)>Math.abs(medium.x-1));
+  assert.ok(Math.abs(large.tilt)>Math.abs(medium.tilt));
+  assert.deepEqual(medium,bubbleShape({...b,sizeClass:'medium',hero:false},{}));
 });
