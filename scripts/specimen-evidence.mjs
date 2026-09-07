@@ -110,9 +110,29 @@ try {
      const after=await evaluate(`window.__JELLYFISH_WORLD__.activationCount`);
      return {point,before,after,hit:after>before};
    };
-   const state=()=>evaluate(`({visibility:document.visibilityState,specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount})`);
+   const state=()=>evaluate(`({visibility:document.visibilityState,specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount,bubbles:window.__BUBBLE_PASSAGE__?.state()})`);
    const nearbyPair=()=>evaluate(`(()=>{const a=window.__JELLYFISH_WORLD__.getSwarmState().actors;let pair=null,best=5.2;for(let i=0;i<a.length;i++){if(a[i].presence<.2)continue;const p=window.__JELLYFISH_WORLD__.getJellyScreenPoint(i);if(p.x<20||p.x>innerWidth-20||p.y<20||p.y>innerHeight-20)continue;for(let j=0;j<a.length;j++){if(i===j||a[j].presence<.2)continue;const d=Math.hypot(...a[i].position.map((v,k)=>v-a[j].position[k]));if(d<best){best=d;pair={index:i,neighbor:j,distance:d};}}}return pair;})()`);
-   if(mode==='bubble-tour'||mode==='bubble-inspect'){
+   if(mode==='bubble-life'){
+     const checkpoints=[];
+     const scroll=p=>evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*${p})`);
+     await scroll(.35);await sleep(5000);checkpoints.push({stage:'active',state:await state()});
+     const other=await send('Target.createTarget',{url:'about:blank'});
+     const before=await state();await sleep(2000);await send('Page.bringToFront');await sleep(100);
+     checkpoints.push({stage:'background-return',before,after:await state()});await send('Target.closeTarget',{targetId:other.targetId});
+     for(const [w,h] of [[900,900],[390,844],[1280,900]]){
+       await send('Emulation.setDeviceMetricsOverride',{width:w,height:h,deviceScaleFactor:1,mobile:false});
+       await send('Emulation.setVisibleSize',{width:w,height:h});await scroll(.35);await sleep(650);
+       const r=await send('Page.captureScreenshot',{format:'png'});writeFileSync(`${out}/resize-${w}-${h}.png`,Buffer.from(r.data,'base64'));
+       checkpoints.push({stage:'resize',viewport:[w,h],state:await state()});
+     }
+     checkpoints.push({stage:'activation',click:await clickJelly(2)});
+     for(let i=0;i<5;i++){
+       await scroll(i%2?.15:.6);await sleep(4000);checkpoints.push({stage:'outside',state:await state()});
+       await scroll(.35);await sleep(6000);checkpoints.push({stage:'reentered',state:await state()});
+     }
+     await sleep(13000);await shot('finished-calm');checkpoints.push({stage:'exhausted',state:await state()});
+     writeFileSync(`${out}/lifecycle.json`,JSON.stringify({checkpoints,errors},null,2));
+   }else if(mode==='bubble-tour'||mode==='bubble-inspect'){
      const checkpoints=[];
      const capture=async name=>{await shot(name);checkpoints.push({name,state:await state(),bubbles:await evaluate(`window.__BUBBLE_PASSAGE__?.state()`)});};
      const scroll=p=>evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*${p})`);
