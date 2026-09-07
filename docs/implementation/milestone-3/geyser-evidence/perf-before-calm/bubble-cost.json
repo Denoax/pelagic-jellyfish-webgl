@@ -1,0 +1,59 @@
+{
+  "cpu": [],
+  "state": {
+    "time": 8.98333333333336,
+    "eventAge": 0,
+    "running": false,
+    "armed": true,
+    "envelope": 0,
+    "ambient": 0,
+    "heroes": 0,
+    "births": 0,
+    "classes": {
+      "small": 0,
+      "medium": 0,
+      "large": 0
+    },
+    "capacity": {
+      "ambient": 128,
+      "heroes": 3
+    },
+    "progress": 0,
+    "enabled": true,
+    "drawCount": 0,
+    "lens": {
+      "enabled": true,
+      "position": [
+        -1.1259874635237743,
+        0.2427564432140409,
+        5.537482377610441
+      ],
+      "radii": [
+        0.92,
+        1.08,
+        0.32
+      ],
+      "pull": [
+        0,
+        0
+      ],
+      "dragging": false,
+      "size": [
+        1,
+        1
+      ],
+      "samples": 4,
+      "format": "RGBA16F + depth24",
+      "oceanRenders": 1,
+      "outputPasses": 1,
+      "backend": "WebGL2",
+      "textures": 26,
+      "bubbleSlots": 3,
+      "legacyOutputTarget": [
+        1280,
+        900
+      ]
+    },
+    "heroesDetail": []
+  }
+}

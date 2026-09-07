@@ -62,7 +62,7 @@ try {
  info.uncommittedSource=spawnSync('git',['diff','--name-only','--','src'],{encoding:'utf8'}).stdout.trim();
  const system={adapter:await evaluate(`window.__actualAdapter||null`),browser:await send('Browser.getVersion')};
  if(process.env.EVIDENCE_EVAL)await evaluate(process.env.EVIDENCE_EVAL);
- if(mode==='perf' && process.env.EVIDENCE_BUBBLE_STATE){
+ if((mode==='perf'||mode==='bubble-inspect') && process.env.EVIDENCE_BUBBLE_STATE){
    const peak=process.env.EVIDENCE_BUBBLE_STATE==='peak';
    const hold=peak?Number(process.env.EVIDENCE_HOLD||24):9;
    await evaluate(`window.__SPECIMEN__.holdAt(${hold})`);
@@ -87,7 +87,7 @@ try {
    writeFileSync(`${out}/bubble-cost.json`,JSON.stringify({cpu:await evaluate(`window.__BUBBLE_PASSAGE__?.cost()`),state:await evaluate(`window.__BUBBLE_PASSAGE__?.state()`)},null,2));
    writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),auditRender:await evaluate(`window.__AUDIT_RENDER__.read()`),featureCpuIntervals:await evaluate(`window.__CONNECTED_OCEAN__?.cost()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state()})`)},null,2));
  }else{
-   const lensRecording=mode==='lens-optics'||mode==='lens-tour'||mode==='bubble-tour'||mode==='bubble-inspect';
+   const lensRecording=mode==='lens-optics'||mode==='lens-tour'||mode==='bubble-tour'||mode==='bubble-inspect'||mode==='geyser-tour';
    const finishRecording=async()=>{
      await send('Page.stopScreencast');await sleep(300);
      if(frames.length<2)throw Error('Motion evidence missing: fewer than two screencast frames');
@@ -128,17 +128,28 @@ try {
      }
      checkpoints.push({stage:'activation',click:await clickJelly(2)});
      for(let i=0;i<5;i++){
-       await scroll(i%2?.15:.6);await sleep(4000);checkpoints.push({stage:'outside',state:await state()});
+       await scroll(i%2?.15:.68);await sleep(4000);checkpoints.push({stage:'outside',state:await state()});
        await scroll(.35);await sleep(6000);checkpoints.push({stage:'reentered',state:await state()});
      }
-     await sleep(13000);await shot('finished-calm');checkpoints.push({stage:'exhausted',state:await state()});
+     await sleep(24000);await shot('finished-calm');checkpoints.push({stage:'exhausted',state:await state()});
      writeFileSync(`${out}/lifecycle.json`,JSON.stringify({checkpoints,errors},null,2));
+   }else if(mode==='geyser-tour'){
+     const checkpoints=[];
+     await evaluate(`window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyB'}))`);
+     await send('Emulation.setVisibleSize',{width,height});
+     await send('Page.startScreencast',{format:'jpeg',quality:90,maxWidth:width,maxHeight:height,everyNthFrame:2});
+     for(let i=0;i<=44;i+=2){
+       if(i%4===0)await shot('passage-'+i);
+       checkpoints.push({seconds:i,state:await state(),bubbles:await evaluate(`window.__BUBBLE_PASSAGE__.state()`)});
+       if(i<44)await sleep(2000);
+     }
+     writeFileSync(`${out}/bubbles.json`,JSON.stringify({checkpoints,errors},null,2));
    }else if(mode==='bubble-tour'||mode==='bubble-inspect'){
      const checkpoints=[];
      const capture=async name=>{await shot(name);checkpoints.push({name,state:await state(),bubbles:await evaluate(`window.__BUBBLE_PASSAGE__?.state()`)});};
      const scroll=p=>evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*${p})`);
      if(mode==='bubble-inspect'){
-       await scroll(.35);
+       if(!process.env.EVIDENCE_BUBBLE_STATE)await scroll(.35);
        if(process.env.EVIDENCE_MATCH_CROSSING==='1'){
          let crossing=null, closest=Infinity;
          for(let i=0;i<260;i++){
@@ -148,7 +159,7 @@ try {
          }
          if(!crossing)throw Error('No natural bell crossing; closest pixel distance '+closest);
          checkpoints.push({name:'natural-bell-crossing',crossing});
-       }else await sleep(6500);
+       }else if(!process.env.EVIDENCE_BUBBLE_STATE)await sleep(6500);
        await evaluate(`window.__SPECIMEN__.pause()`);
        await evaluate(`(async()=>{const url=performance.getEntriesByType('resource').map(r=>r.name).find(n=>n.includes('/three_tsl.js'));const {time}=await import(url);const update=time.update,value=time.value;time.update=()=>{time.value=value;};window.__RESTORE_QA_TIME__=()=>{time.update=update;};})()`);
        await sleep(100);await capture('matched-bubbles');
@@ -301,7 +312,16 @@ try {
    }else{
    await shot('opening');
    await send('Page.startScreencast',{format:'jpeg',quality:90,maxWidth:width,maxHeight:height,everyNthFrame:2});
-   if(mode==='audit-journey'){
+   if(mode==='reference' && process.env.EVIDENCE_SWEEP==='1'){
+     await sleep(1000);
+     await send('Input.dispatchMouseEvent',{type:'mousePressed',x:330,y:375,button:'left',buttons:1,clickCount:1});
+     for(let i=0;i<40;i++){
+       await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:330+i*4,y:375+Math.sin(i*.12)*30,button:'left',buttons:1});
+       await sleep(35);
+     }
+     await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:490,y:345,button:'left',buttons:0,clickCount:1});
+     await shot('after-drag');await sleep(6000);
+   }else if(mode==='audit-journey'){
      const checkpoints=[];
      const checkpoint=async name=>{await shot(name);checkpoints.push({label:name,state:await state()});};
      // Long no-input observation uses the existing idle=300 inspection option.

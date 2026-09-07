@@ -3,6 +3,10 @@
 Status: **READY FOR VISUAL REVIEW**. Local review only, not M4 or publication.
 This is a review recommendation, not a substitute for Mani's visual approval.
 
+**Subsequent user review:** `b3f1c9b` was technically accepted but NOT artistically
+approved. This document records that historical handoff. Current refinement and
+reference-access limitations are in [GEYSER-REFINEMENT.md](GEYSER-REFINEMENT.md).
+
 Starting SHA: `78d723a76c48cc6bf93c8d4b7d27549bfbce2920`.
 Approved M2: `1342d82118d8632cd429e21418832f5c908446a7`.
 Branch: `milestone-3-bubble-passage`, directly from accepted local M3.
