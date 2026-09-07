@@ -62,6 +62,20 @@ try {
        if(target===9)snapshots.push({click:await clickJelly()});
      }
      writeFileSync(`${out}/matched.json`,JSON.stringify({url,info,system,snapshots,errors},null,2));
+   }else if(mode==='observe'){
+     const checkpoints=[], clicks=[];
+     for(let i=0;i<12;i++){clicks.push(await clickJelly());await sleep(100);}
+     const start=performance.now();let step=0;
+     while(performance.now()-start<Number(seconds)*1000){
+       if(step===15)await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.28)`);
+       if(step===35)await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.52)`);
+       if(step===55)await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.88)`);
+       if(step===70)await evaluate(`window.scrollTo(0,0)`);
+       checkpoints.push({wallSeconds:(performance.now()-start)/1000,state:await state()});
+       await sleep(2000);step++;
+     }
+     await shot('long-observation-end');
+     writeFileSync(`${out}/observation.json`,JSON.stringify({url,info,system,durationSeconds:(performance.now()-start)/1000,clicks,checkpoints,errors},null,2));
    }else if(mode==='lifecycle'){
      const key=async key=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code:key,windowsVirtualKeyCode:27});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code:key,windowsVirtualKeyCode:27});};
      await shot('idle-entry');
@@ -74,12 +88,14 @@ try {
      await sleep(150);await shot('returned-and-activated');
      const activationsAfter=await evaluate(`window.__JELLYFISH_WORLD__.activationCount`);
      const beforeFreeze=await evaluate(`window.__SPECIMEN__.state()`);
+     const connectedBeforeFreeze=await evaluate(`window.__CONNECTED_OCEAN__?.state()`);
      const other=await send('Target.createTarget',{url:'about:blank'});
      const backgroundVisibility=await evaluate(`document.visibilityState`);
      await sleep(1800);await send('Page.bringToFront');await sleep(60);
      const afterFreeze=await evaluate(`window.__SPECIMEN__?.state()||{missing:true,status:document.querySelector('[data-scene-status]')?.dataset.sceneStatus,url:location.href}`);
+     const connectedAfterFreeze=await evaluate(`window.__CONNECTED_OCEAN__?.state()`);
      await send('Target.closeTarget',{targetId:other.targetId});
-     writeFileSync(`${out}/lifecycle.json`,JSON.stringify({url,info,idleBefore,idleAfter,activationsBefore,activationsAfter,beforeFreeze,afterFreeze,backgroundVisibility,errors},null,2));
+     writeFileSync(`${out}/lifecycle.json`,JSON.stringify({url,info,idleBefore,idleAfter,activationsBefore,activationsAfter,beforeFreeze,afterFreeze,connectedBeforeFreeze,connectedAfterFreeze,backgroundVisibility,errors},null,2));
    }else if(mode==='matched'){
      let matched=false;
      const target=Number(new URL(url).searchParams.get('hold')||9);
