@@ -1,6 +1,6 @@
 # Milestone 1 — one jellyfish, local review only
 
-Current review: **[READY FOR VISUAL REVIEW — refined animal and new evidence](REFINEMENT.md)**. Everything below preserves the initial handoff and its original measurements/limitations for comparison.
+Current review: **[READY FOR VISUAL REVIEW — approved model with restored bioluminescent color](COLOR-PASS.md)**. The [preceding anatomy pass](REFINEMENT.md) records the geometry/motion subsequently approved by Mani. Everything below preserves the initial handoff and its original measurements/limitations for comparison.
 
 ## Historical status at fc84892: PARTIAL
 

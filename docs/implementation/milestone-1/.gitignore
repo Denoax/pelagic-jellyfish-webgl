@@ -18,3 +18,8 @@ evidence/refinement-tissue2/
 evidence/refinement-tissue2-contract/
 evidence/refinement-tissue2-recover/
 evidence/refinement-turn/
+# Local material iterations; three-way starting/final evidence remains tracked.
+evidence/color-pass1/
+evidence/color-pass1-contract/
+evidence/color-pass2/
+evidence/color-pass2-ocean/
