@@ -2,7 +2,7 @@ import * as THREE from "three/webgpu";
 import { sampleSwimCycle } from "./jellyMotion.js";
 import { createSoftParticles } from "./SoftParticles.js";
 import { FreeParticleDrift } from "./FreeParticleDrift.js";
-import { mantlePoint, membraneSection, boundedTissueDelta, TISSUE_STEP } from './anatomy/mantle.js';
+import { mantlePoint, membraneSection, separateOralSpines, boundedTissueDelta, TISSUE_STEP } from './anatomy/mantle.js';
 import { createJellyTissue } from './materials/JellyTissue.js';
 
 const HERO_TENTACLES = 22;
@@ -250,7 +250,8 @@ function createBellGeometry(hero, species, improved = false) {
   const mantleRings = hero ? 28 : 18;
   const rings = mantleRings + (improved ? 7 : 0);
   const segments = hero ? 72 : 42;
-  const vertexCount = (rings + 1) * segments;
+  const stride = segments + (improved ? 1 : 0);
+  const vertexCount = (rings + 1) * stride;
   const positions = new Float32Array(vertexCount * 3);
   const normals = new Float32Array(vertexCount * 3);
   const colors = new Float32Array(vertexCount * 3);
@@ -262,8 +263,8 @@ function createBellGeometry(hero, species, improved = false) {
 
   for (let ring = 0; ring <= rings; ring += 1) {
     const t = Math.min(1,ring / mantleRings);
-    for (let segment = 0; segment < segments; segment += 1) {
-      const vertex = ring * segments + segment;
+    for (let segment = 0; segment < stride; segment += 1) {
+      const vertex = ring * stride + segment;
       const angle = (segment / segments) * Math.PI * 2;
       const primaryVein = Math.pow(Math.max(0, Math.cos(angle * species.lobes + t * 2.1)), 20);
       const branchingVein = Math.pow(Math.max(0, Math.cos(angle * (species.lobes * 2) - t * 8.2)), 28);
@@ -271,19 +272,25 @@ function createBellGeometry(hero, species, improved = false) {
       const edge = Math.pow(t, 5) * 0.24;
       const tissueMix = primaryVein * 0.28 + branchingVein * 0.12 + cloud * 0.08 + edge;
       mixed.copy(membrane).lerp(vein, clamp(tissueMix, 0, 0.56));
+      // Candidate pigment lives in the tissue node. Multiplying it by the old
+      // per-sector blue construction colors double-tinted the bell and created
+      // radial apex fans despite continuous geometry/normals.
+      if(improved)mixed.setRGB(1,1,1);
       colors[vertex * 3] = mixed.r;
       colors[vertex * 3 + 1] = mixed.g;
       colors[vertex * 3 + 2] = mixed.b;
       uvs[vertex * 2] = segment / segments;
       uvs[vertex * 2 + 1] = t;
 
-      if (ring < rings) {
-        const nextRing = vertex + segments;
-        const nextSegment = ring * segments + ((segment + 1) % segments);
-        const nextRingSegment = (ring + 1) * segments + ((segment + 1) % segments);
+      if (ring < rings && segment < segments) {
+        const nextRing = vertex + stride;
+        const nextSegment = improved ? vertex+1 : ring * segments + ((segment + 1) % segments);
+        const nextRingSegment = nextSegment + stride;
         if(improved){
           // Outward winding is essential for transparent front/back pass ordering.
-          indices.push(vertex,nextSegment,nextRing,nextSegment,nextRingSegment,nextRing);
+          // One shared apex: no zero-area triangles or disconnected normal fans.
+          if(ring===0)indices.push(0,nextRingSegment,nextRing);
+          else indices.push(vertex,nextSegment,nextRing,nextSegment,nextRingSegment,nextRing);
         }else{
           indices.push(vertex, nextRing, nextSegment);
           indices.push(nextSegment, nextRing, nextRingSegment);
@@ -304,6 +311,7 @@ function createBellGeometry(hero, species, improved = false) {
   geometry.userData.rings = mantleRings;
   geometry.userData.totalRings = rings;
   geometry.userData.segments = segments;
+  geometry.userData.stride = stride;
   return geometry;
 }
 
@@ -691,14 +699,26 @@ export class LivingAppendages {
       this.rim.visible=false; this.ribs.visible=false; this.crown.visible=false;
       this.frill.visible=false; // the margin is now welded into the mantle mesh
       this.innerBell.visible=false; // no co-located additive shell over the tissue
-      this.organMaterial.color.set(0xc4a9b5);this.organMaterial.emissive.set(0x574b70);
-      this.organMaterial.emissiveIntensity=.18;this.organMaterial.opacity=.3;
+      this.organMaterial.color.set(0xad8aa2);this.organMaterial.emissive.set(0x49334e);
+      this.organMaterial.emissiveIntensity=.10;this.organMaterial.opacity=.2;
+      this.organMaterial.roughness=.62;this.organMaterial.specularIntensity=.18;
+      this.organMaterial.ior=1.18;
       this.organMaterial.blending=THREE.NormalBlending;this.organMaterial.transmission=0;
       this.organGeometry.dispose();
-      this.organGeometry=new THREE.TorusGeometry(.16,.052,8,36,Math.PI*1.7);
+      // A joined, four-lobed gastric body, rather than four open pipe fittings.
+      // Its equatorial lobes are the oral-arm insertion sites.
+      this.organGeometry=new THREE.SphereGeometry(1,48,20);
+      const organPositions=this.organGeometry.attributes.position;
+      for(let index=0;index<organPositions.count;index++){
+        const x=organPositions.getX(index),y=organPositions.getY(index),z=organPositions.getZ(index);
+        const angle=Math.atan2(z,x);
+        const lobe=.54-.10*Math.cos(angle*4);
+        organPositions.setXYZ(index,x*lobe,y*.20,z*lobe);
+      }
+      this.organGeometry.computeVertexNormals();
       this.organs.children.forEach((mesh,i)=>{
-        mesh.geometry=this.organGeometry;mesh.scale.set(1.1,1,.65);
-        mesh.rotation.set(Math.PI*.5,0,i*Math.PI*.5);
+        mesh.geometry=this.organGeometry;mesh.scale.setScalar(1);
+        mesh.rotation.set(0,0,0);mesh.position.set(0,0,0);mesh.visible=i===0;
       });
       this.activationShell.visible=false;this.activationRing.visible=false;
       if(this.signalPearls)this.signalPearls.visible=false;
@@ -843,8 +863,11 @@ export class LivingAppendages {
   anchorChain(chain, shape, arm = false) {
     if(this.improved){
       if(arm || this.filamentChains.includes(chain)) {
-        const radius=shape.radius*chain.radius*.8;
-        this.anchor.set(Math.cos(chain.angle)*radius,shape.height*.32,Math.sin(chain.angle)*radius);
+        // The four mouths lie on the underside of the shared gastric surface
+        // (latitude 0.8π), not on a detached square under an unrelated crown.
+        const radius=shape.radius*(arm?.64*Math.sin(Math.PI*.8):chain.radius*.8);
+        const height=shape.height*(arm?.48+.20*Math.cos(Math.PI*.8):.32);
+        this.anchor.set(Math.cos(chain.angle)*radius,height,Math.sin(chain.angle)*radius);
       } else mantlePoint(1.1,chain.angle,shape,this.species.lobes,this.surfaceCurrent,this.anchor);
       chain.particles[0].position.copy(this.anchor);chain.particles[0].previous.copy(this.anchor);
       return;
@@ -941,7 +964,8 @@ export class LivingAppendages {
         }else this.side.crossVectors(this.tangent, reference).normalize();
         this.binormal.crossVectors(this.tangent, this.side).normalize();
         const t = pointIndex / (chain.particles.length - 1);
-        const width = (this.hero ? 0.027 : 0.018) * Math.pow(1 - t, 0.62) + 0.002;
+        let width = (this.hero ? 0.027 : 0.018) * Math.pow(1 - t, 0.62) + 0.002;
+        if(this.improved)width*=.65*smoothstep(0,.06,t);
 
         for (let sideIndex = 0; sideIndex < tubeSides; sideIndex += 1) {
           const angle = (sideIndex / tubeSides) * Math.PI * 2;
@@ -981,8 +1005,13 @@ export class LivingAppendages {
           const previous=chain.particles[Math.max(0,pointIndex-1)].position;
           const next=chain.particles[Math.min(chain.particles.length-1,pointIndex+1)].position;
           this.tangent.copy(next).sub(previous).normalize();
-          this.side.copy(this.armSide).addScaledVector(this.tangent,-this.armSide.dot(this.tangent)).normalize();
-          this.side.applyAxisAngle(this.tangent,t*4.7+chainIndex*.7);
+          // Transport the transverse frame instead of re-projecting + twisting
+          // every section through 270 degrees. That turned neighboring laminae
+          // through each other even when their simulated spines were separated.
+          if(pointIndex===0)this.side.copy(this.armSide);
+          this.side.addScaledVector(this.tangent,-this.side.dot(this.tangent));
+          if(this.side.lengthSq()<1e-8)this.side.copy(this.armAxis).cross(this.tangent);
+          this.side.normalize();
           this.binormal.crossVectors(this.tangent,this.side).normalize();
           for(let col=0;col<17;col++){
             const section=membraneSection(t,col/8-1,elapsed*this.pulseRate+this.pulseOffset,chainIndex,this.membraneScratch);
@@ -1072,12 +1101,16 @@ export class LivingAppendages {
     this.crown.scale.set(crownBreath, 0.96 + shape.pulse * 0.08, crownBreath);
     const organBreath = 0.9 + shape.pulse * 0.18;
     this.organs.scale.set(organBreath, 1 - shape.pulse * 0.08, organBreath);
+    if(this.improved){
+      this.organs.scale.set(shape.radius,shape.height,shape.radius);
+      this.organs.position.y=shape.height*.48;
+    }
   }
 
   updateBellSurface(shape, elapsed, current, refreshNormals = true) {
     const positions = this.bellGeometry.attributes.position.array;
     const colors = this.bellGeometry.attributes.color.array;
-    const { rings, segments, totalRings = rings } = this.bellGeometry.userData;
+    const { rings, segments, stride = segments, totalRings = rings } = this.bellGeometry.userData;
     let pointer = 0;
     let colorPointer = 0;
     for (let ring = 0; ring <= totalRings; ring += 1) {
@@ -1087,7 +1120,7 @@ export class LivingAppendages {
       const delayedPulse = delayed.bell;
       const radiusPulse = 1 - delayedPulse * 0.105 * t;
       const heightPulse = 1 + delayedPulse * 0.065 * (1 - t);
-      for (let segment = 0; segment < segments; segment += 1) {
+      for (let segment = 0; segment < stride; segment += 1) {
         const angle = (segment / segments) * Math.PI * 2;
         const scallop = 1 + Math.sin(angle * this.species.lobes + Math.PI * 0.5)
           * (this.hero ? 0.03 : 0.024) * Math.pow(t, 4.3);
@@ -1132,7 +1165,20 @@ export class LivingAppendages {
     }
     this.bellGeometry.attributes.position.needsUpdate = true;
     this.bellGeometry.attributes.color.needsUpdate = true;
-    if (refreshNormals) this.bellGeometry.computeVertexNormals();
+    if (refreshNormals) {
+      this.bellGeometry.computeVertexNormals();
+      if(this.improved){
+        const normals=this.bellGeometry.attributes.normal;
+        // Split UV seam, welded shading. The old wrapping triangle interpolated
+        // almost a full turn of pigment across one radial segment.
+        for(let row=1;row<=totalRings;row++){
+          const a=row*stride,b=a+segments;
+          this.normal.fromBufferAttribute(normals,a).add(this.side.fromBufferAttribute(normals,b)).normalize();
+          normals.setXYZ(a,this.normal.x,this.normal.y,this.normal.z);
+          normals.setXYZ(b,this.normal.x,this.normal.y,this.normal.z);
+        }
+      }
+    }
   }
 
   updateFrill(shape, elapsed, refreshNormals = true) {
@@ -1335,6 +1381,7 @@ export class LivingAppendages {
       pointerStrength,
       true,
     );
+    if(this.improved)separateOralSpines(this.armChains);
     if (this.filamentChains.length) {
       this.simulateChains(
         this.filamentChains,
