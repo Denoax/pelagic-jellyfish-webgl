@@ -64,14 +64,15 @@ try {
  if(process.env.EVIDENCE_EVAL)await evaluate(process.env.EVIDENCE_EVAL);
  if(mode==='perf' && process.env.EVIDENCE_BUBBLE_STATE){
    const peak=process.env.EVIDENCE_BUBBLE_STATE==='peak';
-   await evaluate(`window.__SPECIMEN__.holdAt(${peak?24:9})`);
+   const hold=peak?Number(process.env.EVIDENCE_HOLD||24):9;
+   await evaluate(`window.__SPECIMEN__.holdAt(${hold})`);
    if(peak){
      await evaluate(`new Promise(resolve=>{function tick(){if(window.__SPECIMEN__.state().time>=17.5){window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.35);resolve();}else requestAnimationFrame(tick);}tick();})`);
    }
-   await evaluate(`new Promise(resolve=>{function tick(){if(window.__SPECIMEN__.state().time>=${peak?24:9}-1e-7)resolve();else requestAnimationFrame(tick);}tick();})`);
-   await evaluate(`(async()=>{const url=performance.getEntriesByType('resource').map(r=>r.name).find(n=>n.includes('/three_tsl.js'));const {time}=await import(url);time.update=()=>{time.value=${peak?24:9};};window.__LIVE_LENS__?.anchor();})()`);
+   await evaluate(`new Promise(resolve=>{function tick(){if(window.__SPECIMEN__.state().time>=${hold}-1e-7)resolve();else requestAnimationFrame(tick);}tick();})`);
+   await evaluate(`(async()=>{const url=performance.getEntriesByType('resource').map(r=>r.name).find(n=>n.includes('/three_tsl.js'));const {time}=await import(url);time.update=()=>{time.value=${hold};};window.__LIVE_LENS__?.anchor();})()`);
    await sleep(1000);
-   await evaluate(`window.__BENCH_STATE__={time:window.__SPECIMEN__.state().time,camera:window.__JELLYFISH_WORLD__.getCameraState(),actors:window.__JELLYFISH_WORLD__.getSwarmState(),field:window.__CONNECTED_OCEAN__.state(),shaderClock:${peak?24:9}}`);
+   await evaluate(`window.__BENCH_STATE__={time:window.__SPECIMEN__.state().time,camera:window.__JELLYFISH_WORLD__.getCameraState(),actors:window.__JELLYFISH_WORLD__.getSwarmState(),field:window.__CONNECTED_OCEAN__.state(),shaderClock:${hold}}`);
  }
  info.controlledState=await evaluate(`window.__BENCH_STATE__||null`);
  if(mode==='perf'){

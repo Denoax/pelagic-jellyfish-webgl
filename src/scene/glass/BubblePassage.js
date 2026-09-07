@@ -54,7 +54,11 @@ export class BubblePassage {
         if (s > score) { score = s; best = t; }
       }
       if (best) {
-        this.view.copy(best.group.position).project(camera);
+        // Use visible anatomy, not the transformation origin at the oral roots.
+        // Two slots favour bell tissue, one the lower membrane/appendages.
+        this.view.set(.24, best.species.height * (b.id % 3 === 0 ? .38 : .68), .08);
+        best.group.localToWorld(this.view);
+        this.view.project(camera);
         x = THREE.MathUtils.clamp(this.view.x, -.65, .65) * halfX + (random() - .5) * .4;
         y = THREE.MathUtils.clamp(this.view.y, -.5, .5) * halfY - .95 - random() * .45;
       }
