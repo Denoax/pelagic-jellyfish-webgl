@@ -22,7 +22,7 @@ import {
 // Original world-space ellipsoid. Trace both interfaces through CURRENT ocean
 // color. The lens never enters its own input. No second ocean or renderer.
 export class LiveOceanLens {
-  constructor(renderer, camera) {
+  constructor(renderer, camera, { bubbleCount = 0 } = {}) {
     this.renderer = renderer;
     this.camera = camera;
     this.enabled = true;
@@ -51,6 +51,14 @@ export class LiveOceanLens {
     this.strength = uniform(1);
     this.visibility = uniform(0);
     this.eta = uniform(1 / 1.045);
+    this.slots = Array.from({ length: Math.min(3, bubbleCount) }, () => ({
+      radii: uniform(new THREE.Vector3(1, 1, 1)),
+      cameraToLens: uniform(new THREE.Matrix4()),
+      lensToView: uniform(new THREE.Matrix4()),
+      normalToView: uniform(new THREE.Matrix3()),
+      strength: uniform(0), visibility: uniform(1), eta: uniform(1 / 1.06),
+      edgeScale: uniform(1),
+    }));
     this.target = new THREE.RenderTarget(1, 1, {
       type: THREE.HalfFloatType,
       format: THREE.RGBAFormat,
@@ -66,7 +74,7 @@ export class LiveOceanLens {
     this.output = new THREE.PostProcessing(renderer, this.optics());
     this.anchor();
     this.render = this.render.bind(this);
-    this.installPointer();
+    if (!this.slots.length) this.installPointer();
   }
   anchor() {
     this.camera.updateMatrixWorld();
@@ -141,16 +149,29 @@ export class LiveOceanLens {
     return Fn(() => {
       const st = screenUV,
         original = texture(this.target.texture, st).toVar();
+      if (!this.slots.length) return this.opticalSample(this, st, original);
+      const result = original.rgb.toVar();
+      // Slots ordered back to front. Every optical lookup sees the SAME live
+      // input; never repeatedly warp an already refracted result or rerender.
+      for (const slot of this.slots) {
+        const sample = this.opticalSample(slot, st, original, true);
+        result.assign(mix(result, sample.rgb, sample.a));
+      }
+      return vec4(result, original.a);
+    })();
+  }
+  opticalSample(s, st, original, bubble = false) {
+    return Fn(() => {
       const viewRay = this.inverseProjection.mul(
         vec4(st.x.mul(2).sub(1), st.y.mul(-2).add(1), 1, 1),
       );
       const viewDirection = normalize(viewRay.xyz.div(viewRay.w)).toVar();
-      const direction = this.cameraToLens
+      const direction = s.cameraToLens
         .mul(vec4(viewDirection, 0))
         .xyz.toVar();
-      const origin = this.cameraToLens.mul(vec4(0, 0, 0, 1)).xyz.toVar();
-      const o = origin.div(this.radii),
-        d = direction.div(this.radii);
+      const origin = s.cameraToLens.mul(vec4(0, 0, 0, 1)).xyz.toVar();
+      const o = origin.div(s.radii),
+        d = direction.div(s.radii);
       const a = dot(d, d),
         b = dot(o, d),
         c = dot(o, o).sub(1);
@@ -158,28 +179,28 @@ export class LiveOceanLens {
         root = sqrt(max(disc, 0.000001));
       const entryDistance = b.negate().sub(root).div(a).toVar();
       const entry = origin.add(direction.mul(entryDistance)).toVar();
-      const normal = normalize(entry.div(this.radii.mul(this.radii))).toVar();
+      const normal = normalize(entry.div(s.radii.mul(s.radii))).toVar();
       // Refraction needs metric view-space directions/normals even while the
       // lens's local analytic shape is sheared or stretched by its spring.
-      const normalView = normalize(this.normalToView.mul(normal));
-      const insideView = refract(viewDirection, normalView, this.eta).toVar();
-      const inside = this.cameraToLens.mul(vec4(insideView, 0)).xyz.toVar(),
-        scaledInside = inside.div(this.radii);
+      const normalView = normalize(s.normalToView.mul(normal));
+      const insideView = refract(viewDirection, normalView, s.eta).toVar();
+      const inside = s.cameraToLens.mul(vec4(insideView, 0)).xyz.toVar(),
+        scaledInside = inside.div(s.radii);
       const travel = max(
-        dot(entry.div(this.radii), scaledInside)
+        dot(entry.div(s.radii), scaledInside)
           .mul(-2)
           .div(max(dot(scaledInside, scaledInside), 0.00001)),
         0,
       ).toVar();
       const exit = entry.add(inside.mul(travel)).toVar();
-      const exitNormal = normalize(exit.div(this.radii.mul(this.radii)));
-      const exitView = this.lensToView.mul(vec4(exit, 1)).xyz.toVar();
+      const exitNormal = normalize(exit.div(s.radii.mul(s.radii)));
+      const exitView = s.lensToView.mul(vec4(exit, 1)).xyz.toVar();
       const outView = refract(
         insideView,
-        normalize(this.normalToView.mul(exitNormal)).negate(),
-        this.eta.reciprocal(),
+        normalize(s.normalToView.mul(exitNormal)).negate(),
+        s.eta.reciprocal(),
       ).toVar();
-      const entryView = this.lensToView.mul(vec4(entry, 1)).xyz;
+      const entryView = s.lensToView.mul(vec4(entry, 1)).xyz;
       const sceneZ = perspectiveDepthToViewZ(
         texture(this.target.depthTexture, st).r,
         this.near,
@@ -211,23 +232,23 @@ export class LiveOceanLens {
         this.near,
         this.far,
       );
-      const mask = smoothstep(0, 0.025, disc.div(a))
+      const mask = smoothstep(0, bubble ? s.edgeScale.mul(.025) : .025, disc.div(a))
         .mul(smoothstep(0.025, 0.18, travel))
         .mul(smoothstep(0, 0.08, entryDistance))
         .mul(smoothstep(0, 0.12, entryView.z.sub(sceneZ)))
         .mul(smoothstep(0, 0.12, entryView.z.sub(sourceZ)))
         .mul(smoothstep(0.1, 0.5, dot(outView, outView)))
         .mul(smoothstep(0.005, 0.04, border))
-        .mul(this.strength)
-        .mul(this.visibility)
+        .mul(s.strength)
+        .mul(s.visibility)
         .toVar();
       const offset = refractedUv.sub(st).toVar();
-      const edgeWeight = smoothstep(0, 0.7, disc.div(a));
+      const edgeWeight = smoothstep(0, bubble ? s.edgeScale.mul(.7) : .7, disc.div(a));
       // Screen-space rays cannot recover offscreen color. Bounded displacement
       // and a vanishing grazing contribution avoid folded/duplicated edges.
       const lookup = st.add(
         offset
-          .mul(min(1, vec2(0.02).length().div(max(offset.length(), 0.00001))))
+          .mul(min(1, vec2(bubble ? .008 : .02).length().div(max(offset.length(), 0.00001))))
           .mul(mask)
           .mul(edgeWeight),
       );
@@ -239,18 +260,18 @@ export class LiveOceanLens {
         24,
       );
       const optical = bent
-        .mul(vec3(0.994, 0.999, 1))
+        .mul(bubble ? vec3(1) : vec3(0.994, 0.999, 1))
         .add(
           vec3(0.015, 0.035, 0.046).mul(
-            grazing.mul(0.35).add(highlight.mul(0.08)),
+            grazing.mul(bubble ? 0.1 : 0.35).add(highlight.mul(bubble ? .6 : .08)),
           ),
         );
-      return vec4(mix(original.rgb, optical, mask), original.a);
+      return bubble ? vec4(optical, mask) : vec4(mix(original.rgb, optical, mask), original.a);
     })();
   }
   async render() {
     if (this.disposed) return;
-    if (!this.enabled)
+    if (!this.enabled || (this.slots.length && !this.slots.some(s => s.strength.value > 0)))
       return this.renderer.renderAsync(this.scene, this.camera);
     const renderer = this.renderer;
     const started = performance.now(),
@@ -344,6 +365,7 @@ export class LiveOceanLens {
       outputPasses: 1,
       backend: this.renderer.backend.isWebGLBackend ? "WebGL2" : "WebGPU",
       textures: this.renderer.info?.memory?.textures,
+      bubbleSlots: this.slots.length,
       legacyOutputTarget: this.renderer._frameBufferTarget
         ? [
             this.renderer._frameBufferTarget.width,

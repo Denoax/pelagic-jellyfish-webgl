@@ -36,6 +36,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     let specimen;
     let connectedOcean;
     let liveLens;
+    let bubblePassage;
     let connectedTime = 0;
     let frameId = 0;
     let frameBusy = false;
@@ -210,11 +211,12 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     const start = async () => {
       try {
         const query = new URLSearchParams(window.location.search);
-        const lensRequested = import.meta.env.DEV && query.get('liveLens') === '1';
+        const bubblesRequested = import.meta.env.DEV && query.get('bubblePassage') === '1';
+        const lensRequested = import.meta.env.DEV && query.get('liveLens') === '1' && !bubblesRequested;
         // Publishing selects the reviewed implementation, never its inspection
         // fixture. Production query strings cannot expose specimen controls.
         const releasedOcean = import.meta.env.PROD && import.meta.env.VITE_OCEAN_RELEASE === 'milestone-2';
-        const connectedRequested = releasedOcean || (import.meta.env.DEV && (query.get('connectedOcean') === '1' || lensRequested) && query.get('specimen') !== '1');
+        const connectedRequested = releasedOcean || (import.meta.env.DEV && (query.get('connectedOcean') === '1' || lensRequested || bubblesRequested) && query.get('specimen') !== '1');
         const previewRequested = import.meta.env.DEV && (query.get('specimen') === '1' || query.get('oceanPreview') === '1' || connectedRequested);
         const forceWebGL =
           releasedOcean || // Ship the verified backend; legacy full-ocean WebGPU remains a separate issue.
@@ -396,6 +398,20 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
             resetCost: () => { liveLens.cpu.length = 0; },
           };
         }
+        if (bubblesRequested) {
+          const { BubblePassage } = await import('./glass/BubblePassage.js');
+          if (disposed) return;
+          bubblePassage = new BubblePassage(app, connectedOcean?.field, appendages);
+          if (query.get('bubbleReview') === '1') bubblePassage.reviewAge = 0;
+          liveLens = bubblePassage.lens;
+          window.__BUBBLE_PASSAGE__ = {
+            state: () => bubblePassage.state(),
+            enable: value => { bubblePassage.enabled = Boolean(value); bubblePassage.update(0, scrollProgress); },
+            cost: () => bubblePassage.cpu.slice(),
+            resetCost: () => { bubblePassage.cpu.length = 0; },
+            optics: value => { bubblePassage.refract = Boolean(value); bubblePassage.update(0, scrollProgress); },
+          };
+        }
 
         // Populate every dynamic buffer before revealing the live canvas.
         // Otherwise later high-fidelity actors pay their first geometry
@@ -558,6 +574,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
             );
             specimen?.afterTissue();
             connectedOcean?.afterTissue();
+            bubblePassage?.update(delta, scrollProgress);
 
             await app.update(reducedMotion ? delta * 0.28 : delta, elapsed, {
               renderScene: liveLens?.render,
@@ -597,6 +614,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
       delete window.__JELLYFISH_WORLD__;
       specimen?.dispose();
       liveLens?.dispose();
+      bubblePassage?.dispose();
+      delete window.__BUBBLE_PASSAGE__;
       delete window.__LIVE_LENS__;
       connectedOcean?.dispose();
       appendages.forEach((tissue) => tissue.dispose());

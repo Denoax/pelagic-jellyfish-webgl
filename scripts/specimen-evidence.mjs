@@ -62,18 +62,31 @@ try {
  info.uncommittedSource=spawnSync('git',['diff','--name-only','--','src'],{encoding:'utf8'}).stdout.trim();
  const system={adapter:await evaluate(`window.__actualAdapter||null`),browser:await send('Browser.getVersion')};
  if(process.env.EVIDENCE_EVAL)await evaluate(process.env.EVIDENCE_EVAL);
+ if(mode==='perf' && process.env.EVIDENCE_BUBBLE_STATE){
+   const peak=process.env.EVIDENCE_BUBBLE_STATE==='peak';
+   await evaluate(`window.__SPECIMEN__.holdAt(${peak?24:9})`);
+   if(peak){
+     await evaluate(`new Promise(resolve=>{function tick(){if(window.__SPECIMEN__.state().time>=17.5){window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.35);resolve();}else requestAnimationFrame(tick);}tick();})`);
+   }
+   await evaluate(`new Promise(resolve=>{function tick(){if(window.__SPECIMEN__.state().time>=${peak?24:9}-1e-7)resolve();else requestAnimationFrame(tick);}tick();})`);
+   await evaluate(`(async()=>{const url=performance.getEntriesByType('resource').map(r=>r.name).find(n=>n.includes('/three_tsl.js'));const {time}=await import(url);time.update=()=>{time.value=${peak?24:9};};window.__LIVE_LENS__?.anchor();})()`);
+   await sleep(1000);
+   await evaluate(`window.__BENCH_STATE__={time:window.__SPECIMEN__.state().time,camera:window.__JELLYFISH_WORLD__.getCameraState(),actors:window.__JELLYFISH_WORLD__.getSwarmState(),field:window.__CONNECTED_OCEAN__.state(),shaderClock:${peak?24:9}}`);
+ }
  info.controlledState=await evaluate(`window.__BENCH_STATE__||null`);
  if(mode==='perf'){
    await evaluate(`window.__SPECIMEN__?.resetIntervals()`);
    await evaluate(`window.__AUDIT_RENDER__.reset()`);
    await evaluate(`window.__CONNECTED_OCEAN__?.resetCost()`);
    await evaluate(`window.__LIVE_LENS__?.resetCost()`);
+   await evaluate(`window.__BUBBLE_PASSAGE__?.resetCost()`);
    const intervals=await evaluate(`new Promise(resolve=>{const a=[];let last=0;const start=performance.now();function tick(t){if(last)a.push(t-last);last=t;if(t-start<${Number(seconds)*1000})requestAnimationFrame(tick);else resolve(a);}requestAnimationFrame(tick);})`);
    const sorted=[...intervals].sort((a,b)=>a-b);
    writeFileSync(`${out}/lens-cost.json`,JSON.stringify({cpu:await evaluate(`window.__LIVE_LENS__?.cost()`),state:await evaluate(`window.__LIVE_LENS__?.state()`)},null,2));
+   writeFileSync(`${out}/bubble-cost.json`,JSON.stringify({cpu:await evaluate(`window.__BUBBLE_PASSAGE__?.cost()`),state:await evaluate(`window.__BUBBLE_PASSAGE__?.state()`)},null,2));
    writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),auditRender:await evaluate(`window.__AUDIT_RENDER__.read()`),featureCpuIntervals:await evaluate(`window.__CONNECTED_OCEAN__?.cost()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state()})`)},null,2));
  }else{
-   const lensRecording=mode==='lens-optics'||mode==='lens-tour';
+   const lensRecording=mode==='lens-optics'||mode==='lens-tour'||mode==='bubble-tour'||mode==='bubble-inspect';
    const finishRecording=async()=>{
      await send('Page.stopScreencast');await sleep(300);
      if(frames.length<2)throw Error('Motion evidence missing: fewer than two screencast frames');
@@ -99,7 +112,38 @@ try {
    };
    const state=()=>evaluate(`({visibility:document.visibilityState,specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount})`);
    const nearbyPair=()=>evaluate(`(()=>{const a=window.__JELLYFISH_WORLD__.getSwarmState().actors;let pair=null,best=5.2;for(let i=0;i<a.length;i++){if(a[i].presence<.2)continue;const p=window.__JELLYFISH_WORLD__.getJellyScreenPoint(i);if(p.x<20||p.x>innerWidth-20||p.y<20||p.y>innerHeight-20)continue;for(let j=0;j<a.length;j++){if(i===j||a[j].presence<.2)continue;const d=Math.hypot(...a[i].position.map((v,k)=>v-a[j].position[k]));if(d<best){best=d;pair={index:i,neighbor:j,distance:d};}}}return pair;})()`);
-   if(mode==='lens-optics'||mode==='lens-tour'){
+   if(mode==='bubble-tour'||mode==='bubble-inspect'){
+     const checkpoints=[];
+     const capture=async name=>{await shot(name);checkpoints.push({name,state:await state(),bubbles:await evaluate(`window.__BUBBLE_PASSAGE__?.state()`)});};
+     const scroll=p=>evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*${p})`);
+     if(mode==='bubble-inspect'){
+       await scroll(.35);await sleep(6500);
+       await evaluate(`window.__SPECIMEN__.pause()`);
+       await evaluate(`(async()=>{const url=performance.getEntriesByType('resource').map(r=>r.name).find(n=>n.includes('/three_tsl.js'));const {time}=await import(url);const update=time.update,value=time.value;time.update=()=>{time.value=value;};window.__RESTORE_QA_TIME__=()=>{time.update=update;};})()`);
+       await sleep(100);await capture('matched-bubbles');
+       await evaluate(`window.__BUBBLE_PASSAGE__.optics(false)`);await sleep(100);await capture('matched-ambient-only');
+       await evaluate(`window.__BUBBLE_PASSAGE__.optics(true)`);
+       await evaluate(`window.__BUBBLE_PASSAGE__.enable(false)`);await sleep(100);await capture('matched-clear');
+       await evaluate(`window.__BUBBLE_PASSAGE__.enable(true);window.__RESTORE_QA_TIME__();window.__SPECIMEN__.resume()`);
+       await send('Emulation.setVisibleSize',{width,height});
+       await send('Page.startScreencast',{format:'jpeg',quality:88,maxWidth:width,maxHeight:height,everyNthFrame:2});
+       await sleep(8000);await capture('settled');
+     }else{
+       await scroll(.23);await sleep(4500);
+       await send('Emulation.setVisibleSize',{width,height});
+       await send('Page.startScreencast',{format:'jpeg',quality:88,maxWidth:width,maxHeight:height,everyNthFrame:2});
+       await capture('calm');await sleep(2000);
+       const started=performance.now();let nextShot=3;
+       while(performance.now()-started<22000){
+         const t=(performance.now()-started)/22000;
+         await scroll(.23+t*.27);
+         if((performance.now()-started)/1000>=nextShot){await capture(`passage-${nextShot}`);nextShot+=3;}
+         await sleep(45);
+       }
+       await scroll(.51);await sleep(4500);await capture('return-to-calm');
+     }
+     writeFileSync(`${out}/bubbles.json`,JSON.stringify({checkpoints,errors},null,2));
+   }else if(mode==='lens-optics'||mode==='lens-tour'){
      await evaluate(`window.__SPECIMEN__.holdAt(9)`);
      for(let i=0;i<600;i++){if(await evaluate(`window.__SPECIMEN__.state().time>=9-1e-7`))break;await sleep(50);}
      // Inspection only: existing SoftParticles/background use TSL render time
