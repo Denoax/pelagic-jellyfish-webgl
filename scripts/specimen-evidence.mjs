@@ -86,7 +86,18 @@ try {
    };
    const state=()=>evaluate(`({visibility:document.visibilityState,specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount})`);
    const nearbyPair=()=>evaluate(`(()=>{const a=window.__JELLYFISH_WORLD__.getSwarmState().actors;let pair=null,best=5.2;for(let i=0;i<a.length;i++){if(a[i].presence<.2)continue;const p=window.__JELLYFISH_WORLD__.getJellyScreenPoint(i);if(p.x<20||p.x>innerWidth-20||p.y<20||p.y>innerHeight-20)continue;for(let j=0;j<a.length;j++){if(i===j||a[j].presence<.2)continue;const d=Math.hypot(...a[i].position.map((v,k)=>v-a[j].position[k]));if(d<best){best=d;pair={index:i,neighbor:j,distance:d};}}}return pair;})()`);
-   if(mode==='ocean-matched'||mode==='pulse-matched'){
+   if(mode==='lens-optics'){
+     await evaluate(`window.__SPECIMEN__.holdAt(9)`);
+     for(let i=0;i<600;i++){if(await evaluate(`window.__SPECIMEN__.state().time>=9-1e-7`))break;await sleep(50);}
+     await evaluate(`window.__LIVE_LENS__?.anchor()`);await sleep(150);
+     await evaluate(`window.__LIVE_LENS__?.enable(false)`);await sleep(150);await shot('matched-no-lens');
+     await evaluate(`window.__LIVE_LENS__?.enable(true);window.__LIVE_LENS__?.optics(0)`);await sleep(150);await shot('matched-passthrough');
+     await evaluate(`window.__LIVE_LENS__?.optics(1)`);await sleep(150);await shot('matched-lens');
+     writeFileSync(`${out}/lens.json`,JSON.stringify({state:await state(),lens:await evaluate(`window.__LIVE_LENS__?.state()`),errors},null,2));
+     await evaluate(`window.__SPECIMEN__.resume()`);
+     await sleep(6000);await shot('crossing');await sleep(6000);await shot('leaving');
+     await sleep(6000);
+   }else if(mode==='ocean-matched'||mode==='pulse-matched'){
      const snapshots=[];
      for(const target of mode==='pulse-matched'?[9,10,10.6,11.5,13,16]:[9,9.8,11,13,17]){
        await evaluate(`window.__SPECIMEN__.holdAt(${target})`);

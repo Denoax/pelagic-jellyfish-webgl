@@ -213,7 +213,7 @@ class App {
         }
     }
 
-    async update(delta, elapsed, { interactionMode = false } = {}) {
+    async update(delta, elapsed, { interactionMode = false, renderScene = null } = {}) {
         conf.begin();
         const { runSimulation, showVerletSprings } = conf;
         this.springVisualizer.object.visible = showVerletSprings;
@@ -234,7 +234,10 @@ class App {
 
         //this.renderer.render(this.scene, this.camera);
 
-        if (interactionMode) await this.renderer.renderAsync(this.scene, this.camera);
+        if (interactionMode) {
+            if (renderScene) await renderScene();
+            else await this.renderer.renderAsync(this.scene, this.camera);
+        }
         else await this.postProcessing.renderAsync();
 
         if (this.frameNum === 0) {

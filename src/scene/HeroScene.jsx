@@ -35,6 +35,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     let environment;
     let specimen;
     let connectedOcean;
+    let liveLens;
     let connectedTime = 0;
     let frameId = 0;
     let frameBusy = false;
@@ -209,10 +210,11 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     const start = async () => {
       try {
         const query = new URLSearchParams(window.location.search);
+        const lensRequested = import.meta.env.DEV && query.get('liveLens') === '1';
         // Publishing selects the reviewed implementation, never its inspection
         // fixture. Production query strings cannot expose specimen controls.
         const releasedOcean = import.meta.env.PROD && import.meta.env.VITE_OCEAN_RELEASE === 'milestone-2';
-        const connectedRequested = releasedOcean || (import.meta.env.DEV && query.get('connectedOcean') === '1' && query.get('specimen') !== '1');
+        const connectedRequested = releasedOcean || (import.meta.env.DEV && (query.get('connectedOcean') === '1' || lensRequested) && query.get('specimen') !== '1');
         const previewRequested = import.meta.env.DEV && (query.get('specimen') === '1' || query.get('oceanPreview') === '1' || connectedRequested);
         const forceWebGL =
           releasedOcean || // Ship the verified backend; legacy full-ocean WebGPU remains a separate issue.
@@ -380,6 +382,17 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           const { ConnectedOcean } = await import('./ocean/ConnectedOcean.js');
           connectedOcean = new ConnectedOcean(app, environment, appendages, isMobile);
         }
+        if (lensRequested) {
+          const { LiveOceanLens } = await import('./glass/LiveOceanLens.js');
+          liveLens = new LiveOceanLens(renderer, app.camera);
+          liveLens.scene = app.scene;
+          window.__LIVE_LENS__ = {
+            state: () => liveLens.state(),
+            enable: value => { liveLens.enabled = Boolean(value); },
+            optics: value => { liveLens.strength.value = clamp(Number(value), 0, 1); },
+            anchor: () => liveLens.anchor(),
+          };
+        }
 
         // Populate every dynamic buffer before revealing the live canvas.
         // Otherwise later high-fidelity actors pay their first geometry
@@ -416,7 +429,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         // Use the validated direct path on both backends. The inherited MRT
         // bloom pipeline is not a requirement for tissue glow and must not
         // silently replace a good frame with an unsupported black target.
-        await app.update(1 / 60, clock.elapsedTime, { interactionMode: true });
+        await app.update(1 / 60, clock.elapsedTime, { interactionMode: true, renderScene: liveLens?.render });
         if (disposed) return;
 
         schoolDirector.actors.forEach((actor, index) => {
@@ -469,7 +482,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
             const elapsed = specimen ? specimen.time : connectedOcean ? connectedTime : clock.elapsedTime;
             if (specimen && rawDelta === 0) {
               specimen.beforeTissue(); specimen.afterTissue();
-              await app.update(0, elapsed, { interactionMode: true });
+              await app.update(0, elapsed, { interactionMode: true, renderScene: liveLens?.render });
               return;
             }
             const scrollDamping =
@@ -544,6 +557,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
             connectedOcean?.afterTissue();
 
             await app.update(reducedMotion ? delta * 0.28 : delta, elapsed, {
+              renderScene: liveLens?.render,
               interactionMode: true,
             });
             renderFailures = 0;
@@ -579,6 +593,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
       socialTimers.forEach((timer) => window.clearTimeout(timer));
       delete window.__JELLYFISH_WORLD__;
       specimen?.dispose();
+      liveLens?.dispose();
+      delete window.__LIVE_LENS__;
       connectedOcean?.dispose();
       appendages.forEach((tissue) => tissue.dispose());
       environment?.dispose();
