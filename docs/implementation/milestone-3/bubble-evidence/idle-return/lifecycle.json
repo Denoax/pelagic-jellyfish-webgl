@@ -1,0 +1,114 @@
+{
+  "url": "http://127.0.0.1:5178/?bubblePassage=1&renderer=webgl&idle=4",
+  "info": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "backend": "WebGL 2",
+    "ratio": 1,
+    "viewport": [
+      1280,
+      900
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "specimen": {
+      "time": 6.019500000000002,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": false,
+      "bloom": "off (normal production path)",
+      "phase": 0.3343658683662709,
+      "activation": 0,
+      "frames": 359
+    },
+    "hardware": {
+      "backend": "WebGL 2",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+      "drawBuffer": [
+        1280,
+        900
+      ]
+    },
+    "bloom": "production direct rendering; bloom disabled",
+    "driverRevision": "4248174e81540176eefd00cd36eca7da73aba42e",
+    "sourceRevision": "4248174e81540176eefd00cd36eca7da73aba42e",
+    "sourceIdentity": "driver checkout only; may differ from target URL",
+    "release": "default-or-development",
+    "hasSpecimenControls": true,
+    "visibility": "visible",
+    "actualGL": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "loadedScripts": [
+      "http://127.0.0.1:5178/@vite/client",
+      "http://127.0.0.1:5178/src/main.jsx?t=1788806654181"
+    ],
+    "uncommittedSource": "",
+    "controlledState": null
+  },
+  "idleBefore": true,
+  "idleAfter": false,
+  "activationsBefore": 0,
+  "activationsAfter": 1,
+  "beforeFreeze": {
+    "time": 9.33589999999852,
+    "angle": "oblique",
+    "distance": "medium",
+    "candidate": true,
+    "chamber": false,
+    "bloom": "off (normal production path)",
+    "phase": 0.04513617345788479,
+    "activation": 0.8783694394387951,
+    "frames": 557
+  },
+  "afterFreeze": {
+    "time": 9.455700000002993,
+    "angle": "oblique",
+    "distance": "medium",
+    "candidate": true,
+    "chamber": false,
+    "bloom": "off (normal production path)",
+    "phase": 0.07081168984709985,
+    "activation": 0.8289042205345021,
+    "frames": 563
+  },
+  "connectedBeforeFreeze": {
+    "time": 9.333333333333377,
+    "wakes": 1,
+    "activations": 1,
+    "accepted": 1,
+    "capacity": {
+      "wakes": 32,
+      "activations": 8
+    },
+    "echoes": 0,
+    "echoCount": 0,
+    "snowCount": 784,
+    "localFlecks": 1200
+  },
+  "connectedAfterFreeze": {
+    "time": 9.450000000000049,
+    "wakes": 2,
+    "activations": 1,
+    "accepted": 1,
+    "capacity": {
+      "wakes": 32,
+      "activations": 8
+    },
+    "echoes": 0,
+    "echoCount": 0,
+    "snowCount": 784,
+    "localFlecks": 1200
+  },
+  "backgroundVisibility": "hidden",
+  "errors": []
+}

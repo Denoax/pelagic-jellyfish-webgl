@@ -1,0 +1,1299 @@
+{
+  "checkpoints": [
+    {
+      "name": "natural-bell-crossing",
+      "crossing": {
+        "target": {
+          "x": 586.423052846913,
+          "y": 445.60062936076133
+        },
+        "hero": {
+          "x": 3.293243615040837,
+          "y": -1.0736167147243996,
+          "z": 1.4631258367741484,
+          "radius": 0.5110889386339112,
+          "alpha": 0.8957607736236696,
+          "age": 0.7166666666666672,
+          "screen": [
+            585.8978703563738,
+            474.1927946002028
+          ],
+          "distance": 28.59698812336524
+        }
+      }
+    },
+    {
+      "name": "matched-bubbles",
+      "state": {
+        "visibility": "visible",
+        "specimen": {
+          "time": 9.480499999992563,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.0761268217850044,
+          "activation": 0,
+          "frames": 565
+        },
+        "connected": {
+          "time": 9.466666666666717,
+          "wakes": 2,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0.35,
+          "position": [
+            5.54316,
+            -0.59232,
+            3.92752
+          ],
+          "target": [
+            -4.08753,
+            -2.45699,
+            -7.76041
+          ],
+          "actor": [
+            0.303,
+            -0.741,
+            -2.399
+          ],
+          "shot": "second-encounter",
+          "subjectStrength": 0.938,
+          "bankDegrees": -1.499,
+          "fov": 44.93,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "second-encounter",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 0.1,
+              "feature": 0,
+              "scale": 0.9,
+              "position": [
+                -1.46,
+                1.31,
+                -4.95
+              ],
+              "velocity": 1.096,
+              "phase": 0.076,
+              "primaryThrust": 0.56,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 1,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                0.91,
+                2.92,
+                -9.11
+              ],
+              "velocity": 1.189,
+              "phase": 0.048,
+              "primaryThrust": 0.133,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 1,
+              "feature": 0.94,
+              "scale": 0.82,
+              "position": [
+                -4.69,
+                -2.32,
+                -6.85
+              ],
+              "velocity": 1.13,
+              "phase": 0.942,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 1,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                6.99,
+                3.29,
+                -9.1
+              ],
+              "velocity": 1.222,
+              "phase": 0.181,
+              "primaryThrust": 0.283,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                8.26,
+                -4.8,
+                -8.37
+              ],
+              "velocity": 0.782,
+              "phase": 0.746,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.64
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -9.1,
+                2.61,
+                -10.32
+              ],
+              "velocity": 1.006,
+              "phase": 0.944,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.82,
+                4.38,
+                -12.84
+              ],
+              "velocity": 0.812,
+              "phase": 0.676,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.944
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.18,
+                -4.3,
+                -11.46
+              ],
+              "velocity": 1.114,
+              "phase": 0.402,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 0,
+        "bubbles": {
+          "time": 9.466666666666717,
+          "eventAge": 2.7833333333333283,
+          "running": true,
+          "armed": false,
+          "envelope": 0.8957607736236696,
+          "ambient": 27,
+          "heroes": 1,
+          "births": 29,
+          "classes": {
+            "small": 24,
+            "medium": 3,
+            "large": 1
+          },
+          "capacity": {
+            "ambient": 128,
+            "heroes": 3
+          },
+          "progress": 0.3500301280764248,
+          "enabled": true,
+          "drawCount": 28,
+          "lens": {
+            "enabled": true,
+            "position": [
+              -1.1259874635237743,
+              0.2427564432140409,
+              5.537482377610441
+            ],
+            "radii": [
+              0.92,
+              1.08,
+              0.32
+            ],
+            "pull": [
+              0,
+              0
+            ],
+            "dragging": false,
+            "size": [
+              1280,
+              900
+            ],
+            "samples": 4,
+            "format": "RGBA16F + depth24",
+            "oceanRenders": 1,
+            "outputPasses": 1,
+            "backend": "WebGL2",
+            "textures": 28,
+            "bubbleSlots": 3,
+            "legacyOutputTarget": [
+              1280,
+              900
+            ]
+          },
+          "heroesDetail": [
+            {
+              "x": 3.293243615040837,
+              "y": -1.0736167147243996,
+              "z": 1.4631258367741484,
+              "radius": 0.5110889386339112,
+              "alpha": 0.8957607736236696,
+              "age": 0.7166666666666672,
+              "screen": [
+                585.8978703563738,
+                474.1927946002028
+              ]
+            }
+          ]
+        }
+      },
+      "bubbles": {
+        "time": 9.466666666666717,
+        "eventAge": 2.7833333333333283,
+        "running": true,
+        "armed": false,
+        "envelope": 0.8957607736236696,
+        "ambient": 27,
+        "heroes": 1,
+        "births": 29,
+        "classes": {
+          "small": 24,
+          "medium": 3,
+          "large": 1
+        },
+        "capacity": {
+          "ambient": 128,
+          "heroes": 3
+        },
+        "progress": 0.3500301280764248,
+        "enabled": true,
+        "drawCount": 28,
+        "lens": {
+          "enabled": true,
+          "position": [
+            -1.1259874635237743,
+            0.2427564432140409,
+            5.537482377610441
+          ],
+          "radii": [
+            0.92,
+            1.08,
+            0.32
+          ],
+          "pull": [
+            0,
+            0
+          ],
+          "dragging": false,
+          "size": [
+            1280,
+            900
+          ],
+          "samples": 4,
+          "format": "RGBA16F + depth24",
+          "oceanRenders": 1,
+          "outputPasses": 1,
+          "backend": "WebGL2",
+          "textures": 28,
+          "bubbleSlots": 3,
+          "legacyOutputTarget": [
+            1280,
+            900
+          ]
+        },
+        "heroesDetail": [
+          {
+            "x": 3.293243615040837,
+            "y": -1.0736167147243996,
+            "z": 1.4631258367741484,
+            "radius": 0.5110889386339112,
+            "alpha": 0.8957607736236696,
+            "age": 0.7166666666666672,
+            "screen": [
+              585.8978703563738,
+              474.1927946002028
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "matched-ambient-only",
+      "state": {
+        "visibility": "visible",
+        "specimen": {
+          "time": 9.480499999992563,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.0761268217850044,
+          "activation": 0,
+          "frames": 565
+        },
+        "connected": {
+          "time": 9.466666666666717,
+          "wakes": 2,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0.35,
+          "position": [
+            5.54316,
+            -0.59232,
+            3.92752
+          ],
+          "target": [
+            -4.08753,
+            -2.45699,
+            -7.76041
+          ],
+          "actor": [
+            0.303,
+            -0.741,
+            -2.399
+          ],
+          "shot": "second-encounter",
+          "subjectStrength": 0.938,
+          "bankDegrees": -1.499,
+          "fov": 44.93,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "second-encounter",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 0.1,
+              "feature": 0,
+              "scale": 0.9,
+              "position": [
+                -1.46,
+                1.31,
+                -4.95
+              ],
+              "velocity": 1.096,
+              "phase": 0.076,
+              "primaryThrust": 0.56,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 1,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                0.91,
+                2.92,
+                -9.11
+              ],
+              "velocity": 1.189,
+              "phase": 0.048,
+              "primaryThrust": 0.133,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 1,
+              "feature": 0.94,
+              "scale": 0.82,
+              "position": [
+                -4.69,
+                -2.32,
+                -6.85
+              ],
+              "velocity": 1.13,
+              "phase": 0.942,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 1,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                6.99,
+                3.29,
+                -9.1
+              ],
+              "velocity": 1.222,
+              "phase": 0.181,
+              "primaryThrust": 0.283,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                8.26,
+                -4.8,
+                -8.37
+              ],
+              "velocity": 0.782,
+              "phase": 0.746,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.64
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -9.1,
+                2.61,
+                -10.32
+              ],
+              "velocity": 1.006,
+              "phase": 0.944,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.82,
+                4.38,
+                -12.84
+              ],
+              "velocity": 0.812,
+              "phase": 0.676,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.944
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.18,
+                -4.3,
+                -11.46
+              ],
+              "velocity": 1.114,
+              "phase": 0.402,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 0,
+        "bubbles": {
+          "time": 9.466666666666717,
+          "eventAge": 2.7833333333333283,
+          "running": true,
+          "armed": false,
+          "envelope": 0.8957607736236696,
+          "ambient": 27,
+          "heroes": 1,
+          "births": 29,
+          "classes": {
+            "small": 24,
+            "medium": 3,
+            "large": 1
+          },
+          "capacity": {
+            "ambient": 128,
+            "heroes": 3
+          },
+          "progress": 0.3500301280764248,
+          "enabled": true,
+          "drawCount": 28,
+          "lens": {
+            "enabled": true,
+            "position": [
+              -1.1259874635237743,
+              0.2427564432140409,
+              5.537482377610441
+            ],
+            "radii": [
+              0.92,
+              1.08,
+              0.32
+            ],
+            "pull": [
+              0,
+              0
+            ],
+            "dragging": false,
+            "size": [
+              1280,
+              900
+            ],
+            "samples": 4,
+            "format": "RGBA16F + depth24",
+            "oceanRenders": 1,
+            "outputPasses": 1,
+            "backend": "WebGL2",
+            "textures": 28,
+            "bubbleSlots": 3,
+            "legacyOutputTarget": [
+              1280,
+              900
+            ]
+          },
+          "heroesDetail": [
+            {
+              "x": 3.293243615040837,
+              "y": -1.0736167147243996,
+              "z": 1.4631258367741484,
+              "radius": 0.5110889386339112,
+              "alpha": 0.8957607736236696,
+              "age": 0.7166666666666672,
+              "screen": [
+                585.8978703563738,
+                474.1927946002028
+              ]
+            }
+          ]
+        }
+      },
+      "bubbles": {
+        "time": 9.466666666666717,
+        "eventAge": 2.7833333333333283,
+        "running": true,
+        "armed": false,
+        "envelope": 0.8957607736236696,
+        "ambient": 27,
+        "heroes": 1,
+        "births": 29,
+        "classes": {
+          "small": 24,
+          "medium": 3,
+          "large": 1
+        },
+        "capacity": {
+          "ambient": 128,
+          "heroes": 3
+        },
+        "progress": 0.3500301280764248,
+        "enabled": true,
+        "drawCount": 28,
+        "lens": {
+          "enabled": true,
+          "position": [
+            -1.1259874635237743,
+            0.2427564432140409,
+            5.537482377610441
+          ],
+          "radii": [
+            0.92,
+            1.08,
+            0.32
+          ],
+          "pull": [
+            0,
+            0
+          ],
+          "dragging": false,
+          "size": [
+            1280,
+            900
+          ],
+          "samples": 4,
+          "format": "RGBA16F + depth24",
+          "oceanRenders": 1,
+          "outputPasses": 1,
+          "backend": "WebGL2",
+          "textures": 28,
+          "bubbleSlots": 3,
+          "legacyOutputTarget": [
+            1280,
+            900
+          ]
+        },
+        "heroesDetail": [
+          {
+            "x": 3.293243615040837,
+            "y": -1.0736167147243996,
+            "z": 1.4631258367741484,
+            "radius": 0.5110889386339112,
+            "alpha": 0.8957607736236696,
+            "age": 0.7166666666666672,
+            "screen": [
+              585.8978703563738,
+              474.1927946002028
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "matched-clear",
+      "state": {
+        "visibility": "visible",
+        "specimen": {
+          "time": 9.480499999992563,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.0761268217850044,
+          "activation": 0,
+          "frames": 565
+        },
+        "connected": {
+          "time": 9.466666666666717,
+          "wakes": 2,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0.35,
+          "position": [
+            5.54316,
+            -0.59232,
+            3.92752
+          ],
+          "target": [
+            -4.08753,
+            -2.45699,
+            -7.76041
+          ],
+          "actor": [
+            0.303,
+            -0.741,
+            -2.399
+          ],
+          "shot": "second-encounter",
+          "subjectStrength": 0.938,
+          "bankDegrees": -1.499,
+          "fov": 44.93,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "second-encounter",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 0.1,
+              "feature": 0,
+              "scale": 0.9,
+              "position": [
+                -1.46,
+                1.31,
+                -4.95
+              ],
+              "velocity": 1.096,
+              "phase": 0.076,
+              "primaryThrust": 0.56,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 1,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                0.91,
+                2.92,
+                -9.11
+              ],
+              "velocity": 1.189,
+              "phase": 0.048,
+              "primaryThrust": 0.133,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 1,
+              "feature": 0.94,
+              "scale": 0.82,
+              "position": [
+                -4.69,
+                -2.32,
+                -6.85
+              ],
+              "velocity": 1.13,
+              "phase": 0.942,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 1,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                6.99,
+                3.29,
+                -9.1
+              ],
+              "velocity": 1.222,
+              "phase": 0.181,
+              "primaryThrust": 0.283,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                8.26,
+                -4.8,
+                -8.37
+              ],
+              "velocity": 0.782,
+              "phase": 0.746,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.64
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -9.1,
+                2.61,
+                -10.32
+              ],
+              "velocity": 1.006,
+              "phase": 0.944,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.82,
+                4.38,
+                -12.84
+              ],
+              "velocity": 0.812,
+              "phase": 0.676,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.944
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.18,
+                -4.3,
+                -11.46
+              ],
+              "velocity": 1.114,
+              "phase": 0.402,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 0,
+        "bubbles": {
+          "time": 9.466666666666717,
+          "eventAge": 2.7833333333333283,
+          "running": true,
+          "armed": false,
+          "envelope": 0.8957607736236696,
+          "ambient": 27,
+          "heroes": 1,
+          "births": 29,
+          "classes": {
+            "small": 24,
+            "medium": 3,
+            "large": 1
+          },
+          "capacity": {
+            "ambient": 128,
+            "heroes": 3
+          },
+          "progress": 0.3500301280764248,
+          "enabled": false,
+          "drawCount": 28,
+          "lens": {
+            "enabled": true,
+            "position": [
+              -1.1259874635237743,
+              0.2427564432140409,
+              5.537482377610441
+            ],
+            "radii": [
+              0.92,
+              1.08,
+              0.32
+            ],
+            "pull": [
+              0,
+              0
+            ],
+            "dragging": false,
+            "size": [
+              1280,
+              900
+            ],
+            "samples": 4,
+            "format": "RGBA16F + depth24",
+            "oceanRenders": 1,
+            "outputPasses": 1,
+            "backend": "WebGL2",
+            "textures": 28,
+            "bubbleSlots": 3,
+            "legacyOutputTarget": [
+              1280,
+              900
+            ]
+          },
+          "heroesDetail": [
+            {
+              "x": 3.293243615040837,
+              "y": -1.0736167147243996,
+              "z": 1.4631258367741484,
+              "radius": 0.5110889386339112,
+              "alpha": 0.8957607736236696,
+              "age": 0.7166666666666672,
+              "screen": [
+                585.8978703563738,
+                474.1927946002028
+              ]
+            }
+          ]
+        }
+      },
+      "bubbles": {
+        "time": 9.466666666666717,
+        "eventAge": 2.7833333333333283,
+        "running": true,
+        "armed": false,
+        "envelope": 0.8957607736236696,
+        "ambient": 27,
+        "heroes": 1,
+        "births": 29,
+        "classes": {
+          "small": 24,
+          "medium": 3,
+          "large": 1
+        },
+        "capacity": {
+          "ambient": 128,
+          "heroes": 3
+        },
+        "progress": 0.3500301280764248,
+        "enabled": false,
+        "drawCount": 28,
+        "lens": {
+          "enabled": true,
+          "position": [
+            -1.1259874635237743,
+            0.2427564432140409,
+            5.537482377610441
+          ],
+          "radii": [
+            0.92,
+            1.08,
+            0.32
+          ],
+          "pull": [
+            0,
+            0
+          ],
+          "dragging": false,
+          "size": [
+            1280,
+            900
+          ],
+          "samples": 4,
+          "format": "RGBA16F + depth24",
+          "oceanRenders": 1,
+          "outputPasses": 1,
+          "backend": "WebGL2",
+          "textures": 28,
+          "bubbleSlots": 3,
+          "legacyOutputTarget": [
+            1280,
+            900
+          ]
+        },
+        "heroesDetail": [
+          {
+            "x": 3.293243615040837,
+            "y": -1.0736167147243996,
+            "z": 1.4631258367741484,
+            "radius": 0.5110889386339112,
+            "alpha": 0.8957607736236696,
+            "age": 0.7166666666666672,
+            "screen": [
+              585.8978703563738,
+              474.1927946002028
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "settled",
+      "state": {
+        "visibility": "visible",
+        "specimen": {
+          "time": 17.613599999994133,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.8192114823640364,
+          "activation": 0,
+          "frames": 1053
+        },
+        "connected": {
+          "time": 17.600000000000282,
+          "wakes": 3,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0.35,
+          "position": [
+            5.49623,
+            -0.60228,
+            3.91411
+          ],
+          "target": [
+            0.15936,
+            -0.92466,
+            -6.07978
+          ],
+          "actor": [
+            0.303,
+            -0.741,
+            -2.399
+          ],
+          "shot": "second-encounter",
+          "subjectStrength": 0.94,
+          "bankDegrees": 1.488,
+          "fov": 44.92,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "second-encounter",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 0.1,
+              "feature": 0,
+              "scale": 0.9,
+              "position": [
+                -6.25,
+                4.65,
+                -7.05
+              ],
+              "velocity": 0.462,
+              "phase": 0.819,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 1,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                5.49,
+                1.61,
+                -10.47
+              ],
+              "velocity": 0.639,
+              "phase": 0.46,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 1,
+              "feature": 0.94,
+              "scale": 0.82,
+              "position": [
+                -2.1,
+                -1.02,
+                -5.17
+              ],
+              "velocity": 0.856,
+              "phase": 0.378,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 1,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                7.21,
+                2.99,
+                -7.77
+              ],
+              "velocity": 0.473,
+              "phase": 0.608,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.209
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                7.03,
+                -4.06,
+                -9.36
+              ],
+              "velocity": 0.882,
+              "phase": 0.38,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -7.56,
+                2.13,
+                -10.17
+              ],
+              "velocity": 0.542,
+              "phase": 0.605,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.177
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.89,
+                3.32,
+                -11.96
+              ],
+              "velocity": 1.049,
+              "phase": 0.167,
+              "primaryThrust": 0.504,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -7.54,
+                -5.12,
+                -11.12
+              ],
+              "velocity": 0.442,
+              "phase": 0.902,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 0,
+        "bubbles": {
+          "time": 17.600000000000282,
+          "eventAge": 10.916666666666789,
+          "running": true,
+          "armed": false,
+          "envelope": 0.9268963170900484,
+          "ambient": 118,
+          "heroes": 1,
+          "births": 169,
+          "classes": {
+            "small": 99,
+            "medium": 20,
+            "large": 0
+          },
+          "capacity": {
+            "ambient": 128,
+            "heroes": 3
+          },
+          "progress": 0.3500351617440221,
+          "enabled": true,
+          "drawCount": 121,
+          "lens": {
+            "enabled": true,
+            "position": [
+              4.10544565351531,
+              -0.8465739023594572,
+              0.1650997812149182
+            ],
+            "radii": [
+              0.92,
+              1.08,
+              0.32
+            ],
+            "pull": [
+              0,
+              0
+            ],
+            "dragging": false,
+            "size": [
+              1280,
+              900
+            ],
+            "samples": 4,
+            "format": "RGBA16F + depth24",
+            "oceanRenders": 1,
+            "outputPasses": 1,
+            "backend": "WebGL2",
+            "textures": 28,
+            "bubbleSlots": 3,
+            "legacyOutputTarget": [
+              1280,
+              900
+            ]
+          },
+          "heroesDetail": [
+            {
+              "x": 3.1221166099338045,
+              "y": -0.543132324459183,
+              "z": 0.7843682398163072,
+              "radius": 0.26508329537929964,
+              "alpha": 0.9268963170900484,
+              "age": 1.1333333333333342,
+              "screen": [
+                467.19811059327634,
+                397.90744110345184
+              ]
+            }
+          ]
+        }
+      },
+      "bubbles": {
+        "time": 17.616666666666948,
+        "eventAge": 10.933333333333456,
+        "running": true,
+        "armed": false,
+        "envelope": 0.9237348989930031,
+        "ambient": 118,
+        "heroes": 1,
+        "births": 169,
+        "classes": {
+          "small": 99,
+          "medium": 20,
+          "large": 0
+        },
+        "capacity": {
+          "ambient": 128,
+          "heroes": 3
+        },
+        "progress": 0.3500351617440221,
+        "enabled": true,
+        "drawCount": 121,
+        "lens": {
+          "enabled": true,
+          "position": [
+            4.10544565351531,
+            -0.8465739023594572,
+            0.1650997812149182
+          ],
+          "radii": [
+            0.92,
+            1.08,
+            0.32
+          ],
+          "pull": [
+            0,
+            0
+          ],
+          "dragging": false,
+          "size": [
+            1280,
+            900
+          ],
+          "samples": 4,
+          "format": "RGBA16F + depth24",
+          "oceanRenders": 1,
+          "outputPasses": 1,
+          "backend": "WebGL2",
+          "textures": 28,
+          "bubbleSlots": 3,
+          "legacyOutputTarget": [
+            1280,
+            900
+          ]
+        },
+        "heroesDetail": [
+          {
+            "x": 3.12339708539745,
+            "y": -0.5258896138155846,
+            "z": 0.7839515375179464,
+            "radius": 0.26508329537929964,
+            "alpha": 0.9237348989930031,
+            "age": 1.1500000000000008,
+            "screen": [
+              468.9384478756111,
+              393.01536270105504
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "errors": []
+}
