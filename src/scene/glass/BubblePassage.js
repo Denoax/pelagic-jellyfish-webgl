@@ -1,9 +1,9 @@
 import * as THREE from 'three/webgpu';
 import { attribute, dot, normalView, positionView, normalize, max, vec3 } from 'three/tsl';
-import { BubblePopulation, PLUME } from './BubblePopulation.js';
+import { BubblePopulation, PLUME, bubbleShape } from './BubblePopulation.js';
 import { LiveOceanLens } from './LiveOceanLens.js';
 
-// Presentation adapter: cheap instanced films + three slots in the accepted M3
+// Presentation adapter: cheap instanced films + bounded slots in the accepted M3
 // compositor. Never writes the camera, animals, current field or journey.
 export class BubblePassage {
   constructor(app, field, tissues) {
@@ -14,13 +14,17 @@ export class BubblePassage {
     this.geometry = new THREE.SphereGeometry(1, 20, 12);
     this.opacity = new THREE.InstancedBufferAttribute(new Float32Array(PLUME.ambient), 1);
     this.geometry.setAttribute('bubbleOpacity', this.opacity);
+    this.glint = new THREE.InstancedBufferAttribute(new Float32Array(PLUME.ambient), 1);
+    this.geometry.setAttribute('bubbleGlint', this.glint);
     const material = this.material = new THREE.MeshBasicNodeMaterial({ transparent: true,
-      depthWrite: false, side: THREE.FrontSide });
+      depthWrite: false, side: THREE.FrontSide, blending: THREE.AdditiveBlending });
     const facing = max(dot(normalView, normalize(positionView.negate())), 0);
     const rim = facing.oneMinus().pow(4);
-    const glint = max(dot(normalView, normalize(vec3(-.5, .8, .8))), 0).pow(22);
-    material.colorNode = vec3(.24, .43, .52).add(vec3(.45, .55, .58).mul(glint));
-    material.opacityNode = rim.mul(.34).add(glint.mul(.9)).mul(attribute('bubbleOpacity'));
+    const light = normalize(vec3(attribute('bubbleGlint').mul(.7).sub(.7), .85, .35));
+    // Only the edge reflects light: no central specular dot or dark alpha fill.
+    const crescent = max(dot(normalView, light), 0).pow(5);
+    material.colorNode = vec3(.30, .46, .54).add(vec3(.35, .39, .40).mul(crescent));
+    material.opacityNode = rim.mul(crescent.mul(.85).add(.13)).mul(attribute('bubbleOpacity'));
     this.mesh = new THREE.InstancedMesh(this.geometry, material, PLUME.ambient);
     this.mesh.frustumCulled = false; this.mesh.visible = false;
     this.mesh.name = 'M3 rising ambient bubble films'; app.scene.add(this.mesh);
@@ -30,6 +34,9 @@ export class BubblePassage {
     this.view = new THREE.Vector3(); this.heroOrder = []; this.cpu = []; this.enabled = true; this.refract = true;
     this.place = this.place.bind(this); this.progress = 0;
     this.reviewAge = null;
+    this.sources = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()];
+    this.sourceEvent = -1; this.form = {};
+    this.metrics = { duration: 0, ambientSeconds: 0, heroSeconds: 0, peakAmbient: 0, peakHeroes: 0 };
     this.onKey = event => { if (event.code === 'KeyB' && !event.ctrlKey && !event.metaKey && !event.target.closest?.('input,textarea,select')) this.reviewAge = 0; };
     this.onWheel = () => { this.reviewAge = null; };
     window.addEventListener('keydown', this.onKey);
@@ -37,6 +44,25 @@ export class BubblePassage {
   }
   place(b, random) {
     const camera = this.app.camera;
+    if (this.sourceEvent !== this.population.eventId) {
+      // Three fixed world-space seep cores for this traversal. They do not follow
+      // the camera. The source stays below frame; widening happens during rise.
+      this.sourceEvent = this.population.eventId;
+      this.sources.forEach((source, i) => {
+        const depth = [4.8, 8.2, 12][i];
+        const halfY = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * depth;
+        source.set([-.72, -.15, .68][i] * halfY * camera.aspect, -halfY - 1.1, -depth).applyMatrix4(camera.matrixWorld);
+      });
+    }
+    if (!b.hero) {
+      const source = this.sources[b.stream];
+      const packet = Math.floor(this.population.eventAge / 1.3);
+      const offshoot = random() < .12 ? .55 : .16;
+      b.x = source.x + Math.sin(packet * 1.73 + b.stream * 2) * .18 + (random() - .5) * offshoot;
+      b.y = source.y + random() * .4;
+      b.z = source.z + Math.cos(packet * 1.21 + b.stream) * .13 + (random() - .5) * offshoot;
+      return;
+    }
     const depth = b.hero ? 2.9 + random() * 1.8 : 2.3 + random() ** .6 * 11;
     const halfY = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * depth;
     const halfX = halfY * camera.aspect;
@@ -75,11 +101,11 @@ export class BubblePassage {
     // replace keyframes or write camera/animal transforms. Wheel cancels it.
     if (this.reviewAge !== null && dt > 0) {
       this.reviewAge += Math.min(dt, .05);
-      const p = .23 + THREE.MathUtils.clamp((this.reviewAge - 3) / 22, 0, 1) * .28;
+      const p = .15 + THREE.MathUtils.clamp((this.reviewAge - 3) / 34, 0, 1) * .47;
       // Repeated CSS-smooth scrolls restart before advancing at 60 Hz. The
       // existing camera rig already supplies the authored smoothing.
       window.scrollTo({ top: (document.documentElement.scrollHeight - innerHeight) * p, behavior: 'instant' });
-      if (this.reviewAge > 30) this.reviewAge = null;
+      if (this.reviewAge > 42) this.reviewAge = null;
     }
     this.population.narrow = camera.aspect < .85;
     this.population.update(dt, progress, this.field, this.place);
@@ -90,34 +116,42 @@ export class BubblePassage {
       if (!b.live || b.alpha <= .00001) continue;
       if (b.hero) { this.heroOrder.push(b); continue; }
       this.position.set(b.x, b.y, b.z);
-      const wobble = Math.sin(b.age * b.frequency + b.phase) * .08;
-      this.scale.set(b.radius * (1.08 + wobble), b.radius * (.91 - wobble), b.radius);
-      this.euler.set(0, 0, Math.sin(b.phase + b.age) * .1);
+      const form = bubbleShape(b, this.form);
+      this.scale.set(b.radius * form.x, b.radius * form.y, b.radius * form.z);
+      this.euler.set(form.tilt * .4, 0, form.tilt);
       this.rotation.setFromEuler(this.euler);
       this.matrix.compose(this.position, this.rotation, this.scale);
+      this.matrix.elements[4] += form.shear * b.radius;
       this.mesh.setMatrixAt(count, this.matrix);
       this.opacity.setX(count, b.alpha * b.opacity * Math.min(1, 8 / camera.position.distanceTo(this.position)));
+      this.glint.setX(count, b.glint);
       count++;
     }
     // r175 InstanceNode sizes its matrix UBO from count at first compilation.
     // Keep capacity fixed, otherwise later births can index beyond that UBO.
     this.drawCount = count;
+    if (dt > 0 && this.population.envelope > .01) {
+      const m = this.metrics, span = Math.min(dt, .05);
+      m.duration += span; m.ambientSeconds += count * span; m.heroSeconds += this.heroOrder.length * span;
+      m.peakAmbient = Math.max(m.peakAmbient, count); m.peakHeroes = Math.max(m.peakHeroes, this.heroOrder.length);
+    }
     this.matrix.makeTranslation(0, -10000, 0);
     for (let i = count; i < PLUME.ambient; i++) {
       this.mesh.setMatrixAt(i, this.matrix); this.opacity.setX(i, 0);
     }
-    this.mesh.instanceMatrix.needsUpdate = true; this.opacity.needsUpdate = true;
+    this.mesh.instanceMatrix.needsUpdate = true; this.opacity.needsUpdate = true; this.glint.needsUpdate = true;
     for (const b of this.heroOrder) b.distance = camera.position.distanceToSquared(this.position.set(b.x, b.y, b.z));
     this.heroOrder.sort((a, b) => b.distance - a.distance);
     this.lens.slots.forEach((slot, i) => {
       const b = this.heroOrder[i]; slot.strength.value = b && this.enabled && this.refract ? b.alpha : 0;
       if (!b) return;
       this.position.set(b.x, b.y, b.z);
-      const wave = Math.sin(b.age * b.frequency + b.phase) * .075;
-      this.scale.set(b.radius * (1.1 + wave), b.radius * (.91 - wave), b.radius * .83);
-      this.euler.set(Math.sin(b.age + b.phase) * .08, 0, Math.sin(b.phase + b.age * .8) * .12);
+      const form = bubbleShape(b, this.form);
+      this.scale.set(b.radius * form.x, b.radius * form.y, b.radius * form.z);
+      this.euler.set(form.tilt * .4, 0, form.tilt);
       this.rotation.setFromEuler(this.euler);
       this.matrix.compose(this.position, this.rotation, this.scale);
+      this.matrix.elements[4] += form.shear * b.radius;
       this.inverse.copy(this.matrix).invert();
       slot.cameraToLens.value.multiplyMatrices(this.inverse, camera.matrixWorld);
       slot.lensToView.value.multiplyMatrices(camera.matrixWorldInverse, this.matrix);
@@ -129,6 +163,7 @@ export class BubblePassage {
   }
   state() {
     return { ...this.population.state(), progress: this.progress, enabled: this.enabled,
+      metrics: { ...this.metrics, averageAmbient: this.metrics.ambientSeconds / (this.metrics.duration || 1), averageHeroes: this.metrics.heroSeconds / (this.metrics.duration || 1) },
       drawCount: this.drawCount, lens: this.lens.state(),
       heroesDetail: this.heroOrder.map(b => {
         this.view.set(b.x, b.y, b.z).project(this.app.camera);

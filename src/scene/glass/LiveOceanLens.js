@@ -51,7 +51,7 @@ export class LiveOceanLens {
     this.strength = uniform(1);
     this.visibility = uniform(0);
     this.eta = uniform(1 / 1.045);
-    this.slots = Array.from({ length: Math.min(3, bubbleCount) }, () => ({
+    this.slots = Array.from({ length: Math.min(6, bubbleCount) }, () => ({
       radii: uniform(new THREE.Vector3(1, 1, 1)),
       cameraToLens: uniform(new THREE.Matrix4()),
       lensToView: uniform(new THREE.Matrix4()),
@@ -259,12 +259,12 @@ export class LiveOceanLens {
       const highlight = max(dot(normal, normalize(vec3(-0.5, 0.7, 1))), 0).pow(
         24,
       );
+      const bubbleCrescent = max(dot(normalView, normalize(vec3(-.6, .85, .3))), 0).pow(5);
       const optical = bent
         .mul(bubble ? vec3(1) : vec3(0.994, 0.999, 1))
         .add(
-          vec3(0.015, 0.035, 0.046).mul(
-            grazing.mul(bubble ? 0.1 : 0.35).add(highlight.mul(bubble ? .6 : .08)),
-          ),
+          bubble ? vec3(.13, .20, .23).mul(grazing.mul(bubbleCrescent.mul(.8).add(.1)))
+            : vec3(0.015, 0.035, 0.046).mul(grazing.mul(.35).add(highlight.mul(.08))),
         );
       return bubble ? vec4(optical, mask) : vec4(mix(original.rgb, optical, mask), original.a);
     })();
