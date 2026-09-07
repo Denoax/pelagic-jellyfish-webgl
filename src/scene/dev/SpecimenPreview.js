@@ -28,6 +28,7 @@ export class SpecimenPreview {
       view:(angle,distance='medium')=>{this.angle=angle;this.distance=distance;},
       resume:()=>{this.hold=Infinity;},
       pause:()=>{this.hold=this.time;},
+      holdAt:time=>{this.hold=Math.max(this.time,Number(time)||this.time);},
       activate:()=>{const p=new THREE.Vector3(.3,.5,.15);tissues[0].group.localToWorld(p);tissues[0].activate(p);},
       frameIntervals:()=>this.intervals.slice(),
       resetIntervals:()=>{this.intervals.length=0;this.lastFrame=0;},

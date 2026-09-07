@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { BufferGeometry, Float32BufferAttribute, Matrix4, Vector3 } from "three/webgpu";
 import { createSoftParticles } from "../src/scene/SoftParticles.js";
 import { FreeParticleDrift } from "../src/scene/FreeParticleDrift.js";
+import { execFileSync } from 'node:child_process';
 
 function pool() {
   const source = new BufferGeometry();
@@ -48,4 +49,20 @@ test("replacement flecks are born invisibly at the new emitter", () => {
   assert.ok(p.alpha.array.every(value => value === 0));
   assert.ok(Array.from({ length: 30 }, (_, i) => p.positions.array[i * 3]).every(x => x > 98));
   dispose(p);
+});
+
+test('default particle buffers retain exact approved M1 behavior without a field', async () => {
+  const code = execFileSync('git', ['show', '515fa71d90f423ac97747cb7a60d1d84d446d13b:src/scene/FreeParticleDrift.js'], { encoding: 'utf8' })
+    .replace('"three/webgpu"', JSON.stringify(import.meta.resolve('three/webgpu')));
+  const { FreeParticleDrift: Before } = await import(`data:text/javascript;base64,${Buffer.from(code).toString('base64')}`);
+  const a = pool(), b = new Before(pool().mesh), matrix = new Matrix4();
+  for (let i = 0; i < 600; i++) {
+    matrix.makeTranslation(Math.sin(i / 60), i / 600, 0);
+    const pointer = { x: Math.sin(i), y: Math.cos(i) };
+    a.update(1 / 60, i / 60, matrix, true, pointer);
+    b.update(1 / 60, i / 60, matrix, true, pointer);
+    assert.deepEqual(a.positions.array, b.positions.array);
+    assert.deepEqual(a.alpha.array, b.alpha.array);
+  }
+  dispose(a); dispose(b);
 });

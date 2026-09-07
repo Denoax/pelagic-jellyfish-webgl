@@ -34,6 +34,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     let schoolDirector;
     let environment;
     let specimen;
+    let connectedOcean;
     let frameId = 0;
     let frameBusy = false;
     let appendages = [];
@@ -162,7 +163,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
       const hit = findJellyAt(event.clientX, event.clientY);
       if (!hit?.tissue) return;
       hit.tissue.activate(hit.point);
-      appendages
+      if (connectedOcean) connectedOcean.activate(hit.tissue, hit.point);
+      else appendages
         .filter((tissue) => tissue !== hit.tissue && tissue.presence > 0.008)
         .map((tissue) => ({
           tissue,
@@ -206,7 +208,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     const start = async () => {
       try {
         const query = new URLSearchParams(window.location.search);
-        const previewRequested = import.meta.env.DEV && (query.get('specimen') === '1' || query.get('oceanPreview') === '1');
+        const connectedRequested = import.meta.env.DEV && query.get('connectedOcean') === '1' && query.get('specimen') !== '1';
+        const previewRequested = import.meta.env.DEV && (query.get('specimen') === '1' || query.get('oceanPreview') === '1' || connectedRequested);
         const forceWebGL =
           query.get("renderer") === "webgl" ||
           !navigator.gpu ||
@@ -367,6 +370,10 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           const { SpecimenPreview } = await import('./dev/SpecimenPreview.js');
           specimen = new SpecimenPreview(query, app, appendages, environment, schoolDirector);
         }
+        if (import.meta.env.DEV && connectedRequested) {
+          const { ConnectedOcean } = await import('./ocean/ConnectedOcean.js');
+          connectedOcean = new ConnectedOcean(app, environment, appendages, isMobile);
+        }
 
         // Populate every dynamic buffer before revealing the live canvas.
         // Otherwise later high-fidelity actors pay their first geometry
@@ -394,6 +401,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         // temporarily made visible by the production population warm-up.
         specimen?.beforeTissue();
         specimen?.afterTissue();
+        connectedOcean?.afterTissue();
 
         // Compile both the full cinematic pass and the lightweight scrolling
         // pass before exposing the scene.
@@ -514,6 +522,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
               ? clamp(0.24 + current.value.length() * 3.4, 0, 1)
               : 0;
             specimen?.beforeTissue();
+            connectedOcean?.update(rawDelta);
             appendages.forEach((tissue) =>
               tissue.update(
                 delta,
@@ -525,6 +534,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
               ),
             );
             specimen?.afterTissue();
+            connectedOcean?.afterTissue();
 
             await app.update(reducedMotion ? delta * 0.28 : delta, elapsed, {
               interactionMode: true,
@@ -562,6 +572,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
       socialTimers.forEach((timer) => window.clearTimeout(timer));
       delete window.__JELLYFISH_WORLD__;
       specimen?.dispose();
+      connectedOcean?.dispose();
       appendages.forEach((tissue) => tissue.dispose());
       environment?.dispose();
       app?.dispose();
