@@ -7,7 +7,7 @@ const [url='http://127.0.0.1:5178/?idle=300', label='baseline', mode='capture', 
 const out=resolve(process.env.EVIDENCE_ROOT || 'docs/implementation/milestone-1/evidence',label);
 const width=Number(process.env.EVIDENCE_WIDTH || 1280), height=Number(process.env.EVIDENCE_HEIGHT || 900);
 mkdirSync(out,{recursive:true});
-const profile=mkdtempSync('/tmp/pelagic-specimen-browser-');
+const profile=mkdtempSync(`${out}/browser-profile-`);
 const browser=spawn(resolve('scripts/brave-headless.sh'),['--headless=new','--no-sandbox','--hide-scrollbars','--window-size=1280,1000','--use-gl=angle','--use-angle=gl','--enable-unsafe-webgpu','--remote-debugging-port=9279',`--user-data-dir=${profile}`,'about:blank'],{stdio:'ignore'});
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 let ws,send; const errors=[],frames=[];
@@ -84,12 +84,13 @@ try {
    await evaluate(`window.__POPULATION__?.resetCost()`);
    const intervals=await evaluate(`new Promise(resolve=>{const a=[];let last=0;const start=performance.now();function tick(t){if(last)a.push(t-last);last=t;if(t-start<${Number(seconds)*1000})requestAnimationFrame(tick);else resolve(a);}requestAnimationFrame(tick);})`);
    const sorted=[...intervals].sort((a,b)=>a-b);
+   writeFileSync(`${out}/profile.json`,JSON.stringify(await evaluate(`window.__POPULATION_PROFILE__||null`),null,2));
    writeFileSync(`${out}/population-cost.json`,JSON.stringify({cpu:await evaluate(`window.__POPULATION__?.cost()`),state:await evaluate(`window.__POPULATION__?.state()`)},null,2));
    writeFileSync(`${out}/lens-cost.json`,JSON.stringify({cpu:await evaluate(`window.__LIVE_LENS__?.cost()`),state:await evaluate(`window.__LIVE_LENS__?.state()`)},null,2));
    writeFileSync(`${out}/bubble-cost.json`,JSON.stringify({cpu:await evaluate(`window.__BUBBLE_PASSAGE__?.cost()`),state:await evaluate(`window.__BUBBLE_PASSAGE__?.state()`)},null,2));
    writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),auditRender:await evaluate(`window.__AUDIT_RENDER__.read()`),featureCpuIntervals:await evaluate(`window.__CONNECTED_OCEAN__?.cost()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state()})`)},null,2));
  }else{
-   const lensRecording=mode==='lens-optics'||mode==='lens-tour'||mode==='bubble-tour'||mode==='bubble-inspect'||mode==='geyser-tour'||mode==='population-tour';
+   const lensRecording=mode==='lens-optics'||mode==='lens-tour'||mode==='bubble-tour'||mode==='bubble-inspect'||mode==='geyser-tour'||mode==='population-tour'||mode==='population-click';
    const finishRecording=async()=>{
      await send('Page.stopScreencast');await sleep(300);
      if(frames.length<2)throw Error('Motion evidence missing: fewer than two screencast frames');
@@ -125,6 +126,21 @@ try {
        await shot(`journey-${i}-${p}`);
      }
      writeFileSync(`${out}/population.json`,JSON.stringify({checkpoints,errors},null,2));
+   }else if(mode==='population-click'){
+     await evaluate(`window.scrollTo({top:(document.documentElement.scrollHeight-innerHeight)*.52,behavior:'instant'})`);
+     await sleep(8000);
+     await send('Emulation.setVisibleSize',{width,height});
+     await send('Page.startScreencast',{format:'jpeg',quality:90,maxWidth:width,maxHeight:height,everyNthFrame:2});
+     const checkpoints=[];
+     const eligible=await evaluate(`window.__POPULATION__.state().animals.filter(a=>a.clickable&&(a.id===3||a.id>=8)).filter(a=>{const p=window.__JELLYFISH_WORLD__.getJellyScreenPoint(a.id);return p.x>40&&p.x<innerWidth-40&&p.y>80&&p.y<innerHeight-50}).sort((a,b)=>b.pixels-a.pixels).slice(0,4).map(a=>a.id)`);
+     await shot('before');
+     for(const id of eligible){
+       const click=await clickJelly(id); await sleep(300);
+       checkpoints.push({requested:id,click,actual:await evaluate(`window.__JELLYFISH_WORLD__.lastActivated`),state:await state()});
+       await shot(`activated-${id}`); await sleep(1800);
+     }
+     await sleep(12000); await shot('settled');
+     writeFileSync(`${out}/clicks.json`,JSON.stringify({checkpoints,settled:await state(),errors},null,2));
    }else if(mode==='bubble-life'){
      const checkpoints=[];
      const scroll=p=>evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*${p})`);
