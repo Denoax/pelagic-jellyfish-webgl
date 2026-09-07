@@ -4,6 +4,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 const [url='http://127.0.0.1:5178/?idle=300', label='baseline', mode='capture', seconds='24'] = process.argv.slice(2);
 const out=resolve(process.env.EVIDENCE_ROOT || 'docs/implementation/milestone-1/evidence',label);
+const width=Number(process.env.EVIDENCE_WIDTH || 1280), height=Number(process.env.EVIDENCE_HEIGHT || 900);
 mkdirSync(out,{recursive:true});
 const profile=mkdtempSync('/tmp/pelagic-specimen-browser-');
 const browser=spawn(resolve('scripts/brave-headless.sh'),['--headless=new','--no-sandbox','--hide-scrollbars','--window-size=1280,1000','--use-gl=angle','--use-angle=gl','--enable-unsafe-webgpu','--remote-debugging-port=9279',`--user-data-dir=${profile}`,'about:blank'],{stdio:'ignore'});
@@ -21,7 +22,43 @@ try {
  else if(m.method==='Page.screencastFrame'){const name=`motion-${String(frames.length).padStart(5,'0')}.jpg`;writeFileSync(`${out}/${name}`,Buffer.from(m.params.data,'base64'));frames.push({name,time:m.params.metadata.timestamp});send('Page.screencastFrameAck',{sessionId:m.params.sessionId});}});
  const evaluate=async expression=>{const r=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
  await send('Page.enable');await send('Runtime.enable');
- await send('Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false});
+ await send('Page.addScriptToEvaluateOnNewDocument',{source:`(()=>{
+   const original=HTMLCanvasElement.prototype.getContext;
+   HTMLCanvasElement.prototype.getContext=function(...args){
+     const context=original.apply(this,args);
+     if(args[0]==='webgl2' && context && !window.__AUDIT_GL__){
+       const ext=context.getExtension('WEBGL_debug_renderer_info');
+       window.__AUDIT_GL__={version:context.getParameter(context.VERSION),gpu:ext?context.getParameter(ext.UNMASKED_RENDERER_WEBGL):'not exposed'};
+     }
+     return context;
+   };
+ })();`});
+ await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:process.env.EVIDENCE_MOBILE==='1'});
+ // Read-only measurement in the actual shipped page. The ocean's asynchronous
+ // rAF callback resolves after await app.update(). Observe that completion,
+ // not a second independent rAF loop. Reject hidden/busy/no-step callbacks.
+ if(mode==='perf')await send('Page.addScriptToEvaluateOnNewDocument',{source:`(()=>{
+   const raf=window.requestAnimationFrame.bind(window), wrappers=new WeakMap();
+   let last=0, intervals=[], matched=0;
+   const clock=()=>window.__SPECIMEN__?.state().time ?? window.__CONNECTED_OCEAN__?.state().time;
+   window.__AUDIT_RENDER__={reset(){last=0;intervals=[];},read(){return {matched,intervals:intervals.slice()};}};
+   window.requestAnimationFrame=callback=>{
+     if(!wrappers.has(callback)){
+       const source=Function.prototype.toString.call(callback);
+       const ocean=callback.constructor.name==='AsyncFunction' && source.includes('__JELLYFISH_WORLD__') && source.includes('.getDelta()');
+       if(ocean)matched++;
+       wrappers.set(callback,ocean?function(t){
+         const before=clock(), result=callback(t), advanced=clock()>before;
+         if(advanced && result?.then)result.then(()=>{
+           if(document.hidden)return;
+           const now=performance.now();if(last && intervals.length<20000)intervals.push(now-last);last=now;
+         });
+         return result;
+       }:callback);
+     }
+     return raf(wrappers.get(callback));
+   };
+ })();`});
  await send('Page.addScriptToEvaluateOnNewDocument',{source:`let seed=7183;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};`});
  await send('Page.addScriptToEvaluateOnNewDocument',{source:`if(navigator.gpu){const request=navigator.gpu.requestAdapter.bind(navigator.gpu);navigator.gpu.requestAdapter=async (...args)=>{const a=await request(...args);window.__actualAdapter=a?{vendor:a.info?.vendor,device:a.info?.device,architecture:a.info?.architecture,description:a.info?.description,isFallbackAdapter:a.isFallbackAdapter}:null;return a;};}`});
  await send('Page.navigate',{url});
@@ -34,15 +71,18 @@ try {
  info.sourceRevision=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).stdout.trim();
  info.release=await evaluate(`window.__JELLYFISH_WORLD__?.oceanRelease`);
  info.hasSpecimenControls=await evaluate(`Boolean(window.__SPECIMEN__)`);
+ info.actualGL=await evaluate(`window.__AUDIT_GL__||null`);
+ info.loadedScripts=await evaluate(`[...document.scripts].map(s=>s.src).filter(Boolean)`);
  info.uncommittedSource=spawnSync('git',['diff','--name-only','--','src'],{encoding:'utf8'}).stdout.trim();
  const system={adapter:await evaluate(`window.__actualAdapter||null`),browser:await send('Browser.getVersion')};
  if(process.env.EVIDENCE_EVAL)await evaluate(process.env.EVIDENCE_EVAL);
  if(mode==='perf'){
    await evaluate(`window.__SPECIMEN__?.resetIntervals()`);
+   await evaluate(`window.__AUDIT_RENDER__.reset()`);
    await evaluate(`window.__CONNECTED_OCEAN__?.resetCost()`);
    const intervals=await evaluate(`new Promise(resolve=>{const a=[];let last=0;const start=performance.now();function tick(t){if(last)a.push(t-last);last=t;if(t-start<${Number(seconds)*1000})requestAnimationFrame(tick);else resolve(a);}requestAnimationFrame(tick);})`);
    const sorted=[...intervals].sort((a,b)=>a-b);
-   writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),featureCpuIntervals:await evaluate(`window.__CONNECTED_OCEAN__?.cost()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state()})`)},null,2));
+   writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),auditRender:await evaluate(`window.__AUDIT_RENDER__.read()`),featureCpuIntervals:await evaluate(`window.__CONNECTED_OCEAN__?.cost()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state()})`)},null,2));
  }else{
    const shot=async name=>{const r=await send('Page.captureScreenshot',{format:'png'});writeFileSync(`${out}/${name}.png`,Buffer.from(r.data,'base64'));};
    const clickJelly=async(index=0)=>{
@@ -54,15 +94,15 @@ try {
    };
    const state=()=>evaluate(`({specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount})`);
    const nearbyPair=()=>evaluate(`(()=>{const a=window.__JELLYFISH_WORLD__.getSwarmState().actors;let pair=null,best=5.2;for(let i=0;i<a.length;i++){if(a[i].presence<.2)continue;const p=window.__JELLYFISH_WORLD__.getJellyScreenPoint(i);if(p.x<20||p.x>innerWidth-20||p.y<20||p.y>innerHeight-20)continue;for(let j=0;j<a.length;j++){if(i===j||a[j].presence<.2)continue;const d=Math.hypot(...a[i].position.map((v,k)=>v-a[j].position[k]));if(d<best){best=d;pair={index:i,neighbor:j,distance:d};}}}return pair;})()`);
-   if(mode==='ocean-matched'){
+   if(mode==='ocean-matched'||mode==='pulse-matched'){
      const snapshots=[];
-     for(const target of [9,9.8,11,13,17]){
+     for(const target of mode==='pulse-matched'?[9,10,10.6,11.5,13,16]:[9,9.8,11,13,17]){
        await evaluate(`window.__SPECIMEN__.holdAt(${target})`);
        let held=false;
        for(let i=0;i<1200;i++){held=await evaluate(`window.__SPECIMEN__.state().time>=${target}-1e-7`);if(held)break;await sleep(50);}
        if(!held)throw Error('Matched ocean did not reach '+target);
        await shot(`time-${target}`); snapshots.push(await state());
-       if(target===9)snapshots.push({click:await clickJelly()});
+       if(target===9&&mode==='ocean-matched')snapshots.push({click:await clickJelly()});
      }
      writeFileSync(`${out}/matched.json`,JSON.stringify({url,info,system,snapshots,errors},null,2));
    }else if(mode==='observe'){
@@ -97,7 +137,7 @@ try {
      for(const type of ['mouseMoved','mousePressed','mouseReleased'])await send('Input.dispatchMouseEvent',{type,x:point.x,y:point.y,button:type==='mouseMoved'?'none':'left',clickCount:1});
      await sleep(150);await shot('returned-and-activated');
      const activationsAfter=await evaluate(`window.__JELLYFISH_WORLD__.activationCount`);
-     const beforeFreeze=await evaluate(`window.__SPECIMEN__.state()`);
+     const beforeFreeze=await evaluate(`window.__SPECIMEN__?.state()||null`);
      const connectedBeforeFreeze=await evaluate(`window.__CONNECTED_OCEAN__?.state()`);
      const other=await send('Target.createTarget',{url:'about:blank'});
      const backgroundVisibility=await evaluate(`document.visibilityState`);
@@ -117,8 +157,22 @@ try {
      console.log(out);process.exitCode=0;
    }else{
    await shot('opening');
-   await send('Page.startScreencast',{format:'jpeg',quality:90,maxWidth:1280,maxHeight:900,everyNthFrame:2});
-   if(mode==='social-tour'){
+   await send('Page.startScreencast',{format:'jpeg',quality:90,maxWidth:width,maxHeight:height,everyNthFrame:2});
+   if(mode==='audit-journey'){
+     const checkpoints=[];
+     const checkpoint=async name=>{await shot(name);checkpoints.push({label:name,state:await state()});};
+     // Long no-input observation uses the existing idle=300 inspection option.
+     await sleep(20000);await checkpoint('ordinary-wake');
+     for(const delay of [3800,8500,1000,8000]){
+       checkpoints.push({click:await clickJelly()});await sleep(delay);
+       await checkpoint('click-settle-'+delay);
+     }
+     for(const progress of [.28,.52,.88,1,0]){
+       await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*${progress})`);
+       await sleep(9000);await checkpoint('journey-'+progress);
+     }
+     writeFileSync(`${out}/journey.json`,JSON.stringify({checkpoints,errors},null,2));
+   }else if(mode==='social-tour'){
      const checkpoints=[];
      await sleep(3000);
      await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.52)`);
