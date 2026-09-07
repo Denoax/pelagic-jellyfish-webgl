@@ -1,6 +1,6 @@
 # Prototype Instructions
 
-When finishing authorized project work, commit only the relevant changes and push the appropriate feature/review branch to GitHub by default (Mani, 2026-09-07). A push is a review handoff, not visual approval or authorization to merge, deploy, or begin another milestone. Preserve unrelated user changes and honor any newer explicit restriction.
+When finishing authorized project work, commit only the relevant changes, push the appropriate feature/review branch, and update the GitHub Pages website through the existing main-branch deployment workflow by default (Mani, 2026-09-07 follow-up). Publishing is a review handoff, not visual approval or authorization to begin another milestone. Validate the production build, keep development controls private, preserve unrelated user changes, never force-push, and honor any newer explicit restriction.
 
 Run the local server yourself and open the preview in the browser available to this environment. Do not give the user server-start instructions when you can run it.
 

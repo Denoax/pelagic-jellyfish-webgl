@@ -1,0 +1,44 @@
+{
+  "url": "http://127.0.0.1:5181/pelagic-jellyfish-webgl/?idle=300",
+  "info": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "backend": "WebGL 2",
+    "ratio": 1,
+    "viewport": [
+      1280,
+      900
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "bloom": "production direct rendering; bloom disabled",
+    "sourceRevision": "6efbb39293faddf4ca6ec5d3950af8f1eacbaf58",
+    "release": "milestone-2",
+    "hasSpecimenControls": false,
+    "uncommittedSource": "src/scene/HeroScene.jsx\nsrc/scene/ocean/AGENTS.md"
+  },
+  "system": {
+    "adapter": null,
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/152.0.7977.76",
+      "revision": "@06afeb20b5998e787a432fe536c662317517854",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "jsVersion": "15.2.124.19"
+    }
+  },
+  "seconds": 48,
+  "frames": 1442,
+  "errors": [],
+  "after": {
+    "activationCount": 5,
+    "lastActivated": 0
+  }
+}

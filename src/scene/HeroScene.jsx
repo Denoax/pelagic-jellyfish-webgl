@@ -35,6 +35,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     let environment;
     let specimen;
     let connectedOcean;
+    let connectedTime = 0;
     let frameId = 0;
     let frameBusy = false;
     let appendages = [];
@@ -208,9 +209,13 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     const start = async () => {
       try {
         const query = new URLSearchParams(window.location.search);
-        const connectedRequested = import.meta.env.DEV && query.get('connectedOcean') === '1' && query.get('specimen') !== '1';
+        // Publishing selects the reviewed implementation, never its inspection
+        // fixture. Production query strings cannot expose specimen controls.
+        const releasedOcean = import.meta.env.PROD && import.meta.env.VITE_OCEAN_RELEASE === 'milestone-2';
+        const connectedRequested = releasedOcean || (import.meta.env.DEV && query.get('connectedOcean') === '1' && query.get('specimen') !== '1');
         const previewRequested = import.meta.env.DEV && (query.get('specimen') === '1' || query.get('oceanPreview') === '1' || connectedRequested);
         const forceWebGL =
+          releasedOcean || // Ship the verified backend; legacy full-ocean WebGPU remains a separate issue.
           query.get("renderer") === "webgl" ||
           !navigator.gpu ||
           (Boolean(navigator.brave) && !(previewRequested && query.get('renderer') === 'webgpu'));
@@ -292,7 +297,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           const tissue = new LivingAppendages(medusa, index, {
             reducedMotion,
             fidelity: featuredFidelity.has(index) ? "hero" : "companion",
-            improved: previewRequested && index === 0 && query.get('animal') !== 'baseline',
+            improved: index === 0 && (releasedOcean || (previewRequested && query.get('animal') !== 'baseline')),
           });
           app.scene.add(tissue.group);
           return tissue;
@@ -324,6 +329,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           physics:
             "pulse-coupled soft tissue + persistent constrained appendages",
           procedural: true,
+          oceanRelease: releasedOcean ? 'milestone-2' : 'default-or-development',
           interaction:
             "raycast bioluminescence + localized recoil + social glow echo",
           camera: "pelagic camera story director + multi-subject handoffs",
@@ -370,7 +376,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           const { SpecimenPreview } = await import('./dev/SpecimenPreview.js');
           specimen = new SpecimenPreview(query, app, appendages, environment, schoolDirector);
         }
-        if (import.meta.env.DEV && connectedRequested) {
+        if (connectedRequested) {
           const { ConnectedOcean } = await import('./ocean/ConnectedOcean.js');
           connectedOcean = new ConnectedOcean(app, environment, appendages, isMobile);
         }
@@ -436,7 +442,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           frameBusy = true;
           try {
             const clockDelta = clock.getDelta();
-            const rawDelta = specimen ? specimen.advance(clockDelta) : clockDelta;
+            const rawDelta = specimen ? specimen.advance(clockDelta) : connectedOcean ? Math.min(Math.max(clockDelta, 0), 0.05) : clockDelta;
+            if (connectedOcean) connectedTime += rawDelta;
             sampleFrames += 1;
             sampleDuration += Math.min(rawDelta, 0.1);
             if (
@@ -459,7 +466,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
             // step. The animals may advance with elapsed time, but the viewer
             // eases back into the shot over subsequent frames.
             const cameraDelta = Math.min(rawDelta, 1 / 30);
-            const elapsed = specimen ? specimen.time : clock.elapsedTime;
+            const elapsed = specimen ? specimen.time : connectedOcean ? connectedTime : clock.elapsedTime;
             if (specimen && rawDelta === 0) {
               specimen.beforeTissue(); specimen.afterTissue();
               await app.update(0, elapsed, { interactionMode: true });

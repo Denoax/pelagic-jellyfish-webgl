@@ -1,6 +1,6 @@
 # Milestone 2 — one connected ocean interaction
 
-Status: **READY FOR VISUAL REVIEW**. Dedicated GitHub review branch; artwork not deployed. This is a visual review gate, not approval on Mani's behalf.
+Status: **READY FOR VISUAL REVIEW**. Mani subsequently authorized updating the live Pages website separately from visual approval; see [publication follow-up](PUBLISHING.md). The measurements below document the original review gate, not a claim that publishing constitutes approval.
 
 The approved animal is intact. Its surrounding violet star-like cloud is now quieter suspended material: pulse-driven wakes linger behind it, and clicking briefly reveals a patch of nearby water before that patch settles. The strongest visual evidence is the full-size motion, not a still of the peak response.
 
@@ -14,7 +14,7 @@ The approved animal is intact. Its surrounding violet star-like cloud is now qui
 - Existing dirty root `AGENTS.md` and untracked September 7 research documents were preserved and not staged. The checkout contained the actual ocean, approved animal, development fixture and prior browser evidence—not a scaffold.
 - Three.js remains **0.175.0**. Existing imperative `three/webgpu` WebGPURenderer, actually running its **WebGL 2 backend on NVIDIA** in the captures. No renderer migration, upgrade, assets, new dependencies, fluid solver, camera, seabed or idle-glass changes.
 
-The implementation was initially kept local under the milestone's explicit no-push restriction. Mani's subsequent 2026-09-07 instruction authorizes pushing completed work to its appropriate GitHub review branch by default. That handoff does **not** constitute visual approval, merging, deployment or authorization for another milestone. Nothing is merged or deployed.
+The implementation was initially kept local under the milestone's explicit no-push restriction. Mani then authorized pushing review branches, followed by an explicit request to update the Pages website too. The [publication follow-up](PUBLISHING.md) supersedes the original no-deployment boundary, not the visual review gate or milestone scope.
 
 ## Preview
 
@@ -152,4 +152,4 @@ Remove only `connectedOcean=1` for the approved-M1 comparison. Do not remove `oc
 - Camera-dependent billboard softness and additive transparency remain existing approximations; no volumetric scattering, fluid mass conservation, particle collision or physical device-wide performance guarantee is claimed.
 - Distant low-detail animals, deep benthic snow and the existing camera composition are deliberately not rebuilt to flatter this interaction.
 - Full-ocean WebGPU retains the [previously documented legacy transmission render-target issue](../milestone-1/COLOR-PASS.md). It is separate from this field and **NOT TESTED** anew here. The previously available WebGPU adapter was software SwiftShader, not native NVIDIA validation. Physical mobile, Safari, Firefox, other GPUs, high-refresh-rate physical displays, device loss and long thermal/battery runs are **NOT TESTED**. The headless compositor's ~60 Hz cadence is not a maximum-throughput benchmark.
-- Default production behavior and live deployment remain unchanged. Review approval, merging, publishing and later milestones are separate decisions.
+- At the original review gate, default production behavior and live deployment were unchanged. The later [publication instruction](PUBLISHING.md) authorizes enabling this same implementation on Pages. Visual approval and later milestones remain separate decisions.

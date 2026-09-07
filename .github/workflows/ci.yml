@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Use Node.js 24
         uses: actions/setup-node@v6
@@ -31,5 +33,5 @@ jobs:
       - name: Test static hosting worker
         run: npm run test:sites
 
-      - name: Test independent particle motion
-        run: node --test tests/particle-drift.test.mjs
+      - name: Test ocean behavior and approved-animal parity
+        run: node --test tests/*.test.mjs
