@@ -30,6 +30,8 @@ try {
  if(!ready)throw Error('Scene did not become ready: '+JSON.stringify(errors));
  await sleep(6000);
  const info=await evaluate(`({userAgent:navigator.userAgent,backend:window.__JELLYFISH_WORLD__?.renderer,ratio:window.__JELLYFISH_WORLD__?.pixelRatio,viewport:[innerWidth,innerHeight],buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),hardware:window.__SPECIMEN__?.rendererInfo(),bloom:'production direct rendering; bloom disabled'})`);
+ info.sourceRevision=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).stdout.trim();
+ info.uncommittedSource=spawnSync('git',['diff','--name-only','--','src'],{encoding:'utf8'}).stdout.trim();
  const system={adapter:await evaluate(`window.__actualAdapter||null`),browser:await send('Browser.getVersion')};
  if(mode==='perf'){
    await evaluate(`window.__SPECIMEN__?.resetIntervals()`);
@@ -58,7 +60,8 @@ try {
      writeFileSync(`${out}/lifecycle.json`,JSON.stringify({url,info,idleBefore,idleAfter,activationsBefore,activationsAfter,beforeFreeze,afterFreeze,backgroundVisibility,errors},null,2));
    }else if(mode==='matched'){
      let matched=false;
-     for(let i=0;i<1200;i++){matched=await evaluate(`window.__SPECIMEN__?.state().time>=9`);if(matched)break;await sleep(100);}
+     const target=Number(new URL(url).searchParams.get('hold')||9);
+     for(let i=0;i<1200;i++){matched=await evaluate(`window.__SPECIMEN__?.state().time>=${target}`);if(matched)break;await sleep(100);}
      for(const [angle,distance] of [['oblique','medium'],['side','near'],['underside','near'],['top','near'],['oblique','far']]){
        await evaluate(`window.__SPECIMEN__.view('${angle}','${distance}')`);await sleep(120);await shot(`${angle}-${distance}`);
      }
