@@ -1,6 +1,6 @@
 # Milestone 2 — one connected ocean interaction
 
-Status: **READY FOR VISUAL REVIEW**. Local review branch only; not published. This is a visual review gate, not approval on Mani's behalf.
+Status: **READY FOR VISUAL REVIEW**. Dedicated GitHub review branch; artwork not deployed. This is a visual review gate, not approval on Mani's behalf.
 
 The approved animal is intact. Its surrounding violet star-like cloud is now quieter suspended material: pulse-driven wakes linger behind it, and clicking briefly reveals a patch of nearby water before that patch settles. The strongest visual evidence is the full-size motion, not a still of the peak response.
 
@@ -14,7 +14,7 @@ The approved animal is intact. Its surrounding violet star-like cloud is now qui
 - Existing dirty root `AGENTS.md` and untracked September 7 research documents were preserved and not staged. The checkout contained the actual ocean, approved animal, development fixture and prior browser evidence—not a scaffold.
 - Three.js remains **0.175.0**. Existing imperative `three/webgpu` WebGPURenderer, actually running its **WebGL 2 backend on NVIDIA** in the captures. No renderer migration, upgrade, assets, new dependencies, fluid solver, camera, seabed or idle-glass changes.
 
-The user's opening request to commit M1 on GitHub conflicts with the concluding instruction not to push. These commits remain **local** under the final explicit restriction. Nothing was merged, pushed or deployed.
+The implementation was initially kept local under the milestone's explicit no-push restriction. Mani's subsequent 2026-09-07 instruction authorizes pushing completed work to its appropriate GitHub review branch by default. That handoff does **not** constitute visual approval, merging, deployment or authorization for another milestone. Nothing is merged or deployed.
 
 ## Preview
 

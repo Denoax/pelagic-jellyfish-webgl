@@ -5,4 +5,4 @@
 - This module observes animal state; it must not drive or retune animal physics.
 - One DEV-only connected interaction. No camera, seabed, idle-glass or renderer changes.
 - Use bounded world-space fields and fixed-capacity, time-limited disturbances, not fluid simulation.
-- Keep the default experience unchanged. Local reversible commits only; no merge, push or deployment.
+- Keep the default experience unchanged. Make reversible commits and push the dedicated review branch when finished, per Mani's 2026-09-07 follow-up. Pushing does not mean visual approval. No merge, deployment or later-milestone work without separate authorization.
