@@ -10,14 +10,14 @@ test('mantle and margin are periodic and finite throughout contraction and refil
   const tissue=create();const current=new Vector2(.2,-.1);
   for(let i=0;i<=100;i++){
     const shape=tissue.getBellShape(i/100/tissue.pulseRate);
-    for(let t=0;t<=1;t+=.05){
+    for(let t=0;t<=1.12;t+=.04){
       const a=mantlePoint(t,0,shape,8,current,{}),b=mantlePoint(t,Math.PI*2,shape,8,current,{});
       for(const key of ['x','y','z']){assert.ok(Number.isFinite(a[key]));assert.ok(Math.abs(a[key]-b[key])<1e-10);}
     }
     tissue.surfaceCurrent.copy(current);
     tissue.tentacleChains.forEach(chain=>{
       tissue.anchorChain(chain,shape);
-      const edge=mantlePoint(1,chain.angle,shape,8,current,new Vector3());
+      const edge=mantlePoint(1.1,chain.angle,shape,8,current,new Vector3());
       assert.ok(chain.particles[0].position.distanceTo(edge)<1e-10);
     });
   }
@@ -44,6 +44,8 @@ test('candidate geometry and activation remain finite through multiple cycles an
     assert.ok(geometry.attributes.position.array.every(Number.isFinite));
     assert.ok(geometry.attributes.normal.array.every(Number.isFinite));
   }
+  const normals=tissue.bellGeometry.attributes.normal;
+  assert.ok(normals.getY(72)>0,'upper mantle normals point outward');
   assert.ok(tissue.activation<.01);
   assert.equal(tissue.getInteractionMeshes()[0],tissue.bell);
   tissue.dispose();

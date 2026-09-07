@@ -17,7 +17,7 @@ try {
  let id=0;const pending=new Map();
  send=(method,params={})=>new Promise((res,rej)=>{const n=++id;pending.set(n,{res,rej});ws.send(JSON.stringify({id:n,method,params}));});
  ws.addEventListener('message',({data})=>{const m=JSON.parse(data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);m.error?p?.rej(Error(JSON.stringify(m.error))):p?.res(m.result);}
- else if(m.method==='Runtime.exceptionThrown')errors.push(m.params);
+ else if(m.method==='Runtime.exceptionThrown'||(m.method==='Runtime.consoleAPICalled'&&m.params.type==='error'))errors.push(m.params);
  else if(m.method==='Page.screencastFrame'){const name=`motion-${String(frames.length).padStart(5,'0')}.jpg`;writeFileSync(`${out}/${name}`,Buffer.from(m.params.data,'base64'));frames.push({name,time:m.params.metadata.timestamp});send('Page.screencastFrameAck',{sessionId:m.params.sessionId});}});
  const evaluate=async expression=>{const r=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
  await send('Page.enable');await send('Runtime.enable');
@@ -37,7 +37,23 @@ try {
    writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,specimen:window.__SPECIMEN__?.state()})`)},null,2));
  }else{
    const shot=async name=>{const r=await send('Page.captureScreenshot',{format:'png'});writeFileSync(`${out}/${name}.png`,Buffer.from(r.data,'base64'));};
-   if(mode==='matched'){
+   if(mode==='lifecycle'){
+     const key=async key=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code:key,windowsVirtualKeyCode:27});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code:key,windowsVirtualKeyCode:27});};
+     await shot('idle-entry');
+     const idleBefore=await evaluate(`!!document.querySelector('.idle-screen.is-active')`);
+     await key('Escape');await sleep(2900);
+     const idleAfter=await evaluate(`!!document.querySelector('.idle-screen.is-active')`);
+     const point=await evaluate(`window.__JELLYFISH_WORLD__.getJellyScreenPoint(0)`);
+     const activationsBefore=await evaluate(`window.__JELLYFISH_WORLD__.activationCount`);
+     for(const type of ['mouseMoved','mousePressed','mouseReleased'])await send('Input.dispatchMouseEvent',{type,x:point.x,y:point.y,button:type==='mouseMoved'?'none':'left',clickCount:1});
+     await sleep(150);await shot('returned-and-activated');
+     const activationsAfter=await evaluate(`window.__JELLYFISH_WORLD__.activationCount`);
+     const beforeFreeze=await evaluate(`window.__SPECIMEN__.state()`);
+     await send('Page.setWebLifecycleState',{state:'frozen'});await sleep(1800);
+     await send('Page.setWebLifecycleState',{state:'active'});await sleep(60);
+     const afterFreeze=await evaluate(`window.__SPECIMEN__?.state()||{missing:true,status:document.querySelector('[data-scene-status]')?.dataset.sceneStatus,url:location.href}`);
+     writeFileSync(`${out}/lifecycle.json`,JSON.stringify({url,info,idleBefore,idleAfter,activationsBefore,activationsAfter,beforeFreeze,afterFreeze,errors},null,2));
+   }else if(mode==='matched'){
      for(let i=0;i<300;i++){if(await evaluate(`window.__SPECIMEN__?.state().time>=9`))break;await sleep(100);}
      for(const [angle,distance] of [['oblique','medium'],['side','near'],['underside','near'],['top','near'],['oblique','far']]){
        await evaluate(`window.__SPECIMEN__.view('${angle}','${distance}')`);await sleep(120);await shot(`${angle}-${distance}`);
@@ -63,7 +79,7 @@ try {
    await send('Page.stopScreencast');await sleep(300);
    await shot('ending');
    if(frames.length>1){let concat='';frames.forEach((f,i)=>{concat+=`file '${f.name}'\nduration ${i+1<frames.length?Math.max(.001,frames[i+1].time-f.time):.033}\n`;});writeFileSync(`${out}/motion.txt`,concat);const result=spawnSync('/usr/bin/ffmpeg',['-y','-loglevel','error','-f','concat','-safe','0','-i',`${out}/motion.txt`,'-vf','pad=ceil(iw/2)*2:ceil(ih/2)*2','-fps_mode','vfr','-c:v','libx264','-crf','20','-pix_fmt','yuv420p','-movflags','+faststart',`${out}/motion.mp4`],{encoding:'utf8'});if(result.status)throw Error(result.stderr);}
-   writeFileSync(`${out}/capture.json`,JSON.stringify({url,info,system,seconds:Number(seconds),frames:frames.length,errors,after:await evaluate(`window.__SPECIMEN__?.state()||null`)},null,2));
+   writeFileSync(`${out}/capture.json`,JSON.stringify({url,info,system,seconds:Number(seconds),frames:frames.length,errors,after:await evaluate(`({state:window.__SPECIMEN__?.state(),activationCount:window.__JELLYFISH_WORLD__?.activationCount,lastActivated:window.__JELLYFISH_WORLD__?.lastActivated})`)},null,2));
    }
  }
  console.log(JSON.stringify({out,mode,errors:errors.length,info}));

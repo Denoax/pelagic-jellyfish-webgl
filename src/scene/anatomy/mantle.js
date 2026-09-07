@@ -1,5 +1,6 @@
 // Original procedural anatomy. One surface contract for mantle, margin and roots.
-// t=0 apex, t=1 attached margin; angle is periodic, including during contraction.
+// t=0 apex, t=1 equator, t=1.12 softly rolled margin; roots insert at 1.1.
+// Angle is periodic, including during contraction.
 export function mantlePoint(t, angle, shape, lobes, current, out) {
   const polar=t*Math.PI*.5;
   const margin=t**5;
@@ -18,9 +19,10 @@ export function membraneSection(t, u, phase, armIndex, out) {
   const width=(.12+.28*Math.sin(Math.PI*t)**.65)*Math.sqrt(Math.max(0,1-t**8));
   const edge=Math.abs(u);
   const foldPhase=t*22-armIndex*.8-phase*.42;
-  out.width=u*width*(1+.12*edge*Math.sin(foldPhase));
-  out.fold=Math.sin(u*Math.PI*2.5+t*8+armIndex)*width*.42
-    +Math.sin(foldPhase+u*2)*width*.22*edge*edge;
+  out.width=u*width*(1+.22*edge*Math.sin(t*38-armIndex));
+  out.fold=Math.sin(u*Math.PI*1.8+t*10+armIndex)*width*.5
+    +Math.sin(t*38+u*2-armIndex)*width*.5*edge*edge
+    +Math.sin(foldPhase)*width*.06;
   return out;
 }
 

@@ -281,8 +281,13 @@ function createBellGeometry(hero, species, improved = false) {
         const nextRing = vertex + segments;
         const nextSegment = ring * segments + ((segment + 1) % segments);
         const nextRingSegment = (ring + 1) * segments + ((segment + 1) % segments);
-        indices.push(vertex, nextRing, nextSegment);
-        indices.push(nextSegment, nextRing, nextRingSegment);
+        if(improved){
+          // Outward winding is essential for transparent front/back pass ordering.
+          indices.push(vertex,nextSegment,nextRing,nextSegment,nextRingSegment,nextRing);
+        }else{
+          indices.push(vertex, nextRing, nextSegment);
+          indices.push(nextSegment, nextRing, nextRingSegment);
+        }
       }
     }
   }
@@ -440,8 +445,8 @@ export class LivingAppendages {
 
     this.tentacleCount = this.hero ? HERO_TENTACLES : BACKGROUND_TENTACLES;
     this.tentacleSegments = this.hero ? HERO_SEGMENTS : BACKGROUND_SEGMENTS;
-    this.armSegments = this.hero ? HERO_ARM_SEGMENTS : BACKGROUND_ARM_SEGMENTS;
-    this.tubeSides = this.hero ? 5 : 4;
+    this.armSegments = improved ? 56 : this.hero ? HERO_ARM_SEGMENTS : BACKGROUND_ARM_SEGMENTS;
+    this.tubeSides = improved ? 6 : this.hero ? 5 : 4;
 
     this.tentacleChains = Array.from({ length: this.tentacleCount }, (_, chain) => {
       const angle = (chain / this.tentacleCount) * Math.PI * 2;
@@ -686,10 +691,15 @@ export class LivingAppendages {
       this.rim.visible=false; this.ribs.visible=false; this.crown.visible=false;
       this.frill.visible=false; // the margin is now welded into the mantle mesh
       this.innerBell.visible=false; // no co-located additive shell over the tissue
-      this.organMaterial.color.set(0xb8a9c6);this.organMaterial.emissive.set(0x574b70);
+      this.organMaterial.color.set(0xc4a9b5);this.organMaterial.emissive.set(0x574b70);
       this.organMaterial.emissiveIntensity=.18;this.organMaterial.opacity=.3;
       this.organMaterial.blending=THREE.NormalBlending;this.organMaterial.transmission=0;
-      this.organs.children.forEach(mesh=>mesh.scale.y=.65);
+      this.organGeometry.dispose();
+      this.organGeometry=new THREE.TorusGeometry(.16,.052,8,36,Math.PI*1.7);
+      this.organs.children.forEach((mesh,i)=>{
+        mesh.geometry=this.organGeometry;mesh.scale.set(1.1,1,.65);
+        mesh.rotation.set(Math.PI*.5,0,i*Math.PI*.5);
+      });
       this.activationShell.visible=false;this.activationRing.visible=false;
       if(this.signalPearls)this.signalPearls.visible=false;
       if(this.filamentMaterial){this.filamentMaterial.transmission=0;this.filamentMaterial.emissiveIntensity=.22;this.filamentMaterial.opacity=.28;}
@@ -835,7 +845,7 @@ export class LivingAppendages {
       if(arm || this.filamentChains.includes(chain)) {
         const radius=shape.radius*chain.radius*.8;
         this.anchor.set(Math.cos(chain.angle)*radius,shape.height*.32,Math.sin(chain.angle)*radius);
-      } else mantlePoint(1,chain.angle,shape,this.species.lobes,this.surfaceCurrent,this.anchor);
+      } else mantlePoint(1.1,chain.angle,shape,this.species.lobes,this.surfaceCurrent,this.anchor);
       chain.particles[0].position.copy(this.anchor);chain.particles[0].previous.copy(this.anchor);
       return;
     }
@@ -918,12 +928,17 @@ export class LivingAppendages {
     let pointer = 0;
 
     chains.forEach((chain) => {
+      if(this.improved)this.side.set(-Math.sin(chain.angle),0,Math.cos(chain.angle));
       chain.particles.forEach((particle, pointIndex) => {
         const previous = chain.particles[Math.max(0, pointIndex - 1)].position;
         const next = chain.particles[Math.min(chain.particles.length - 1, pointIndex + 1)].position;
         this.tangent.copy(next).sub(previous).normalize();
         const reference = Math.abs(this.tangent.y) > 0.88 ? X_AXIS : Y_AXIS;
-        this.side.crossVectors(this.tangent, reference).normalize();
+        if(this.improved){
+          this.side.addScaledVector(this.tangent,-this.side.dot(this.tangent));
+          if(this.side.lengthSq()<1e-8)this.side.crossVectors(this.tangent,reference);
+          this.side.normalize();
+        }else this.side.crossVectors(this.tangent, reference).normalize();
         this.binormal.crossVectors(this.tangent, this.side).normalize();
         const t = pointIndex / (chain.particles.length - 1);
         const width = (this.hero ? 0.027 : 0.018) * Math.pow(1 - t, 0.62) + 0.002;
@@ -967,6 +982,7 @@ export class LivingAppendages {
           const next=chain.particles[Math.min(chain.particles.length-1,pointIndex+1)].position;
           this.tangent.copy(next).sub(previous).normalize();
           this.side.copy(this.armSide).addScaledVector(this.tangent,-this.armSide.dot(this.tangent)).normalize();
+          this.side.applyAxisAngle(this.tangent,t*4.7+chainIndex*.7);
           this.binormal.crossVectors(this.tangent,this.side).normalize();
           for(let col=0;col<17;col++){
             const section=membraneSection(t,col/8-1,elapsed*this.pulseRate+this.pulseOffset,chainIndex,this.membraneScratch);
@@ -1096,14 +1112,10 @@ export class LivingAppendages {
         positions[pointer++] = canopy + shape.rimY * t + rimFold + rimLoop - wave * 0.018;
         positions[pointer++] = Math.sin(angle) * radial + current.y * currentShear;
         if(this.improved){
-          mantlePoint(t,angle,shape,this.species.lobes,current,this.mantleScratch);
-          if(ring>rings){
-            const hem=(ring-rings)/(totalRings-rings);
-            const fold=hem*(.013*Math.sin(angle*this.species.lobes*2)-.07);
-            this.mantleScratch.x+=Math.cos(angle)*fold;
-            this.mantleScratch.y-=hem*(.15+shape.marginRoll*.03);
-            this.mantleScratch.z+=Math.sin(angle)*fold;
-          }
+          // Continue the very same curved mantle past its equator. No attached
+          // cylindrical cuff and no normal discontinuity at the old rim boundary.
+          const surfaceT=ring<=rings?t:1+(ring-rings)/(totalRings-rings)*.12;
+          mantlePoint(surfaceT,angle,shape,this.species.lobes,current,this.mantleScratch);
           positions[pointer-3]=this.mantleScratch.x;
           positions[pointer-2]=this.mantleScratch.y;
           positions[pointer-1]=this.mantleScratch.z;
@@ -1280,7 +1292,12 @@ export class LivingAppendages {
     if(this.improved){
       for(const material of [this.bellMaterial,this.armMaterial])material.userData.tissueOpacity.value=material.opacity;
       this.activationNodeMaterial.opacity*=.25;
-      if(this.tissueLight)this.tissueLight.intensity=.85+shape.primaryThrust*.25+this.activation*.8;
+      if(this.tissueLight){
+        // The old point light followed the last hit position even without a hit,
+        // approaching the skin and producing a hard inverse-square white spot.
+        this.tissueLight.position.set(0,shape.height*.35,0);
+        this.tissueLight.intensity=.35+shape.primaryThrust*.1+this.activation*.5;
+      }
     }
     this.deformAccumulator += deltaTime;
     this.deformFrame += 1;
