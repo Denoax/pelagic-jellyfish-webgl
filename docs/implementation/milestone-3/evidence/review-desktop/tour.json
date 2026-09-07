@@ -1,0 +1,188 @@
+{
+  "checkpoints": [
+    {
+      "stage": "deformed",
+      "lens": {
+        "enabled": true,
+        "position": [
+          0.13498105028726282,
+          -0.34837295090943937,
+          5.941272137312623
+        ],
+        "radii": [
+          0.92,
+          1.08,
+          0.32
+        ],
+        "pull": [
+          0.5004364945243549,
+          0.4146657191781515
+        ],
+        "dragging": true,
+        "size": [
+          1280,
+          900
+        ],
+        "samples": 4,
+        "format": "RGBA16F + depth24",
+        "oceanRenders": 1,
+        "outputPasses": 1,
+        "backend": "WebGL2",
+        "textures": 28,
+        "legacyOutputTarget": [
+          1280,
+          900
+        ]
+      }
+    },
+    {
+      "stage": "recovered",
+      "lens": {
+        "enabled": true,
+        "position": [
+          0.13498105028726282,
+          -0.34837295090943937,
+          5.941272137312623
+        ],
+        "radii": [
+          0.92,
+          1.08,
+          0.32
+        ],
+        "pull": [
+          0,
+          0
+        ],
+        "dragging": false,
+        "size": [
+          1280,
+          900
+        ],
+        "samples": 4,
+        "format": "RGBA16F + depth24",
+        "oceanRenders": 1,
+        "outputPasses": 1,
+        "backend": "WebGL2",
+        "textures": 28,
+        "legacyOutputTarget": [
+          1280,
+          900
+        ]
+      }
+    },
+    {
+      "click": {
+        "point": {
+          "x": 642.2054406948478,
+          "y": 497.079515020225
+        },
+        "before": 0,
+        "after": 1,
+        "hit": true
+      }
+    },
+    {
+      "stage": "deformed",
+      "lens": {
+        "enabled": true,
+        "position": [
+          0.28304882933465725,
+          0.0964739890200299,
+          5.163329376822626
+        ],
+        "radii": [
+          0.92,
+          1.08,
+          0.32
+        ],
+        "pull": [
+          -0.36185068157205413,
+          0.11145630128058152
+        ],
+        "dragging": true,
+        "size": [
+          1280,
+          900
+        ],
+        "samples": 4,
+        "format": "RGBA16F + depth24",
+        "oceanRenders": 1,
+        "outputPasses": 1,
+        "backend": "WebGL2",
+        "textures": 28,
+        "legacyOutputTarget": [
+          1280,
+          900
+        ]
+      }
+    },
+    {
+      "stage": "recovered",
+      "lens": {
+        "enabled": true,
+        "position": [
+          0.28304882933465725,
+          0.0964739890200299,
+          5.163329376822626
+        ],
+        "radii": [
+          0.92,
+          1.08,
+          0.32
+        ],
+        "pull": [
+          0,
+          0
+        ],
+        "dragging": false,
+        "size": [
+          1280,
+          900
+        ],
+        "samples": 4,
+        "format": "RGBA16F + depth24",
+        "oceanRenders": 1,
+        "outputPasses": 1,
+        "backend": "WebGL2",
+        "textures": 28,
+        "legacyOutputTarget": [
+          1280,
+          900
+        ]
+      }
+    }
+  ],
+  "lens": {
+    "enabled": true,
+    "position": [
+      5.791977782103457,
+      -2.1684491148526033,
+      -5.180217391619929
+    ],
+    "radii": [
+      0.92,
+      1.08,
+      0.32
+    ],
+    "pull": [
+      0,
+      0
+    ],
+    "dragging": false,
+    "size": [
+      1280,
+      900
+    ],
+    "samples": 4,
+    "format": "RGBA16F + depth24",
+    "oceanRenders": 1,
+    "outputPasses": 1,
+    "backend": "WebGL2",
+    "textures": 28,
+    "legacyOutputTarget": [
+      1280,
+      900
+    ]
+  },
+  "errors": []
+}

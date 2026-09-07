@@ -1,0 +1,69 @@
+{
+  "before": {
+    "enabled": true,
+    "position": [
+      0.3212216994844319,
+      0.05776319216365461,
+      5.952804995664755
+    ],
+    "radii": [
+      0.92,
+      1.08,
+      0.32
+    ],
+    "pull": [
+      0,
+      0
+    ],
+    "dragging": false,
+    "size": [
+      1280,
+      900
+    ],
+    "samples": 4,
+    "format": "RGBA16F + depth24",
+    "oceanRenders": 1,
+    "outputPasses": 1,
+    "backend": "WebGL2",
+    "textures": 28,
+    "legacyOutputTarget": [
+      1280,
+      900
+    ]
+  },
+  "failed": "error",
+  "recovered": true,
+  "after": {
+    "enabled": true,
+    "position": [
+      0.32068235154145297,
+      0.05660066929306051,
+      5.952665902881202
+    ],
+    "radii": [
+      0.92,
+      1.08,
+      0.32
+    ],
+    "pull": [
+      0,
+      0
+    ],
+    "dragging": false,
+    "size": [
+      1280,
+      900
+    ],
+    "samples": 4,
+    "format": "RGBA16F + depth24",
+    "oceanRenders": 1,
+    "outputPasses": 1,
+    "backend": "WebGL2",
+    "textures": 28,
+    "legacyOutputTarget": [
+      1280,
+      900
+    ]
+  },
+  "errors": []
+}

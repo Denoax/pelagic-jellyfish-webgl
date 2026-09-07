@@ -39,11 +39,7 @@ for (const label of [
   });
 }
 const pixels = [];
-for (const label of [
-  "review-desktop",
-  "review-narrow",
-  "review-portrait",
-]) {
+for (const label of ["review-desktop", "review-narrow", "review-portrait"]) {
   const decode = (name) =>
     spawnSync(
       "/usr/bin/ffmpeg",
@@ -91,9 +87,57 @@ for (const label of [
     });
   }
 }
+const decodeDesktop = (path) =>
+  spawnSync(
+    "/usr/bin/ffmpeg",
+    ["-v", "error", "-i", path, "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
+    { maxBuffer: 12e6 },
+  ).stdout;
+const approved = decodeDesktop(`${root}/approved-matched/matched-no-lens.png`);
+const direct = decodeDesktop(`${root}/review-desktop/matched-no-lens.png`);
+const lens = decodeDesktop(`${root}/review-desktop/matched-lens.png`);
+if (
+  approved.length !== 1280 * 900 * 3 ||
+  direct.length !== approved.length ||
+  lens.length !== approved.length
+) {
+  throw Error("Missing full-size matched desktop evidence");
+}
+let oceanParityChanged = 0,
+  oceanParityMax = 0,
+  outsideLensChanged = 0;
+for (let y = 0; y < 900; y++)
+  for (let x = 0; x < 1280; x++)
+    for (let c = 0; c < 3; c++) {
+      const i = (y * 1280 + x) * 3 + c;
+      // Exclude existing DOM header/footer glyph rasterization, not ocean pixels.
+      if (y >= 100 && y < 820) {
+        const d = Math.abs(approved[i] - direct[i]);
+        oceanParityChanged += Number(d > 0);
+        oceanParityMax = Math.max(oceanParityMax, d);
+      }
+      if (x < 450 || x > 1000 || y < 140 || y > 770) {
+        outsideLensChanged += Number(direct[i] !== lens[i]);
+      }
+    }
+const parity = {
+  oceanBand: [0, 100, 1280, 820],
+  oceanParityChanged,
+  oceanParityMax,
+  conservativeLensBounds: [450, 140, 1000, 770],
+  outsideLensChanged,
+};
+const locked = performance.filter((p) => p.label.startsWith("perf-locked"));
+if (
+  locked.length === 2 &&
+  JSON.stringify(locked[0].info.controlledState) !==
+    JSON.stringify(locked[1].info.controlledState)
+) {
+  throw Error("Exact-state benchmark states differ");
+}
 writeFileSync(
   `${root}/summary.json`,
-  JSON.stringify({ performance, pixels }, null, 2),
+  JSON.stringify({ performance, pixels, parity }, null, 2),
 );
 console.log(
   JSON.stringify(
@@ -104,6 +148,7 @@ console.log(
         lensCpu,
       })),
       pixels,
+      parity,
     },
     null,
     2,

@@ -1,0 +1,1222 @@
+{
+  "performance": [
+    {
+      "label": "perf-baseline-a",
+      "info": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "backend": "WebGL 2",
+        "ratio": 1,
+        "viewport": [
+          1280,
+          900
+        ],
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 5.912100000001491,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.3113479179484038,
+          "activation": 0,
+          "frames": 352
+        },
+        "hardware": {
+          "backend": "WebGL 2",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+          "drawBuffer": [
+            1280,
+            900
+          ]
+        },
+        "bloom": "production direct rendering; bloom disabled",
+        "driverRevision": "7afc5f09fe0f3efed09297421b5e1a05a75f7ee1",
+        "sourceRevision": "1342d82118d8632cd429e21418832f5c908446a7",
+        "sourceIdentity": "explicit source checkout/release; verify against deployment or worktree",
+        "release": "default-or-development",
+        "hasSpecimenControls": true,
+        "visibility": "visible",
+        "actualGL": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+        },
+        "loadedScripts": [
+          "http://127.0.0.1:5184/@vite/client",
+          "http://127.0.0.1:5184/src/main.jsx"
+        ],
+        "uncommittedSource": ""
+      },
+      "after": {
+        "ratio": 1,
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 35.92760000000145,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.7442649642898687,
+          "activation": 0,
+          "frames": 1800
+        },
+        "connected": {
+          "time": 35.91666666666591,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        }
+      },
+      "completion": {
+        "n": 1800,
+        "median": 16.69999999552965,
+        "p95": 18.80000000447035,
+        "maximum": 23.600000001490116,
+        "over50": 0
+      },
+      "method": "async-render-completion-v2",
+      "raf": {
+        "n": 1800,
+        "median": 16.69999999999891,
+        "p95": 16.700000000004366,
+        "maximum": 16.80000000000291,
+        "over50": 0
+      },
+      "lensCpu": null,
+      "errors": []
+    },
+    {
+      "label": "perf-candidate-a",
+      "info": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "backend": "WebGL 2",
+        "ratio": 1,
+        "viewport": [
+          1280,
+          900
+        ],
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 5.949599999994041,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.31938491180790574,
+          "activation": 0,
+          "frames": 354
+        },
+        "hardware": {
+          "backend": "WebGL 2",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+          "drawBuffer": [
+            1280,
+            900
+          ]
+        },
+        "bloom": "production direct rendering; bloom disabled",
+        "driverRevision": "7afc5f09fe0f3efed09297421b5e1a05a75f7ee1",
+        "sourceRevision": "7afc5f09fe0f3efed09297421b5e1a05a75f7ee1",
+        "sourceIdentity": "driver checkout only; may differ from target URL",
+        "release": "default-or-development",
+        "hasSpecimenControls": true,
+        "visibility": "visible",
+        "actualGL": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+        },
+        "loadedScripts": [
+          "http://127.0.0.1:5178/@vite/client",
+          "http://127.0.0.1:5178/src/main.jsx?t=1788800991726"
+        ],
+        "uncommittedSource": ""
+      },
+      "after": {
+        "ratio": 1,
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 35.98169999999545,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.755859667432194,
+          "activation": 0,
+          "frames": 1801
+        },
+        "connected": {
+          "time": 35.96666666666591,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        }
+      },
+      "completion": {
+        "n": 1801,
+        "median": 16.69999999552965,
+        "p95": 18.600000001490116,
+        "maximum": 22.899999998509884,
+        "over50": 0
+      },
+      "method": "async-render-completion-v2",
+      "raf": {
+        "n": 1801,
+        "median": 16.69999999999709,
+        "p95": 16.700000000004366,
+        "maximum": 16.80000000000291,
+        "over50": 0
+      },
+      "lensCpu": {
+        "n": 1802,
+        "median": 0,
+        "p95": 0.10000000149011612,
+        "maximum": 0.10000000149011612,
+        "over50": 0
+      },
+      "lens": {
+        "enabled": true,
+        "position": [
+          0.3218696046919278,
+          0.05672191965686546,
+          5.953234963308017
+        ],
+        "radii": [
+          0.92,
+          1.08,
+          0.32
+        ],
+        "pull": [
+          0,
+          0
+        ],
+        "dragging": false,
+        "size": [
+          1280,
+          900
+        ],
+        "samples": 4,
+        "format": "RGBA16F + depth24",
+        "oceanRenders": 1,
+        "outputPasses": 1,
+        "backend": "WebGL2",
+        "textures": 28,
+        "legacyOutputTarget": [
+          1280,
+          900
+        ]
+      },
+      "errors": []
+    },
+    {
+      "label": "perf-baseline-b",
+      "info": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "backend": "WebGL 2",
+        "ratio": 1,
+        "viewport": [
+          1280,
+          900
+        ],
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 5.940200000002981,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.31737030534863964,
+          "activation": 0,
+          "frames": 354
+        },
+        "hardware": {
+          "backend": "WebGL 2",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+          "drawBuffer": [
+            1280,
+            900
+          ]
+        },
+        "bloom": "production direct rendering; bloom disabled",
+        "driverRevision": "7afc5f09fe0f3efed09297421b5e1a05a75f7ee1",
+        "sourceRevision": "1342d82118d8632cd429e21418832f5c908446a7",
+        "sourceIdentity": "explicit source checkout/release; verify against deployment or worktree",
+        "release": "default-or-development",
+        "hasSpecimenControls": true,
+        "visibility": "visible",
+        "actualGL": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+        },
+        "loadedScripts": [
+          "http://127.0.0.1:5184/@vite/client",
+          "http://127.0.0.1:5184/src/main.jsx"
+        ],
+        "uncommittedSource": ""
+      },
+      "after": {
+        "ratio": 1,
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 35.972299999997006,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.7538450609713454,
+          "activation": 0,
+          "frames": 1800
+        },
+        "connected": {
+          "time": 35.96666666666591,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        }
+      },
+      "completion": {
+        "n": 1800,
+        "median": 16.69999999552965,
+        "p95": 18.799999997019768,
+        "maximum": 22.599999994039536,
+        "over50": 0
+      },
+      "method": "async-render-completion-v2",
+      "raf": {
+        "n": 1800,
+        "median": 16.69999999999709,
+        "p95": 16.700000000004366,
+        "maximum": 16.80000000000291,
+        "over50": 0
+      },
+      "lensCpu": null,
+      "errors": []
+    },
+    {
+      "label": "perf-candidate-b",
+      "info": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "backend": "WebGL 2",
+        "ratio": 1,
+        "viewport": [
+          1280,
+          900
+        ],
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 6.048900000005963,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.3406668715546499,
+          "activation": 0,
+          "frames": 361
+        },
+        "hardware": {
+          "backend": "WebGL 2",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+          "drawBuffer": [
+            1280,
+            900
+          ]
+        },
+        "bloom": "production direct rendering; bloom disabled",
+        "driverRevision": "7afc5f09fe0f3efed09297421b5e1a05a75f7ee1",
+        "sourceRevision": "7afc5f09fe0f3efed09297421b5e1a05a75f7ee1",
+        "sourceIdentity": "driver checkout only; may differ from target URL",
+        "release": "default-or-development",
+        "hasSpecimenControls": true,
+        "visibility": "visible",
+        "actualGL": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+        },
+        "loadedScripts": [
+          "http://127.0.0.1:5178/@vite/client",
+          "http://127.0.0.1:5178/src/main.jsx?t=1788800991726"
+        ],
+        "uncommittedSource": ""
+      },
+      "after": {
+        "ratio": 1,
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 36.081000000007414,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.7771416271789473,
+          "activation": 0,
+          "frames": 1800
+        },
+        "connected": {
+          "time": 36.0666666666659,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        }
+      },
+      "completion": {
+        "n": 1800,
+        "median": 16.69999999552965,
+        "p95": 18.200000002980232,
+        "maximum": 22.69999999552965,
+        "over50": 0
+      },
+      "method": "async-render-completion-v2",
+      "raf": {
+        "n": 1800,
+        "median": 16.69999999999891,
+        "p95": 16.700000000004366,
+        "maximum": 16.80000000000291,
+        "over50": 0
+      },
+      "lensCpu": {
+        "n": 1801,
+        "median": 0,
+        "p95": 0.10000000149011612,
+        "maximum": 0.10000000149011612,
+        "over50": 0
+      },
+      "lens": {
+        "enabled": true,
+        "position": [
+          0.32207680879889344,
+          0.058061054702948256,
+          5.953194781035059
+        ],
+        "radii": [
+          0.92,
+          1.08,
+          0.32
+        ],
+        "pull": [
+          0,
+          0
+        ],
+        "dragging": false,
+        "size": [
+          1280,
+          900
+        ],
+        "samples": 4,
+        "format": "RGBA16F + depth24",
+        "oceanRenders": 1,
+        "outputPasses": 1,
+        "backend": "WebGL2",
+        "textures": 28,
+        "legacyOutputTarget": [
+          1280,
+          900
+        ]
+      },
+      "errors": []
+    },
+    {
+      "label": "perf-locked-baseline",
+      "info": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "backend": "WebGL 2",
+        "ratio": 1,
+        "viewport": [
+          1280,
+          900
+        ],
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 6.049999999999984,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.3409026233732939,
+          "activation": 0,
+          "frames": 362
+        },
+        "hardware": {
+          "backend": "WebGL 2",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+          "drawBuffer": [
+            1280,
+            900
+          ]
+        },
+        "bloom": "production direct rendering; bloom disabled",
+        "driverRevision": "9348b3ea7fdf7da447036722ea8ec0c74e899c2a",
+        "sourceRevision": "1342d82118d8632cd429e21418832f5c908446a7",
+        "sourceIdentity": "explicit source checkout/release; verify against deployment or worktree",
+        "release": "default-or-development",
+        "hasSpecimenControls": true,
+        "visibility": "visible",
+        "actualGL": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+        },
+        "loadedScripts": [
+          "http://127.0.0.1:5184/@vite/client",
+          "http://127.0.0.1:5184/src/main.jsx"
+        ],
+        "uncommittedSource": "",
+        "controlledState": {
+          "time": 9,
+          "camera": {
+            "progress": 0,
+            "position": [
+              -1.50468,
+              0.45877,
+              9.49893
+            ],
+            "target": [
+              4.44179,
+              -1.41676,
+              -3.05036
+            ],
+            "actor": [
+              0,
+              0,
+              0
+            ],
+            "shot": "arrival",
+            "subjectStrength": 0.861,
+            "bankDegrees": 0,
+            "fov": 47,
+            "orbit": "full"
+          },
+          "actors": {
+            "shot": "arrival",
+            "actors": [
+              {
+                "id": 0,
+                "presence": 1,
+                "feature": 0.861,
+                "scale": 0.9,
+                "position": [
+                  5.51,
+                  -1.96,
+                  -3.77
+                ],
+                "velocity": 0.313,
+                "phase": 0.973,
+                "primaryThrust": 0,
+                "secondaryThrust": 0
+              },
+              {
+                "id": 1,
+                "presence": 0.068,
+                "feature": 0,
+                "scale": 0.31,
+                "position": [
+                  -6.51,
+                  2.97,
+                  -8.45
+                ],
+                "velocity": 0.384,
+                "phase": 0.964,
+                "primaryThrust": 0,
+                "secondaryThrust": 0
+              },
+              {
+                "id": 2,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.82,
+                "position": [
+                  -8.66,
+                  -3.15,
+                  -7.35
+                ],
+                "velocity": 0.403,
+                "phase": 0.857,
+                "primaryThrust": 0,
+                "secondaryThrust": 0
+              },
+              {
+                "id": 3,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.35,
+                "position": [
+                  7.98,
+                  4.53,
+                  -8.63
+                ],
+                "velocity": 0.523,
+                "phase": 0.097,
+                "primaryThrust": 0.86,
+                "secondaryThrust": 0
+              },
+              {
+                "id": 4,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.76,
+                "position": [
+                  8.02,
+                  -4.35,
+                  -7.11
+                ],
+                "velocity": 0.424,
+                "phase": 0.65,
+                "primaryThrust": 0,
+                "secondaryThrust": 0.71
+              },
+              {
+                "id": 5,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.58,
+                "position": [
+                  -9.25,
+                  3.2,
+                  -8.69
+                ],
+                "velocity": 0.489,
+                "phase": 0.846,
+                "primaryThrust": 0,
+                "secondaryThrust": 0
+              },
+              {
+                "id": 6,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.33,
+                "position": [
+                  8.75,
+                  4.81,
+                  -11.87
+                ],
+                "velocity": 0.446,
+                "phase": 0.588,
+                "primaryThrust": 0,
+                "secondaryThrust": 0.049
+              },
+              {
+                "id": 7,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.27,
+                "position": [
+                  -8.37,
+                  -4.01,
+                  -10.26
+                ],
+                "velocity": 1.054,
+                "phase": 0.313,
+                "primaryThrust": 0,
+                "secondaryThrust": 0
+              }
+            ]
+          },
+          "field": {
+            "time": 9.000000000000027,
+            "wakes": 1,
+            "activations": 0,
+            "accepted": 0,
+            "capacity": {
+              "wakes": 32,
+              "activations": 8
+            },
+            "echoes": 0,
+            "echoCount": 0,
+            "snowCount": 784,
+            "localFlecks": 1200
+          },
+          "shaderClock": 9
+        }
+      },
+      "after": {
+        "ratio": 1,
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 9,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.9731461404463879,
+          "activation": 0,
+          "frames": 0
+        },
+        "connected": {
+          "time": 9.000000000000027,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        }
+      },
+      "completion": {
+        "n": 1800,
+        "median": 16.600000001490116,
+        "p95": 17.69999999552965,
+        "maximum": 18.900000005960464,
+        "over50": 0
+      },
+      "method": "async-render-completion-v2",
+      "raf": {
+        "n": 1800,
+        "median": 16.69999999999709,
+        "p95": 16.700000000004366,
+        "maximum": 16.80000000000291,
+        "over50": 0
+      },
+      "lensCpu": null,
+      "errors": []
+    },
+    {
+      "label": "perf-locked-candidate",
+      "info": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "backend": "WebGL 2",
+        "ratio": 1,
+        "viewport": [
+          1280,
+          900
+        ],
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 5.916666666666651,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.31232664520049913,
+          "activation": 0,
+          "frames": 354
+        },
+        "hardware": {
+          "backend": "WebGL 2",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+          "drawBuffer": [
+            1280,
+            900
+          ]
+        },
+        "bloom": "production direct rendering; bloom disabled",
+        "driverRevision": "9348b3ea7fdf7da447036722ea8ec0c74e899c2a",
+        "sourceRevision": "9348b3ea7fdf7da447036722ea8ec0c74e899c2a",
+        "sourceIdentity": "driver checkout only; may differ from target URL",
+        "release": "default-or-development",
+        "hasSpecimenControls": true,
+        "visibility": "visible",
+        "actualGL": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+        },
+        "loadedScripts": [
+          "http://127.0.0.1:5178/@vite/client",
+          "http://127.0.0.1:5178/src/main.jsx?t=1788802274954"
+        ],
+        "uncommittedSource": "",
+        "controlledState": {
+          "time": 9,
+          "camera": {
+            "progress": 0,
+            "position": [
+              -1.50468,
+              0.45877,
+              9.49893
+            ],
+            "target": [
+              4.44179,
+              -1.41676,
+              -3.05036
+            ],
+            "actor": [
+              0,
+              0,
+              0
+            ],
+            "shot": "arrival",
+            "subjectStrength": 0.861,
+            "bankDegrees": 0,
+            "fov": 47,
+            "orbit": "full"
+          },
+          "actors": {
+            "shot": "arrival",
+            "actors": [
+              {
+                "id": 0,
+                "presence": 1,
+                "feature": 0.861,
+                "scale": 0.9,
+                "position": [
+                  5.51,
+                  -1.96,
+                  -3.77
+                ],
+                "velocity": 0.313,
+                "phase": 0.973,
+                "primaryThrust": 0,
+                "secondaryThrust": 0
+              },
+              {
+                "id": 1,
+                "presence": 0.068,
+                "feature": 0,
+                "scale": 0.31,
+                "position": [
+                  -6.51,
+                  2.97,
+                  -8.45
+                ],
+                "velocity": 0.384,
+                "phase": 0.964,
+                "primaryThrust": 0,
+                "secondaryThrust": 0
+              },
+              {
+                "id": 2,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.82,
+                "position": [
+                  -8.66,
+                  -3.15,
+                  -7.35
+                ],
+                "velocity": 0.403,
+                "phase": 0.857,
+                "primaryThrust": 0,
+                "secondaryThrust": 0
+              },
+              {
+                "id": 3,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.35,
+                "position": [
+                  7.98,
+                  4.53,
+                  -8.63
+                ],
+                "velocity": 0.523,
+                "phase": 0.097,
+                "primaryThrust": 0.86,
+                "secondaryThrust": 0
+              },
+              {
+                "id": 4,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.76,
+                "position": [
+                  8.02,
+                  -4.35,
+                  -7.11
+                ],
+                "velocity": 0.424,
+                "phase": 0.65,
+                "primaryThrust": 0,
+                "secondaryThrust": 0.71
+              },
+              {
+                "id": 5,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.58,
+                "position": [
+                  -9.25,
+                  3.2,
+                  -8.69
+                ],
+                "velocity": 0.489,
+                "phase": 0.846,
+                "primaryThrust": 0,
+                "secondaryThrust": 0
+              },
+              {
+                "id": 6,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.33,
+                "position": [
+                  8.75,
+                  4.81,
+                  -11.87
+                ],
+                "velocity": 0.446,
+                "phase": 0.588,
+                "primaryThrust": 0,
+                "secondaryThrust": 0.049
+              },
+              {
+                "id": 7,
+                "presence": 0,
+                "feature": 0,
+                "scale": 0.27,
+                "position": [
+                  -8.37,
+                  -4.01,
+                  -10.26
+                ],
+                "velocity": 1.054,
+                "phase": 0.313,
+                "primaryThrust": 0,
+                "secondaryThrust": 0
+              }
+            ]
+          },
+          "field": {
+            "time": 9.000000000000027,
+            "wakes": 1,
+            "activations": 0,
+            "accepted": 0,
+            "capacity": {
+              "wakes": 32,
+              "activations": 8
+            },
+            "echoes": 0,
+            "echoCount": 0,
+            "snowCount": 784,
+            "localFlecks": 1200
+          },
+          "shaderClock": 9
+        }
+      },
+      "after": {
+        "ratio": 1,
+        "buffers": [
+          [
+            1280,
+            900
+          ],
+          [
+            1280,
+            900
+          ]
+        ],
+        "specimen": {
+          "time": 9,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.9731461404463879,
+          "activation": 0,
+          "frames": 0
+        },
+        "connected": {
+          "time": 9.000000000000027,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        }
+      },
+      "completion": {
+        "n": 1800,
+        "median": 16.69999999552965,
+        "p95": 17,
+        "maximum": 18.100000001490116,
+        "over50": 0
+      },
+      "method": "async-render-completion-v2",
+      "raf": {
+        "n": 1800,
+        "median": 16.69999999999709,
+        "p95": 16.799999999995634,
+        "maximum": 16.80000000000291,
+        "over50": 0
+      },
+      "lensCpu": {
+        "n": 1801,
+        "median": 0,
+        "p95": 0.10000000149011612,
+        "maximum": 0.10000000149011612,
+        "over50": 0
+      },
+      "lens": {
+        "enabled": true,
+        "position": [
+          0.5073123280186906,
+          -0.10633236489455644,
+          6.070232572358654
+        ],
+        "radii": [
+          0.92,
+          1.08,
+          0.32
+        ],
+        "pull": [
+          0,
+          0
+        ],
+        "dragging": false,
+        "size": [
+          1280,
+          900
+        ],
+        "samples": 4,
+        "format": "RGBA16F + depth24",
+        "oceanRenders": 1,
+        "outputPasses": 1,
+        "backend": "WebGL2",
+        "textures": 28,
+        "legacyOutputTarget": [
+          1280,
+          900
+        ]
+      },
+      "errors": []
+    }
+  ],
+  "pixels": [
+    {
+      "label": "review-desktop",
+      "comparison": "matched-direct-repeat",
+      "channels": 3456000,
+      "changed": 19,
+      "maximum": 1,
+      "mean": 0.000005497685185185185,
+      "over3": 0
+    },
+    {
+      "label": "review-desktop",
+      "comparison": "matched-passthrough",
+      "channels": 3456000,
+      "changed": 15,
+      "maximum": 1,
+      "mean": 0.000004340277777777778,
+      "over3": 0
+    },
+    {
+      "label": "review-desktop",
+      "comparison": "matched-lens",
+      "channels": 3456000,
+      "changed": 228341,
+      "maximum": 197,
+      "mean": 1.0922306134259259,
+      "over3": 107002
+    },
+    {
+      "label": "review-narrow",
+      "comparison": "matched-direct-repeat",
+      "channels": 2430000,
+      "changed": 27,
+      "maximum": 1,
+      "mean": 0.000011111111111111112,
+      "over3": 0
+    },
+    {
+      "label": "review-narrow",
+      "comparison": "matched-passthrough",
+      "channels": 2430000,
+      "changed": 39,
+      "maximum": 1,
+      "mean": 0.00001604938271604938,
+      "over3": 0
+    },
+    {
+      "label": "review-narrow",
+      "comparison": "matched-lens",
+      "channels": 2430000,
+      "changed": 228196,
+      "maximum": 197,
+      "mean": 1.551335390946502,
+      "over3": 106884
+    },
+    {
+      "label": "review-portrait",
+      "comparison": "matched-direct-repeat",
+      "channels": 987480,
+      "changed": 20,
+      "maximum": 1,
+      "mean": 0.000020253574755944424,
+      "over3": 0
+    },
+    {
+      "label": "review-portrait",
+      "comparison": "matched-passthrough",
+      "channels": 987480,
+      "changed": 12,
+      "maximum": 1,
+      "mean": 0.000012152144853566655,
+      "over3": 0
+    },
+    {
+      "label": "review-portrait",
+      "comparison": "matched-lens",
+      "channels": 987480,
+      "changed": 102206,
+      "maximum": 168,
+      "mean": 1.353206140883866,
+      "over3": 45374
+    }
+  ],
+  "parity": {
+    "oceanBand": [
+      0,
+      100,
+      1280,
+      820
+    ],
+    "oceanParityChanged": 14,
+    "oceanParityMax": 1,
+    "conservativeLensBounds": [
+      450,
+      140,
+      1000,
+      770
+    ],
+    "outsideLensChanged": 0
+  }
+}

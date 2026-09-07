@@ -1,0 +1,59 @@
+{
+  "url": "http://127.0.0.1:5178/scripts/live-lens-backend.html?renderer=webgpu",
+  "info": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "backend": "WebGPU",
+    "ratio": 1,
+    "viewport": [
+      1280,
+      900
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ]
+    ],
+    "bloom": "production direct rendering; bloom disabled",
+    "driverRevision": "7afc5f09fe0f3efed09297421b5e1a05a75f7ee1",
+    "sourceRevision": "7afc5f09fe0f3efed09297421b5e1a05a75f7ee1",
+    "sourceIdentity": "driver checkout only; may differ from target URL",
+    "release": "ISOLATED DIAGNOSTIC — NOT FULL OCEAN",
+    "hasSpecimenControls": false,
+    "visibility": "visible",
+    "actualGL": null,
+    "loadedScripts": [
+      "http://127.0.0.1:5178/@vite/client",
+      "http://127.0.0.1:5178/scripts/live-lens-backend.html?html-proxy&index=0.js"
+    ],
+    "uncommittedSource": "",
+    "controlledState": null
+  },
+  "system": {
+    "adapter": {
+      "vendor": "google",
+      "device": "",
+      "architecture": "swiftshader",
+      "description": ""
+    },
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/152.0.7977.76",
+      "revision": "@06afeb20b5998e787a432fe536c662317517854",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "jsVersion": "15.2.124.19"
+    }
+  },
+  "seconds": 10,
+  "frames": 51,
+  "errors": [],
+  "after": {
+    "ratio": 1,
+    "buffers": [
+      [
+        1280,
+        900
+      ]
+    ]
+  }
+}
