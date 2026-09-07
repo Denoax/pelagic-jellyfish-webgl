@@ -51,6 +51,7 @@ try {
      return {point,before,after,hit:after>before};
    };
    const state=()=>evaluate(`({specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount})`);
+   const nearbyPair=()=>evaluate(`(()=>{const a=window.__JELLYFISH_WORLD__.getSwarmState().actors;let pair=null,best=5.2;for(let i=0;i<a.length;i++){if(a[i].presence<.2)continue;const p=window.__JELLYFISH_WORLD__.getJellyScreenPoint(i);if(p.x<20||p.x>innerWidth-20||p.y<20||p.y>innerHeight-20)continue;for(let j=0;j<a.length;j++){if(i===j||a[j].presence<.2)continue;const d=Math.hypot(...a[i].position.map((v,k)=>v-a[j].position[k]));if(d<best){best=d;pair={index:i,neighbor:j,distance:d};}}}return pair;})()`);
    if(mode==='ocean-matched'){
      const snapshots=[];
      for(const target of [9,9.8,11,13,17]){
@@ -71,6 +72,13 @@ try {
        if(step===35)await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.52)`);
        if(step===55)await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.88)`);
        if(step===70)await evaluate(`window.scrollTo(0,0)`);
+       if(step===20||step===40){
+         // Choose an existing visible animal with a genuinely nearby partner;
+         // do not reposition the school to manufacture the secondary response.
+         const pair=await nearbyPair();
+         clicks.push({pair,click:pair?await clickJelly(pair.index):null});
+       }
+       if(step===22||step===42)await shot(`nearby-response-${step}`);
        checkpoints.push({wallSeconds:(performance.now()-start)/1000,state:await state()});
        await sleep(2000);step++;
      }
@@ -108,7 +116,23 @@ try {
    }else{
    await shot('opening');
    await send('Page.startScreencast',{format:'jpeg',quality:90,maxWidth:1280,maxHeight:900,everyNthFrame:2});
-   if(mode==='connected-tour'){
+   if(mode==='social-tour'){
+     const checkpoints=[];
+     await sleep(3000);
+     await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.52)`);
+     await sleep(10000);
+     for(let i=0;i<Number(seconds);i++){
+       const pair=await nearbyPair();
+       if(pair){
+         checkpoints.push({pair,before:await state(),click:await clickJelly(pair.index)});
+         await sleep(3000);await shot('local-echo');checkpoints.push({after:await state()});
+         if(checkpoints.at(-1).after.connected.echoCount>0)break;
+       }
+       await sleep(1000);
+     }
+     await sleep(8000);checkpoints.push({settled:await state()});
+     writeFileSync(`${out}/social.json`,JSON.stringify({checkpoints,errors},null,2));
+   }else if(mode==='connected-tour'){
      const checkpoints=[];
      await sleep(6000);checkpoints.push({label:'calm',state:await state()});
      checkpoints.push({label:'click',click:await clickJelly()});
