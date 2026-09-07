@@ -4,3 +4,17 @@ evidence/**/motion.txt
 # Early fixture iterations are not matched final comparison evidence.
 evidence/matched-baseline/
 evidence/matched-candidate/
+# Intermediate September 7 anatomy/material experiments are retained locally.
+# The starting candidate, isolated rim fix, and accepted final comparisons remain tracked.
+evidence/refinement-activation/
+evidence/refinement-anatomy/
+evidence/refinement-folds/
+evidence/refinement-gastric/
+evidence/refinement-pigment/
+evidence/refinement-pouches/
+evidence/refinement-seam/
+evidence/refinement-tissue1/
+evidence/refinement-tissue2/
+evidence/refinement-tissue2-contract/
+evidence/refinement-tissue2-recover/
+evidence/refinement-turn/

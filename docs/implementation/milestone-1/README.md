@@ -1,6 +1,8 @@
 # Milestone 1 — one jellyfish, local review only
 
-## Status: PARTIAL
+Current review: **[READY FOR VISUAL REVIEW — refined animal and new evidence](REFINEMENT.md)**. Everything below preserves the initial handoff and its original measurements/limitations for comparison.
+
+## Historical status at fc84892: PARTIAL
 
 The reusable candidate, controlled specimen, opt-in ocean substitution, matched comparisons, and browser recordings are implemented. This is **not a claim that the exceptional-animal visual gate is passed**. Folded arms and coordinated motion are materially different, but close WebGL views still expose thin rim artifacts, transparent overlap boundaries and an overly simple internal junction. Those require another anatomical/transparent-surface pass before calling the animal convincing from every requested angle. No later milestone was started.
 
