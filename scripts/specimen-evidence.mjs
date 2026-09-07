@@ -72,7 +72,7 @@ try {
    }else{
    await shot('opening');
    await send('Page.startScreencast',{format:'jpeg',quality:90,maxWidth:1280,maxHeight:900,everyNthFrame:2});
-   if(mode==='tour'){
+   if(mode==='tour'||mode==='anatomy-tour'){
      await sleep(12000);
      const chamber=await evaluate(`window.__SPECIMEN__?.state().chamber`);
      if(chamber)await evaluate(`window.__SPECIMEN__.view('side','near')`);
@@ -82,8 +82,13 @@ try {
      for(const type of ['mouseMoved','mousePressed','mouseReleased'])await send('Input.dispatchMouseEvent',{type,x:point.x,y:point.y,button:type==='mouseMoved'?'none':'left',clickCount:1});
      await sleep(6000);
      await shot('activation-return');
+     if(chamber&&mode==='anatomy-tour'){
+       await evaluate(`window.__SPECIMEN__.view('underside','near')`);await sleep(6000);
+       await shot('underside-cycle');
+       await evaluate(`window.__SPECIMEN__.view('oblique','far')`);await sleep(6000);
+     }
      if(chamber)await evaluate(`window.__SPECIMEN__.view('oblique','medium')`);
-     await sleep(Math.max(0,Number(seconds)-22)*1000);
+     await sleep(Math.max(0,Number(seconds)-(chamber&&mode==='anatomy-tour'?34:22))*1000);
    }else await sleep(Number(seconds)*1000);
    await send('Page.stopScreencast');await sleep(300);
    await shot('ending');
