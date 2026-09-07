@@ -76,7 +76,9 @@ export class BubblePassage {
     if (this.reviewAge !== null && dt > 0) {
       this.reviewAge += Math.min(dt, .05);
       const p = .23 + THREE.MathUtils.clamp((this.reviewAge - 3) / 22, 0, 1) * .28;
-      window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * p);
+      // Repeated CSS-smooth scrolls restart before advancing at 60 Hz. The
+      // existing camera rig already supplies the authored smoothing.
+      window.scrollTo({ top: (document.documentElement.scrollHeight - innerHeight) * p, behavior: 'instant' });
       if (this.reviewAge > 30) this.reviewAge = null;
     }
     this.population.narrow = camera.aspect < .85;

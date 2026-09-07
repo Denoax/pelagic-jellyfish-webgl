@@ -49,4 +49,6 @@ test('approved animals, M2 water, camera and idle sources remain exact M3 baseli
   const hero = readFileSync('src/scene/HeroScene.jsx', 'utf8');
   assert.match(hero, /bubblesRequested = import.meta.env.DEV &&/);
   assert.equal(PLUME.heroes, 3);
+  const adapter = readFileSync('src/scene/glass/BubblePassage.js', 'utf8');
+  assert.match(adapter, /behavior: 'instant'/, 'DEV replay must not restart CSS smooth-scroll every frame');
 });

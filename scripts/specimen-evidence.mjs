@@ -138,7 +138,17 @@ try {
      const capture=async name=>{await shot(name);checkpoints.push({name,state:await state(),bubbles:await evaluate(`window.__BUBBLE_PASSAGE__?.state()`)});};
      const scroll=p=>evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*${p})`);
      if(mode==='bubble-inspect'){
-       await scroll(.35);await sleep(6500);
+       await scroll(.35);
+       if(process.env.EVIDENCE_MATCH_CROSSING==='1'){
+         let crossing=null, closest=Infinity;
+         for(let i=0;i<260;i++){
+           const pair=await evaluate(`(()=>{const target=window.__JELLYFISH_WORLD__.getJellyScreenPoint(2);const h=window.__BUBBLE_PASSAGE__.state().heroesDetail.filter(h=>h.alpha>.8).map(h=>({...h,distance:Math.hypot(h.screen[0]-target.x,h.screen[1]-target.y)})).sort((a,b)=>a.distance-b.distance)[0];return h?{target,hero:h}:null;})()`);
+           if(pair){closest=Math.min(closest,pair.hero.distance);if(pair.hero.distance<50){crossing=pair;break;}}
+           await sleep(50);
+         }
+         if(!crossing)throw Error('No natural bell crossing; closest pixel distance '+closest);
+         checkpoints.push({name:'natural-bell-crossing',crossing});
+       }else await sleep(6500);
        await evaluate(`window.__SPECIMEN__.pause()`);
        await evaluate(`(async()=>{const url=performance.getEntriesByType('resource').map(r=>r.name).find(n=>n.includes('/three_tsl.js'));const {time}=await import(url);const update=time.update,value=time.value;time.update=()=>{time.value=value;};window.__RESTORE_QA_TIME__=()=>{time.update=update;};})()`);
        await sleep(100);await capture('matched-bubbles');
