@@ -1,0 +1,1682 @@
+{
+  "url": "http://127.0.0.1:5181/pelagic-jellyfish-webgl/?idle=300",
+  "info": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "backend": "WebGL 2",
+    "ratio": 1,
+    "viewport": [
+      1280,
+      900
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "bloom": "production direct rendering; bloom disabled",
+    "driverRevision": "cd3d79c2f5ae8f0bc9eb88936123bd26ac219e49",
+    "sourceRevision": "cd3d79c2f5ae8f0bc9eb88936123bd26ac219e49",
+    "sourceIdentity": "driver checkout only; may differ from target URL",
+    "release": "milestone-2",
+    "hasSpecimenControls": false,
+    "visibility": "visible",
+    "actualGL": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "loadedScripts": [
+      "http://127.0.0.1:5181/pelagic-jellyfish-webgl/assets/index-AOfZcGYf.js"
+    ],
+    "uncommittedSource": ""
+  },
+  "system": {
+    "adapter": null,
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/152.0.7977.76",
+      "revision": "@06afeb20b5998e787a432fe536c662317517854",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "jsVersion": "15.2.124.19"
+    }
+  },
+  "durationSeconds": 18.146285675999998,
+  "clicks": [
+    {
+      "point": {
+        "x": 744.0237498268741,
+        "y": 481.878016208974
+      },
+      "before": 0,
+      "after": 1,
+      "hit": true
+    },
+    {
+      "point": {
+        "x": 743.0227897755606,
+        "y": 483.157366918239
+      },
+      "before": 1,
+      "after": 2,
+      "hit": true
+    },
+    {
+      "point": {
+        "x": 741.9898974025043,
+        "y": 484.05294932047747
+      },
+      "before": 2,
+      "after": 3,
+      "hit": true
+    },
+    {
+      "point": {
+        "x": 740.8458129826499,
+        "y": 484.76318996513095
+      },
+      "before": 3,
+      "after": 4,
+      "hit": true
+    },
+    {
+      "point": {
+        "x": 739.6103240975274,
+        "y": 485.3143932553434
+      },
+      "before": 4,
+      "after": 5,
+      "hit": true
+    },
+    {
+      "point": {
+        "x": 738.3060537074223,
+        "y": 485.7265920522887
+      },
+      "before": 5,
+      "after": 6,
+      "hit": true
+    },
+    {
+      "point": {
+        "x": 736.9510349264164,
+        "y": 486.0195040160982
+      },
+      "before": 6,
+      "after": 7,
+      "hit": true
+    },
+    {
+      "point": {
+        "x": 735.5534683104554,
+        "y": 486.21168032482757
+      },
+      "before": 7,
+      "after": 8,
+      "hit": true
+    },
+    {
+      "point": {
+        "x": 734.1316329584283,
+        "y": 486.31779746199913
+      },
+      "before": 8,
+      "after": 9,
+      "hit": true
+    },
+    {
+      "point": {
+        "x": 732.6938326489235,
+        "y": 486.35217903523846
+      },
+      "before": 9,
+      "after": 10,
+      "hit": true
+    },
+    {
+      "point": {
+        "x": 731.2481520063245,
+        "y": 486.3292069267732
+      },
+      "before": 10,
+      "after": 11,
+      "hit": true
+    },
+    {
+      "point": {
+        "x": 729.7733112905273,
+        "y": 486.30195805685594
+      },
+      "before": 11,
+      "after": 12,
+      "hit": true
+    }
+  ],
+  "checkpoints": [
+    {
+      "wallSeconds": 0.000013344999999389984,
+      "state": {
+        "visibility": "visible",
+        "connected": {
+          "time": 7.416666666666646,
+          "wakes": 1,
+          "activations": 2,
+          "accepted": 2,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.50142,
+            0.45629,
+            9.50386
+          ],
+          "target": [
+            3.95003,
+            -1.00492,
+            -2.50813
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                5.33,
+                -1.43,
+                -3.31
+              ],
+              "velocity": 0.579,
+              "phase": 0.637,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.555
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -5.97,
+                2.86,
+                -8.66
+              ],
+              "velocity": 0.265,
+              "phase": 0.692,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.998
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -8.85,
+                -3.34,
+                -7.13
+              ],
+              "velocity": 0.331,
+              "phase": 0.58,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.014
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                8.27,
+                4.79,
+                -8.45
+              ],
+              "velocity": 0.273,
+              "phase": 0.822,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                7.38,
+                -3.53,
+                -7.37
+              ],
+              "velocity": 0.951,
+              "phase": 0.335,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -8.75,
+                3.09,
+                -7.99
+              ],
+              "velocity": 0.739,
+              "phase": 0.526,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.54,
+                4.73,
+                -10.7
+              ],
+              "velocity": 1.053,
+              "phase": 0.3,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.51,
+                -3.22,
+                -9
+              ],
+              "velocity": 0.437,
+              "phase": 0.024,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 12
+      }
+    },
+    {
+      "wallSeconds": 2.002688091,
+      "state": {
+        "visibility": "visible",
+        "connected": {
+          "time": 9.416666666666714,
+          "wakes": 2,
+          "activations": 2,
+          "accepted": 2,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.50607,
+            0.45923,
+            9.49767
+          ],
+          "target": [
+            4.48967,
+            -1.53359,
+            -3.15736
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                5.51,
+                -2.06,
+                -3.84
+              ],
+              "velocity": 0.263,
+              "phase": 0.066,
+              "primaryThrust": 0.386,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -6.65,
+                3,
+                -8.37
+              ],
+              "velocity": 0.376,
+              "phase": 0.039,
+              "primaryThrust": 0.052,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -8.5,
+                -3.07,
+                -7.37
+              ],
+              "velocity": 0.402,
+              "phase": 0.933,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                7.71,
+                4.28,
+                -8.6
+              ],
+              "velocity": 1.115,
+              "phase": 0.172,
+              "primaryThrust": 0.419,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                8.1,
+                -4.44,
+                -7
+              ],
+              "velocity": 0.357,
+              "phase": 0.736,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.754
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -9.3,
+                3.13,
+                -8.87
+              ],
+              "velocity": 0.411,
+              "phase": 0.934,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.77,
+                4.8,
+                -12.03
+              ],
+              "velocity": 0.275,
+              "phase": 0.667,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.88
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.3,
+                -4.23,
+                -10.62
+              ],
+              "velocity": 0.9,
+              "phase": 0.393,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 12
+      }
+    },
+    {
+      "wallSeconds": 4.005989669999999,
+      "state": {
+        "visibility": "visible",
+        "connected": {
+          "time": 11.416666666666814,
+          "wakes": 1,
+          "activations": 2,
+          "accepted": 2,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.51498,
+            0.46007,
+            9.49247
+          ],
+          "target": [
+            3.85754,
+            -1.86679,
+            -3.10626
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                4.11,
+                -2.23,
+                -3.32
+              ],
+              "velocity": 0.622,
+              "phase": 0.494,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -7.63,
+                3.21,
+                -6.81
+              ],
+              "velocity": 0.833,
+              "phase": 0.386,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -7.13,
+                -2.64,
+                -6.83
+              ],
+              "velocity": 1.005,
+              "phase": 0.286,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                6.48,
+                3.17,
+                -8.18
+              ],
+              "velocity": 0.472,
+              "phase": 0.523,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                7.87,
+                -4.32,
+                -6.57
+              ],
+              "velocity": 0.902,
+              "phase": 0.138,
+              "primaryThrust": 0.915,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -8.64,
+                2.04,
+                -9.34
+              ],
+              "velocity": 0.924,
+              "phase": 0.342,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.55,
+                4.49,
+                -11.89
+              ],
+              "velocity": 0.324,
+              "phase": 0.034,
+              "primaryThrust": 0.02,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.06,
+                -4.79,
+                -11.32
+              ],
+              "velocity": 0.249,
+              "phase": 0.762,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.446
+            }
+          ]
+        },
+        "activationCount": 12
+      }
+    },
+    {
+      "wallSeconds": 6.009023458,
+      "state": {
+        "visibility": "visible",
+        "connected": {
+          "time": 13.43333333333358,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 2,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.52697,
+            0.45872,
+            9.4885
+          ],
+          "target": [
+            3.02838,
+            -1.75698,
+            -2.68372
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                3.64,
+                -1.8,
+                -2.89
+              ],
+              "velocity": 0.341,
+              "phase": 0.926,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -7.94,
+                3.18,
+                -6.09
+              ],
+              "velocity": 0.262,
+              "phase": 0.737,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.75
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -6.03,
+                -2.34,
+                -6.12
+              ],
+              "velocity": 0.31,
+              "phase": 0.642,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.624
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                6.58,
+                3.18,
+                -7.82
+              ],
+              "velocity": 0.416,
+              "phase": 0.877,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                6.48,
+                -3.07,
+                -6.7
+              ],
+              "velocity": 0.642,
+              "phase": 0.543,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -7.79,
+                1.22,
+                -9.3
+              ],
+              "velocity": 0.41,
+              "phase": 0.754,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.544
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.25,
+                4.1,
+                -10.03
+              ],
+              "velocity": 0.917,
+              "phase": 0.403,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -7.9,
+                -4.68,
+                -10.64
+              ],
+              "velocity": 1.008,
+              "phase": 0.134,
+              "primaryThrust": 0.949,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 12
+      }
+    },
+    {
+      "wallSeconds": 8.016645981,
+      "state": {
+        "visibility": "visible",
+        "connected": {
+          "time": 15.43333333333368,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 2,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.54014,
+            0.45532,
+            9.48602
+          ],
+          "target": [
+            3.28893,
+            -1.17888,
+            -2.51347
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                4.74,
+                -0.95,
+                -2.99
+              ],
+              "velocity": 0.932,
+              "phase": 0.355,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -7.44,
+                2.81,
+                -6.57
+              ],
+              "velocity": 0.633,
+              "phase": 0.084,
+              "primaryThrust": 0.687,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -6.4,
+                -2.42,
+                -5.75
+              ],
+              "velocity": 0.31,
+              "phase": 0.996,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                7.74,
+                4.01,
+                -7.76
+              ],
+              "velocity": 1.183,
+              "phase": 0.228,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                6.03,
+                -2.71,
+                -7.28
+              ],
+              "velocity": 0.323,
+              "phase": 0.945,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -7.51,
+                1.66,
+                -8.74
+              ],
+              "velocity": 1.078,
+              "phase": 0.162,
+              "primaryThrust": 0.586,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.29,
+                4.04,
+                -8.92
+              ],
+              "velocity": 0.347,
+              "phase": 0.77,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.345
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.26,
+                -3.83,
+                -8.76
+              ],
+              "velocity": 0.75,
+              "phase": 0.503,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 12
+      }
+    },
+    {
+      "wallSeconds": 10.018820792,
+      "state": {
+        "visibility": "visible",
+        "connected": {
+          "time": 17.433333333333625,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 2,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.5527,
+            0.45015,
+            9.48512
+          ],
+          "target": [
+            4.43944,
+            -0.55838,
+            -2.76789
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                5.84,
+                -0.59,
+                -3.38
+              ],
+              "velocity": 0.458,
+              "phase": 0.784,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.195
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -6.59,
+                2.36,
+                -8.38
+              ],
+              "velocity": 0.8,
+              "phase": 0.432,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -7.94,
+                -2.71,
+                -6.28
+              ],
+              "velocity": 0.895,
+              "phase": 0.349,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                9.13,
+                5,
+                -7.99
+              ],
+              "velocity": 0.496,
+              "phase": 0.579,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.012
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                6.79,
+                -3.57,
+                -8.08
+              ],
+              "velocity": 0.941,
+              "phase": 0.346,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -7.93,
+                3.29,
+                -8.02
+              ],
+              "velocity": 0.594,
+              "phase": 0.571,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.71,
+                4.37,
+                -9.04
+              ],
+              "velocity": 0.865,
+              "phase": 0.137,
+              "primaryThrust": 0.925,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.75,
+                -3.47,
+                -8.2
+              ],
+              "velocity": 0.293,
+              "phase": 0.872,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 12
+      }
+    },
+    {
+      "wallSeconds": 12.020224757999998,
+      "state": {
+        "visibility": "visible",
+        "connected": {
+          "time": 19.43333333333351,
+          "wakes": 2,
+          "activations": 0,
+          "accepted": 2,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.56286,
+            0.44364,
+            9.48584
+          ],
+          "target": [
+            4.91679,
+            -0.72434,
+            -3.17513
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                5.75,
+                -1.32,
+                -3.9
+              ],
+              "velocity": 1.087,
+              "phase": 0.212,
+              "primaryThrust": 0.002,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -6.47,
+                2.3,
+                -9.21
+              ],
+              "velocity": 0.306,
+              "phase": 0.779,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.243
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -8.81,
+                -2.81,
+                -6.8
+              ],
+              "velocity": 0.236,
+              "phase": 0.702,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.991
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                9.29,
+                5.01,
+                -8.41
+              ],
+              "velocity": 0.276,
+              "phase": 0.929,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                7.58,
+                -4.43,
+                -8.4
+              ],
+              "velocity": 0.386,
+              "phase": 0.748,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.619
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -8.28,
+                3.82,
+                -8.22
+              ],
+              "velocity": 0.246,
+              "phase": 0.979,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                9.24,
+                4.76,
+                -10.75
+              ],
+              "velocity": 0.629,
+              "phase": 0.503,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -9.17,
+                -3.74,
+                -9.05
+              ],
+              "velocity": 1.053,
+              "phase": 0.241,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 12
+      }
+    },
+    {
+      "wallSeconds": 14.023713506999998,
+      "state": {
+        "visibility": "visible",
+        "connected": {
+          "time": 21.450000000000063,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 2,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.56921,
+            0.43627,
+            9.48818
+          ],
+          "target": [
+            4.18072,
+            -1.75108,
+            -3.58108
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                4.66,
+                -2.51,
+                -4.25
+              ],
+              "velocity": 0.53,
+              "phase": 0.644,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.647
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -7.05,
+                2.55,
+                -9.02
+              ],
+              "velocity": 0.908,
+              "phase": 0.129,
+              "primaryThrust": 0.977,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -8.19,
+                -2.52,
+                -7
+              ],
+              "velocity": 0.478,
+              "phase": 0.059,
+              "primaryThrust": 0.28,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                8.21,
+                4.04,
+                -8.57
+              ],
+              "velocity": 1.104,
+              "phase": 0.283,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                7.61,
+                -4.45,
+                -7.77
+              ],
+              "velocity": 1.038,
+              "phase": 0.153,
+              "primaryThrust": 0.732,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -8.14,
+                2.81,
+                -9.35
+              ],
+              "velocity": 0.899,
+              "phase": 0.391,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                9.08,
+                4.56,
+                -11.34
+              ],
+              "velocity": 0.338,
+              "phase": 0.873,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -9.31,
+                -4.33,
+                -10.45
+              ],
+              "velocity": 0.419,
+              "phase": 0.613,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.259
+            }
+          ]
+        },
+        "activationCount": 12
+      }
+    },
+    {
+      "wallSeconds": 16.031917548,
+      "state": {
+        "visibility": "visible",
+        "connected": {
+          "time": 23.44999999999995,
+          "wakes": 2,
+          "activations": 0,
+          "accepted": 2,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 1200
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.57072,
+            0.42877,
+            9.49198
+          ],
+          "target": [
+            3.41999,
+            -2.2237,
+            -3.60735
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                3.93,
+                -2.6,
+                -4.05
+              ],
+              "velocity": 0.317,
+              "phase": 0.073,
+              "primaryThrust": 0.508,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -8.18,
+                2.89,
+                -7.43
+              ],
+              "velocity": 0.688,
+              "phase": 0.477,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -6.44,
+                -2.03,
+                -6.32
+              ],
+              "velocity": 0.829,
+              "phase": 0.412,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                7.07,
+                3.03,
+                -8.49
+              ],
+              "velocity": 0.4,
+              "phase": 0.634,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.519
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                6.66,
+                -3.35,
+                -6.66
+              ],
+              "velocity": 0.614,
+              "phase": 0.555,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -7.74,
+                1.87,
+                -9.93
+              ],
+              "velocity": 0.452,
+              "phase": 0.799,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.069
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.33,
+                3.91,
+                -10.61
+              ],
+              "velocity": 1.161,
+              "phase": 0.24,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.89,
+                -4.49,
+                -10.55
+              ],
+              "velocity": 0.265,
+              "phase": 0.981,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 12
+      }
+    }
+  ],
+  "errors": []
+}

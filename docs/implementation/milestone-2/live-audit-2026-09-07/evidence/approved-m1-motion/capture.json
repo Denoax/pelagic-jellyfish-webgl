@@ -1,0 +1,83 @@
+{
+  "url": "http://127.0.0.1:5183/?oceanPreview=1&renderer=webgl&idle=300",
+  "info": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "backend": "WebGL 2",
+    "ratio": 1,
+    "viewport": [
+      1280,
+      900
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "specimen": {
+      "time": 5.894399999998511,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": false,
+      "bloom": "off (normal production path)",
+      "phase": 0.30755445684532634,
+      "activation": 0,
+      "frames": 353
+    },
+    "hardware": {
+      "backend": "WebGL 2",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+      "drawBuffer": [
+        1280,
+        900
+      ]
+    },
+    "bloom": "production direct rendering; bloom disabled",
+    "driverRevision": "39a686d0b09ba835a2a99a237b6e9008d55801a1",
+    "sourceRevision": "39a686d0b09ba835a2a99a237b6e9008d55801a1",
+    "sourceIdentity": "driver checkout only; may differ from target URL",
+    "hasSpecimenControls": true,
+    "actualGL": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "loadedScripts": [
+      "http://127.0.0.1:5183/@vite/client",
+      "http://127.0.0.1:5183/src/main.jsx"
+    ],
+    "uncommittedSource": "src/scene/FreeParticleDrift.js\nsrc/scene/ocean/OceanSnow.js"
+  },
+  "system": {
+    "adapter": null,
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/152.0.7977.76",
+      "revision": "@06afeb20b5998e787a432fe536c662317517854",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "jsVersion": "15.2.124.19"
+    }
+  },
+  "seconds": 49,
+  "frames": 1468,
+  "errors": [],
+  "after": {
+    "state": {
+      "time": 59.825600000000684,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": false,
+      "bloom": "off (normal production path)",
+      "phase": 0.8660804120906249,
+      "activation": 0,
+      "frames": 3589
+    },
+    "activationCount": 5,
+    "lastActivated": 0
+  }
+}

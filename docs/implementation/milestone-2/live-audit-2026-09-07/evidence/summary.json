@@ -1,0 +1,342 @@
+{
+  "source": {
+    "live": "a0501c21f8c782887bf6a5e1257e955ada41b678",
+    "approved": "515fa71d90f423ac97747cb7a60d1d84d446d13b",
+    "candidate": "cd3d79c2f5ae8f0bc9eb88936123bd26ac219e49"
+  },
+  "performance": {
+    "perf-approved-final-a": {
+      "render": {
+        "count": 1800,
+        "median": 16.7,
+        "p95": 18.7,
+        "max": 26.8,
+        "over50": 0
+      },
+      "nativeFixture": {
+        "count": 1800,
+        "median": 16.7,
+        "p95": 18.7,
+        "max": 26.8,
+        "over50": 0
+      },
+      "raf": {
+        "count": 1800,
+        "median": 16.7,
+        "p95": 16.7,
+        "max": 16.8,
+        "over50": 0
+      },
+      "controllerCpu": null
+    },
+    "perf-approved-final-b": {
+      "render": {
+        "count": 1800,
+        "median": 16.7,
+        "p95": 20.4,
+        "max": 36.3,
+        "over50": 0
+      },
+      "nativeFixture": {
+        "count": 1801,
+        "median": 16.7,
+        "p95": 20.4,
+        "max": 36.3,
+        "over50": 0
+      },
+      "raf": {
+        "count": 1800,
+        "median": 16.7,
+        "p95": 16.8,
+        "max": 16.8,
+        "over50": 0
+      },
+      "controllerCpu": null
+    },
+    "perf-candidate-final-a": {
+      "render": {
+        "count": 1800,
+        "median": 16.7,
+        "p95": 22.3,
+        "max": 34.1,
+        "over50": 0
+      },
+      "nativeFixture": null,
+      "raf": {
+        "count": 1800,
+        "median": 16.7,
+        "p95": 16.8,
+        "max": 16.8,
+        "over50": 0
+      },
+      "controllerCpu": {
+        "count": 1801,
+        "median": 0.2,
+        "p95": 0.5,
+        "max": 1.6,
+        "over50": 0
+      }
+    },
+    "perf-candidate-final-b": {
+      "render": {
+        "count": 1800,
+        "median": 16.6,
+        "p95": 17.9,
+        "max": 22.1,
+        "over50": 0
+      },
+      "nativeFixture": null,
+      "raf": {
+        "count": 1800,
+        "median": 16.7,
+        "p95": 16.8,
+        "max": 16.8,
+        "over50": 0
+      },
+      "controllerCpu": {
+        "count": 1801,
+        "median": 0.2,
+        "p95": 0.3,
+        "max": 0.5,
+        "over50": 0
+      }
+    },
+    "perf-live-final-a": {
+      "render": {
+        "count": 1800,
+        "median": 16.6,
+        "p95": 20.1,
+        "max": 34.8,
+        "over50": 0
+      },
+      "nativeFixture": null,
+      "raf": {
+        "count": 1800,
+        "median": 16.7,
+        "p95": 16.7,
+        "max": 16.8,
+        "over50": 0
+      },
+      "controllerCpu": {
+        "count": 1801,
+        "median": 0.2,
+        "p95": 0.4,
+        "max": 1.5,
+        "over50": 0
+      }
+    },
+    "perf-live-final-b": {
+      "render": {
+        "count": 1800,
+        "median": 16.7,
+        "p95": 19.5,
+        "max": 29.8,
+        "over50": 0
+      },
+      "nativeFixture": null,
+      "raf": {
+        "count": 1800,
+        "median": 16.7,
+        "p95": 16.7,
+        "max": 16.8,
+        "over50": 0
+      },
+      "controllerCpu": {
+        "count": 1801,
+        "median": 0.3,
+        "p95": 0.4,
+        "max": 1.1,
+        "over50": 0
+      }
+    }
+  },
+  "clips": {
+    "approved-m1-motion": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 900
+        }
+      ],
+      "format": {
+        "duration": "49.000000"
+      }
+    },
+    "candidate-narrow-verified": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 900,
+          "height": 900
+        }
+      ],
+      "format": {
+        "duration": "91.400000"
+      }
+    },
+    "candidate-neighbors": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 900
+        }
+      ],
+      "format": {
+        "duration": "40.400000"
+      }
+    },
+    "candidate-portrait": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "format": {
+        "duration": "48.560000"
+      }
+    },
+    "candidate-production": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 900
+        }
+      ],
+      "format": {
+        "duration": "48.880000"
+      }
+    },
+    "live-interaction": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 900
+        }
+      ],
+      "format": {
+        "duration": "47.600000"
+      }
+    },
+    "live-narrow": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 900,
+          "height": 900
+        }
+      ],
+      "format": {
+        "duration": "91.400000"
+      }
+    },
+    "live-neighbors": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 900
+        }
+      ],
+      "format": {
+        "duration": "40.440000"
+      }
+    },
+    "live-opening": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 900
+        }
+      ],
+      "format": {
+        "duration": "12.040000"
+      }
+    },
+    "live-portrait": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "format": {
+        "duration": "48.640000"
+      }
+    }
+  },
+  "matched": {
+    "candidate-pulses": {
+      "checkpoints": 6,
+      "phaseCameraActorsFieldActivation": "exact parity"
+    },
+    "candidate-activation": {
+      "checkpoints": 5,
+      "phaseCameraActorsFieldActivation": "exact parity"
+    }
+  },
+  "long": {
+    "duration": 180.249043226,
+    "simulationAdvance": 178.13333333337314,
+    "valid": true,
+    "rapidHits": 12,
+    "otherClicks": [
+      {
+        "pair": null,
+        "click": null
+      },
+      {
+        "pair": null,
+        "click": null
+      }
+    ],
+    "peaks": {
+      "wakes": 5,
+      "activations": 2,
+      "echoes": 0
+    },
+    "final": {
+      "time": 185.5500000000398,
+      "wakes": 1,
+      "activations": 0,
+      "accepted": 2,
+      "capacity": {
+        "wakes": 32,
+        "activations": 8
+      },
+      "echoes": 0,
+      "echoCount": 0,
+      "snowCount": 784,
+      "localFlecks": 1200
+    },
+    "errors": 0
+  },
+  "lifecycle": {
+    "idleBefore": true,
+    "idleAfter": false,
+    "clicks": [
+      0,
+      1
+    ],
+    "visibility": "hidden",
+    "simulationAdvance": 0.11666666666667247,
+    "errors": 0
+  }
+}

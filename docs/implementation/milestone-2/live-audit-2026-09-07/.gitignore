@@ -2,3 +2,5 @@ evidence/**/motion-*.jpg
 evidence/**/motion.txt
 evidence/reference-*/
 evidence/draft-*/
+evidence/candidate-narrow/
+evidence/candidate-narrow-final/

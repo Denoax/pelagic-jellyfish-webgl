@@ -1,0 +1,76 @@
+{
+  "url": "http://127.0.0.1:5181/pelagic-jellyfish-webgl/?idle=4",
+  "info": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "backend": "WebGL 2",
+    "ratio": 1,
+    "viewport": [
+      1280,
+      900
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "bloom": "production direct rendering; bloom disabled",
+    "driverRevision": "cd3d79c2f5ae8f0bc9eb88936123bd26ac219e49",
+    "sourceRevision": "cd3d79c2f5ae8f0bc9eb88936123bd26ac219e49",
+    "sourceIdentity": "driver checkout only; may differ from target URL",
+    "release": "milestone-2",
+    "hasSpecimenControls": false,
+    "actualGL": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "loadedScripts": [
+      "http://127.0.0.1:5181/pelagic-jellyfish-webgl/assets/index-AOfZcGYf.js"
+    ],
+    "uncommittedSource": ""
+  },
+  "idleBefore": true,
+  "idleAfter": false,
+  "activationsBefore": 0,
+  "activationsAfter": 1,
+  "beforeFreeze": null,
+  "afterFreeze": {
+    "missing": true,
+    "status": "ready",
+    "url": "http://127.0.0.1:5181/pelagic-jellyfish-webgl/?idle=4"
+  },
+  "connectedBeforeFreeze": {
+    "time": 9.416666666666714,
+    "wakes": 2,
+    "activations": 1,
+    "accepted": 1,
+    "capacity": {
+      "wakes": 32,
+      "activations": 8
+    },
+    "echoes": 0,
+    "echoCount": 0,
+    "snowCount": 784,
+    "localFlecks": 1200
+  },
+  "connectedAfterFreeze": {
+    "time": 9.533333333333387,
+    "wakes": 2,
+    "activations": 1,
+    "accepted": 1,
+    "capacity": {
+      "wakes": 32,
+      "activations": 8
+    },
+    "echoes": 0,
+    "echoCount": 0,
+    "snowCount": 784,
+    "localFlecks": 1200
+  },
+  "backgroundVisibility": "hidden",
+  "errors": []
+}

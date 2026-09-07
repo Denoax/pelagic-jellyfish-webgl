@@ -1,0 +1,12 @@
+{
+  "date": "2026-09-07",
+  "runtimeRevision": "cd3d79c2f5ae8f0bc9eb88936123bd26ac219e49",
+  "baselineTests": {"command": "node --test tests/*.test.mjs", "pass": 28, "fail": 0},
+  "finalTests": {"command": "node --test tests/*.test.mjs", "pass": 31, "fail": 0, "skipped": 0},
+  "approvedMotion": {"command": "node scripts/check-approved-motion.mjs", "baseline": "c4eaa355a4f0ccdf7ec4b24a73653a9799ca7c56", "frames": 720, "checkpoints": 24, "geometry": "byte-for-byte equal", "appendageState": "exactly equal", "activation": "equal", "result": "PASS"},
+  "originalAnimal": {"command": "node scripts/check-default-animal.mjs", "baseline": "1b5b83e776de1ccad1038a75a98830ac4fc41184", "frames": 240, "checkpoints": 8, "geometry": "byte-for-byte equal", "materialResponse": "equal", "result": "PASS"},
+  "m1SourceParity": {"baseline": "515fa71d90f423ac97747cb7a60d1d84d446d13b", "coverage": "locked animal source plus exact environmental-adapter on/off geometry, tissue and direct activation tests", "result": "PASS"},
+  "build": {"command": "VITE_BASE_PATH=/pelagic-jellyfish-webgl/ VITE_OCEAN_RELEASE=milestone-2 npm run build", "result": "PASS", "entry": "index-AOfZcGYf.js", "scene": "HeroScene-B9KPf24C.js", "controller": "ConnectedOcean-CbT_Dcnj.js", "warnings": ["pre-existing chunks above 500 kB", "pre-existing npm global tmp config warning"]},
+  "liveReadback": {"sha": "a0501c21f8c782887bf6a5e1257e955ada41b678", "pagesRun": 34133364127, "conclusion": "success", "entry": "index-Bt9kzCir.js", "unchanged": true},
+  "publication": "No push, merge, deployment or workflow trigger"
+}
