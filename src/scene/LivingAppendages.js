@@ -2,6 +2,8 @@ import * as THREE from "three/webgpu";
 import { sampleSwimCycle } from "./jellyMotion.js";
 import { createSoftParticles } from "./SoftParticles.js";
 import { FreeParticleDrift } from "./FreeParticleDrift.js";
+import { mantlePoint, membraneSection, boundedTissueDelta, TISSUE_STEP } from './anatomy/mantle.js';
+import { createJellyTissue } from './materials/JellyTissue.js';
 
 const HERO_TENTACLES = 22;
 const BACKGROUND_TENTACLES = 14;
@@ -141,21 +143,22 @@ function createTubeGeometry(chainCount, pointCount, radialSegments) {
   return geometry;
 }
 
-function createRibbonGeometry(chainCount, pointCount) {
-  const positions = new Float32Array(chainCount * pointCount * 2 * 3);
-  const uvs = new Float32Array(chainCount * pointCount * 2 * 2);
+function createRibbonGeometry(chainCount, pointCount, columns = 2) {
+  const positions = new Float32Array(chainCount * pointCount * columns * 3);
+  const uvs = new Float32Array(chainCount * pointCount * columns * 2);
   const indices = [];
 
   for (let chain = 0; chain < chainCount; chain += 1) {
-    const offset = chain * pointCount * 2;
+    const offset = chain * pointCount * columns;
     for (let point = 0; point < pointCount; point += 1) {
-      const row = offset + point * 2;
-      uvs[row * 2] = 0;
-      uvs[row * 2 + 1] = point / (pointCount - 1);
-      uvs[(row + 1) * 2] = 1;
-      uvs[(row + 1) * 2 + 1] = point / (pointCount - 1);
-      if (point < pointCount - 1) {
-        indices.push(row, row + 2, row + 1, row + 1, row + 2, row + 3);
+      const row = offset + point * columns;
+      for(let col=0;col<columns;col++) {
+        uvs[(row+col)*2]=col/(columns-1);
+        uvs[(row+col)*2+1]=point/(pointCount-1);
+        if(point<pointCount-1&&col<columns-1){
+          const a=row+col,b=a+columns;
+          indices.push(a,b,a+1,a+1,b,b+1);
+        }
       }
     }
   }
@@ -243,8 +246,9 @@ function createTissueTexture(index, hero) {
   return texture;
 }
 
-function createBellGeometry(hero, species) {
-  const rings = hero ? 28 : 18;
+function createBellGeometry(hero, species, improved = false) {
+  const mantleRings = hero ? 28 : 18;
+  const rings = mantleRings + (improved ? 7 : 0);
   const segments = hero ? 72 : 42;
   const vertexCount = (rings + 1) * segments;
   const positions = new Float32Array(vertexCount * 3);
@@ -257,7 +261,7 @@ function createBellGeometry(hero, species) {
   const mixed = new THREE.Color();
 
   for (let ring = 0; ring <= rings; ring += 1) {
-    const t = ring / rings;
+    const t = Math.min(1,ring / mantleRings);
     for (let segment = 0; segment < segments; segment += 1) {
       const vertex = ring * segments + segment;
       const angle = (segment / segments) * Math.PI * 2;
@@ -292,7 +296,8 @@ function createBellGeometry(hero, species) {
   geometry.attributes.position.setUsage(THREE.DynamicDrawUsage);
   geometry.attributes.normal.setUsage(THREE.DynamicDrawUsage);
   geometry.attributes.color.setUsage(THREE.DynamicDrawUsage);
-  geometry.userData.rings = rings;
+  geometry.userData.rings = mantleRings;
+  geometry.userData.totalRings = rings;
   geometry.userData.segments = segments;
   return geometry;
 }
@@ -319,7 +324,8 @@ function makeTissueMaterial({ hero, broad = false }) {
 }
 
 export class LivingAppendages {
-  constructor(medusa, index, { reducedMotion = false, fidelity = index === 0 ? "hero" : "companion" } = {}) {
+  constructor(medusa, index, { reducedMotion = false, fidelity = index === 0 ? "hero" : "companion", improved = false } = {}) {
+    this.improved=improved;
     this.medusa = medusa;
     this.index = index;
     this.hero = fidelity === "hero";
@@ -343,7 +349,7 @@ export class LivingAppendages {
     this.group.name = this.hero ? `featured-soft-body-${index}` : `school-soft-body-${index}`;
     this.group.frustumCulled = false;
 
-    this.bellGeometry = createBellGeometry(this.hero, this.species);
+    this.bellGeometry = createBellGeometry(this.hero, this.species, improved);
     this.baseBellColors = new Float32Array(this.bellGeometry.attributes.color.array);
     this.tissueTexture = createTissueTexture(index, this.hero);
     this.bellMaterial = new THREE.MeshPhysicalMaterial({
@@ -508,7 +514,7 @@ export class LivingAppendages {
       this.group.add(this.filaments);
     }
 
-    this.armGeometry = createRibbonGeometry(ARM_COUNT, this.armSegments);
+    this.armGeometry = createRibbonGeometry(ARM_COUNT, this.armSegments, improved ? 17 : 2);
     this.armMaterial = makeTissueMaterial({ hero: this.hero, broad: true });
     this.arms = new THREE.Mesh(this.armGeometry, this.armMaterial);
     this.arms.renderOrder = 20;
@@ -669,6 +675,25 @@ export class LivingAppendages {
       this.haloDrift = new FreeParticleDrift(this.halo);
     }
 
+    if(improved) {
+      this.bellMaterial.dispose(); this.armMaterial.dispose();
+      this.bellMaterial=createJellyTissue();this.bell.material=this.bellMaterial;
+      this.armMaterial=createJellyTissue({membrane:true});this.arms.material=this.armMaterial;
+      this.frillMaterial.transmission=0;this.frillMaterial.blending=THREE.NormalBlending;
+      this.frillMaterial.emissiveIntensity=.16;this.frillMaterial.opacity=.38;
+      this.tentacleMaterial.transmission=0;this.tentacleMaterial.emissiveIntensity=.18;
+      this.tentacleMaterial.opacity=.4;
+      this.rim.visible=false; this.ribs.visible=false; this.crown.visible=false;
+      this.frill.visible=false; // the margin is now welded into the mantle mesh
+      this.innerBell.visible=false; // no co-located additive shell over the tissue
+      this.organMaterial.color.set(0xb8a9c6);this.organMaterial.emissive.set(0x574b70);
+      this.organMaterial.emissiveIntensity=.18;this.organMaterial.opacity=.3;
+      this.organMaterial.blending=THREE.NormalBlending;this.organMaterial.transmission=0;
+      this.organs.children.forEach(mesh=>mesh.scale.y=.65);
+      this.activationShell.visible=false;this.activationRing.visible=false;
+      if(this.signalPearls)this.signalPearls.visible=false;
+      if(this.filamentMaterial){this.filamentMaterial.transmission=0;this.filamentMaterial.emissiveIntensity=.22;this.filamentMaterial.opacity=.28;}
+    }
     this.baseVisuals = {
       bellEmissive: this.bellMaterial.emissiveIntensity,
       bellOpacity: this.bellMaterial.opacity,
@@ -690,7 +715,7 @@ export class LivingAppendages {
       haloOpacity: this.haloMaterial?.opacity ?? 0,
     };
 
-    this.interactionMeshes = [this.bell, this.frill];
+    this.interactionMeshes = improved ? [this.bell] : [this.bell, this.frill];
 
     this.inverseMatrix = new THREE.Matrix4();
     this.localRay = new THREE.Ray();
@@ -718,6 +743,12 @@ export class LivingAppendages {
     this.deformAccumulator = 0;
     this.deformFrame = 0;
     this.deformOffset = index % 2;
+    this.mantleScratch=new THREE.Vector3();
+    this.surfaceCurrent=new THREE.Vector2();
+    this.membraneScratch={width:0,fold:0};
+    this.previousBodyQuaternion=new THREE.Quaternion();
+    this.rotationDelta=new THREE.Quaternion();
+    this.simulationRemainder=0;
   }
 
   getInteractionMeshes() {
@@ -800,6 +831,14 @@ export class LivingAppendages {
   }
 
   anchorChain(chain, shape, arm = false) {
+    if(this.improved){
+      if(arm || this.filamentChains.includes(chain)) {
+        const radius=shape.radius*chain.radius*.8;
+        this.anchor.set(Math.cos(chain.angle)*radius,shape.height*.32,Math.sin(chain.angle)*radius);
+      } else mantlePoint(1,chain.angle,shape,this.species.lobes,this.surfaceCurrent,this.anchor);
+      chain.particles[0].position.copy(this.anchor);chain.particles[0].previous.copy(this.anchor);
+      return;
+    }
     const radius = shape.radius * chain.radius * (arm ? 1 : 0.91);
     this.anchor.set(
       Math.cos(chain.angle) * radius,
@@ -833,7 +872,7 @@ export class LivingAppendages {
 
         const flow = Math.sin(elapsed * 0.52 + chain.seed * 0.71 + t * 8.4);
         const eddy = Math.cos(elapsed * 0.37 + chain.seed * 1.13 + t * 5.7);
-        const lateral = 0.0052 * chain.drift * Math.pow(t, 1.32) * frameScale;
+        const lateral = 0.0052 * (this.improved ? .38 : 1) * chain.drift * Math.pow(t, 1.32) * frameScale;
         particle.position.x += Math.cos(chain.angle + Math.PI * 0.5) * flow * lateral;
         particle.position.z += Math.sin(chain.angle + Math.PI * 0.5) * flow * lateral;
         particle.position.x += Math.cos(chain.angle) * eddy * lateral * 0.48;
@@ -923,6 +962,20 @@ export class LivingAppendages {
       this.armAxis.set(Math.cos(chain.angle), 0, Math.sin(chain.angle));
       chain.particles.forEach((particle, pointIndex) => {
         const t = pointIndex / (chain.particles.length - 1);
+        if(this.improved){
+          const previous=chain.particles[Math.max(0,pointIndex-1)].position;
+          const next=chain.particles[Math.min(chain.particles.length-1,pointIndex+1)].position;
+          this.tangent.copy(next).sub(previous).normalize();
+          this.side.copy(this.armSide).addScaledVector(this.tangent,-this.armSide.dot(this.tangent)).normalize();
+          this.binormal.crossVectors(this.tangent,this.side).normalize();
+          for(let col=0;col<17;col++){
+            const section=membraneSection(t,col/8-1,elapsed*this.pulseRate+this.pulseOffset,chainIndex,this.membraneScratch);
+            positions[pointer++]=particle.position.x+this.side.x*section.width+this.binormal.x*section.fold;
+            positions[pointer++]=particle.position.y+this.side.y*section.width+this.binormal.y*section.fold;
+            positions[pointer++]=particle.position.z+this.side.z*section.width+this.binormal.z*section.fold;
+          }
+          return;
+        }
         const scallop = 0.78
           + Math.sin(t * 18 + chainIndex * 1.7 + elapsed * 0.42) * 0.18
           + Math.sin(t * 39 - elapsed * 0.26 + chain.seed) * 0.07;
@@ -1008,11 +1061,11 @@ export class LivingAppendages {
   updateBellSurface(shape, elapsed, current, refreshNormals = true) {
     const positions = this.bellGeometry.attributes.position.array;
     const colors = this.bellGeometry.attributes.color.array;
-    const { rings, segments } = this.bellGeometry.userData;
+    const { rings, segments, totalRings = rings } = this.bellGeometry.userData;
     let pointer = 0;
     let colorPointer = 0;
-    for (let ring = 0; ring <= rings; ring += 1) {
-      const t = ring / rings;
+    for (let ring = 0; ring <= totalRings; ring += 1) {
+      const t = Math.min(1,ring / rings);
       const polar = t * Math.PI * 0.5;
       const delayed = sampleSwimCycle(shape.cycle - t * 0.105, this.delayedKinematics);
       const delayedPulse = delayed.bell;
@@ -1042,6 +1095,19 @@ export class LivingAppendages {
         positions[pointer++] = Math.cos(angle) * radial + current.x * currentShear;
         positions[pointer++] = canopy + shape.rimY * t + rimFold + rimLoop - wave * 0.018;
         positions[pointer++] = Math.sin(angle) * radial + current.y * currentShear;
+        if(this.improved){
+          mantlePoint(t,angle,shape,this.species.lobes,current,this.mantleScratch);
+          if(ring>rings){
+            const hem=(ring-rings)/(totalRings-rings);
+            const fold=hem*(.013*Math.sin(angle*this.species.lobes*2)-.07);
+            this.mantleScratch.x+=Math.cos(angle)*fold;
+            this.mantleScratch.y-=hem*(.15+shape.marginRoll*.03);
+            this.mantleScratch.z+=Math.sin(angle)*fold;
+          }
+          positions[pointer-3]=this.mantleScratch.x;
+          positions[pointer-2]=this.mantleScratch.y;
+          positions[pointer-1]=this.mantleScratch.z;
+        }
 
         const light = clamp(wave * 1.6 + this.activation * 0.08 + this.hover * 0.035, 0, 1);
         colors[colorPointer] = THREE.MathUtils.lerp(this.baseBellColors[colorPointer], this.glowColor.r, light);
@@ -1073,6 +1139,13 @@ export class LivingAppendages {
         positions[pointer++] = Math.cos(angle + twist) * radius;
         positions[pointer++] = shape.rimY - t * (this.hero ? 0.34 : 0.24) - Math.abs(lobe) * 0.42;
         positions[pointer++] = Math.sin(angle + twist) * radius;
+        if(this.improved){
+          mantlePoint(1,angle,shape,this.species.lobes,this.surfaceCurrent,this.mantleScratch);
+          const radialFold=t*(.018*Math.sin(angle*this.species.lobes*2)-.06);
+          positions[pointer-3]=this.mantleScratch.x+Math.cos(angle)*radialFold;
+          positions[pointer-2]=this.mantleScratch.y-t*(.16+shape.marginRoll*.035);
+          positions[pointer-1]=this.mantleScratch.z+Math.sin(angle)*radialFold;
+        }
       }
     }
     this.frillGeometry.attributes.position.needsUpdate = true;
@@ -1146,6 +1219,7 @@ export class LivingAppendages {
     pointerStrength = 0,
     interactionMode = false,
   ) {
+    if(this.improved){deltaTime=boundedTissueDelta(deltaTime);this.surfaceCurrent.copy(current);}
     const active = this.presence > 0.008;
     if (this.halo && !this.halo.parent && this.group.parent) this.group.parent.add(this.halo);
     this.group.visible = true;
@@ -1161,6 +1235,12 @@ export class LivingAppendages {
     }
     const wasBodyInitialized = this.bodyInitialized;
     if (this.bodyInitialized) {
+      if(this.improved){
+        this.rotationDelta.copy(this.medusa.transformationObject.quaternion).invert().multiply(this.previousBodyQuaternion);
+        [...this.tentacleChains,...this.armChains,...this.filamentChains].forEach(chain=>chain.particles.slice(1).forEach(p=>{
+          p.position.applyQuaternion(this.rotationDelta);p.previous.applyQuaternion(this.rotationDelta);
+        }));
+      }
       this.bodyDelta.copy(this.medusa.transformationObject.position).sub(this.lastBodyPosition);
       if (this.bodyDelta.lengthSq() > 0.04) this.bodyDelta.set(0, 0, 0);
       this.inverseQuaternion.copy(this.medusa.transformationObject.quaternion).invert();
@@ -1171,12 +1251,15 @@ export class LivingAppendages {
         chain.particles.forEach((particle, pointIndex) => {
           if (pointIndex === 0) return;
           const t = pointIndex / (chain.particles.length - 1);
-          particle.position.addScaledVector(this.bodyDelta, -0.72 * t);
-          particle.previous.addScaledVector(this.bodyDelta, -0.34 * t);
+          // Preserve world-space inertia under body transport. Applying the same
+          // displacement to both Verlet states avoids injecting frame-rate-dependent energy.
+          particle.position.addScaledVector(this.bodyDelta, this.improved ? -1 : -0.72 * t);
+          particle.previous.addScaledVector(this.bodyDelta, this.improved ? -1 : -0.34 * t);
         });
       });
     }
     this.lastBodyPosition.copy(this.medusa.transformationObject.position);
+    this.previousBodyQuaternion.copy(this.medusa.transformationObject.quaternion);
     this.bodyInitialized = true;
 
     this.group.position.copy(this.medusa.transformationObject.position);
@@ -1194,6 +1277,11 @@ export class LivingAppendages {
 
     const shape = this.getBellShape(elapsed);
     this.updateVisualResponse(deltaTime, shape);
+    if(this.improved){
+      for(const material of [this.bellMaterial,this.armMaterial])material.userData.tissueOpacity.value=material.opacity;
+      this.activationNodeMaterial.opacity*=.25;
+      if(this.tissueLight)this.tissueLight.intensity=.85+shape.primaryThrust*.25+this.activation*.8;
+    }
     this.deformAccumulator += deltaTime;
     this.deformFrame += 1;
     const foregroundMotion = this.feature > 0.45 || this.activation > 0.01 || this.hover > 0.01;
@@ -1203,13 +1291,17 @@ export class LivingAppendages {
     if (!shouldDeform) {
       return;
     }
-    const deformDelta = Math.min(this.deformAccumulator, 1 / 24);
+    const deformDelta = Math.min(this.deformAccumulator, this.improved ? .05 : 1 / 24);
     this.deformAccumulator = 0;
     const refreshNormals = foregroundMotion || (!interactionMode && this.deformFrame % 4 === 0);
+    this.simulationRemainder+=this.improved?deformDelta:0;
+    const steps=this.improved?Math.floor((this.simulationRemainder+1e-8)/TISSUE_STEP):1;
+    if(this.improved)this.simulationRemainder-=steps*TISSUE_STEP;
+    for(let step=0;step<steps;step++) {
     this.simulateChains(
       this.tentacleChains,
       shape,
-      deformDelta,
+      this.improved?TISSUE_STEP:deformDelta,
       elapsed,
       current,
       pointerRay,
@@ -1219,7 +1311,7 @@ export class LivingAppendages {
     this.simulateChains(
       this.armChains,
       shape,
-      deformDelta,
+      this.improved?TISSUE_STEP:deformDelta,
       elapsed,
       current,
       pointerRay,
@@ -1230,7 +1322,7 @@ export class LivingAppendages {
       this.simulateChains(
         this.filamentChains,
         shape,
-        deformDelta,
+        this.improved?TISSUE_STEP:deformDelta,
         elapsed,
         current,
         pointerRay,
@@ -1238,12 +1330,13 @@ export class LivingAppendages {
         false,
       );
     }
+    }
     this.updateTentacleGeometry();
     this.updateArmGeometry(elapsed, refreshNormals);
     this.updateSignalPearls(elapsed);
     this.updateBellDetails(shape);
     this.updateBellSurface(shape, elapsed, current, refreshNormals);
-    this.updateFrill(shape, elapsed, refreshNormals);
+    if(!this.improved)this.updateFrill(shape, elapsed, refreshNormals);
   }
 
   dispose() {

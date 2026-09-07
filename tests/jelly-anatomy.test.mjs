@@ -1,0 +1,66 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { Object3D, Vector2, Vector3 } from 'three/webgpu';
+import { LivingAppendages } from '../src/scene/LivingAppendages.js';
+import { sampleSwimCycle } from '../src/scene/jellyMotion.js';
+import { mantlePoint, membraneSection, boundedTissueDelta } from '../src/scene/anatomy/mantle.js';
+
+const create=()=>new LivingAppendages({transformationObject:new Object3D()},0,{improved:true});
+test('mantle and margin are periodic and finite throughout contraction and refill',()=>{
+  const tissue=create();const current=new Vector2(.2,-.1);
+  for(let i=0;i<=100;i++){
+    const shape=tissue.getBellShape(i/100/tissue.pulseRate);
+    for(let t=0;t<=1;t+=.05){
+      const a=mantlePoint(t,0,shape,8,current,{}),b=mantlePoint(t,Math.PI*2,shape,8,current,{});
+      for(const key of ['x','y','z']){assert.ok(Number.isFinite(a[key]));assert.ok(Math.abs(a[key]-b[key])<1e-10);}
+    }
+    tissue.surfaceCurrent.copy(current);
+    tissue.tentacleChains.forEach(chain=>{
+      tissue.anchorChain(chain,shape);
+      const edge=mantlePoint(1,chain.angle,shape,8,current,new Vector3());
+      assert.ok(chain.particles[0].position.distanceTo(edge)<1e-10);
+    });
+  }
+  tissue.dispose();
+});
+test('folded membrane has non-planar width and a closed rounded endpoint',()=>{
+  assert.notEqual(membraneSection(.5,.5,0,0,{}).fold,0);
+  for(let u=-1;u<=1;u+=.125){const p=membraneSection(1,u,1,0,{});assert.ok(p.width===0&&p.fold===0);}
+});
+test('simulation rejects background-tab jumps instead of catching up seconds',()=>{
+  for(const dt of [0,-1,NaN,Infinity,.25,10])assert.equal(boundedTissueDelta(dt),0);
+  assert.equal(boundedTissueDelta(1/120),1/120);
+  assert.equal(boundedTissueDelta(.1),.05);
+});
+test('candidate geometry and activation remain finite through multiple cycles and a turn',()=>{
+  const tissue=create();const current=new Vector2();
+  for(let frame=0;frame<1080;frame++){
+    const t=frame/60;
+    tissue.medusa.transformationObject.quaternion.setFromAxisAngle(new Vector3(0,0,1),Math.sin(t*.2)*.6);
+    if(frame===240)tissue.activate(new Vector3(.4,.5,.1));
+    tissue.update(1/60,t,current);
+  }
+  for(const geometry of [tissue.bellGeometry,tissue.armGeometry,tissue.tentacleGeometry]){
+    assert.ok(geometry.attributes.position.array.every(Number.isFinite));
+    assert.ok(geometry.attributes.normal.array.every(Number.isFinite));
+  }
+  assert.ok(tissue.activation<.01);
+  assert.equal(tissue.getInteractionMeshes()[0],tissue.bell);
+  tissue.dispose();
+});
+test('30/60/120 Hz appendage presentation has a bounded trajectory difference',()=>{
+  function run(hz){const tissue=create();const current=new Vector2();
+    for(let i=1;i<=hz*8;i++){
+      const t=i/hz;
+      tissue.medusa.transformationObject.position.set(Math.sin(t*.15)*.4,t*.15,0);
+      tissue.medusa.transformationObject.quaternion.setFromAxisAngle(new Vector3(0,0,1),Math.sin(t*.2)*.35);
+      tissue.update(1/hz,t,current);
+    }
+    const points=tissue.armChains.flatMap(c=>c.particles.map(p=>p.position.clone()));tissue.dispose();return points;
+  }
+  const reference=run(60);
+  for(const hz of [30,120]){
+    const points=run(hz);const max=Math.max(...points.map((p,i)=>p.distanceTo(reference[i])));
+    assert.ok(max<.2,`${hz} Hz maximum oral-arm difference ${max.toFixed(4)} world units`);
+  }
+});

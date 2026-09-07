@@ -1,0 +1,6 @@
+# Raw browser frame captures retained locally; curated PNG/MP4 evidence is tracked.
+evidence/**/motion-*.jpg
+evidence/**/motion.txt
+# Early fixture iterations are not matched final comparison evidence.
+evidence/matched-baseline/
+evidence/matched-candidate/

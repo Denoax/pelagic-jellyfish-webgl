@@ -33,6 +33,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     let renderer;
     let schoolDirector;
     let environment;
+    let specimen;
     let frameId = 0;
     let frameBusy = false;
     let appendages = [];
@@ -205,10 +206,11 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     const start = async () => {
       try {
         const query = new URLSearchParams(window.location.search);
+        const previewRequested = import.meta.env.DEV && (query.get('specimen') === '1' || query.get('oceanPreview') === '1');
         const forceWebGL =
           query.get("renderer") === "webgl" ||
           !navigator.gpu ||
-          Boolean(navigator.brave);
+          (Boolean(navigator.brave) && !(previewRequested && query.get('renderer') === 'webgpu'));
 
         renderer = new THREE.WebGPURenderer({
           antialias: true,
@@ -287,6 +289,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           const tissue = new LivingAppendages(medusa, index, {
             reducedMotion,
             fidelity: featuredFidelity.has(index) ? "hero" : "companion",
+            improved: previewRequested && index === 0 && query.get('animal') !== 'baseline',
           });
           app.scene.add(tissue.group);
           return tissue;
@@ -360,6 +363,10 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         // compiling their first lit frame during the dive caused scroll hitches.
         await environment.loadDeepAssets();
         if (disposed) return;
+        if (previewRequested) {
+          const { SpecimenPreview } = await import('./dev/SpecimenPreview.js');
+          specimen = new SpecimenPreview(query, app, appendages, environment, schoolDirector);
+        }
 
         // Populate every dynamic buffer before revealing the live canvas.
         // Otherwise later high-fidelity actors pay their first geometry
@@ -416,11 +423,12 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           if (frameBusy) return;
           frameBusy = true;
           try {
-            const rawDelta = clock.getDelta();
+            const clockDelta = clock.getDelta();
+            const rawDelta = specimen ? specimen.advance(clockDelta) : clockDelta;
             sampleFrames += 1;
             sampleDuration += Math.min(rawDelta, 0.1);
             if (
-              sampleFrames >= 120 &&
+              !specimen && sampleFrames >= 120 &&
               performance.now() - lastQualityChange > 4500
             ) {
               if (sampleDuration / sampleFrames > 0.024 && qualityRatio > 0.7) {
@@ -439,7 +447,12 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
             // step. The animals may advance with elapsed time, but the viewer
             // eases back into the shot over subsequent frames.
             const cameraDelta = Math.min(rawDelta, 1 / 30);
-            const elapsed = clock.elapsedTime;
+            const elapsed = specimen ? specimen.time : clock.elapsedTime;
+            if (specimen && rawDelta === 0) {
+              specimen.beforeTissue(); specimen.afterTissue();
+              await app.update(0, elapsed, { interactionMode: true });
+              return;
+            }
             const scrollDamping =
               1 - Math.exp(-cameraDelta * (reducedMotion ? 5.8 : 3.5));
             scrollProgress += (scrollTarget - scrollProgress) * scrollDamping;
@@ -462,8 +475,9 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
             }
 
             cameraRig.getJourneyFocus(scrollProgress, journeyFocus);
+            if(specimen?.chamber)journeyFocus.set(0,0,0);
             const directive = schoolDirector.update(
-              scrollProgress,
+              specimen?.chamber ? Math.min(.85,.2+elapsed/70) : scrollProgress,
               motionDelta,
               elapsed,
               current.value,
@@ -495,6 +509,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
             const pointerStrength = pointerActive
               ? clamp(0.24 + current.value.length() * 3.4, 0, 1)
               : 0;
+            specimen?.beforeTissue();
             appendages.forEach((tissue) =>
               tissue.update(
                 delta,
@@ -505,11 +520,13 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
                 interactionMode,
               ),
             );
+            specimen?.afterTissue();
 
             await app.update(reducedMotion ? delta * 0.28 : delta, elapsed, {
               interactionMode: true,
             });
             renderFailures = 0;
+            specimen?.rendered();
           } catch (error) {
             console.error("Living ocean frame failed", error);
             if (++renderFailures >= 3) graphicsLost();
@@ -540,6 +557,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
       mount.classList.remove("is-jelly-hover");
       socialTimers.forEach((timer) => window.clearTimeout(timer));
       delete window.__JELLYFISH_WORLD__;
+      specimen?.dispose();
       appendages.forEach((tissue) => tissue.dispose());
       environment?.dispose();
       app?.dispose();
