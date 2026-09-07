@@ -1,0 +1,100 @@
+{
+  "url": "http://127.0.0.1:5178/?oceanPreview=1&connectedOcean=1&renderer=webgl&idle=4",
+  "info": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "backend": "WebGL 2",
+    "ratio": 1,
+    "viewport": [
+      1280,
+      900
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "specimen": {
+      "time": 5.89279999999702,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": false,
+      "bloom": "off (normal production path)",
+      "phase": 0.3072115451069335,
+      "activation": 0,
+      "frames": 350
+    },
+    "hardware": {
+      "backend": "WebGL 2",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+      "drawBuffer": [
+        1280,
+        900
+      ]
+    },
+    "bloom": "production direct rendering; bloom disabled",
+    "sourceRevision": "ff1ac35e5dc5a97328dd1169e53909d6f629da6f",
+    "uncommittedSource": ""
+  },
+  "idleBefore": true,
+  "idleAfter": false,
+  "activationsBefore": 0,
+  "activationsAfter": 1,
+  "beforeFreeze": {
+    "time": 9.276000000000012,
+    "angle": "oblique",
+    "distance": "medium",
+    "candidate": true,
+    "chamber": false,
+    "bloom": "off (normal production path)",
+    "phase": 0.0322984152640764,
+    "activation": 0.8707294241894026,
+    "frames": 553
+  },
+  "afterFreeze": {
+    "time": 9.393299999997032,
+    "angle": "oblique",
+    "distance": "medium",
+    "candidate": true,
+    "chamber": false,
+    "bloom": "off (normal production path)",
+    "phase": 0.05743813206095405,
+    "activation": 0.8227633488090987,
+    "frames": 559
+  },
+  "connectedBeforeFreeze": {
+    "time": 9.266666666666707,
+    "wakes": 1,
+    "activations": 1,
+    "accepted": 1,
+    "capacity": {
+      "wakes": 32,
+      "activations": 8
+    },
+    "echoes": 0,
+    "echoCount": 0,
+    "snowCount": 784,
+    "localFlecks": 1200
+  },
+  "connectedAfterFreeze": {
+    "time": 9.383333333333379,
+    "wakes": 2,
+    "activations": 1,
+    "accepted": 1,
+    "capacity": {
+      "wakes": 32,
+      "activations": 8
+    },
+    "echoes": 0,
+    "echoCount": 0,
+    "snowCount": 784,
+    "localFlecks": 1200
+  },
+  "backgroundVisibility": "hidden",
+  "errors": []
+}
