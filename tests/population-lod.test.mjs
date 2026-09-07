@@ -125,3 +125,18 @@ test('offscreen mesh sampling sleeps but live spines persist and refresh on entr
   assert.ok(t.bell.geometry.attributes.position.array.every(Number.isFinite));
   assert.ok(positions.version > version); t.dispose();
 });
+test('near-only filaments recover from long dormant transport without stretched trails', () => {
+  const t = new PopulationAnimal({ transformationObject: new Object3D() }, 11);
+  t.setPresence(1, 0);
+  for (let frame = 0; frame < 600; frame++) {
+    t.medusa.transformationObject.position.x = frame / 60;
+    t.inspectImportance(50, true, 1 / 60); t.update(1 / 60, frame / 60, new Vector2());
+  }
+  for (let frame = 0; frame < 90; frame++) {
+    t.medusa.transformationObject.position.x = 10 + frame / 60;
+    t.inspectImportance(150, true, 1 / 60); t.update(1 / 60, 10 + frame / 60, new Vector2());
+    for (const chain of t.filamentChains) for (const p of chain.particles)
+      assert.ok(p.position.length() < 5, 'no remote stale pose as width fades in');
+  }
+  t.dispose();
+});

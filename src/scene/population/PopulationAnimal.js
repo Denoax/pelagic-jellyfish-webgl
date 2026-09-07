@@ -43,13 +43,16 @@ export class PopulationAnimal extends LivingAppendages {
     }
     this.activeTentacles = this.tentacleChains;
     this.wakeRotation = new THREE.Quaternion();
+    this.filamentRoot = new THREE.Vector3(); this.filamentOffset = new THREE.Vector3();
     this.emptyChains = [];
   }
 
   inspectImportance(pixels, visible, dt) {
     this.enteredView ||= visible && !this.onScreen;
     this.pixels = pixels; this.onScreen = visible;
+    const previousDetail = this.detail;
     this.detail = this.detailState.update(pixels, visible && this.presence > .008, dt);
+    this.wakeFilaments ||= previousDetail <= 1 && this.detail > 1;
     const ease = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
     this.tentacleChains.forEach((chain, i) => {
       const weight = i % 4 === 0 ? 1 : i % 2 === 0 ? ease(this.detail) : ease(this.detail - 1);
@@ -120,6 +123,29 @@ export class PopulationAnimal extends LivingAppendages {
     this.arms.geometry = this.armGeometry;
   }
   update(...args) {
+    if (this.wakeFilaments) {
+      // Dormant filaments have been transported with the moving body but were
+      // not simulated. Seed them from a live core strand before width fades in,
+      // not from that stale world-space pose. The approved near path is untouched.
+      const shape = this.getBellShape(args[1]);
+      for (const chain of this.filamentChains) {
+        const source = this.tentacleChains[Math.floor(chain.angle / (Math.PI * 2) * this.tentacleCount / 4) * 4];
+        this.wakeRotation.setFromAxisAngle(this.armAxis.set(0, 1, 0), chain.angle - source.angle);
+        this.anchorChain(chain, shape);
+        this.filamentRoot.copy(chain.particles[0].position);
+        this.filamentOffset.copy(source.particles[0].position).applyQuaternion(this.wakeRotation);
+        this.filamentOffset.subVectors(this.filamentRoot, this.filamentOffset);
+        const fraction = Math.min(1, chain.restLength * (chain.particles.length - 1)
+          / (source.restLength * (source.particles.length - 1)));
+        chain.particles.forEach((p, j) => {
+          const x = j / (chain.particles.length - 1) * (source.particles.length - 1) * fraction;
+          const a = Math.floor(x), b = Math.min(source.particles.length - 1, a + 1);
+          for (const key of ['position', 'previous']) p[key].copy(source.particles[a][key])
+            .lerp(source.particles[b][key], x - a).applyQuaternion(this.wakeRotation).add(this.filamentOffset);
+        });
+      }
+      this.wakeFilaments = false;
+    }
     // The legacy scheduler used the director's featured-shot flag for full
     // deformation cadence. Large former background IDs deserve that cadence
     // too, without receiving the featured shot's extra material illumination.
