@@ -1,0 +1,42 @@
+{
+  "repository": "Denoax/pelagic-jellyfish-webgl",
+  "branch": "milestone-4-population-lod",
+  "baseline": "41026098e242ea41af3bd8d881e493ddaf43d2bf",
+  "runtime": "3b4074d2aa62bb0acfabd9e3d77c93ab46c295f2",
+  "publicShaInspected": "a0501c21f8c782887bf6a5e1257e955ada41b678",
+  "publicPagesRun": 34133364127,
+  "baselineTests": { "passed": 44, "failed": 0 },
+  "candidateTests": {
+    "command": "node --test tests/*.test.mjs",
+    "passed": 54,
+    "failed": 0,
+    "skipped": 0
+  },
+  "parity": [
+    { "command": "node scripts/check-approved-motion.mjs", "result": "PASS", "frames": 720, "checkpoints": 24 },
+    { "command": "node scripts/check-default-animal.mjs", "result": "PASS", "frames": 240, "checkpoints": 8 }
+  ],
+  "populationReferenceParity": "All visible near geometry attributes and activation equal in 180-frame focused test; approved core source unchanged",
+  "build": {
+    "command": "VITE_BASE_PATH=/pelagic-jellyfish-webgl/ VITE_OCEAN_RELEASE=milestone-2 npm run build",
+    "exitCode": 0,
+    "warnings": ["pre-existing npm global tmp configuration", "Vite chunks greater than 500kB"]
+  },
+  "threeVersion": "0.175.0",
+  "renderer": "WebGPURenderer, actual NVIDIA WebGL2 backend",
+  "browser": "Brave / Chromium 152.0.7977.76",
+  "gpu": "NVIDIA RTX 4070 via ANGLE OpenGL ES 3.2",
+  "untested": ["physical mobile", "other GPU vendors", "Firefox", "Safari", "hardware WebGPU", "software WebGPU", "physical context/device loss"],
+  "scope": {
+    "m1CoreUnchanged": true,
+    "m2CoreUnchanged": true,
+    "m3CoreUnchanged": true,
+    "cameraSeabedIdleUnchanged": true,
+    "populationParticipationChangedInOptInOnly": true,
+    "pushed": false,
+    "merged": false,
+    "deployed": false,
+    "laterMilestoneStarted": false
+  },
+  "note": "Recorded command outcomes, not a substitute for browser motion evidence or user visual approval. See README and raw evidence for browser validation and performance. No general npm test script exists."
+}

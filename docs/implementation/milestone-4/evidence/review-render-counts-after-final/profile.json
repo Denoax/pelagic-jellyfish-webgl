@@ -1,0 +1,57 @@
+[
+  {
+    "label": "opening",
+    "progress": 0,
+    "time": 11.999000000000036,
+    "drawCalls": 176,
+    "triangles": 705979,
+    "memory": {
+      "geometries": 167,
+      "textures": 80
+    }
+  },
+  {
+    "label": "school",
+    "progress": 0.52,
+    "time": 17.99459999999407,
+    "drawCalls": 181,
+    "triangles": 917500,
+    "memory": {
+      "geometries": 191,
+      "textures": 82
+    }
+  },
+  {
+    "label": "bubbles",
+    "progress": 0.35,
+    "time": 24.003799999997028,
+    "drawCalls": 181,
+    "triangles": 922014,
+    "memory": {
+      "geometries": 191,
+      "textures": 82
+    }
+  },
+  {
+    "label": "far-school",
+    "progress": 0.06,
+    "time": 30.00359999999406,
+    "drawCalls": 184,
+    "triangles": 750267,
+    "memory": {
+      "geometries": 191,
+      "textures": 82
+    }
+  },
+  {
+    "label": "secondary",
+    "progress": 0.68,
+    "time": 35.97170000000301,
+    "drawCalls": 181,
+    "triangles": 797323,
+    "memory": {
+      "geometries": 197,
+      "textures": 82
+    }
+  }
+]

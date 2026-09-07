@@ -1,0 +1,2745 @@
+{
+  "checkpoints": [
+    {
+      "name": "matched-bubbles",
+      "state": {
+        "visibility": "visible",
+        "specimen": {
+          "time": 9,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.9731461404463879,
+          "activation": 0,
+          "frames": 539
+        },
+        "connected": {
+          "time": 9.000000000000027,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 300
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.50468,
+            0.45877,
+            9.49893
+          ],
+          "target": [
+            4.44119,
+            -1.41845,
+            -3.05119
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                5.51,
+                -1.96,
+                -3.77
+              ],
+              "velocity": 0.313,
+              "phase": 0.973,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -6.51,
+                2.97,
+                -8.46
+              ],
+              "velocity": 0.383,
+              "phase": 0.964,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -8.66,
+                -3.15,
+                -7.35
+              ],
+              "velocity": 0.403,
+              "phase": 0.857,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                7.98,
+                4.53,
+                -8.63
+              ],
+              "velocity": 0.523,
+              "phase": 0.097,
+              "primaryThrust": 0.86,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                8.02,
+                -4.35,
+                -7.11
+              ],
+              "velocity": 0.424,
+              "phase": 0.65,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.71
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -9.25,
+                3.2,
+                -8.7
+              ],
+              "velocity": 0.489,
+              "phase": 0.846,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.75,
+                4.81,
+                -11.87
+              ],
+              "velocity": 0.446,
+              "phase": 0.588,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.049
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.37,
+                -4.01,
+                -10.26
+              ],
+              "velocity": 1.054,
+              "phase": 0.313,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 0,
+        "bubbles": {
+          "time": 8.98333333333336,
+          "eventAge": 0,
+          "running": false,
+          "armed": true,
+          "envelope": 0,
+          "ambient": 0,
+          "heroes": 0,
+          "births": 0,
+          "classes": {
+            "small": 0,
+            "medium": 0,
+            "large": 0
+          },
+          "eventId": 0,
+          "capacity": {
+            "ambient": 384,
+            "heroes": 5
+          },
+          "progress": 0,
+          "enabled": true,
+          "metrics": {
+            "duration": 0,
+            "ambientSeconds": 0,
+            "heroSeconds": 0,
+            "peakAmbient": 0,
+            "peakHeroes": 0,
+            "averageAmbient": 0,
+            "averageHeroes": 0
+          },
+          "drawCount": 0,
+          "lens": {
+            "enabled": true,
+            "position": [
+              -1.1259874635237743,
+              0.2427564432140409,
+              5.537482377610441
+            ],
+            "radii": [
+              0.92,
+              1.08,
+              0.32
+            ],
+            "pull": [
+              0,
+              0
+            ],
+            "dragging": false,
+            "size": [
+              1,
+              1
+            ],
+            "samples": 4,
+            "format": "RGBA16F + depth24",
+            "oceanRenders": 1,
+            "outputPasses": 1,
+            "backend": "WebGL2",
+            "textures": 80,
+            "bubbleSlots": 5,
+            "legacyOutputTarget": [
+              1600,
+              1125
+            ]
+          },
+          "heroesDetail": []
+        },
+        "population": {
+          "basis": "CSS bell diameter; DPR independent",
+          "counts": {
+            "near": 1,
+            "medium": 7,
+            "far": 3,
+            "hidden": 11,
+            "transitioning": 0
+          },
+          "animals": [
+            {
+              "id": 0,
+              "tier": "near",
+              "detail": 2,
+              "pixels": 164.40779021654424,
+              "visible": true,
+              "presence": 0.9997944966786052,
+              "clickable": true,
+              "variation": {
+                "width": 1,
+                "height": 1,
+                "armLength": 1,
+                "organTurn": 0
+              },
+              "triangles": 22832
+            },
+            {
+              "id": 1,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 60.886525498919376,
+              "visible": false,
+              "presence": 0.06819420315524898,
+              "clickable": false,
+              "variation": {
+                "width": 0.9643529113382101,
+                "height": 1.061162128224969,
+                "armLength": 1.0558760854508726,
+                "organTurn": 0.03344540100544691
+              },
+              "triangles": 8012
+            },
+            {
+              "id": 2,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 174.2475815578228,
+              "visible": false,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9607758942060172,
+                "height": 1.056721479780972,
+                "armLength": 1.0240024539921433,
+                "organTurn": 0.0779092263430357
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 3,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 48.152127154210554,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9780047258362173,
+                "height": 0.9448173560947181,
+                "armLength": 0.9524692146759479,
+                "organTurn": -0.03036528781056404
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 4,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 106.30044821765244,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9864029225893318,
+                "height": 0.9323041789606213,
+                "armLength": 1.056636074176058,
+                "organTurn": 0.07682433240115642
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 5,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 123.12663576755031,
+              "visible": false,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9676347049511969,
+                "height": 1.0689286886528135,
+                "armLength": 1.0192087677679955,
+                "organTurn": 0.06626849193125964
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 6,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 41.49843884286054,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 1.0386247514560818,
+                "height": 1.0379521705210208,
+                "armLength": 1.048239185810089,
+                "organTurn": 0.03554441589862108
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 7,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 48.879446063359794,
+              "visible": false,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 1.0041557945311068,
+                "height": 0.9349273404479027,
+                "armLength": 0.9649501226935535,
+                "organTurn": -0.015424262695014478
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 8,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 27.341106793559923,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.9661520894803106,
+                "height": 0.9728058451786638,
+                "armLength": 1.023756720451638,
+                "organTurn": -0.0041432582214474675
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 9,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 42.85310973005851,
+              "visible": true,
+              "presence": 0.9974700096188769,
+              "clickable": true,
+              "variation": {
+                "width": 1.0344643443264068,
+                "height": 0.9352694099023938,
+                "armLength": 0.9443740889895706,
+                "organTurn": -0.00136523824185133
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 10,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 26.229700803006317,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.0189760852605103,
+                "height": 1.0772495029121638,
+                "armLength": 0.9592513575870543,
+                "organTurn": 0.07782506365329027
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 11,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 36.10050060047234,
+              "visible": true,
+              "presence": 0.8887925106721525,
+              "clickable": true,
+              "variation": {
+                "width": 0.9674636702239513,
+                "height": 1.0083115890622139,
+                "armLength": 0.9960601870249957,
+                "organTurn": -0.047417592480778696
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 12,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 30.1910480441862,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.9814471060037613,
+                "height": 1.0537580288201571,
+                "armLength": 0.9442633806727826,
+                "organTurn": -0.016511897891759872
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 13,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 39.440110398908324,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.0305810641124844,
+                "height": 0.9287058226764202,
+                "armLength": 1.0226838965248315,
+                "organTurn": -0.052662405893206594
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 14,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 28.167884238893976,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.028360739890486,
+                "height": 0.9215517884120346,
+                "armLength": 0.9637150827609002,
+                "organTurn": 0.06235059797763825
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 15,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 25.075122879337417,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.972408678047359,
+                "height": 0.9560094516724349,
+                "armLength": 0.9530587340425699,
+                "organTurn": 0.05785981874912977
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 16,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 48.29316555192071,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.0299106706120074,
+                "height": 1.0705822848156095,
+                "armLength": 0.9755649368744344,
+                "organTurn": -0.02249826967716217
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 17,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 32.959897127329945,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.9920795564353466,
+                "height": 0.931044138930738,
+                "armLength": 1.025084050754085,
+                "organTurn": 0.07450144726783037
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 18,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 40.941545118006125,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.9753577978722751,
+                "height": 0.9944643443077803,
+                "armLength": 1.0584319197572767,
+                "organTurn": 0.032003271989524365
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 19,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 49.46076152127274,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.96,
+                "height": 1.0074648909270765,
+                "armLength": 0.9772260341420769,
+                "organTurn": -0.0633743804320693
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 20,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 29.7364036477165,
+              "visible": false,
+              "presence": 0.018471706442689473,
+              "clickable": false,
+              "variation": {
+                "width": 0.9627610347233713,
+                "height": 0.9262704019248486,
+                "armLength": 1.0576182493008672,
+                "organTurn": 0.07551476556807757
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 21,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 32.68101657070758,
+              "visible": true,
+              "presence": 0.987437443251096,
+              "clickable": true,
+              "variation": {
+                "width": 1.0211834378540516,
+                "height": 0.964155794531107,
+                "armLength": 1.0497013689484447,
+                "organTurn": 0.025611690357327462
+              },
+              "triangles": 10472
+            }
+          ],
+          "renderer": {
+            "renderCallsTotal": 1242,
+            "drawCalls": 177,
+            "triangles": 726939
+          },
+          "memory": {
+            "geometries": 165,
+            "textures": 80
+          }
+        }
+      },
+      "bubbles": {
+        "time": 8.98333333333336,
+        "eventAge": 0,
+        "running": false,
+        "armed": true,
+        "envelope": 0,
+        "ambient": 0,
+        "heroes": 0,
+        "births": 0,
+        "classes": {
+          "small": 0,
+          "medium": 0,
+          "large": 0
+        },
+        "eventId": 0,
+        "capacity": {
+          "ambient": 384,
+          "heroes": 5
+        },
+        "progress": 0,
+        "enabled": true,
+        "metrics": {
+          "duration": 0,
+          "ambientSeconds": 0,
+          "heroSeconds": 0,
+          "peakAmbient": 0,
+          "peakHeroes": 0,
+          "averageAmbient": 0,
+          "averageHeroes": 0
+        },
+        "drawCount": 0,
+        "lens": {
+          "enabled": true,
+          "position": [
+            -1.1259874635237743,
+            0.2427564432140409,
+            5.537482377610441
+          ],
+          "radii": [
+            0.92,
+            1.08,
+            0.32
+          ],
+          "pull": [
+            0,
+            0
+          ],
+          "dragging": false,
+          "size": [
+            1,
+            1
+          ],
+          "samples": 4,
+          "format": "RGBA16F + depth24",
+          "oceanRenders": 1,
+          "outputPasses": 1,
+          "backend": "WebGL2",
+          "textures": 80,
+          "bubbleSlots": 5,
+          "legacyOutputTarget": [
+            1600,
+            1125
+          ]
+        },
+        "heroesDetail": []
+      }
+    },
+    {
+      "name": "matched-ambient-only",
+      "state": {
+        "visibility": "visible",
+        "specimen": {
+          "time": 9,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.9731461404463879,
+          "activation": 0,
+          "frames": 539
+        },
+        "connected": {
+          "time": 9.000000000000027,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 300
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.50468,
+            0.45877,
+            9.49893
+          ],
+          "target": [
+            4.44119,
+            -1.41845,
+            -3.05119
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                5.51,
+                -1.96,
+                -3.77
+              ],
+              "velocity": 0.313,
+              "phase": 0.973,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -6.51,
+                2.97,
+                -8.46
+              ],
+              "velocity": 0.383,
+              "phase": 0.964,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -8.66,
+                -3.15,
+                -7.35
+              ],
+              "velocity": 0.403,
+              "phase": 0.857,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                7.98,
+                4.53,
+                -8.63
+              ],
+              "velocity": 0.523,
+              "phase": 0.097,
+              "primaryThrust": 0.86,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                8.02,
+                -4.35,
+                -7.11
+              ],
+              "velocity": 0.424,
+              "phase": 0.65,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.71
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -9.25,
+                3.2,
+                -8.7
+              ],
+              "velocity": 0.489,
+              "phase": 0.846,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.75,
+                4.81,
+                -11.87
+              ],
+              "velocity": 0.446,
+              "phase": 0.588,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.049
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.37,
+                -4.01,
+                -10.26
+              ],
+              "velocity": 1.054,
+              "phase": 0.313,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 0,
+        "bubbles": {
+          "time": 8.98333333333336,
+          "eventAge": 0,
+          "running": false,
+          "armed": true,
+          "envelope": 0,
+          "ambient": 0,
+          "heroes": 0,
+          "births": 0,
+          "classes": {
+            "small": 0,
+            "medium": 0,
+            "large": 0
+          },
+          "eventId": 0,
+          "capacity": {
+            "ambient": 384,
+            "heroes": 5
+          },
+          "progress": 0,
+          "enabled": true,
+          "metrics": {
+            "duration": 0,
+            "ambientSeconds": 0,
+            "heroSeconds": 0,
+            "peakAmbient": 0,
+            "peakHeroes": 0,
+            "averageAmbient": 0,
+            "averageHeroes": 0
+          },
+          "drawCount": 0,
+          "lens": {
+            "enabled": true,
+            "position": [
+              -1.1259874635237743,
+              0.2427564432140409,
+              5.537482377610441
+            ],
+            "radii": [
+              0.92,
+              1.08,
+              0.32
+            ],
+            "pull": [
+              0,
+              0
+            ],
+            "dragging": false,
+            "size": [
+              1,
+              1
+            ],
+            "samples": 4,
+            "format": "RGBA16F + depth24",
+            "oceanRenders": 1,
+            "outputPasses": 1,
+            "backend": "WebGL2",
+            "textures": 80,
+            "bubbleSlots": 5,
+            "legacyOutputTarget": [
+              1600,
+              1125
+            ]
+          },
+          "heroesDetail": []
+        },
+        "population": {
+          "basis": "CSS bell diameter; DPR independent",
+          "counts": {
+            "near": 1,
+            "medium": 7,
+            "far": 3,
+            "hidden": 11,
+            "transitioning": 0
+          },
+          "animals": [
+            {
+              "id": 0,
+              "tier": "near",
+              "detail": 2,
+              "pixels": 164.40779021654424,
+              "visible": true,
+              "presence": 0.9997944966786052,
+              "clickable": true,
+              "variation": {
+                "width": 1,
+                "height": 1,
+                "armLength": 1,
+                "organTurn": 0
+              },
+              "triangles": 22832
+            },
+            {
+              "id": 1,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 60.886525498919376,
+              "visible": false,
+              "presence": 0.06819420315524898,
+              "clickable": false,
+              "variation": {
+                "width": 0.9643529113382101,
+                "height": 1.061162128224969,
+                "armLength": 1.0558760854508726,
+                "organTurn": 0.03344540100544691
+              },
+              "triangles": 8012
+            },
+            {
+              "id": 2,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 174.2475815578228,
+              "visible": false,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9607758942060172,
+                "height": 1.056721479780972,
+                "armLength": 1.0240024539921433,
+                "organTurn": 0.0779092263430357
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 3,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 48.152127154210554,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9780047258362173,
+                "height": 0.9448173560947181,
+                "armLength": 0.9524692146759479,
+                "organTurn": -0.03036528781056404
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 4,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 106.30044821765244,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9864029225893318,
+                "height": 0.9323041789606213,
+                "armLength": 1.056636074176058,
+                "organTurn": 0.07682433240115642
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 5,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 123.12663576755031,
+              "visible": false,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9676347049511969,
+                "height": 1.0689286886528135,
+                "armLength": 1.0192087677679955,
+                "organTurn": 0.06626849193125964
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 6,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 41.49843884286054,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 1.0386247514560818,
+                "height": 1.0379521705210208,
+                "armLength": 1.048239185810089,
+                "organTurn": 0.03554441589862108
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 7,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 48.879446063359794,
+              "visible": false,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 1.0041557945311068,
+                "height": 0.9349273404479027,
+                "armLength": 0.9649501226935535,
+                "organTurn": -0.015424262695014478
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 8,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 27.341106793559923,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.9661520894803106,
+                "height": 0.9728058451786638,
+                "armLength": 1.023756720451638,
+                "organTurn": -0.0041432582214474675
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 9,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 42.85310973005851,
+              "visible": true,
+              "presence": 0.9974700096188769,
+              "clickable": true,
+              "variation": {
+                "width": 1.0344643443264068,
+                "height": 0.9352694099023938,
+                "armLength": 0.9443740889895706,
+                "organTurn": -0.00136523824185133
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 10,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 26.229700803006317,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.0189760852605103,
+                "height": 1.0772495029121638,
+                "armLength": 0.9592513575870543,
+                "organTurn": 0.07782506365329027
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 11,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 36.10050060047234,
+              "visible": true,
+              "presence": 0.8887925106721525,
+              "clickable": true,
+              "variation": {
+                "width": 0.9674636702239513,
+                "height": 1.0083115890622139,
+                "armLength": 0.9960601870249957,
+                "organTurn": -0.047417592480778696
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 12,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 30.1910480441862,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.9814471060037613,
+                "height": 1.0537580288201571,
+                "armLength": 0.9442633806727826,
+                "organTurn": -0.016511897891759872
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 13,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 39.440110398908324,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.0305810641124844,
+                "height": 0.9287058226764202,
+                "armLength": 1.0226838965248315,
+                "organTurn": -0.052662405893206594
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 14,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 28.167884238893976,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.028360739890486,
+                "height": 0.9215517884120346,
+                "armLength": 0.9637150827609002,
+                "organTurn": 0.06235059797763825
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 15,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 25.075122879337417,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.972408678047359,
+                "height": 0.9560094516724349,
+                "armLength": 0.9530587340425699,
+                "organTurn": 0.05785981874912977
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 16,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 48.29316555192071,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.0299106706120074,
+                "height": 1.0705822848156095,
+                "armLength": 0.9755649368744344,
+                "organTurn": -0.02249826967716217
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 17,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 32.959897127329945,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.9920795564353466,
+                "height": 0.931044138930738,
+                "armLength": 1.025084050754085,
+                "organTurn": 0.07450144726783037
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 18,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 40.941545118006125,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.9753577978722751,
+                "height": 0.9944643443077803,
+                "armLength": 1.0584319197572767,
+                "organTurn": 0.032003271989524365
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 19,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 49.46076152127274,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.96,
+                "height": 1.0074648909270765,
+                "armLength": 0.9772260341420769,
+                "organTurn": -0.0633743804320693
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 20,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 29.7364036477165,
+              "visible": false,
+              "presence": 0.018471706442689473,
+              "clickable": false,
+              "variation": {
+                "width": 0.9627610347233713,
+                "height": 0.9262704019248486,
+                "armLength": 1.0576182493008672,
+                "organTurn": 0.07551476556807757
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 21,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 32.68101657070758,
+              "visible": true,
+              "presence": 0.987437443251096,
+              "clickable": true,
+              "variation": {
+                "width": 1.0211834378540516,
+                "height": 0.964155794531107,
+                "armLength": 1.0497013689484447,
+                "organTurn": 0.025611690357327462
+              },
+              "triangles": 10472
+            }
+          ],
+          "renderer": {
+            "renderCallsTotal": 1272,
+            "drawCalls": 177,
+            "triangles": 726939
+          },
+          "memory": {
+            "geometries": 165,
+            "textures": 80
+          }
+        }
+      },
+      "bubbles": {
+        "time": 8.98333333333336,
+        "eventAge": 0,
+        "running": false,
+        "armed": true,
+        "envelope": 0,
+        "ambient": 0,
+        "heroes": 0,
+        "births": 0,
+        "classes": {
+          "small": 0,
+          "medium": 0,
+          "large": 0
+        },
+        "eventId": 0,
+        "capacity": {
+          "ambient": 384,
+          "heroes": 5
+        },
+        "progress": 0,
+        "enabled": true,
+        "metrics": {
+          "duration": 0,
+          "ambientSeconds": 0,
+          "heroSeconds": 0,
+          "peakAmbient": 0,
+          "peakHeroes": 0,
+          "averageAmbient": 0,
+          "averageHeroes": 0
+        },
+        "drawCount": 0,
+        "lens": {
+          "enabled": true,
+          "position": [
+            -1.1259874635237743,
+            0.2427564432140409,
+            5.537482377610441
+          ],
+          "radii": [
+            0.92,
+            1.08,
+            0.32
+          ],
+          "pull": [
+            0,
+            0
+          ],
+          "dragging": false,
+          "size": [
+            1,
+            1
+          ],
+          "samples": 4,
+          "format": "RGBA16F + depth24",
+          "oceanRenders": 1,
+          "outputPasses": 1,
+          "backend": "WebGL2",
+          "textures": 80,
+          "bubbleSlots": 5,
+          "legacyOutputTarget": [
+            1600,
+            1125
+          ]
+        },
+        "heroesDetail": []
+      }
+    },
+    {
+      "name": "matched-clear",
+      "state": {
+        "visibility": "visible",
+        "specimen": {
+          "time": 9,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.9731461404463879,
+          "activation": 0,
+          "frames": 539
+        },
+        "connected": {
+          "time": 9.000000000000027,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 300
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.50468,
+            0.45877,
+            9.49893
+          ],
+          "target": [
+            4.44119,
+            -1.41845,
+            -3.05119
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                5.51,
+                -1.96,
+                -3.77
+              ],
+              "velocity": 0.313,
+              "phase": 0.973,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -6.51,
+                2.97,
+                -8.46
+              ],
+              "velocity": 0.383,
+              "phase": 0.964,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -8.66,
+                -3.15,
+                -7.35
+              ],
+              "velocity": 0.403,
+              "phase": 0.857,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                7.98,
+                4.53,
+                -8.63
+              ],
+              "velocity": 0.523,
+              "phase": 0.097,
+              "primaryThrust": 0.86,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                8.02,
+                -4.35,
+                -7.11
+              ],
+              "velocity": 0.424,
+              "phase": 0.65,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.71
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -9.25,
+                3.2,
+                -8.7
+              ],
+              "velocity": 0.489,
+              "phase": 0.846,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.75,
+                4.81,
+                -11.87
+              ],
+              "velocity": 0.446,
+              "phase": 0.588,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.049
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.37,
+                -4.01,
+                -10.26
+              ],
+              "velocity": 1.054,
+              "phase": 0.313,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 0,
+        "bubbles": {
+          "time": 8.98333333333336,
+          "eventAge": 0,
+          "running": false,
+          "armed": true,
+          "envelope": 0,
+          "ambient": 0,
+          "heroes": 0,
+          "births": 0,
+          "classes": {
+            "small": 0,
+            "medium": 0,
+            "large": 0
+          },
+          "eventId": 0,
+          "capacity": {
+            "ambient": 384,
+            "heroes": 5
+          },
+          "progress": 0,
+          "enabled": false,
+          "metrics": {
+            "duration": 0,
+            "ambientSeconds": 0,
+            "heroSeconds": 0,
+            "peakAmbient": 0,
+            "peakHeroes": 0,
+            "averageAmbient": 0,
+            "averageHeroes": 0
+          },
+          "drawCount": 0,
+          "lens": {
+            "enabled": true,
+            "position": [
+              -1.1259874635237743,
+              0.2427564432140409,
+              5.537482377610441
+            ],
+            "radii": [
+              0.92,
+              1.08,
+              0.32
+            ],
+            "pull": [
+              0,
+              0
+            ],
+            "dragging": false,
+            "size": [
+              1,
+              1
+            ],
+            "samples": 4,
+            "format": "RGBA16F + depth24",
+            "oceanRenders": 1,
+            "outputPasses": 1,
+            "backend": "WebGL2",
+            "textures": 80,
+            "bubbleSlots": 5,
+            "legacyOutputTarget": [
+              1600,
+              1125
+            ]
+          },
+          "heroesDetail": []
+        },
+        "population": {
+          "basis": "CSS bell diameter; DPR independent",
+          "counts": {
+            "near": 1,
+            "medium": 7,
+            "far": 3,
+            "hidden": 11,
+            "transitioning": 0
+          },
+          "animals": [
+            {
+              "id": 0,
+              "tier": "near",
+              "detail": 2,
+              "pixels": 164.40779021654424,
+              "visible": true,
+              "presence": 0.9997944966786052,
+              "clickable": true,
+              "variation": {
+                "width": 1,
+                "height": 1,
+                "armLength": 1,
+                "organTurn": 0
+              },
+              "triangles": 22832
+            },
+            {
+              "id": 1,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 60.886525498919376,
+              "visible": false,
+              "presence": 0.06819420315524898,
+              "clickable": false,
+              "variation": {
+                "width": 0.9643529113382101,
+                "height": 1.061162128224969,
+                "armLength": 1.0558760854508726,
+                "organTurn": 0.03344540100544691
+              },
+              "triangles": 8012
+            },
+            {
+              "id": 2,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 174.2475815578228,
+              "visible": false,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9607758942060172,
+                "height": 1.056721479780972,
+                "armLength": 1.0240024539921433,
+                "organTurn": 0.0779092263430357
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 3,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 48.152127154210554,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9780047258362173,
+                "height": 0.9448173560947181,
+                "armLength": 0.9524692146759479,
+                "organTurn": -0.03036528781056404
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 4,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 106.30044821765244,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9864029225893318,
+                "height": 0.9323041789606213,
+                "armLength": 1.056636074176058,
+                "organTurn": 0.07682433240115642
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 5,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 123.12663576755031,
+              "visible": false,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9676347049511969,
+                "height": 1.0689286886528135,
+                "armLength": 1.0192087677679955,
+                "organTurn": 0.06626849193125964
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 6,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 41.49843884286054,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 1.0386247514560818,
+                "height": 1.0379521705210208,
+                "armLength": 1.048239185810089,
+                "organTurn": 0.03554441589862108
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 7,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 48.879446063359794,
+              "visible": false,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 1.0041557945311068,
+                "height": 0.9349273404479027,
+                "armLength": 0.9649501226935535,
+                "organTurn": -0.015424262695014478
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 8,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 27.341106793559923,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.9661520894803106,
+                "height": 0.9728058451786638,
+                "armLength": 1.023756720451638,
+                "organTurn": -0.0041432582214474675
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 9,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 42.85310973005851,
+              "visible": true,
+              "presence": 0.9974700096188769,
+              "clickable": true,
+              "variation": {
+                "width": 1.0344643443264068,
+                "height": 0.9352694099023938,
+                "armLength": 0.9443740889895706,
+                "organTurn": -0.00136523824185133
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 10,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 26.229700803006317,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.0189760852605103,
+                "height": 1.0772495029121638,
+                "armLength": 0.9592513575870543,
+                "organTurn": 0.07782506365329027
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 11,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 36.10050060047234,
+              "visible": true,
+              "presence": 0.8887925106721525,
+              "clickable": true,
+              "variation": {
+                "width": 0.9674636702239513,
+                "height": 1.0083115890622139,
+                "armLength": 0.9960601870249957,
+                "organTurn": -0.047417592480778696
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 12,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 30.1910480441862,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.9814471060037613,
+                "height": 1.0537580288201571,
+                "armLength": 0.9442633806727826,
+                "organTurn": -0.016511897891759872
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 13,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 39.440110398908324,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.0305810641124844,
+                "height": 0.9287058226764202,
+                "armLength": 1.0226838965248315,
+                "organTurn": -0.052662405893206594
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 14,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 28.167884238893976,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.028360739890486,
+                "height": 0.9215517884120346,
+                "armLength": 0.9637150827609002,
+                "organTurn": 0.06235059797763825
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 15,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 25.075122879337417,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.972408678047359,
+                "height": 0.9560094516724349,
+                "armLength": 0.9530587340425699,
+                "organTurn": 0.05785981874912977
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 16,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 48.29316555192071,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.0299106706120074,
+                "height": 1.0705822848156095,
+                "armLength": 0.9755649368744344,
+                "organTurn": -0.02249826967716217
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 17,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 32.959897127329945,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.9920795564353466,
+                "height": 0.931044138930738,
+                "armLength": 1.025084050754085,
+                "organTurn": 0.07450144726783037
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 18,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 40.941545118006125,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.9753577978722751,
+                "height": 0.9944643443077803,
+                "armLength": 1.0584319197572767,
+                "organTurn": 0.032003271989524365
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 19,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 49.46076152127274,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.96,
+                "height": 1.0074648909270765,
+                "armLength": 0.9772260341420769,
+                "organTurn": -0.0633743804320693
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 20,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 29.7364036477165,
+              "visible": false,
+              "presence": 0.018471706442689473,
+              "clickable": false,
+              "variation": {
+                "width": 0.9627610347233713,
+                "height": 0.9262704019248486,
+                "armLength": 1.0576182493008672,
+                "organTurn": 0.07551476556807757
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 21,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 32.68101657070758,
+              "visible": true,
+              "presence": 0.987437443251096,
+              "clickable": true,
+              "variation": {
+                "width": 1.0211834378540516,
+                "height": 0.964155794531107,
+                "armLength": 1.0497013689484447,
+                "organTurn": 0.025611690357327462
+              },
+              "triangles": 10472
+            }
+          ],
+          "renderer": {
+            "renderCallsTotal": 1302,
+            "drawCalls": 177,
+            "triangles": 726939
+          },
+          "memory": {
+            "geometries": 165,
+            "textures": 80
+          }
+        }
+      },
+      "bubbles": {
+        "time": 8.98333333333336,
+        "eventAge": 0,
+        "running": false,
+        "armed": true,
+        "envelope": 0,
+        "ambient": 0,
+        "heroes": 0,
+        "births": 0,
+        "classes": {
+          "small": 0,
+          "medium": 0,
+          "large": 0
+        },
+        "eventId": 0,
+        "capacity": {
+          "ambient": 384,
+          "heroes": 5
+        },
+        "progress": 0,
+        "enabled": false,
+        "metrics": {
+          "duration": 0,
+          "ambientSeconds": 0,
+          "heroSeconds": 0,
+          "peakAmbient": 0,
+          "peakHeroes": 0,
+          "averageAmbient": 0,
+          "averageHeroes": 0
+        },
+        "drawCount": 0,
+        "lens": {
+          "enabled": true,
+          "position": [
+            -1.1259874635237743,
+            0.2427564432140409,
+            5.537482377610441
+          ],
+          "radii": [
+            0.92,
+            1.08,
+            0.32
+          ],
+          "pull": [
+            0,
+            0
+          ],
+          "dragging": false,
+          "size": [
+            1,
+            1
+          ],
+          "samples": 4,
+          "format": "RGBA16F + depth24",
+          "oceanRenders": 1,
+          "outputPasses": 1,
+          "backend": "WebGL2",
+          "textures": 80,
+          "bubbleSlots": 5,
+          "legacyOutputTarget": [
+            1600,
+            1125
+          ]
+        },
+        "heroesDetail": []
+      }
+    },
+    {
+      "name": "settled",
+      "state": {
+        "visibility": "visible",
+        "specimen": {
+          "time": 17.19960000000901,
+          "angle": "oblique",
+          "distance": "medium",
+          "candidate": true,
+          "chamber": false,
+          "bloom": "off (normal production path)",
+          "phase": 0.7304830701406964,
+          "activation": 0,
+          "frames": 1029
+        },
+        "connected": {
+          "time": 17.18333333333364,
+          "wakes": 1,
+          "activations": 0,
+          "accepted": 0,
+          "capacity": {
+            "wakes": 32,
+            "activations": 8
+          },
+          "echoes": 0,
+          "echoCount": 0,
+          "snowCount": 784,
+          "localFlecks": 300
+        },
+        "camera": {
+          "progress": 0,
+          "position": [
+            -1.55115,
+            0.45092,
+            9.48514
+          ],
+          "target": [
+            4.32132,
+            -0.60531,
+            -2.73101
+          ],
+          "actor": [
+            0,
+            0,
+            0
+          ],
+          "shot": "arrival",
+          "subjectStrength": 0.861,
+          "bankDegrees": 0,
+          "fov": 47,
+          "orbit": "full"
+        },
+        "actors": {
+          "shot": "arrival",
+          "actors": [
+            {
+              "id": 0,
+              "presence": 1,
+              "feature": 0.861,
+              "scale": 0.9,
+              "position": [
+                5.76,
+                -0.56,
+                -3.32
+              ],
+              "velocity": 0.472,
+              "phase": 0.73,
+              "primaryThrust": 0,
+              "secondaryThrust": 0.814
+            },
+            {
+              "id": 1,
+              "presence": 0.068,
+              "feature": 0,
+              "scale": 0.31,
+              "position": [
+                -6.67,
+                2.4,
+                -8.19
+              ],
+              "velocity": 0.885,
+              "phase": 0.389,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 2,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.82,
+              "position": [
+                -7.73,
+                -2.67,
+                -6.18
+              ],
+              "velocity": 0.972,
+              "phase": 0.305,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 3,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.35,
+              "position": [
+                9.02,
+                4.93,
+                -7.96
+              ],
+              "velocity": 0.593,
+              "phase": 0.535,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 4,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.76,
+              "position": [
+                6.64,
+                -3.41,
+                -7.98
+              ],
+              "velocity": 1.008,
+              "phase": 0.297,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 5,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.58,
+              "position": [
+                -7.88,
+                3.15,
+                -8.07
+              ],
+              "velocity": 0.685,
+              "phase": 0.52,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 6,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.33,
+              "position": [
+                8.64,
+                4.31,
+                -8.91
+              ],
+              "velocity": 0.447,
+              "phase": 0.091,
+              "primaryThrust": 0.792,
+              "secondaryThrust": 0
+            },
+            {
+              "id": 7,
+              "presence": 0,
+              "feature": 0,
+              "scale": 0.27,
+              "position": [
+                -8.67,
+                -3.48,
+                -8.2
+              ],
+              "velocity": 0.326,
+              "phase": 0.826,
+              "primaryThrust": 0,
+              "secondaryThrust": 0
+            }
+          ]
+        },
+        "activationCount": 0,
+        "bubbles": {
+          "time": 17.166666666666973,
+          "eventAge": 0,
+          "running": false,
+          "armed": true,
+          "envelope": 0,
+          "ambient": 0,
+          "heroes": 0,
+          "births": 0,
+          "classes": {
+            "small": 0,
+            "medium": 0,
+            "large": 0
+          },
+          "eventId": 0,
+          "capacity": {
+            "ambient": 384,
+            "heroes": 5
+          },
+          "progress": 0,
+          "enabled": true,
+          "metrics": {
+            "duration": 0,
+            "ambientSeconds": 0,
+            "heroSeconds": 0,
+            "peakAmbient": 0,
+            "peakHeroes": 0,
+            "averageAmbient": 0,
+            "averageHeroes": 0
+          },
+          "drawCount": 0,
+          "lens": {
+            "enabled": true,
+            "position": [
+              -1.1259874635237743,
+              0.2427564432140409,
+              5.537482377610441
+            ],
+            "radii": [
+              0.92,
+              1.08,
+              0.32
+            ],
+            "pull": [
+              0,
+              0
+            ],
+            "dragging": false,
+            "size": [
+              1,
+              1
+            ],
+            "samples": 4,
+            "format": "RGBA16F + depth24",
+            "oceanRenders": 1,
+            "outputPasses": 1,
+            "backend": "WebGL2",
+            "textures": 80,
+            "bubbleSlots": 5,
+            "legacyOutputTarget": [
+              1600,
+              1125
+            ]
+          },
+          "heroesDetail": []
+        },
+        "population": {
+          "basis": "CSS bell diameter; DPR independent",
+          "counts": {
+            "near": 1,
+            "medium": 4,
+            "far": 4,
+            "hidden": 13,
+            "transitioning": 1
+          },
+          "animals": [
+            {
+              "id": 0,
+              "tier": "near",
+              "detail": 2,
+              "pixels": 169.30253861474495,
+              "visible": true,
+              "presence": 0.9997944966786052,
+              "clickable": true,
+              "variation": {
+                "width": 1,
+                "height": 1,
+                "armLength": 1,
+                "organTurn": 0
+              },
+              "triangles": 22832
+            },
+            {
+              "id": 1,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 61.33074816194456,
+              "visible": false,
+              "presence": 0.06819420315524898,
+              "clickable": false,
+              "variation": {
+                "width": 0.9643529113382101,
+                "height": 1.061162128224969,
+                "armLength": 1.0558760854508726,
+                "organTurn": 0.03344540100544691
+              },
+              "triangles": 8012
+            },
+            {
+              "id": 2,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 187.6357990308424,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9607758942060172,
+                "height": 1.056721479780972,
+                "armLength": 1.0240024539921433,
+                "organTurn": 0.0779092263430357
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 3,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 47.71113583827378,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9780047258362173,
+                "height": 0.9448173560947181,
+                "armLength": 0.9524692146759479,
+                "organTurn": -0.03036528781056404
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 4,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 106.46020109940207,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9864029225893318,
+                "height": 0.9323041789606213,
+                "armLength": 1.056636074176058,
+                "organTurn": 0.07682433240115642
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 5,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 121.29669542500466,
+              "visible": false,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 0.9676347049511969,
+                "height": 1.0689286886528135,
+                "armLength": 1.0192087677679955,
+                "organTurn": 0.06626849193125964
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 6,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 46.086068371133116,
+              "visible": true,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 1.0386247514560818,
+                "height": 1.0379521705210208,
+                "armLength": 1.048239185810089,
+                "organTurn": 0.03554441589862108
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 7,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 57.303643257914,
+              "visible": false,
+              "presence": 0,
+              "clickable": false,
+              "variation": {
+                "width": 1.0041557945311068,
+                "height": 0.9349273404479027,
+                "armLength": 0.9649501226935535,
+                "organTurn": -0.015424262695014478
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 8,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 26.540352563498608,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.9661520894803106,
+                "height": 0.9728058451786638,
+                "armLength": 1.023756720451638,
+                "organTurn": -0.0041432582214474675
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 9,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 63.59751365744134,
+              "visible": false,
+              "presence": 0.96172291907823,
+              "clickable": false,
+              "variation": {
+                "width": 1.0344643443264068,
+                "height": 0.9352694099023938,
+                "armLength": 0.9443740889895706,
+                "organTurn": -0.00136523824185133
+              },
+              "triangles": 8012
+            },
+            {
+              "id": 10,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 34.45707525021559,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 1.0189760852605103,
+                "height": 1.0772495029121638,
+                "armLength": 0.9592513575870543,
+                "organTurn": 0.07782506365329027
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 11,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 45.99089907647476,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.9674636702239513,
+                "height": 1.0083115890622139,
+                "armLength": 0.9960601870249957,
+                "organTurn": -0.047417592480778696
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 12,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 29.965132261002807,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.9814471060037613,
+                "height": 1.0537580288201571,
+                "armLength": 0.9442633806727826,
+                "organTurn": -0.016511897891759872
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 13,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 39.61286514516788,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.0305810641124844,
+                "height": 0.9287058226764202,
+                "armLength": 1.0226838965248315,
+                "organTurn": -0.052662405893206594
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 14,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 30.07804193785732,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.028360739890486,
+                "height": 0.9215517884120346,
+                "armLength": 0.9637150827609002,
+                "organTurn": 0.06235059797763825
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 15,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 29.383966177948462,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.972408678047359,
+                "height": 0.9560094516724349,
+                "armLength": 0.9530587340425699,
+                "organTurn": 0.05785981874912977
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 16,
+              "tier": "medium",
+              "detail": 1,
+              "pixels": 42.96752684470705,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 1.0299106706120074,
+                "height": 1.0705822848156095,
+                "armLength": 0.9755649368744344,
+                "organTurn": -0.02249826967716217
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 17,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 30.027943331127865,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.9920795564353466,
+                "height": 0.931044138930738,
+                "armLength": 1.025084050754085,
+                "organTurn": 0.07450144726783037
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 18,
+              "tier": "far",
+              "detail": 0.9325833333283664,
+              "pixels": 45.514819819720934,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.9753577978722751,
+                "height": 0.9944643443077803,
+                "armLength": 1.0584319197572767,
+                "organTurn": 0.032003271989524365
+              },
+              "triangles": 10472
+            },
+            {
+              "id": 19,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 43.401734245975135,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 0.96,
+                "height": 1.0074648909270765,
+                "armLength": 0.9772260341420769,
+                "organTurn": -0.0633743804320693
+              },
+              "triangles": 14960
+            },
+            {
+              "id": 20,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 31.09464601854093,
+              "visible": true,
+              "presence": 1,
+              "clickable": true,
+              "variation": {
+                "width": 0.9627610347233713,
+                "height": 0.9262704019248486,
+                "armLength": 1.0576182493008672,
+                "organTurn": 0.07551476556807757
+              },
+              "triangles": 5392
+            },
+            {
+              "id": 21,
+              "tier": "far",
+              "detail": 0,
+              "pixels": 57.51259442506669,
+              "visible": false,
+              "presence": 1,
+              "clickable": false,
+              "variation": {
+                "width": 1.0211834378540516,
+                "height": 0.964155794531107,
+                "armLength": 1.0497013689484447,
+                "organTurn": 0.025611690357327462
+              },
+              "triangles": 8012
+            }
+          ],
+          "renderer": {
+            "renderCallsTotal": 2282,
+            "drawCalls": 173,
+            "triangles": 671531
+          },
+          "memory": {
+            "geometries": 169,
+            "textures": 80
+          }
+        }
+      },
+      "bubbles": {
+        "time": 17.166666666666973,
+        "eventAge": 0,
+        "running": false,
+        "armed": true,
+        "envelope": 0,
+        "ambient": 0,
+        "heroes": 0,
+        "births": 0,
+        "classes": {
+          "small": 0,
+          "medium": 0,
+          "large": 0
+        },
+        "eventId": 0,
+        "capacity": {
+          "ambient": 384,
+          "heroes": 5
+        },
+        "progress": 0,
+        "enabled": true,
+        "metrics": {
+          "duration": 0,
+          "ambientSeconds": 0,
+          "heroSeconds": 0,
+          "peakAmbient": 0,
+          "peakHeroes": 0,
+          "averageAmbient": 0,
+          "averageHeroes": 0
+        },
+        "drawCount": 0,
+        "lens": {
+          "enabled": true,
+          "position": [
+            -1.1259874635237743,
+            0.2427564432140409,
+            5.537482377610441
+          ],
+          "radii": [
+            0.92,
+            1.08,
+            0.32
+          ],
+          "pull": [
+            0,
+            0
+          ],
+          "dragging": false,
+          "size": [
+            1,
+            1
+          ],
+          "samples": 4,
+          "format": "RGBA16F + depth24",
+          "oceanRenders": 1,
+          "outputPasses": 1,
+          "backend": "WebGL2",
+          "textures": 80,
+          "bubbleSlots": 5,
+          "legacyOutputTarget": [
+            1600,
+            1125
+          ]
+        },
+        "heroesDetail": []
+      }
+    }
+  ],
+  "errors": []
+}

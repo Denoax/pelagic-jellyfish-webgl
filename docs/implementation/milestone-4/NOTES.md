@@ -78,6 +78,48 @@ direct visual reference. Installed r175 BufferGeometry/node-material APIs are
 implementation truth; built-in distance-only THREE.LOD is not the policy used.
 No assets or code purchased/copied; no Three upgrade.
 
-Pending: final visual iteration, matched evidence and uncaptured five-state
-comparison, actual moving/lifecycle/resize checks, final test/build/production
-guard, local review report. This log is not READY or user visual approval.
+Performance iteration: held scenes initially hid a moving-camera regression.
+The 44-second native B-key journey at b98e484 cost 19.9ms median / 30.9ms p95
+versus 17.5 / 21.0 baseline. That draft is retained, not presented as success.
+Population-only optimization now skips overwritten legacy cap/noise work,
+hidden rib/pearl transforms, caches time-independent folded-membrane terms in
+double precision, and skips mesh resampling outside conservative camera bounds.
+Offscreen spines still simulate; first visible frame refreshes the geometry.
+All visible near reference attributes remain exactly equal in the parity test.
+Prominent ordinary wakes retain the existing M2 field; tiny/offscreen sources
+do not fill its wake pool. Direct activation and echoes are not filtered.
+Field method is restored on teardown. M2 source is unchanged, but this opt-in
+eligibility adapter is an intentional change to population wake participation.
+Fixed pools are four resources on desktop / three on mobile, not four everywhere.
+
+Frozen visual candidate: 4f311b5262c253aa02be10bc054d44250855cef6.
+53 tests, two existing parity scripts, production build PASS. Latest uncaptured
+moving draft: 16.9ms median / 26.1ms p95, one >50ms stall. Tail cost remains and
+must be reported; no claim of a GPU improvement. Fresh matched captures,
+lifecycle/resize evidence and final uncaptured measurements are underway.
+This working log alone is not READY or user visual approval.
+
+Late focused check found a genuine near-only filament re-entry defect at
+4f311b5: after ten units of medium-detail body travel, dormant filaments could
+reach 19.8 local units during promotion despite a maximum 3.54-unit rest length.
+The existing width fade did not justify accepting that transient. Promotion
+now seeds them from a live core strand, with length-appropriate sampling,
+internal root alignment and retained Verlet velocity before width rises.
+The same diagnostic stays below 3.04 units after the fix. This touches only
+the population adapter; the continuously near approved hero is unaffected.
+A permanent focused regression test covers the complete re-entry interval.
+All candidate captures/timings were repeated with the `-final` suffix;
+4f311b5 evidence is retained outside the portable package as the pre-fix record,
+not final source evidence.
+
+Final runtime: 3b4074d2aa62bb0acfabd9e3d77c93ab46c295f2. Final suites completed
+with zero browser errors: matched scenes, native/tracked/bubble/portrait/narrow
+motion, four eligible raycast hits, resize/re-entry, idle/background recovery,
+DPR cap and production guard, plus 180.78s observation. Final uncaptured moving
+median/p95/max: 16.5/25.9/74.4ms, one >50ms interval; approved baseline
+17.2/20.7/58.8ms, one >50ms. Secondary encounter median 16.5→18.7ms.
+No resolution/quality reduction. This remains a real performance compromise,
+not an unqualified speedup. See README for complete paired results and review
+links. Read-only renderer-counter comparison also records increased triangle
+cost despite mostly similar/lower draw calls. Default production guard passed;
+main/Pages remain a0501c2 / successful run 34133364127. No remote mutation.
