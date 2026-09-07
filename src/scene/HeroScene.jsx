@@ -363,7 +363,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         // compiling their first lit frame during the dive caused scroll hitches.
         await environment.loadDeepAssets();
         if (disposed) return;
-        if (previewRequested) {
+        if (import.meta.env.DEV && previewRequested) {
           const { SpecimenPreview } = await import('./dev/SpecimenPreview.js');
           specimen = new SpecimenPreview(query, app, appendages, environment, schoolDirector);
         }
@@ -390,6 +390,10 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           false,
           true,
         );
+        // Compile the actual chamber, not unrelated legacy-transmission actors
+        // temporarily made visible by the production population warm-up.
+        specimen?.beforeTissue();
+        specimen?.afterTissue();
 
         // Compile both the full cinematic pass and the lightweight scrolling
         // pass before exposing the scene.
