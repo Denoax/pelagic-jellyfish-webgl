@@ -384,6 +384,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         }
         if (lensRequested) {
           const { LiveOceanLens } = await import('./glass/LiveOceanLens.js');
+          if (disposed) return;
           liveLens = new LiveOceanLens(renderer, app.camera);
           liveLens.scene = app.scene;
           window.__LIVE_LENS__ = {

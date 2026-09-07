@@ -19,6 +19,8 @@ for (const label of [
   "perf-candidate-a",
   "perf-baseline-b",
   "perf-candidate-b",
+  "perf-locked-baseline",
+  "perf-locked-candidate",
 ]) {
   const path = `${root}/${label}/performance.json`;
   if (!existsSync(path)) continue;
@@ -38,9 +40,9 @@ for (const label of [
 }
 const pixels = [];
 for (const label of [
-  "candidate-desktop-final",
-  "candidate-narrow-final",
-  "candidate-portrait-final",
+  "review-desktop",
+  "review-narrow",
+  "review-portrait",
 ]) {
   const decode = (name) =>
     spawnSync(

@@ -62,6 +62,7 @@ try {
  info.uncommittedSource=spawnSync('git',['diff','--name-only','--','src'],{encoding:'utf8'}).stdout.trim();
  const system={adapter:await evaluate(`window.__actualAdapter||null`),browser:await send('Browser.getVersion')};
  if(process.env.EVIDENCE_EVAL)await evaluate(process.env.EVIDENCE_EVAL);
+ info.controlledState=await evaluate(`window.__BENCH_STATE__||null`);
  if(mode==='perf'){
    await evaluate(`window.__SPECIMEN__?.resetIntervals()`);
    await evaluate(`window.__AUDIT_RENDER__.reset()`);
@@ -72,6 +73,16 @@ try {
    writeFileSync(`${out}/lens-cost.json`,JSON.stringify({cpu:await evaluate(`window.__LIVE_LENS__?.cost()`),state:await evaluate(`window.__LIVE_LENS__?.state()`)},null,2));
    writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),auditRender:await evaluate(`window.__AUDIT_RENDER__.read()`),featureCpuIntervals:await evaluate(`window.__CONNECTED_OCEAN__?.cost()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state()})`)},null,2));
  }else{
+   const lensRecording=mode==='lens-optics'||mode==='lens-tour';
+   const finishRecording=async()=>{
+     await send('Page.stopScreencast');await sleep(300);
+     if(frames.length<2)throw Error('Motion evidence missing: fewer than two screencast frames');
+     let concat='';frames.forEach((f,i)=>{concat+=`file '${f.name}'\nduration ${i+1<frames.length?Math.max(.001,frames[i+1].time-f.time):.033}\n`;});
+     writeFileSync(`${out}/motion.txt`,concat);
+     const result=spawnSync('/usr/bin/ffmpeg',['-y','-loglevel','error','-f','concat','-safe','0','-i',`${out}/motion.txt`,'-vf','pad=ceil(iw/2)*2:ceil(ih/2)*2','-fps_mode','vfr','-c:v','libx264','-crf','20','-pix_fmt','yuv420p','-movflags','+faststart',`${out}/motion.mp4`],{encoding:'utf8'});
+     if(result.status)throw Error(result.stderr);
+     writeFileSync(`${out}/motion-metadata.json`,JSON.stringify({url,info,system,frames:frames.length,duration:frames.at(-1).time-frames[0].time,errors},null,2));
+   };
    const shot=async name=>{
      const r=await send('Page.captureScreenshot',{format:'png'});
      writeFileSync(`${out}/${name}.png`,Buffer.from(r.data,'base64'));
@@ -103,6 +114,10 @@ try {
      writeFileSync(`${out}/lens.json`,JSON.stringify({state:await state(),lens:await evaluate(`window.__LIVE_LENS__?.state()`),errors},null,2));
      await evaluate(`window.__RESTORE_QA_TIME__()`);
      await evaluate(`window.__SPECIMEN__.resume()`);
+     await send('Emulation.setVisibleSize',{width,height});
+     await send('Page.startScreencast',{format:'jpeg',quality:88,maxWidth:width,maxHeight:height,everyNthFrame:2});
+     await evaluate(`window.__LIVE_LENS__?.enable(false)`);await sleep(2500);
+     await evaluate(`window.__LIVE_LENS__?.enable(true)`);
      await sleep(6000);await shot('crossing');await sleep(6000);await shot('leaving');
      if(mode==='lens-tour'){
        const checkpoints=[];
@@ -125,6 +140,15 @@ try {
        writeFileSync(`${out}/tour.json`,JSON.stringify({checkpoints,lens:await evaluate(`window.__LIVE_LENS__?.state()`),errors},null,2));
      }
      await sleep(6000);
+   }else if(mode==='lens-recovery'){
+     const before=await evaluate(`window.__LIVE_LENS__.state()`);
+     await evaluate(`document.querySelector('.ocean-stage canvas').getContext('webgl2').getExtension('WEBGL_lose_context').loseContext()`);
+     await sleep(800);await shot('context-lost');
+     const failed=await evaluate(`document.querySelector('[data-scene-status]').dataset.sceneStatus`);
+     await send('Page.reload');let recovered=false;
+     for(let i=0;i<300;i++){recovered=await evaluate(`document.querySelector('[data-scene-status]')?.dataset.sceneStatus==='ready'`);if(recovered)break;await sleep(100);}
+     await sleep(7000);await shot('reloaded-ocean');
+     writeFileSync(`${out}/recovery.json`,JSON.stringify({before,failed,recovered,after:await evaluate(`window.__LIVE_LENS__?.state()`),errors},null,2));
    }else if(mode==='lens-resize'){
      const checkpoints=[];
      for(const [w,h] of [[1280,900],[900,900],[390,844],[1280,900]]){
@@ -271,6 +295,7 @@ try {
    if(frames.length>1){let concat='';frames.forEach((f,i)=>{concat+=`file '${f.name}'\nduration ${i+1<frames.length?Math.max(.001,frames[i+1].time-f.time):.033}\n`;});writeFileSync(`${out}/motion.txt`,concat);const result=spawnSync('/usr/bin/ffmpeg',['-y','-loglevel','error','-f','concat','-safe','0','-i',`${out}/motion.txt`,'-vf','pad=ceil(iw/2)*2:ceil(ih/2)*2','-fps_mode','vfr','-c:v','libx264','-crf','20','-pix_fmt','yuv420p','-movflags','+faststart',`${out}/motion.mp4`],{encoding:'utf8'});if(result.status)throw Error(result.stderr);}
    writeFileSync(`${out}/capture.json`,JSON.stringify({url,info,system,seconds:Number(seconds),frames:frames.length,errors,after:await evaluate(`({state:window.__SPECIMEN__?.state(),ratio:window.__JELLYFISH_WORLD__?.pixelRatio,buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),activationCount:window.__JELLYFISH_WORLD__?.activationCount,lastActivated:window.__JELLYFISH_WORLD__?.lastActivated})`)},null,2));
    }
+   if(lensRecording)await finishRecording();
  }
  console.log(JSON.stringify({out,mode,errors:errors.length,info}));
 }finally{if(send)await Promise.race([send('Browser.close').catch(()=>{}),sleep(1000)]);ws?.close();browser.kill('SIGTERM');}
