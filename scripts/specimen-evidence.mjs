@@ -3,7 +3,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 const [url='http://127.0.0.1:5178/?idle=300', label='baseline', mode='capture', seconds='24'] = process.argv.slice(2);
-const out=resolve('docs/implementation/milestone-1/evidence',label);
+const out=resolve(process.env.EVIDENCE_ROOT || 'docs/implementation/milestone-1/evidence',label);
 mkdirSync(out,{recursive:true});
 const profile=mkdtempSync('/tmp/pelagic-specimen-browser-');
 const browser=spawn(resolve('scripts/brave-headless.sh'),['--headless=new','--no-sandbox','--hide-scrollbars','--window-size=1280,1000','--use-gl=angle','--use-angle=gl','--enable-unsafe-webgpu','--remote-debugging-port=9279',`--user-data-dir=${profile}`,'about:blank'],{stdio:'ignore'});
@@ -37,12 +37,32 @@ try {
  if(process.env.EVIDENCE_EVAL)await evaluate(process.env.EVIDENCE_EVAL);
  if(mode==='perf'){
    await evaluate(`window.__SPECIMEN__?.resetIntervals()`);
+   await evaluate(`window.__CONNECTED_OCEAN__?.resetCost()`);
    const intervals=await evaluate(`new Promise(resolve=>{const a=[];let last=0;const start=performance.now();function tick(t){if(last)a.push(t-last);last=t;if(t-start<${Number(seconds)*1000})requestAnimationFrame(tick);else resolve(a);}requestAnimationFrame(tick);})`);
    const sorted=[...intervals].sort((a,b)=>a-b);
-   writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,specimen:window.__SPECIMEN__?.state()})`)},null,2));
+   writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),featureCpuIntervals:await evaluate(`window.__CONNECTED_OCEAN__?.cost()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state()})`)},null,2));
  }else{
    const shot=async name=>{const r=await send('Page.captureScreenshot',{format:'png'});writeFileSync(`${out}/${name}.png`,Buffer.from(r.data,'base64'));};
-   if(mode==='lifecycle'){
+   const clickJelly=async(index=0)=>{
+     const point=await evaluate(`window.__JELLYFISH_WORLD__.getJellyScreenPoint(${index})`);
+     const before=await evaluate(`window.__JELLYFISH_WORLD__.activationCount`);
+     for(const type of ['mouseMoved','mousePressed','mouseReleased'])await send('Input.dispatchMouseEvent',{type,x:point.x,y:point.y,button:type==='mouseMoved'?'none':'left',clickCount:1});
+     const after=await evaluate(`window.__JELLYFISH_WORLD__.activationCount`);
+     return {point,before,after,hit:after>before};
+   };
+   const state=()=>evaluate(`({specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount})`);
+   if(mode==='ocean-matched'){
+     const snapshots=[];
+     for(const target of [9,9.8,11,13,17]){
+       await evaluate(`window.__SPECIMEN__.holdAt(${target})`);
+       let held=false;
+       for(let i=0;i<1200;i++){held=await evaluate(`window.__SPECIMEN__.state().time>=${target}-1e-7`);if(held)break;await sleep(50);}
+       if(!held)throw Error('Matched ocean did not reach '+target);
+       await shot(`time-${target}`); snapshots.push(await state());
+       if(target===9)snapshots.push({click:await clickJelly()});
+     }
+     writeFileSync(`${out}/matched.json`,JSON.stringify({url,info,system,snapshots,errors},null,2));
+   }else if(mode==='lifecycle'){
      const key=async key=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code:key,windowsVirtualKeyCode:27});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code:key,windowsVirtualKeyCode:27});};
      await shot('idle-entry');
      const idleBefore=await evaluate(`!!document.querySelector('.idle-screen.is-active')`);
@@ -72,7 +92,23 @@ try {
    }else{
    await shot('opening');
    await send('Page.startScreencast',{format:'jpeg',quality:90,maxWidth:1280,maxHeight:900,everyNthFrame:2});
-   if(mode==='tour'||mode==='anatomy-tour'){
+   if(mode==='connected-tour'){
+     const checkpoints=[];
+     await sleep(6000);checkpoints.push({label:'calm',state:await state()});
+     checkpoints.push({label:'click',click:await clickJelly()});
+     await sleep(900);await shot('tissue-response');checkpoints.push({label:'tissue-response',state:await state()});
+     await sleep(1800);await shot('surroundings-response');checkpoints.push({label:'surroundings-response',state:await state()});
+     await sleep(6500);await shot('settled');checkpoints.push({label:'settled',state:await state()});
+     await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.07)`);
+     await sleep(6000);await shot('close-pass');
+     for(let i=0;i<4;i++){checkpoints.push({label:'repeat',click:await clickJelly()});await sleep(250);}
+     await sleep(9000);checkpoints.push({label:'repeat-settled',state:await state()});
+     await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.35)`);
+     await sleep(9000);await shot('distant');checkpoints.push({label:'distant',state:await state()});
+     await evaluate(`window.scrollTo(0,0)`);
+     await sleep(6000);
+     writeFileSync(`${out}/interaction.json`,JSON.stringify({checkpoints,errors},null,2));
+   }else if(mode==='tour'||mode==='anatomy-tour'){
      await sleep(12000);
      const chamber=await evaluate(`window.__SPECIMEN__?.state().chamber`);
      if(chamber)await evaluate(`window.__SPECIMEN__.view('side','near')`);
