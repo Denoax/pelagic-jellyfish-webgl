@@ -32,7 +32,6 @@ export class LiveOceanLens {
     this.deformation = new LensDeformation();
     this.translation = new THREE.Vector3();
     this.shape = new THREE.Matrix4();
-    this.rotationMatrix = new THREE.Matrix4();
     this.elapsed = 0;
     this.anchored = false;
     this.lastTime = performance.now();
@@ -50,6 +49,7 @@ export class LiveOceanLens {
     this.near = uniform(camera.near);
     this.far = uniform(camera.far);
     this.strength = uniform(1);
+    this.visibility = uniform(0);
     this.eta = uniform(1 / 1.045);
     this.target = new THREE.RenderTarget(1, 1, {
       type: THREE.HalfFloatType,
@@ -195,9 +195,12 @@ export class LiveOceanLens {
       const projected = this.projection.mul(
         vec4(exitView.add(outView.mul(rayLength)), 1),
       );
+      const safeW = max(projected.w.abs(), 0.0001).mul(
+        projected.w.lessThan(0).select(-1, 1),
+      );
       const refractedUv = vec2(
-        projected.x.div(projected.w).mul(0.5).add(0.5),
-        projected.y.div(projected.w).mul(-0.5).add(0.5),
+        projected.x.div(safeW).mul(0.5).add(0.5),
+        projected.y.div(safeW).mul(-0.5).add(0.5),
       ).toVar();
       const border = min(
         min(refractedUv.x, refractedUv.y),
@@ -216,6 +219,7 @@ export class LiveOceanLens {
         .mul(smoothstep(0.1, 0.5, dot(outView, outView)))
         .mul(smoothstep(0.005, 0.04, border))
         .mul(this.strength)
+        .mul(this.visibility)
         .toVar();
       const offset = refractedUv.sub(st).toVar();
       const edgeWeight = smoothstep(0, 0.7, disc.div(a));
@@ -259,6 +263,10 @@ export class LiveOceanLens {
       this.anchor();
       this.anchored = true;
     }
+    // Development placement waits for the ordinary opening camera to settle.
+    // Keep it invisible before that anchor, rather than visibly teleporting.
+    const reveal = Math.min(1, Math.max(0, (this.elapsed - 6) / 0.7));
+    this.visibility.value = reveal * reveal * (3 - 2 * reveal);
     this.deformation.update(dt);
     renderer.getDrawingBufferSize(this.size);
     this.target.setSize(this.size.x, this.size.y);
@@ -313,7 +321,7 @@ export class LiveOceanLens {
       renderer.setRenderTarget(this.target);
       await renderer.renderAsync(this.scene, this.camera);
       renderer.setRenderTarget(previous);
-      await this.output.renderAsync();
+      if (!this.disposed) await this.output.renderAsync();
     } finally {
       renderer.setRenderTarget(previous);
       renderer.toneMapping = toneMapping;

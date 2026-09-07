@@ -141,6 +141,23 @@ test("same renderer receives ocean target then output, restores state on failure
     lens.dispose();
     lens.dispose();
     assert.equal(disposals, 1);
+    const pendingLens = new LiveOceanLens(renderer, camera);
+    let complete,
+      outputs = 0;
+    renderer.renderAsync = () =>
+      new Promise((resolve) => {
+        complete = resolve;
+      });
+    pendingLens.output.renderAsync = async () => {
+      outputs++;
+    };
+    const pendingRender = pendingLens.render();
+    pendingLens.dispose();
+    assert.equal(pendingLens.resourcesReleased, undefined);
+    complete();
+    await pendingRender;
+    assert.equal(outputs, 0);
+    assert.equal(pendingLens.resourcesReleased, true);
   } finally {
     globalThis.window = previousWindow;
     globalThis.document = previousDocument;
