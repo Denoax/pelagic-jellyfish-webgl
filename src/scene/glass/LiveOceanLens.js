@@ -263,7 +263,7 @@ export class LiveOceanLens {
       const optical = bent
         .mul(bubble ? vec3(1) : vec3(0.994, 0.999, 1))
         .add(
-          bubble ? vec3(.13, .20, .23).mul(grazing.mul(bubbleCrescent.mul(.8).add(.1)))
+          bubble ? vec3(.30, .48, .55).mul(grazing.pow(3).mul(bubbleCrescent.mul(1.4).add(.035)))
             : vec3(0.015, 0.035, 0.046).mul(grazing.mul(.35).add(highlight.mul(.08))),
         );
       return bubble ? vec4(optical, mask) : vec4(mix(original.rgb, optical, mask), original.a);

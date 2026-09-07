@@ -1,6 +1,6 @@
 import * as THREE from 'three/webgpu';
 import { attribute, dot, normalView, positionView, normalize, max, vec3 } from 'three/tsl';
-import { BubblePopulation, PLUME, bubbleShape } from './BubblePopulation.js';
+import { BubblePopulation, PLUME, bubbleShape, ease } from './BubblePopulation.js';
 import { LiveOceanLens } from './LiveOceanLens.js';
 
 // Presentation adapter: cheap instanced films + bounded slots in the accepted M3
@@ -19,12 +19,12 @@ export class BubblePassage {
     const material = this.material = new THREE.MeshBasicNodeMaterial({ transparent: true,
       depthWrite: false, side: THREE.FrontSide, blending: THREE.AdditiveBlending });
     const facing = max(dot(normalView, normalize(positionView.negate())), 0);
-    const rim = facing.oneMinus().pow(4);
+    const rim = facing.oneMinus().pow(9);
     const light = normalize(vec3(attribute('bubbleGlint').mul(.7).sub(.7), .85, .35));
     // Only the edge reflects light: no central specular dot or dark alpha fill.
     const crescent = max(dot(normalView, light), 0).pow(5);
-    material.colorNode = vec3(.30, .46, .54).add(vec3(.35, .39, .40).mul(crescent));
-    material.opacityNode = rim.mul(crescent.mul(.85).add(.13)).mul(attribute('bubbleOpacity'));
+    material.colorNode = vec3(.70, .88, .95);
+    material.opacityNode = rim.mul(crescent.mul(2.6).add(.025)).mul(attribute('bubbleOpacity'));
     this.mesh = new THREE.InstancedMesh(this.geometry, material, PLUME.ambient);
     this.mesh.frustumCulled = false; this.mesh.visible = false;
     this.mesh.name = 'M3 rising ambient bubble films'; app.scene.add(this.mesh);
@@ -51,7 +51,7 @@ export class BubblePassage {
       this.sources.forEach((source, i) => {
         const depth = [4.8, 8.2, 12][i];
         const halfY = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * depth;
-        source.set([-.72, -.15, .68][i] * halfY * camera.aspect, -halfY - 1.1, -depth).applyMatrix4(camera.matrixWorld);
+        source.set([-.50, .05, .50][i] * halfY * camera.aspect, -halfY + .15, -depth).applyMatrix4(camera.matrixWorld);
       });
     }
     if (!b.hero) {
@@ -146,6 +146,9 @@ export class BubblePassage {
       const b = this.heroOrder[i]; slot.strength.value = b && this.enabled && this.refract ? b.alpha : 0;
       if (!b) return;
       this.position.set(b.x, b.y, b.z);
+      this.view.copy(this.position).applyMatrix4(camera.matrixWorldInverse);
+      const fraction = b.radius / Math.max(.01, -this.view.z * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * camera.aspect);
+      slot.strength.value *= 1 - ease((fraction - .20) / .10);
       const form = bubbleShape(b, this.form);
       this.scale.set(b.radius * form.x, b.radius * form.y, b.radius * form.z);
       this.euler.set(form.tilt * .4, 0, form.tilt);
