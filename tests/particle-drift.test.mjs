@@ -14,6 +14,24 @@ function pool() {
 }
 const dispose = (p) => { p.mesh.geometry.dispose(); p.mesh.material.dispose(); };
 
+test('connected flecks reveal a local wake without stacking click brightness or changing advection', () => {
+  const calm = pool(), wake = pool(), click = pool(), overlap = pool();
+  const pools = [calm, wake, click, overlap];
+  const fields = [{wake:0,light:0},{wake:.5,light:0},{wake:0,light:1},{wake:.5,light:1}];
+  pools.forEach((p,i)=>p.setCurrentField({sample(_x,_y,_z,out){return Object.assign(out,{x:.1,y:.02,z:-.04},fields[i]);}}));
+  for(let i=0;i<180;i++)pools.forEach(p=>p.update(1/60,i/60,new Matrix4(),true));
+  for(let i=0;i<30;i++){
+    assert.ok(Math.abs(wake.alpha.array[i]/calm.alpha.array[i] - (.16+.5*1.4)/.16)<1e-5);
+    assert.equal(overlap.alpha.array[i],click.alpha.array[i]);
+    assert.ok(overlap.alpha.array[i]<=2.06);
+  }
+  pools.slice(1).forEach(p=>assert.deepEqual(p.positions.array,calm.positions.array));
+  fields.forEach(f=>Object.assign(f,{wake:0,light:0}));
+  pools.forEach(p=>p.update(1/60,3,new Matrix4(),true));
+  pools.slice(1).forEach(p=>assert.deepEqual(p.alpha.array,calm.alpha.array));
+  pools.forEach(dispose);
+});
+
 test("existing particles ignore an emitter's translation, rotation and scale", () => {
   const a = pool(); const b = pool();
   const identity = new Matrix4();

@@ -68,7 +68,9 @@ try {
  if(!ready)throw Error('Scene did not become ready: '+JSON.stringify(errors));
  await sleep(6000);
  const info=await evaluate(`({userAgent:navigator.userAgent,backend:window.__JELLYFISH_WORLD__?.renderer,ratio:window.__JELLYFISH_WORLD__?.pixelRatio,viewport:[innerWidth,innerHeight],buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),hardware:window.__SPECIMEN__?.rendererInfo(),bloom:'production direct rendering; bloom disabled'})`);
- info.sourceRevision=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).stdout.trim();
+ info.driverRevision=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).stdout.trim();
+ info.sourceRevision=process.env.EVIDENCE_SOURCE_REV || info.driverRevision;
+ info.sourceIdentity=process.env.EVIDENCE_SOURCE_REV?'explicit source checkout/release; verify against deployment or worktree':'driver checkout only; may differ from target URL';
  info.release=await evaluate(`window.__JELLYFISH_WORLD__?.oceanRelease`);
  info.hasSpecimenControls=await evaluate(`Boolean(window.__SPECIMEN__)`);
  info.actualGL=await evaluate(`window.__AUDIT_GL__||null`);

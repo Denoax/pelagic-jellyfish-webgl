@@ -58,7 +58,9 @@ export class OceanSnow {
         const distance = Math.hypot(dx, dy, dz);
         const edge = Math.max(Math.abs(dx), Math.abs(dy), Math.abs(dz)) / extent;
         const envelope = smooth((1 - edge) / 0.25) * smooth((distance - layer.near) / 4) * smooth(this.age / 2);
-        alpha[i] = envelope * smooth(layer.recycleAge[i] / 1.2) * (0.45 + hash(i + 91) * 0.4 + flow.wake * 0.2 + flow.light * 2.2);
+        // The same local wake reveals ambient snow as well as the animal's
+        // detached flecks. Preserve quiet water and cap overlapping highlights.
+        alpha[i] = envelope * smooth(layer.recycleAge[i] / 1.2) * (0.45 + hash(i + 91) * 0.4 + Math.max(flow.wake * 0.9, flow.light * 2.2));
       }
       layer.mesh.geometry.getAttribute('particleCenter').needsUpdate = true;
       layer.mesh.geometry.getAttribute('particleAlpha').needsUpdate = true;

@@ -79,7 +79,9 @@ export class FreeParticleDrift {
       this.velocity[j + 2] += (vz - this.velocity[j + 2]) * response;
       for (let axis = 0; axis < 3; axis += 1) positions[j + axis] += this.velocity[j + axis] * dt;
       this.alpha.array[i] = smooth(this.age[i] / 1.8) * smooth((this.life[i] - this.age[i]) / 4) * smooth(this.reveal / 1.6);
-      if (flow) this.alpha.array[i] *= 0.23 + flow.wake * 0.18 + flow.light * 1.9;
+      // Reveal the existing propulsion wake, not a constant aura. A click
+      // replaces the weaker wake highlight instead of adding brightness to it.
+      if (flow) this.alpha.array[i] *= 0.16 + Math.max(flow.wake * 1.4, flow.light * 1.9);
       visible = true;
     }
     this.mesh.visible = visible;

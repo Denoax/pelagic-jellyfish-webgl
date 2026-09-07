@@ -95,6 +95,26 @@ test('approved animal source, anatomy, material and swimming code are untouched'
   }
 });
 
+test('ambient snow highlights remain local and click/wake overlap cannot add brightness', () => {
+  const f = new CurrentField(), camera = new PerspectiveCamera(), snow = new OceanSnow(new Scene(), f, camera);
+  for(let i=0;i<120;i++){f.step(1/60);snow.update(1/60);}
+  const calm = snow.layers.map(l=>l.alpha.slice());
+  let wake = .5, light = 0;
+  f.sample = (x,y,z,out)=>Object.assign(out,{x:0,y:0,z:0,wake: x<0?wake:0,light:x<0?light:0});
+  snow.update(0);
+  snow.layers.forEach((l,k)=>l.alpha.forEach((a,i)=>{
+    if(l.position[i*3]>=0)assert.equal(a,calm[k][i]);
+    else assert.ok(a>=calm[k][i]);
+  }));
+  light=1;wake=0;snow.update(0);
+  const click=snow.layers.map(l=>l.alpha.slice());
+  wake=1;snow.update(0);
+  snow.layers.forEach((l,k)=>assert.deepEqual(l.alpha,click[k]));
+  wake=0;light=0;snow.update(0);
+  snow.layers.forEach((l,k)=>assert.deepEqual(l.alpha,calm[k]));
+  snow.dispose();
+});
+
 test('environment adapter leaves tissue geometry, material and direct activation exactly equal', () => {
   globalThis.window = {};
   const a = new LivingAppendages({ transformationObject: new Object3D() }, 0, { improved: true });
