@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>M3 isolated backend diagnostic — not the ocean</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #020b15;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-scene-status="loading"></div>
+    <script type="module">
+      // Isolated compatibility/opaque-depth diagnostic only, never a second ocean.
+      // It imports the SAME production-intended lens implementation. Not a Vite
+      // production entry and not imported by the artwork.
+      import * as THREE from "three/webgpu";
+      import { LiveOceanLens } from "../src/scene/glass/LiveOceanLens.js";
+      const renderer = new THREE.WebGPURenderer({
+        antialias: true,
+        forceWebGL:
+          new URLSearchParams(location.search).get("renderer") === "webgl",
+      });
+      renderer.setPixelRatio(1);
+      renderer.setSize(innerWidth, innerHeight);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      document.body.append(renderer.domElement);
+      await renderer.init();
+      const camera = new THREE.PerspectiveCamera(
+        47,
+        innerWidth / innerHeight,
+        0.1,
+        48,
+      );
+      camera.position.z = 6;
+      camera.updateMatrixWorld();
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color("#03101d");
+      const material = new THREE.MeshBasicNodeMaterial({ color: "#60cbe6" });
+      const torus = new THREE.Mesh(
+        new THREE.TorusKnotGeometry(0.65, 0.12, 100, 12),
+        material,
+      );
+      scene.add(torus);
+      const foreground = new THREE.Mesh(
+        new THREE.BoxGeometry(0.2, 1.8, 0.15),
+        new THREE.MeshBasicNodeMaterial({ color: "#d3a1b9" }),
+      );
+      foreground.position.set(-0.35, 0, 3.3);
+      scene.add(foreground);
+      const lens = new LiveOceanLens(renderer, camera);
+      lens.scene = scene;
+      lens.anchored = true;
+      window.__LIVE_LENS__ = {
+        state: () => lens.state(),
+        enable: (v) => (lens.enabled = !!v),
+        optics: (v) => (lens.strength.value = v),
+        anchor: () => lens.anchor(),
+        cost: () => lens.cpu.slice(),
+        resetCost: () => (lens.cpu.length = 0),
+      };
+      window.__JELLYFISH_WORLD__ = {
+        renderer: renderer.backend.isWebGLBackend ? "WebGL 2" : "WebGPU",
+        pixelRatio: 1,
+        oceanRelease: "ISOLATED DIAGNOSTIC — NOT FULL OCEAN",
+      };
+      await lens.render();
+      document.querySelector("[data-scene-status]").dataset.sceneStatus =
+        "ready";
+      let time = 0,
+        last = performance.now(),
+        frame = 0,
+        busy = false;
+      async function animate(now) {
+        frame = requestAnimationFrame(animate);
+        if (busy || document.hidden) {
+          last = now;
+          return;
+        }
+        busy = true;
+        try {
+          time += Math.min((now - last) / 1000, 0.05);
+          last = now;
+          torus.rotation.set(time * 0.2, time * 0.3, 0);
+          torus.position.x = Math.sin(time * 0.35) * 1.4;
+          await lens.render();
+        } finally {
+          busy = false;
+        }
+      }
+      frame = requestAnimationFrame(animate);
+      const resize = () => {
+        renderer.setSize(innerWidth, innerHeight);
+        camera.aspect = innerWidth / innerHeight;
+        camera.updateProjectionMatrix();
+      };
+      addEventListener("resize", resize);
+      addEventListener(
+        "pagehide",
+        () => {
+          cancelAnimationFrame(frame);
+          lens.dispose();
+          torus.geometry.dispose();
+          material.dispose();
+          foreground.geometry.dispose();
+          foreground.material.dispose();
+          renderer.dispose();
+          removeEventListener("resize", resize);
+        },
+        { once: true },
+      );
+    </script>
+  </body>
+</html>

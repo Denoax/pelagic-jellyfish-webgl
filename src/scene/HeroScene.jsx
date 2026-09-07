@@ -391,6 +391,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
             enable: value => { liveLens.enabled = Boolean(value); },
             optics: value => { liveLens.strength.value = clamp(Number(value), 0, 1); },
             anchor: () => liveLens.anchor(),
+            cost: () => liveLens.cpu.slice(),
+            resetCost: () => { liveLens.cpu.length = 0; },
           };
         }
 

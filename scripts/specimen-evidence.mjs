@@ -66,8 +66,10 @@ try {
    await evaluate(`window.__SPECIMEN__?.resetIntervals()`);
    await evaluate(`window.__AUDIT_RENDER__.reset()`);
    await evaluate(`window.__CONNECTED_OCEAN__?.resetCost()`);
+   await evaluate(`window.__LIVE_LENS__?.resetCost()`);
    const intervals=await evaluate(`new Promise(resolve=>{const a=[];let last=0;const start=performance.now();function tick(t){if(last)a.push(t-last);last=t;if(t-start<${Number(seconds)*1000})requestAnimationFrame(tick);else resolve(a);}requestAnimationFrame(tick);})`);
    const sorted=[...intervals].sort((a,b)=>a-b);
+   writeFileSync(`${out}/lens-cost.json`,JSON.stringify({cpu:await evaluate(`window.__LIVE_LENS__?.cost()`),state:await evaluate(`window.__LIVE_LENS__?.state()`)},null,2));
    writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),auditRender:await evaluate(`window.__AUDIT_RENDER__.read()`),featureCpuIntervals:await evaluate(`window.__CONNECTED_OCEAN__?.cost()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state()})`)},null,2));
  }else{
    const shot=async name=>{
@@ -86,17 +88,52 @@ try {
    };
    const state=()=>evaluate(`({visibility:document.visibilityState,specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount})`);
    const nearbyPair=()=>evaluate(`(()=>{const a=window.__JELLYFISH_WORLD__.getSwarmState().actors;let pair=null,best=5.2;for(let i=0;i<a.length;i++){if(a[i].presence<.2)continue;const p=window.__JELLYFISH_WORLD__.getJellyScreenPoint(i);if(p.x<20||p.x>innerWidth-20||p.y<20||p.y>innerHeight-20)continue;for(let j=0;j<a.length;j++){if(i===j||a[j].presence<.2)continue;const d=Math.hypot(...a[i].position.map((v,k)=>v-a[j].position[k]));if(d<best){best=d;pair={index:i,neighbor:j,distance:d};}}}return pair;})()`);
-   if(mode==='lens-optics'){
+   if(mode==='lens-optics'||mode==='lens-tour'){
      await evaluate(`window.__SPECIMEN__.holdAt(9)`);
      for(let i=0;i<600;i++){if(await evaluate(`window.__SPECIMEN__.state().time>=9-1e-7`))break;await sleep(50);}
+     // Inspection only: existing SoftParticles/background use TSL render time
+     // even while animal simulation is held. Pin the installed singleton during
+     // matched stills, restore its exact callback before any motion recording.
+     await evaluate(`(async()=>{const url=performance.getEntriesByType('resource').map(r=>r.name).find(n=>n.includes('/three_tsl.js'));if(!url)throw Error('TSL clock module not found');const {time}=await import(url);const update=time.update;time.update=()=>{time.value=9;};window.__RESTORE_QA_TIME__=()=>{time.update=update;delete window.__RESTORE_QA_TIME__;};})()`);
      await evaluate(`window.__LIVE_LENS__?.anchor()`);await sleep(150);
      await evaluate(`window.__LIVE_LENS__?.enable(false)`);await sleep(150);await shot('matched-no-lens');
+     await sleep(150);await shot('matched-direct-repeat');
      await evaluate(`window.__LIVE_LENS__?.enable(true);window.__LIVE_LENS__?.optics(0)`);await sleep(150);await shot('matched-passthrough');
      await evaluate(`window.__LIVE_LENS__?.optics(1)`);await sleep(150);await shot('matched-lens');
      writeFileSync(`${out}/lens.json`,JSON.stringify({state:await state(),lens:await evaluate(`window.__LIVE_LENS__?.state()`),errors},null,2));
+     await evaluate(`window.__RESTORE_QA_TIME__()`);
      await evaluate(`window.__SPECIMEN__.resume()`);
      await sleep(6000);await shot('crossing');await sleep(6000);await shot('leaving');
+     if(mode==='lens-tour'){
+       const checkpoints=[];
+       const drag=async(dx,dy)=>{
+         await evaluate(`window.__LIVE_LENS__?.anchor()`);await sleep(200);
+         const x=width*.57,y=height*.49;
+         await send('Input.dispatchMouseEvent',{type:'mousePressed',x,y,button:'left',modifiers:8,clickCount:1});
+         for(let i=1;i<=45;i++){await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:x+dx*i/45,y:y+dy*i/45,button:'left',buttons:1,modifiers:8});await sleep(25);}
+         await sleep(500);await shot('deformed');checkpoints.push({stage:'deformed',lens:await evaluate(`window.__LIVE_LENS__?.state()`)});
+         await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:x+dx,y:y+dy,button:'left',modifiers:8,clickCount:1});
+         await sleep(800);await shot('recovering');await sleep(4500);await shot('recovered');
+         checkpoints.push({stage:'recovered',lens:await evaluate(`window.__LIVE_LENS__?.state()`)});
+       };
+       await drag(Math.min(130,width*.17),-70);
+       checkpoints.push({click:await clickJelly()});await sleep(2400);await shot('activated-through-lens');await sleep(6500);
+       await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.07)`);await sleep(6500);
+       await evaluate(`window.__LIVE_LENS__?.anchor()`);await sleep(200);await shot('close-lens');await drag(-90,55);
+       await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.52)`);await sleep(9000);
+       await evaluate(`window.__LIVE_LENS__?.anchor()`);await sleep(200);await shot('depth-and-transparency');
+       writeFileSync(`${out}/tour.json`,JSON.stringify({checkpoints,lens:await evaluate(`window.__LIVE_LENS__?.state()`),errors},null,2));
+     }
      await sleep(6000);
+   }else if(mode==='lens-resize'){
+     const checkpoints=[];
+     for(const [w,h] of [[1280,900],[900,900],[390,844],[1280,900]]){
+       await send('Emulation.setDeviceMetricsOverride',{width:w,height:h,deviceScaleFactor:1,mobile:false});
+       await send('Emulation.setVisibleSize',{width:w,height:h});await sleep(1200);
+       const r=await send('Page.captureScreenshot',{format:'png'});writeFileSync(`${out}/resize-${w}-${h}.png`,Buffer.from(r.data,'base64'));
+       checkpoints.push({viewport:[w,h],lens:await evaluate(`window.__LIVE_LENS__?.state()`),state:await state()});
+     }
+     writeFileSync(`${out}/resize.json`,JSON.stringify({checkpoints,errors},null,2));
    }else if(mode==='ocean-matched'||mode==='pulse-matched'){
      const snapshots=[];
      for(const target of mode==='pulse-matched'?[9,10,10.6,11.5,13,16]:[9,9.8,11,13,17]){
