@@ -63,11 +63,11 @@ try {
  const system={adapter:await evaluate(`window.__actualAdapter||null`),browser:await send('Browser.getVersion')};
  if(process.env.EVIDENCE_EVAL)await evaluate(process.env.EVIDENCE_EVAL);
  if((mode==='perf'||mode==='bubble-inspect') && process.env.EVIDENCE_BUBBLE_STATE){
-   const peak=process.env.EVIDENCE_BUBBLE_STATE==='peak';
+   const peak=process.env.EVIDENCE_BUBBLE_STATE!=='calm';
    const hold=peak?Number(process.env.EVIDENCE_HOLD||24):9;
    await evaluate(`window.__SPECIMEN__.holdAt(${hold})`);
    if(peak){
-     await evaluate(`new Promise(resolve=>{function tick(){if(window.__SPECIMEN__.state().time>=17.5){window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*.35);resolve();}else requestAnimationFrame(tick);}tick();})`);
+     await evaluate(`new Promise(resolve=>{function tick(){if(window.__SPECIMEN__.state().time>=17.5){window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*${Number(process.env.EVIDENCE_PROGRESS || .35)});resolve();}else requestAnimationFrame(tick);}tick();})`);
    }
    await evaluate(`new Promise(resolve=>{function tick(){if(window.__SPECIMEN__.state().time>=${hold}-1e-7)resolve();else requestAnimationFrame(tick);}tick();})`);
    await evaluate(`(async()=>{const url=performance.getEntriesByType('resource').map(r=>r.name).find(n=>n.includes('/three_tsl.js'));const {time}=await import(url);time.update=()=>{time.value=${hold};};window.__LIVE_LENS__?.anchor();})()`);
@@ -81,13 +81,15 @@ try {
    await evaluate(`window.__CONNECTED_OCEAN__?.resetCost()`);
    await evaluate(`window.__LIVE_LENS__?.resetCost()`);
    await evaluate(`window.__BUBBLE_PASSAGE__?.resetCost()`);
+   await evaluate(`window.__POPULATION__?.resetCost()`);
    const intervals=await evaluate(`new Promise(resolve=>{const a=[];let last=0;const start=performance.now();function tick(t){if(last)a.push(t-last);last=t;if(t-start<${Number(seconds)*1000})requestAnimationFrame(tick);else resolve(a);}requestAnimationFrame(tick);})`);
    const sorted=[...intervals].sort((a,b)=>a-b);
+   writeFileSync(`${out}/population-cost.json`,JSON.stringify({cpu:await evaluate(`window.__POPULATION__?.cost()`),state:await evaluate(`window.__POPULATION__?.state()`)},null,2));
    writeFileSync(`${out}/lens-cost.json`,JSON.stringify({cpu:await evaluate(`window.__LIVE_LENS__?.cost()`),state:await evaluate(`window.__LIVE_LENS__?.state()`)},null,2));
    writeFileSync(`${out}/bubble-cost.json`,JSON.stringify({cpu:await evaluate(`window.__BUBBLE_PASSAGE__?.cost()`),state:await evaluate(`window.__BUBBLE_PASSAGE__?.state()`)},null,2));
    writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),auditRender:await evaluate(`window.__AUDIT_RENDER__.read()`),featureCpuIntervals:await evaluate(`window.__CONNECTED_OCEAN__?.cost()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state()})`)},null,2));
  }else{
-   const lensRecording=mode==='lens-optics'||mode==='lens-tour'||mode==='bubble-tour'||mode==='bubble-inspect'||mode==='geyser-tour';
+   const lensRecording=mode==='lens-optics'||mode==='lens-tour'||mode==='bubble-tour'||mode==='bubble-inspect'||mode==='geyser-tour'||mode==='population-tour';
    const finishRecording=async()=>{
      await send('Page.stopScreencast');await sleep(300);
      if(frames.length<2)throw Error('Motion evidence missing: fewer than two screencast frames');
@@ -111,9 +113,19 @@ try {
      const after=await evaluate(`window.__JELLYFISH_WORLD__.activationCount`);
      return {point,before,after,hit:after>before};
    };
-   const state=()=>evaluate(`({visibility:document.visibilityState,specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount,bubbles:window.__BUBBLE_PASSAGE__?.state()})`);
+   const state=()=>evaluate(`({visibility:document.visibilityState,specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state(),camera:window.__JELLYFISH_WORLD__?.getCameraState(),actors:window.__JELLYFISH_WORLD__?.getSwarmState(),activationCount:window.__JELLYFISH_WORLD__?.activationCount,bubbles:window.__BUBBLE_PASSAGE__?.state(),population:window.__POPULATION__?.state()})`);
    const nearbyPair=()=>evaluate(`(()=>{const a=window.__JELLYFISH_WORLD__.getSwarmState().actors;let pair=null,best=5.2;for(let i=0;i<a.length;i++){if(a[i].presence<.2)continue;const p=window.__JELLYFISH_WORLD__.getJellyScreenPoint(i);if(p.x<20||p.x>innerWidth-20||p.y<20||p.y>innerHeight-20)continue;for(let j=0;j<a.length;j++){if(i===j||a[j].presence<.2)continue;const d=Math.hypot(...a[i].position.map((v,k)=>v-a[j].position[k]));if(d<best){best=d;pair={index:i,neighbor:j,distance:d};}}}return pair;})()`);
-   if(mode==='bubble-life'){
+   if(mode==='population-tour'){
+     const checkpoints=[];
+     await send('Emulation.setVisibleSize',{width,height});
+     await send('Page.startScreencast',{format:'jpeg',quality:90,maxWidth:width,maxHeight:height,everyNthFrame:2});
+     for(const [i,p] of [0,.15,.28,.52,.70,.92,.52,.15,0].entries()){
+       await evaluate(`window.scrollTo({top:(document.documentElement.scrollHeight-innerHeight)*${p},behavior:'instant'})`);
+       for(let second=0;second<8;second++){await sleep(1000);checkpoints.push({progress:p,second,state:await state()});}
+       await shot(`journey-${i}-${p}`);
+     }
+     writeFileSync(`${out}/population.json`,JSON.stringify({checkpoints,errors},null,2));
+   }else if(mode==='bubble-life'){
      const checkpoints=[];
      const scroll=p=>evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*${p})`);
      await scroll(.35);await sleep(5000);checkpoints.push({stage:'active',state:await state()});

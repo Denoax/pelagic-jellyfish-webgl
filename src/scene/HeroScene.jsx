@@ -37,6 +37,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     let connectedOcean;
     let liveLens;
     let bubblePassage;
+    let population;
     let connectedTime = 0;
     let frameId = 0;
     let frameBusy = false;
@@ -211,12 +212,13 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     const start = async () => {
       try {
         const query = new URLSearchParams(window.location.search);
+        const populationRequested = import.meta.env.DEV && query.get('populationLod') === '1';
         const bubblesRequested = import.meta.env.DEV && query.get('bubblePassage') === '1';
         const lensRequested = import.meta.env.DEV && query.get('liveLens') === '1' && !bubblesRequested;
         // Publishing selects the reviewed implementation, never its inspection
         // fixture. Production query strings cannot expose specimen controls.
         const releasedOcean = import.meta.env.PROD && import.meta.env.VITE_OCEAN_RELEASE === 'milestone-2';
-        const connectedRequested = releasedOcean || (import.meta.env.DEV && (query.get('connectedOcean') === '1' || lensRequested || bubblesRequested) && query.get('specimen') !== '1');
+        const connectedRequested = releasedOcean || (import.meta.env.DEV && (query.get('connectedOcean') === '1' || lensRequested || bubblesRequested || populationRequested) && query.get('specimen') !== '1');
         const previewRequested = import.meta.env.DEV && (query.get('specimen') === '1' || query.get('oceanPreview') === '1' || connectedRequested);
         const forceWebGL =
           releasedOcean || // Ship the verified backend; legacy full-ocean WebGPU remains a separate issue.
@@ -294,12 +296,15 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         );
 
         const featuredFidelity = new Set(isMobile ? [0, 2, 5] : [0, 2, 4, 5]);
+        const Animal = populationRequested ? (await import('./population/PopulationAnimal.js')).PopulationAnimal : LivingAppendages;
+        if (disposed) return;
         appendages = app.bridge.medusae.map((medusa, index) => {
           medusa.bell.object.visible = false;
           medusa.arms.object.visible = false;
           medusa.tentacles.object.visible = false;
-          const tissue = new LivingAppendages(medusa, index, {
+          const tissue = new Animal(medusa, index, {
             reducedMotion,
+            reference: index === 0,
             fidelity: featuredFidelity.has(index) ? "hero" : "companion",
             improved: index === 0 && (releasedOcean || (previewRequested && query.get('animal') !== 'baseline')),
           });
@@ -310,6 +315,11 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           mobile: isMobile,
           reducedMotion,
         });
+        if (populationRequested) {
+          const { PopulationDetail } = await import('./population/PopulationDetail.js');
+          if (disposed) return;
+          population = new PopulationDetail(app, environment, appendages, { reducedMotion, chamber: query.get('specimen') === '1' });
+        }
         updateScrollTarget();
         window.addEventListener("scroll", updateScrollTarget, {
           passive: true,
@@ -383,6 +393,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         if (connectedRequested) {
           const { ConnectedOcean } = await import('./ocean/ConnectedOcean.js');
           connectedOcean = new ConnectedOcean(app, environment, appendages, isMobile);
+          population?.setCurrentField(connectedOcean.field);
         }
         if (lensRequested) {
           const { LiveOceanLens } = await import('./glass/LiveOceanLens.js');
@@ -561,6 +572,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
               ? clamp(0.24 + current.value.length() * 3.4, 0, 1)
               : 0;
             specimen?.beforeTissue();
+            population?.beforeTissue(rawDelta);
             connectedOcean?.update(rawDelta);
             appendages.forEach((tissue) =>
               tissue.update(
@@ -573,6 +585,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
               ),
             );
             specimen?.afterTissue();
+            population?.afterTissue(elapsed);
             connectedOcean?.afterTissue();
             bubblePassage?.update(delta, scrollProgress);
 
@@ -618,6 +631,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
       delete window.__BUBBLE_PASSAGE__;
       delete window.__LIVE_LENS__;
       connectedOcean?.dispose();
+      population?.dispose();
       appendages.forEach((tissue) => tissue.dispose());
       environment?.dispose();
       app?.dispose();
