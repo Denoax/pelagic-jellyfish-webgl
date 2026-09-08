@@ -1,0 +1,41 @@
+{
+  "entries": [],
+  "totals": {
+    "bufferData": {
+      "calls": 1310992,
+      "ms": 610.1999997347593,
+      "max": 1.1999999955296516
+    },
+    "drawElements": {
+      "calls": 433202,
+      "ms": 75.60000000149012,
+      "max": 0.10000000149011612
+    },
+    "drawArraysInstanced": {
+      "calls": 10564,
+      "ms": 3.300000011920929,
+      "max": 0.10000000149011612
+    },
+    "drawElementsInstanced": {
+      "calls": 25397,
+      "ms": 7.700000010430813,
+      "max": 0.10000000149011612
+    },
+    "bufferSubData": {
+      "calls": 496945,
+      "ms": 1279.2999992892146,
+      "max": 0.29999999701976776
+    },
+    "drawArrays": {
+      "calls": 5282,
+      "ms": 7.200000017881393,
+      "max": 0.10000000149011612
+    },
+    "texSubImage2D": {
+      "calls": 2,
+      "ms": 0,
+      "max": 0
+    }
+  },
+  "note": "Instrumented synchronous API wall duration; not GPU timings."
+}

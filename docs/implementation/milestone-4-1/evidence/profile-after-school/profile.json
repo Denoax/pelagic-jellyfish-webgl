@@ -1,0 +1,1350 @@
+{
+  "methods": {
+    "2:visible:stable:inspectImportance": {
+      "ms": 11.599999941885471,
+      "calls": 5560,
+      "max": 0.19999999552965164
+    },
+    "1:visible:stable:inspectImportance": {
+      "ms": 21.100000075995922,
+      "calls": 16614,
+      "max": 0.10000000149011612
+    },
+    "0:hidden:stable:inspectImportance": {
+      "ms": 18.200000040233135,
+      "calls": 15405,
+      "max": 0.10000000149011612
+    },
+    "0:visible:stable:inspectImportance": {
+      "ms": 0.6000000014901161,
+      "calls": 757,
+      "max": 0.10000000149011612
+    },
+    "1:visible:transition:inspectImportance": {
+      "ms": 1.6999999806284904,
+      "calls": 909,
+      "max": 0.10000000149011612
+    },
+    "1:hidden:transition:inspectImportance": {
+      "ms": 0.8999999910593033,
+      "calls": 856,
+      "max": 0.10000000149011612
+    },
+    "2:visible:stable:getBellShape": {
+      "ms": 3.600000023841858,
+      "calls": 5559,
+      "max": 0.10000000149011612
+    },
+    "2:visible:stable:updateVisualResponse": {
+      "ms": 11.500000037252903,
+      "calls": 5559,
+      "max": 0.10000000149011612
+    },
+    "2:visible:stable:simulateChains": {
+      "ms": 1148.8999998643994,
+      "calls": 16707,
+      "max": 0.7999999970197678
+    },
+    "2:visible:stable:updateTubeGeometry": {
+      "ms": 892.3000002428889,
+      "calls": 11118,
+      "max": 0.8999999985098839
+    },
+    "2:visible:stable:updateArmGeometry": {
+      "ms": 705.8999997153878,
+      "calls": 5559,
+      "max": 1.2999999970197678
+    },
+    "2:visible:stable:updateBellDetails": {
+      "ms": 2.099999986588955,
+      "calls": 5559,
+      "max": 0.10000000149011612
+    },
+    "2:visible:stable:updateBellSurface": {
+      "ms": 397.20000004023314,
+      "calls": 5559,
+      "max": 0.8999999985098839
+    },
+    "2:visible:stable:update": {
+      "ms": 4969.099999971688,
+      "calls": 5559,
+      "max": 5.899999998509884
+    },
+    "1:visible:stable:getBellShape": {
+      "ms": 8.299999944865704,
+      "calls": 16617,
+      "max": 0.10000000149011612
+    },
+    "1:visible:stable:updateVisualResponse": {
+      "ms": 26.99999988824129,
+      "calls": 16617,
+      "max": 0.10000000149011612
+    },
+    "1:visible:stable:simulateChains": {
+      "ms": 1279.7999999374151,
+      "calls": 49917,
+      "max": 0.30000000447034836
+    },
+    "1:visible:stable:updateTubeGeometry": {
+      "ms": 570.2999996766448,
+      "calls": 18294,
+      "max": 0.6000000014901161
+    },
+    "1:visible:stable:updateArmGeometry": {
+      "ms": 400.90000001341105,
+      "calls": 9147,
+      "max": 0.3999999985098839
+    },
+    "1:visible:stable:updateBellDetails": {
+      "ms": 3.7000000178813934,
+      "calls": 9147,
+      "max": 0.10000000149011612
+    },
+    "1:visible:stable:updateBellSurface": {
+      "ms": 113.80000010877848,
+      "calls": 9147,
+      "max": 0.20000000298023224
+    },
+    "1:visible:stable:update": {
+      "ms": 6793.399999991059,
+      "calls": 16617,
+      "max": 5
+    },
+    "0:hidden:stable:update": {
+      "ms": 3332.800000242889,
+      "calls": 15406,
+      "max": 1.6000000014901161
+    },
+    "0:visible:stable:getBellShape": {
+      "ms": 0.19999999552965164,
+      "calls": 756,
+      "max": 0.10000000149011612
+    },
+    "0:visible:stable:updateVisualResponse": {
+      "ms": 1.0000000074505806,
+      "calls": 756,
+      "max": 0.10000000149011612
+    },
+    "0:visible:stable:update": {
+      "ms": 270.09999991208315,
+      "calls": 756,
+      "max": 1.5
+    },
+    "0:hidden:stable:getBellShape": {
+      "ms": 5.699999995529652,
+      "calls": 10850,
+      "max": 0.10000000149011612
+    },
+    "0:hidden:stable:updateVisualResponse": {
+      "ms": 11.799999974668026,
+      "calls": 10850,
+      "max": 0.10000000149011612
+    },
+    "0:hidden:stable:simulateChains": {
+      "ms": 597.0000002905726,
+      "calls": 32577,
+      "max": 0.20000000298023224
+    },
+    "0:hidden:stable:updateTubeGeometry": {
+      "ms": 2.2999999970197678,
+      "calls": 10872,
+      "max": 0.10000000149011612
+    },
+    "0:hidden:stable:updateArmGeometry": {
+      "ms": 1.0999999940395355,
+      "calls": 5436,
+      "max": 0.10000000149011612
+    },
+    "0:hidden:stable:updateBellDetails": {
+      "ms": 0.7999999970197678,
+      "calls": 5436,
+      "max": 0.10000000149011612
+    },
+    "0:hidden:stable:updateBellSurface": {
+      "ms": 0.5000000074505806,
+      "calls": 5436,
+      "max": 0.10000000149011612
+    },
+    "1:visible:transition:getBellShape": {
+      "ms": 0.29999999701976776,
+      "calls": 909,
+      "max": 0.10000000149011612
+    },
+    "1:visible:transition:updateVisualResponse": {
+      "ms": 1.3000000044703484,
+      "calls": 909,
+      "max": 0.10000000149011612
+    },
+    "1:visible:transition:update": {
+      "ms": 408.799999974668,
+      "calls": 909,
+      "max": 1.7000000029802322
+    },
+    "1:hidden:transition:getBellShape": {
+      "ms": 0.6000000089406967,
+      "calls": 854,
+      "max": 0.10000000149011612
+    },
+    "1:hidden:transition:updateVisualResponse": {
+      "ms": 1.4000000059604645,
+      "calls": 854,
+      "max": 0.10000000149011612
+    },
+    "1:hidden:transition:simulateChains": {
+      "ms": 67.09999996423721,
+      "calls": 2553,
+      "max": 0.20000000298023224
+    },
+    "1:hidden:transition:updateTubeGeometry": {
+      "ms": 0.10000000149011612,
+      "calls": 850,
+      "max": 0.10000000149011612
+    },
+    "1:hidden:transition:updateArmGeometry": {
+      "ms": 0.10000000149011612,
+      "calls": 425,
+      "max": 0.10000000149011612
+    },
+    "1:hidden:transition:updateBellDetails": {
+      "ms": 0,
+      "calls": 425,
+      "max": 0
+    },
+    "1:hidden:transition:updateBellSurface": {
+      "ms": 0.30000000447034836,
+      "calls": 425,
+      "max": 0.10000000149011612
+    },
+    "1:hidden:transition:update": {
+      "ms": 278.40000000596046,
+      "calls": 854,
+      "max": 1.2000000029802322
+    },
+    "0:visible:stable:simulateChains": {
+      "ms": 42.40000003576279,
+      "calls": 2268,
+      "max": 0.20000000298023224
+    },
+    "0:visible:stable:updateTubeGeometry": {
+      "ms": 12.200000002980232,
+      "calls": 756,
+      "max": 0.20000000298023224
+    },
+    "0:visible:stable:updateArmGeometry": {
+      "ms": 10.599999971687794,
+      "calls": 378,
+      "max": 0.19999999552965164
+    },
+    "0:visible:stable:updateBellDetails": {
+      "ms": 0.19999998807907104,
+      "calls": 378,
+      "max": 0.09999999403953552
+    },
+    "0:visible:stable:updateBellSurface": {
+      "ms": 2.3999999910593033,
+      "calls": 378,
+      "max": 0.10000000149011612
+    },
+    "1:visible:transition:simulateChains": {
+      "ms": 72.30000011622906,
+      "calls": 2724,
+      "max": 0.20000000298023224
+    },
+    "1:visible:transition:updateTubeGeometry": {
+      "ms": 27.19999996572733,
+      "calls": 922,
+      "max": 0.20000000298023224
+    },
+    "1:visible:transition:updateArmGeometry": {
+      "ms": 58.69999995082617,
+      "calls": 461,
+      "max": 0.5
+    },
+    "1:visible:transition:updateBellDetails": {
+      "ms": 0,
+      "calls": 461,
+      "max": 0
+    },
+    "1:visible:transition:updateBellSurface": {
+      "ms": 21.19999998062849,
+      "calls": 461,
+      "max": 0.20000000298023224
+    },
+    "2:visible:transition:getBellShape": {
+      "ms": 0.09999999403953552,
+      "calls": 71,
+      "max": 0.09999999403953552
+    },
+    "2:visible:transition:updateVisualResponse": {
+      "ms": 0.10000000149011612,
+      "calls": 71,
+      "max": 0.10000000149011612
+    },
+    "2:visible:transition:simulateChains": {
+      "ms": 11.800000011920929,
+      "calls": 213,
+      "max": 0.20000000298023224
+    },
+    "2:visible:transition:updateTubeGeometry": {
+      "ms": 10.900000013411045,
+      "calls": 142,
+      "max": 0.20000000298023224
+    },
+    "2:visible:transition:updateArmGeometry": {
+      "ms": 20.900000013411045,
+      "calls": 71,
+      "max": 0.4000000059604645
+    },
+    "2:visible:transition:updateBellDetails": {
+      "ms": 0.09999999403953552,
+      "calls": 71,
+      "max": 0.09999999403953552
+    },
+    "2:visible:transition:updateBellSurface": {
+      "ms": 12.699999988079071,
+      "calls": 71,
+      "max": 0.30000000447034836
+    },
+    "2:visible:transition:update": {
+      "ms": 79.59999999403954,
+      "calls": 71,
+      "max": 1.5
+    },
+    "2:visible:transition:inspectImportance": {
+      "ms": 0.10000000149011612,
+      "calls": 71,
+      "max": 0.10000000149011612
+    }
+  },
+  "frames": [
+    {
+      "wall": 600.5,
+      "count": {
+        "near": 4,
+        "medium": 9,
+        "far": 1,
+        "hidden": 8,
+        "transitioning": 3
+      },
+      "calls": 177,
+      "triangles": 921268,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 190,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 1100.3999999985099,
+      "count": {
+        "near": 4,
+        "medium": 9,
+        "far": 2,
+        "hidden": 7,
+        "transitioning": 1
+      },
+      "calls": 179,
+      "triangles": 919996,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 190,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 1600.1000000014901,
+      "count": {
+        "near": 4,
+        "medium": 9,
+        "far": 1,
+        "hidden": 8,
+        "transitioning": 3
+      },
+      "calls": 180,
+      "triangles": 920596,
+      "transparentObjects": 127,
+      "memory": {
+        "geometries": 191,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 2100.2999999970198,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 1,
+        "hidden": 8,
+        "transitioning": 3
+      },
+      "calls": 180,
+      "triangles": 920596,
+      "transparentObjects": 127,
+      "memory": {
+        "geometries": 191,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 2599.60000000149,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 3
+      },
+      "calls": 179,
+      "triangles": 918772,
+      "transparentObjects": 127,
+      "memory": {
+        "geometries": 191,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 3099.10000000149,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 1
+      },
+      "calls": 179,
+      "triangles": 887500,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 191,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 3602.89999999851,
+      "count": {
+        "near": 3,
+        "medium": 8,
+        "far": 2,
+        "hidden": 9,
+        "transitioning": 3
+      },
+      "calls": 180,
+      "triangles": 904836,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 191,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 4099.69999999553,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 2,
+        "hidden": 8,
+        "transitioning": 3
+      },
+      "calls": 180,
+      "triangles": 910076,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 4600.19999999553,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 1,
+        "hidden": 8,
+        "transitioning": 1
+      },
+      "calls": 180,
+      "triangles": 905156,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 5100.19999999553,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 1,
+        "hidden": 8,
+        "transitioning": 1
+      },
+      "calls": 180,
+      "triangles": 905156,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 5599.19999999553,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 1,
+        "hidden": 8,
+        "transitioning": 0
+      },
+      "calls": 179,
+      "triangles": 903332,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 6099.5,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 1,
+        "hidden": 8,
+        "transitioning": 0
+      },
+      "calls": 179,
+      "triangles": 903332,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 6599.69999999553,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 1
+      },
+      "calls": 178,
+      "triangles": 868334,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 7099.60000000149,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 1
+      },
+      "calls": 178,
+      "triangles": 868334,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 7598.89999999851,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 0
+      },
+      "calls": 178,
+      "triangles": 863414,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 8097.60000000149,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 0
+      },
+      "calls": 177,
+      "triangles": 850998,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 8598,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 0
+      },
+      "calls": 177,
+      "triangles": 850998,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 9097.69999999553,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 0
+      },
+      "calls": 178,
+      "triangles": 852822,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 9598.79999999702,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 0
+      },
+      "calls": 178,
+      "triangles": 852822,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 10098.79999999702,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 0
+      },
+      "calls": 178,
+      "triangles": 852822,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 10598.79999999702,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 0
+      },
+      "calls": 178,
+      "triangles": 852822,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 11099.19999999553,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 0
+      },
+      "calls": 177,
+      "triangles": 850998,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 11599.10000000149,
+      "count": {
+        "near": 3,
+        "medium": 9,
+        "far": 1,
+        "hidden": 9,
+        "transitioning": 0
+      },
+      "calls": 178,
+      "triangles": 852822,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 12098.89999999851,
+      "count": {
+        "near": 3,
+        "medium": 8,
+        "far": 1,
+        "hidden": 10,
+        "transitioning": 1
+      },
+      "calls": 176,
+      "triangles": 849174,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 12598.89999999851,
+      "count": {
+        "near": 3,
+        "medium": 8,
+        "far": 1,
+        "hidden": 10,
+        "transitioning": 1
+      },
+      "calls": 173,
+      "triangles": 843702,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 13098.60000000149,
+      "count": {
+        "near": 3,
+        "medium": 8,
+        "far": 0,
+        "hidden": 11,
+        "transitioning": 0
+      },
+      "calls": 173,
+      "triangles": 838782,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 13598.69999999553,
+      "count": {
+        "near": 3,
+        "medium": 8,
+        "far": 0,
+        "hidden": 11,
+        "transitioning": 0
+      },
+      "calls": 173,
+      "triangles": 838782,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 14098.69999999553,
+      "count": {
+        "near": 3,
+        "medium": 8,
+        "far": 0,
+        "hidden": 11,
+        "transitioning": 0
+      },
+      "calls": 173,
+      "triangles": 838782,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 14598.69999999553,
+      "count": {
+        "near": 3,
+        "medium": 8,
+        "far": 0,
+        "hidden": 11,
+        "transitioning": 0
+      },
+      "calls": 174,
+      "triangles": 840606,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 15098.39999999851,
+      "count": {
+        "near": 3,
+        "medium": 7,
+        "far": 0,
+        "hidden": 12,
+        "transitioning": 1
+      },
+      "calls": 174,
+      "triangles": 840606,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 15598.39999999851,
+      "count": {
+        "near": 3,
+        "medium": 7,
+        "far": 0,
+        "hidden": 12,
+        "transitioning": 1
+      },
+      "calls": 174,
+      "triangles": 840606,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 16098.5,
+      "count": {
+        "near": 3,
+        "medium": 6,
+        "far": 1,
+        "hidden": 12,
+        "transitioning": 2
+      },
+      "calls": 174,
+      "triangles": 840606,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 16598.5,
+      "count": {
+        "near": 3,
+        "medium": 7,
+        "far": 0,
+        "hidden": 12,
+        "transitioning": 2
+      },
+      "calls": 174,
+      "triangles": 840606,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 17098.29999999702,
+      "count": {
+        "near": 3,
+        "medium": 7,
+        "far": 0,
+        "hidden": 12,
+        "transitioning": 0
+      },
+      "calls": 174,
+      "triangles": 835686,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 17598.10000000149,
+      "count": {
+        "near": 3,
+        "medium": 7,
+        "far": 1,
+        "hidden": 11,
+        "transitioning": 1
+      },
+      "calls": 174,
+      "triangles": 840606,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 18098.19999999553,
+      "count": {
+        "near": 3,
+        "medium": 8,
+        "far": 1,
+        "hidden": 10,
+        "transitioning": 2
+      },
+      "calls": 176,
+      "triangles": 849174,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 18598.79999999702,
+      "count": {
+        "near": 3,
+        "medium": 8,
+        "far": 3,
+        "hidden": 8,
+        "transitioning": 3
+      },
+      "calls": 177,
+      "triangles": 860838,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 19098.79999999702,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 3
+      },
+      "calls": 177,
+      "triangles": 860838,
+      "transparentObjects": 126,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 19597.89999999851,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 0
+      },
+      "calls": 177,
+      "triangles": 691879,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 20097.79999999702,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 0
+      },
+      "calls": 178,
+      "triangles": 726877,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 20599.39999999851,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 0
+      },
+      "calls": 177,
+      "triangles": 725053,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 21098,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 0,
+        "hidden": 9,
+        "transitioning": 1
+      },
+      "calls": 177,
+      "triangles": 725053,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 21598.5,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 0,
+        "hidden": 9,
+        "transitioning": 1
+      },
+      "calls": 178,
+      "triangles": 726877,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 22098.19999999553,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 1,
+        "hidden": 8,
+        "transitioning": 1
+      },
+      "calls": 177,
+      "triangles": 725053,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 22597.5,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 1
+      },
+      "calls": 178,
+      "triangles": 726877,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 23097.79999999702,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 1
+      },
+      "calls": 178,
+      "triangles": 726877,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 23597.60000000149,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 0
+      },
+      "calls": 178,
+      "triangles": 726877,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 24098.5,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 0
+      },
+      "calls": 177,
+      "triangles": 725053,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 24600,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 0
+      },
+      "calls": 177,
+      "triangles": 725053,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 25098,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 0,
+        "hidden": 9,
+        "transitioning": 1
+      },
+      "calls": 178,
+      "triangles": 726877,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 25598.69999999553,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 1,
+        "hidden": 8,
+        "transitioning": 2
+      },
+      "calls": 178,
+      "triangles": 731797,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 26098.60000000149,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 0,
+        "hidden": 9,
+        "transitioning": 3
+      },
+      "calls": 179,
+      "triangles": 733621,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 26598.10000000149,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 0,
+        "hidden": 9,
+        "transitioning": 2
+      },
+      "calls": 179,
+      "triangles": 728701,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 27098.39999999851,
+      "count": {
+        "near": 3,
+        "medium": 10,
+        "far": 2,
+        "hidden": 7,
+        "transitioning": 2
+      },
+      "calls": 178,
+      "triangles": 731797,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 27598.29999999702,
+      "count": {
+        "near": 3,
+        "medium": 12,
+        "far": 0,
+        "hidden": 7,
+        "transitioning": 2
+      },
+      "calls": 181,
+      "triangles": 737269,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 28098.10000000149,
+      "count": {
+        "near": 3,
+        "medium": 12,
+        "far": 0,
+        "hidden": 7,
+        "transitioning": 1
+      },
+      "calls": 182,
+      "triangles": 739093,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 28597.39999999851,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 1
+      },
+      "calls": 181,
+      "triangles": 737269,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 29097.89999999851,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 1
+      },
+      "calls": 181,
+      "triangles": 737269,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 29597.39999999851,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 1
+      },
+      "calls": 178,
+      "triangles": 698623,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    },
+    {
+      "wall": 30097.79999999702,
+      "count": {
+        "near": 3,
+        "medium": 11,
+        "far": 0,
+        "hidden": 8,
+        "transitioning": 0
+      },
+      "calls": 178,
+      "triangles": 726877,
+      "transparentObjects": 125,
+      "memory": {
+        "geometries": 193,
+        "textures": 82
+      }
+    }
+  ],
+  "switches": 27,
+  "resources": {
+    "newGeometry": 1,
+    "newMaterial": 1,
+    "geometryDispose": 0,
+    "materialDispose": 0,
+    "attributeReplacement": 0
+  },
+  "note": "Inclusive method costs; wrappers and state sampling add overhead. Not a performance benchmark."
+}

@@ -1,0 +1,35 @@
+{
+  "before": "/home/mani/dev/jellyfish-studio/m4-1-evidence/validated/matched-exact-before-far-school",
+  "after": "/home/mani/dev/jellyfish-studio/m4-1-evidence/complete/matched-exact-after-far-school",
+  "viewport": [
+    1280,
+    900
+  ],
+  "note": "Unmasked, unregistered, native-resolution RGB pixel comparison. Motion review remains necessary.",
+  "results": [
+    {
+      "name": "matched-bubbles",
+      "meanAbsoluteChannelError": 0.000011284722222222222,
+      "maxChannelError": 1,
+      "changedPixels": 39,
+      "pixelsOver3": 0,
+      "totalPixels": 1152000
+    },
+    {
+      "name": "matched-ambient-only",
+      "meanAbsoluteChannelError": 0.000014178240740740741,
+      "maxChannelError": 1,
+      "changedPixels": 48,
+      "pixelsOver3": 0,
+      "totalPixels": 1152000
+    },
+    {
+      "name": "matched-clear",
+      "meanAbsoluteChannelError": 0.000013020833333333334,
+      "maxChannelError": 1,
+      "changedPixels": 45,
+      "pixelsOver3": 0,
+      "totalPixels": 1152000
+    }
+  ]
+}

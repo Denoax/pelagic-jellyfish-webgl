@@ -1,0 +1,77 @@
+{
+  "entries": [
+    {
+      "name": "getProgramParameter",
+      "ms": 2.399999998509884,
+      "at": 7274.79999999702
+    },
+    {
+      "name": "getProgramParameter",
+      "ms": 12.200000002980232,
+      "at": 10099.89999999851
+    },
+    {
+      "name": "bufferSubData",
+      "ms": 2.5,
+      "at": 27277.29999999702
+    }
+  ],
+  "totals": {
+    "bufferData": {
+      "calls": 1258441,
+      "ms": 603.6000001952052,
+      "max": 1
+    },
+    "drawElements": {
+      "calls": 416706,
+      "ms": 63.7000001296401,
+      "max": 0.10000000149011612
+    },
+    "drawArraysInstanced": {
+      "calls": 10164,
+      "ms": 3.399999976158142,
+      "max": 0.10000000149011612
+    },
+    "drawElementsInstanced": {
+      "calls": 24386,
+      "ms": 6.6000000461936,
+      "max": 0.10000000149011612
+    },
+    "bufferSubData": {
+      "calls": 477541,
+      "ms": 1275.1000006496906,
+      "max": 2.5
+    },
+    "drawArrays": {
+      "calls": 5082,
+      "ms": 9.500000052154064,
+      "max": 0.10000000149011612
+    },
+    "compileShader": {
+      "calls": 4,
+      "ms": 0,
+      "max": 0
+    },
+    "linkProgram": {
+      "calls": 2,
+      "ms": 0,
+      "max": 0
+    },
+    "getProgramParameter": {
+      "calls": 2,
+      "ms": 14.600000001490116,
+      "max": 12.200000002980232
+    },
+    "texStorage2D": {
+      "calls": 2,
+      "ms": 0,
+      "max": 0
+    },
+    "texSubImage2D": {
+      "calls": 2,
+      "ms": 0.10000000149011612,
+      "max": 0.10000000149011612
+    }
+  },
+  "note": "Instrumented synchronous API wall duration; not GPU timings."
+}

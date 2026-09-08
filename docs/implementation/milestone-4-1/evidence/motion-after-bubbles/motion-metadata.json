@@ -1,0 +1,82 @@
+{
+  "url": "http://127.0.0.1:5189/?populationLod=1&bubblePassage=1&renderer=webgl&idle=300",
+  "info": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "backend": "WebGL 2",
+    "ratio": 1,
+    "viewport": [
+      1280,
+      900
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "specimen": {
+      "time": 5.96589999999106,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": false,
+      "bloom": "off (normal production path)",
+      "phase": 0.3228783251388909,
+      "activation": 0,
+      "frames": 356
+    },
+    "hardware": {
+      "backend": "WebGL 2",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+      "drawBuffer": [
+        1280,
+        900
+      ]
+    },
+    "bloom": "production direct rendering; bloom disabled",
+    "driverRevision": "e439826054abd918595b057b18a314126462f08b",
+    "sourceRevision": "e439826054abd918595b057b18a314126462f08b",
+    "sourceIdentity": "explicit source checkout/release; verify against deployment or worktree",
+    "release": "default-or-development",
+    "populationWarmup": {
+      "ms": 131.69999999552965,
+      "oceanDraws": 1,
+      "outputDraws": 1,
+      "newTargets": 0,
+      "size": [
+        1280,
+        900
+      ]
+    },
+    "hasSpecimenControls": true,
+    "visibility": "visible",
+    "actualGL": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "loadedScripts": [
+      "http://127.0.0.1:5189/@vite/client",
+      "http://127.0.0.1:5189/src/main.jsx?t=1788880445071"
+    ],
+    "sourceRoot": "/home/mani/dev/jellyfish-studio/site",
+    "uncommittedSource": "",
+    "controlledState": null
+  },
+  "system": {
+    "adapter": null,
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/152.0.7977.76",
+      "revision": "@06afeb20b5998e787a432fe536c662317517854",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "jsVersion": "15.2.124.19"
+    }
+  },
+  "frames": 1375,
+  "duration": 45.83128786087036,
+  "errors": []
+}

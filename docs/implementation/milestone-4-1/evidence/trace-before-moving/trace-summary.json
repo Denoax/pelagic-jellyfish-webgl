@@ -1,0 +1,159 @@
+{
+  "note": "Main-thread timeline wall durations. A microtask span is not a GPU timing or a source-level attribution. Nested events overlap.",
+  "seconds": 44.059504,
+  "slowestCallbacks": [
+    {
+      "atSeconds": 10.053158,
+      "ms": 60.35,
+      "children": [
+        {
+          "name": "FunctionCall",
+          "offsetMs": 0.002,
+          "ms": 21.947
+        },
+        {
+          "name": "MinorGC",
+          "offsetMs": 15.979,
+          "ms": 0.242
+        },
+        {
+          "name": "RunMicrotasks",
+          "offsetMs": 21.95,
+          "ms": 38.392
+        },
+        {
+          "name": "FunctionCall",
+          "offsetMs": 60.305,
+          "ms": 0.009
+        }
+      ]
+    },
+    {
+      "atSeconds": 35.068815,
+      "ms": 28.594,
+      "children": [
+        {
+          "name": "FunctionCall",
+          "offsetMs": 0.002,
+          "ms": 28.537
+        },
+        {
+          "name": "RunMicrotasks",
+          "offsetMs": 28.543,
+          "ms": 0.044
+        },
+        {
+          "name": "FunctionCall",
+          "offsetMs": 28.561,
+          "ms": 0.017
+        }
+      ]
+    },
+    {
+      "atSeconds": 34.468834,
+      "ms": 26.363,
+      "children": [
+        {
+          "name": "FunctionCall",
+          "offsetMs": 0.002,
+          "ms": 26.317
+        },
+        {
+          "name": "MinorGC",
+          "offsetMs": 20.6,
+          "ms": 0.359
+        },
+        {
+          "name": "RunMicrotasks",
+          "offsetMs": 26.322,
+          "ms": 0.036
+        },
+        {
+          "name": "FunctionCall",
+          "offsetMs": 26.34,
+          "ms": 0.01
+        }
+      ]
+    },
+    {
+      "atSeconds": 41.396009,
+      "ms": 25.594,
+      "children": [
+        {
+          "name": "FunctionCall",
+          "offsetMs": 0.005,
+          "ms": 25.551
+        },
+        {
+          "name": "RunMicrotasks",
+          "offsetMs": 25.559,
+          "ms": 0.029
+        },
+        {
+          "name": "FunctionCall",
+          "offsetMs": 25.573,
+          "ms": 0.008
+        }
+      ]
+    },
+    {
+      "atSeconds": 41.689258,
+      "ms": 25.499,
+      "children": [
+        {
+          "name": "FunctionCall",
+          "offsetMs": 0.001,
+          "ms": 25.469
+        },
+        {
+          "name": "MinorGC",
+          "offsetMs": 20.835,
+          "ms": 0.241
+        },
+        {
+          "name": "RunMicrotasks",
+          "offsetMs": 25.472,
+          "ms": 0.023
+        },
+        {
+          "name": "FunctionCall",
+          "offsetMs": 25.483,
+          "ms": 0.007
+        }
+      ]
+    },
+    {
+      "atSeconds": 16.686227,
+      "ms": 25.484,
+      "children": [
+        {
+          "name": "FunctionCall",
+          "offsetMs": 0.001,
+          "ms": 25.375
+        },
+        {
+          "name": "RunMicrotasks",
+          "offsetMs": 25.379,
+          "ms": 0.099
+        },
+        {
+          "name": "FunctionCall",
+          "offsetMs": 25.461,
+          "ms": 0.009
+        }
+      ]
+    }
+  ],
+  "gc": {
+    "MinorGC": {
+      "count": 510,
+      "totalMs": 134.459,
+      "maxMs": 0.695
+    },
+    "MajorGC": {
+      "count": 0,
+      "totalMs": 0,
+      "maxMs": 0
+    }
+  }
+}

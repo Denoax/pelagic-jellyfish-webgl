@@ -1,0 +1,50 @@
+{
+  "runtime": "907ba3c",
+  "driver": "e439826054abd918595b057b18a314126462f08b",
+  "baseline": "ece7cc0f26acbd95b8386a02c3e84f2b5efc4f47",
+  "results": [
+    {
+      "name": "tests",
+      "command": [
+        "node",
+        "--test",
+        "tests/bubble-passage.test.mjs",
+        "tests/connected-ocean.test.mjs",
+        "tests/evidence-timing.test.mjs",
+        "tests/jelly-anatomy.test.mjs",
+        "tests/jelly-tissue.test.mjs",
+        "tests/live-lens.test.mjs",
+        "tests/particle-drift.test.mjs",
+        "tests/population-lod.test.mjs",
+        "tests/population-recovery.test.mjs",
+        "tests/sites-worker.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "motion-parity",
+      "command": [
+        "node",
+        "scripts/check-approved-motion.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "default-parity",
+      "command": [
+        "node",
+        "scripts/check-default-animal.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    }
+  ]
+}
