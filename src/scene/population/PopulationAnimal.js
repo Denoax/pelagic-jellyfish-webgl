@@ -1,7 +1,8 @@
 import * as THREE from 'three/webgpu';
 import { LivingAppendages } from '../LivingAppendages.js';
 import { biologicalVariation, DetailState, canInteract } from './Importance.js';
-import { mantleGrid, armGrid, morphSurface, sampleVisibleMantle, sampleVisibleMembranes } from './SurfaceLod.js';
+import { mantleGrid, armGrid, morphSurface, sampleVisibleMantle, sampleVisibleMembranes, prepareSurfaceSampling } from './SurfaceLod.js';
+import { prepareTubeSampling, sampleTube } from './TubeSampling.js';
 
 // An adapter of the approved implementation, NOT another animal engine.
 // Near calls its exact geometry/material/physics methods. Lower tiers resample
@@ -17,6 +18,7 @@ export class PopulationAnimal extends LivingAppendages {
     this.bellLevels = [mantleGrid(7, 24), mantleGrid(14, 36), this.bellGeometry];
     this.armGeometry.userData.points = 56;
     this.armLevels = [armGrid(15), armGrid(29), this.armGeometry];
+    prepareSurfaceSampling(this.bellLevels, this.armLevels, this.species.lobes);
     this.bellColors = this.bellLevels.map(g => new Float32Array(g.attributes.color.array));
     this.masterArms = this.armChains;
     this.sampledArms = [15, 29].map(count => this.masterArms.map(c => ({ ...c,
@@ -42,6 +44,8 @@ export class PopulationAnimal extends LivingAppendages {
       }));
     }
     this.activeTentacles = this.tentacleChains;
+    prepareTubeSampling(this.tentacleChains, this.tubeSides);
+    prepareTubeSampling(this.filamentChains, 4);
     this.wakeRotation = new THREE.Quaternion();
     this.filamentRoot = new THREE.Vector3(); this.filamentOffset = new THREE.Vector3();
     this.emptyChains = [];
@@ -85,7 +89,7 @@ export class PopulationAnimal extends LivingAppendages {
     const views = this.tubeViews.get(geometry);
     chains.forEach((chain, i) => {
       const weight = chains === this.tentacleChains ? this.chainWeights[i] : Math.min(1, this.detail - 1);
-      if (weight > 0) super.updateTubeGeometry([chain], views[i], sides, width * weight);
+      if (weight > 0) sampleTube(this, chain, views[i], sides, width * weight);
     });
     geometry.attributes.position.needsUpdate = true; geometry.attributes.normal.needsUpdate = true;
   }

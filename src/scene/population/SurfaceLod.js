@@ -1,5 +1,29 @@
 import { BufferGeometry, BufferAttribute, DynamicDrawUsage, MathUtils } from 'three/webgpu';
-import { mantlePoint } from '../anatomy/mantle.js';
+
+// Same indexed, Float32 normal accumulation as installed r175, without eight
+// temporary Vector3s and BufferAttribute accessors per refresh. Order matters:
+// preserve Float32 rounding after each triangle and reciprocal normalization.
+export function computeSurfaceNormals(g) {
+  const p = g.attributes.position.array, n = g.attributes.normal.array, index = g.index.array;
+  n.fill(0);
+  for (let i = 0; i < index.length; i += 3) {
+    const a = index[i] * 3, b = index[i + 1] * 3, c = index[i + 2] * 3;
+    const cbx = p[c] - p[b], cby = p[c + 1] - p[b + 1], cbz = p[c + 2] - p[b + 2];
+    const abx = p[a] - p[b], aby = p[a + 1] - p[b + 1], abz = p[a + 2] - p[b + 2];
+    const x = cby * abz - cbz * aby, y = cbz * abx - cbx * abz, z = cbx * aby - cby * abx;
+    const ax = n[a] + x, ay = n[a + 1] + y, az = n[a + 2] + z;
+    const bx = n[b] + x, by = n[b + 1] + y, bz = n[b + 2] + z;
+    const cx = n[c] + x, cy = n[c + 1] + y, cz = n[c + 2] + z;
+    n[a] = ax; n[a + 1] = ay; n[a + 2] = az;
+    n[b] = bx; n[b + 1] = by; n[b + 2] = bz;
+    n[c] = cx; n[c + 1] = cy; n[c + 2] = cz;
+  }
+  for (let i = 0; i < n.length; i += 3) {
+    const x = n[i], y = n[i + 1], z = n[i + 2], inv = 1 / (Math.sqrt(x * x + y * y + z * z) || 1);
+    n[i] = x * inv; n[i + 1] = y * inv; n[i + 2] = z * inv;
+  }
+  g.attributes.normal.needsUpdate = true;
+}
 
 const membraneSamples = new Map();
 // membraneSection's time-independent terms, in double precision. Same operation
@@ -46,7 +70,26 @@ export function sampleVisibleMembranes(tissue, elapsed, refreshNormals) {
     });
   });
   g.attributes.position.needsUpdate = true;
-  if (refreshNormals) g.computeVertexNormals();
+  if (refreshNormals) computeSurfaceNormals(g);
+}
+
+const mantleSamples = new Map();
+function mantleTerms(g, lobes) {
+  const { rings, segments, stride, totalRings } = g.userData;
+  const key = `${rings}:${segments}:${stride}:${totalRings}:${lobes}`;
+  if (mantleSamples.has(key)) return mantleSamples.get(key);
+  const rows = [];
+  for (let ring = 0; ring <= totalRings; ring++) {
+    const t = Math.min(1, ring / rings);
+    const surfaceT = ring <= rings ? t : 1 + (ring - rings) / (totalRings - rings) * .12;
+    rows.push({ t, surfaceT, polarSin: Math.sin(surfaceT * Math.PI * .5),
+      polarCos: Math.cos(surfaceT * Math.PI * .5), margin: surfaceT ** 5 });
+  }
+  const columns = Array.from({ length: stride }, (_, segment) => {
+    const angle = segment / segments * Math.PI * 2;
+    return { angle, sin: Math.sin(angle), cos: Math.cos(angle), fold: Math.cos(angle * lobes) };
+  });
+  const result = { rows, columns }; mantleSamples.set(key, result); return result;
 }
 
 // Sample the approved mantle directly. LivingAppendages also evaluates its old
@@ -57,19 +100,22 @@ export function sampleVisibleMantle(tissue, shape, current, refreshNormals) {
   const g = tissue.bellGeometry, { rings, segments, stride, totalRings } = g.userData;
   const p = g.attributes.position.array, c = g.attributes.color.array, signal = g.attributes.tissueSignal.array;
   const scratch = tissue.mantleScratch;
+  const terms = mantleTerms(g, tissue.species.lobes);
   let vertex = 0;
   for (let ring = 0; ring <= totalRings; ring++) {
-    const t = Math.min(1, ring / rings);
-    const surfaceT = ring <= rings ? t : 1 + (ring - rings) / (totalRings - rings) * .12;
+    const { t, surfaceT, polarSin, polarCos, margin } = terms.rows[ring];
     for (let segment = 0; segment < stride; segment++, vertex++) {
-      const angle = (segment / segments) * Math.PI * 2;
+      const column = terms.columns[segment], angle = column.angle;
       let wave = 0;
       if (tissue.activation !== 0) {
         const d = Math.abs(Math.atan2(Math.sin(angle - tissue.hitAngle), Math.cos(angle - tissue.hitAngle)));
         const distance = Math.sqrt(Math.pow(d / Math.PI, 2) * .62 + Math.pow(t - tissue.hitPolar, 2));
         wave = Math.exp(-Math.pow((distance - tissue.activationAge * .48) / .075, 2)) * tissue.activation;
       }
-      mantlePoint(surfaceT, angle, shape, tissue.species.lobes, current, scratch);
+      const radius = polarSin * shape.radius * (1 - .07 * shape.pulse * margin) * (1 + .012 * column.fold * margin);
+      scratch.x = column.cos * radius + current.x * surfaceT * surfaceT * .08;
+      scratch.y = polarCos * shape.height + shape.rimY * surfaceT * surfaceT + margin * (column.fold * .014 + shape.marginRoll * .04);
+      scratch.z = column.sin * radius + current.y * surfaceT * surfaceT * .08;
       const i = vertex * 3; p[i] = scratch.x; p[i + 1] = scratch.y; p[i + 2] = scratch.z;
       signal[vertex] = wave;
       const light = MathUtils.clamp(wave * 1.6 + tissue.activation * .08 + tissue.hover * .035, 0, 1);
@@ -80,7 +126,7 @@ export function sampleVisibleMantle(tissue, shape, current, refreshNormals) {
   }
   g.attributes.position.needsUpdate = true; g.attributes.color.needsUpdate = true; g.attributes.tissueSignal.needsUpdate = true;
   if (refreshNormals) {
-    g.computeVertexNormals(); const n = g.attributes.normal;
+    computeSurfaceNormals(g); const n = g.attributes.normal;
     for (let row = 1; row <= totalRings; row++) {
       const a = row * stride, b = a + segments;
       tissue.normal.fromBufferAttribute(n, a).add(tissue.side.fromBufferAttribute(n, b)).normalize();
@@ -123,14 +169,13 @@ export function armGrid(points) {
 
 // Collapse a high grid onto the *triangles* of its lower grid, not an alpha
 // crossfade. One mesh/draw, one opacity, same pulse and same material throughout.
-const mappings = new WeakMap();
+const mappings = new Map();
 function getMapping(high, low, arm) {
-  let targets = mappings.get(high);
-  if (!targets) { targets = new WeakMap(); mappings.set(high, targets); }
-  if (targets.has(low)) return targets.get(low);
   const h = high.userData, l = low.userData;
   const hs = arm ? 17 : h.stride, ls = arm ? 17 : l.stride;
   const hp = arm ? h.points : h.totalRings + 1, lp = arm ? l.points : l.totalRings + 1;
+  const key = `${arm}:${hs}:${ls}:${hp}:${lp}:${h.rings}:${l.rings}:${h.segments}:${l.segments}`;
+  if (mappings.has(key)) return mappings.get(key);
   const indices = new Uint32Array(high.attributes.position.count * 3), weights = new Float32Array(indices.length);
     for (let i = 0; i < high.attributes.position.count; i++) {
       const body = arm ? Math.floor(i / (hp * hs)) : 0;
@@ -144,7 +189,19 @@ function getMapping(high, low, arm) {
       const blend = fx + fy <= 1 ? [1 - fx - fy, fx, fy] : [fx + fy - 1, 1 - fx, 1 - fy];
       indices.set(vertices, i * 3); weights.set(blend, i * 3);
     }
-  const mapping = { indices, weights }; targets.set(low, mapping); return mapping;
+  const mapping = { indices, weights }; mappings.set(key, mapping); return mapping;
+}
+export function prepareSurfaceSampling(bells, arms, lobes) {
+  // The inherited near membrane normally creates this on its first normal
+  // refresh. Reserve it with the other tier resources, before rendering starts.
+  for (const g of arms) if (!g.attributes.normal) g.setAttribute('normal',
+    new BufferAttribute(new Float32Array(g.attributes.position.array.length), 3));
+  bells.forEach(g => mantleTerms(g, lobes));
+  arms.forEach(g => { for (let arm = 0; arm < 4; arm++) membraneTerms(g.userData.points, arm); });
+  for (let tier = 1; tier < 3; tier++) {
+    getMapping(bells[tier], bells[tier - 1], false);
+    getMapping(arms[tier], arms[tier - 1], true);
+  }
 }
 export function morphSurface(high, low, amount, arm = false) {
   if (amount <= 0) return;
