@@ -30,7 +30,7 @@ export class PopulationDetail {
         const light = t.tissueLight.clone(); app.scene.add(light); this.lights.push(light);
       }
     }
-    window.__POPULATION__ = {
+    if (options.reviewControls) window.__POPULATION__ = {
       state: () => this.state(), cost: () => this.cpu.slice(), resetCost: () => { this.cpu.length = 0; },
     };
   }

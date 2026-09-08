@@ -90,7 +90,7 @@ try {
    writeFileSync(`${out}/bubble-cost.json`,JSON.stringify({cpu:await evaluate(`window.__BUBBLE_PASSAGE__?.cost()`),state:await evaluate(`window.__BUBBLE_PASSAGE__?.state()`)},null,2));
    writeFileSync(`${out}/performance.json`,JSON.stringify({url,info,system,seconds:Number(seconds),warmupSeconds:6,median:sorted[Math.floor(sorted.length*.5)],p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1),stallsOver50:intervals.filter(x=>x>50).length,intervals,renderIntervals:await evaluate(`window.__SPECIMEN__?.frameIntervals()`),auditRender:await evaluate(`window.__AUDIT_RENDER__.read()`),featureCpuIntervals:await evaluate(`window.__CONNECTED_OCEAN__?.cost()`),errors,after:await evaluate(`({ratio:window.__JELLYFISH_WORLD__?.pixelRatio,buffers:[...document.querySelectorAll('canvas')].map(c=>[c.width,c.height]),specimen:window.__SPECIMEN__?.state(),connected:window.__CONNECTED_OCEAN__?.state()})`)},null,2));
  }else{
-   const lensRecording=mode==='lens-optics'||mode==='lens-tour'||mode==='bubble-tour'||mode==='bubble-inspect'||mode==='geyser-tour'||mode==='population-tour'||mode==='population-click';
+   const lensRecording=mode==='lens-optics'||mode==='lens-tour'||mode==='bubble-tour'||mode==='bubble-inspect'||mode==='geyser-tour'||mode==='population-tour'||mode==='population-click'||mode==='release-smoke';
    const finishRecording=async()=>{
      await send('Page.stopScreencast');await sleep(300);
      if(frames.length<2)throw Error('Motion evidence missing: fewer than two screencast frames');
@@ -283,6 +283,31 @@ try {
        if(target===9&&mode==='ocean-matched')snapshots.push({click:await clickJelly()});
      }
      writeFileSync(`${out}/matched.json`,JSON.stringify({url,info,system,snapshots,errors},null,2));
+   }else if(mode==='release-smoke'){
+     const privacy=await evaluate(`({release:window.__JELLYFISH_WORLD__?.oceanRelease,
+       specimen:!!window.__SPECIMEN__,population:!!window.__POPULATION__,bubbles:!!window.__BUBBLE_PASSAGE__,lens:!!window.__LIVE_LENS__})`);
+     if(privacy.release!=='milestone-4'||privacy.specimen||privacy.population||privacy.bubbles||privacy.lens)
+       throw Error('Incorrect production release or exposed review controls: '+JSON.stringify(privacy));
+     await shot('release-opening');
+     const scrollBefore=await evaluate('scrollY');
+     await send('Input.dispatchKeyEvent',{type:'keyDown',key:'b',code:'KeyB',windowsVirtualKeyCode:66});
+     await send('Input.dispatchKeyEvent',{type:'keyUp',key:'b',code:'KeyB',windowsVirtualKeyCode:66});
+     await sleep(800);
+     const scrollAfter=await evaluate('scrollY');
+     if(scrollAfter!==scrollBefore)throw Error('Production B key started the review tour');
+     const click=await clickJelly(0); await sleep(1000);await shot('release-activation');
+     if(!click.hit)throw Error('Production opening activation did not hit');
+     const checkpoints=[];
+     for(const progress of [.35,.52,.68,0]){
+       await evaluate(`window.scrollTo(0,(document.documentElement.scrollHeight-innerHeight)*${progress})`);
+       await sleep(6500);await shot('release-journey-'+progress);
+       checkpoints.push({progress,state:await state()});
+     }
+     const loaded=await evaluate(`performance.getEntriesByType('resource').map(r=>r.name).filter(n=>/PopulationAnimal|PopulationDetail|BubblePassage/.test(n))`);
+     if(!loaded.some(n=>n.includes('PopulationAnimal'))||!loaded.some(n=>n.includes('BubblePassage')))
+       throw Error('Production population/passage modules did not load');
+     writeFileSync(`${out}/release.json`,JSON.stringify({url,info,privacy,scrollBefore,scrollAfter,click,checkpoints,loaded,errors},null,2));
+     if(errors.length)throw Error('Browser errors in production smoke test');
    }else if(mode==='observe'){
      const checkpoints=[], clicks=[];
      for(let i=0;i<12;i++){clicks.push(await clickJelly());await sleep(100);}

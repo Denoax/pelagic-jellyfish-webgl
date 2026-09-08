@@ -212,12 +212,13 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     const start = async () => {
       try {
         const query = new URLSearchParams(window.location.search);
-        const populationRequested = import.meta.env.DEV && query.get('populationLod') === '1';
-        const bubblesRequested = import.meta.env.DEV && query.get('bubblePassage') === '1';
+        const releasedPopulation = import.meta.env.PROD && import.meta.env.VITE_OCEAN_RELEASE === 'milestone-4';
+        const populationRequested = import.meta.env.DEV && query.get('populationLod') === '1' || releasedPopulation;
+        const bubblesRequested = import.meta.env.DEV && query.get('bubblePassage') === '1' || releasedPopulation;
         const lensRequested = import.meta.env.DEV && query.get('liveLens') === '1' && !bubblesRequested;
         // Publishing selects the reviewed implementation, never its inspection
         // fixture. Production query strings cannot expose specimen controls.
-        const releasedOcean = import.meta.env.PROD && import.meta.env.VITE_OCEAN_RELEASE === 'milestone-2';
+        const releasedOcean = releasedPopulation || (import.meta.env.PROD && import.meta.env.VITE_OCEAN_RELEASE === 'milestone-2');
         const connectedRequested = releasedOcean || (import.meta.env.DEV && (query.get('connectedOcean') === '1' || lensRequested || bubblesRequested || populationRequested) && query.get('specimen') !== '1');
         const previewRequested = import.meta.env.DEV && (query.get('specimen') === '1' || query.get('oceanPreview') === '1' || connectedRequested);
         const forceWebGL =
@@ -318,7 +319,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         if (populationRequested) {
           const { PopulationDetail } = await import('./population/PopulationDetail.js');
           if (disposed) return;
-          population = new PopulationDetail(app, environment, appendages, { reducedMotion, mobile: isMobile, chamber: query.get('specimen') === '1' });
+          population = new PopulationDetail(app, environment, appendages, { reducedMotion, mobile: isMobile, chamber: import.meta.env.DEV && query.get('specimen') === '1', reviewControls: import.meta.env.DEV });
         }
         updateScrollTarget();
         window.addEventListener("scroll", updateScrollTarget, {
@@ -343,7 +344,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           physics:
             "pulse-coupled soft tissue + persistent constrained appendages",
           procedural: true,
-          oceanRelease: releasedOcean ? 'milestone-2' : 'default-or-development',
+          oceanRelease: releasedPopulation ? 'milestone-4' : releasedOcean ? 'milestone-2' : 'default-or-development',
           interaction:
             "raycast bioluminescence + localized recoil + social glow echo",
           camera: "pelagic camera story director + multi-subject handoffs",
@@ -412,10 +413,10 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         if (bubblesRequested) {
           const { BubblePassage } = await import('./glass/BubblePassage.js');
           if (disposed) return;
-          bubblePassage = new BubblePassage(app, connectedOcean?.field, appendages);
-          if (query.get('bubbleReview') === '1') bubblePassage.reviewAge = 0;
+          bubblePassage = new BubblePassage(app, connectedOcean?.field, appendages, { reviewControls: import.meta.env.DEV });
+          if (import.meta.env.DEV && query.get('bubbleReview') === '1') bubblePassage.reviewAge = 0;
           liveLens = bubblePassage.lens;
-          window.__BUBBLE_PASSAGE__ = {
+          if (import.meta.env.DEV) window.__BUBBLE_PASSAGE__ = {
             state: () => bubblePassage.state(),
             enable: value => { bubblePassage.enabled = Boolean(value); bubblePassage.update(0, scrollProgress); },
             cost: () => bubblePassage.cpu.slice(),
