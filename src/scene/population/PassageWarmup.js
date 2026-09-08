@@ -10,9 +10,10 @@ export function preparePopulationPassage(renderer, scene, camera, passage) {
     try {
       renderer.getDrawingBufferSize(lens.size);
       lens.target.setSize(lens.size.x, lens.size.y);
-      // The existing instance opacity buffer is still zero at startup. One
-      // instance compiles its material without advancing or spawning bubbles.
-      mesh.visible = true; mesh.count = 1;
+      // Keep the real pool count. In r175, count=1 builds a non-instanced
+      // shader; restoring the count afterwards does not reliably rebuild it.
+      // Initial opacity is zero, so no bubbles are advanced or spawned here.
+      mesh.visible = true;
       renderer.setRenderTarget(lens.target);
       await renderer.compileAsync(scene, camera);
       if (lens.disposed) return;

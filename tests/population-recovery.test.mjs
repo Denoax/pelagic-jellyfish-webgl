@@ -63,7 +63,7 @@ test('passage preparation reuses the input target, restores state and runs once 
     const mesh = { visible: false, count: 500 };
     const passage = { mesh, lens: { size: new Vector2(), target: input, output: {
       async renderAsync() {
-        assert.equal(renderer.target, original); assert.equal(mesh.count,1); events.push('output');
+        assert.equal(renderer.target, original); assert.equal(mesh.count,500); events.push('output');
         renderer.toneMapping=0; renderer.outputColorSpace='linear'; renderer.xr.enabled=false;
         if (fail) throw Error('diagnostic failure');
       },
@@ -77,4 +77,16 @@ test('passage preparation reuses the input target, restores state and runs once 
     assert.equal(mesh.visible,false); assert.equal(mesh.count,500); assert.equal(renderer.target,original);
     assert.equal(renderer.toneMapping,7); assert.equal(renderer.outputColorSpace,'srgb'); assert.equal(renderer.xr.enabled,true);
   }
+});
+
+test('passage teardown during preparation does not continue rendering disposed resources', async () => {
+  const original = {}, lens = { size: new Vector2(), target: { setSize() {} } };
+  const passage = { mesh: { visible: false, count: 500 }, lens };
+  const renderer = { target: original, toneMapping: 1, outputColorSpace: 'srgb', xr: { enabled: false },
+    getRenderTarget() { return this.target; }, setRenderTarget(t) { this.target=t; },
+    getDrawingBufferSize(v) { v.set(390,844); },
+    async compileAsync() { lens.disposed=true; },
+    async renderAsync() { assert.fail('must not draw disposed resources'); } };
+  await preparePopulationPassage(renderer, {}, {}, passage);
+  assert.equal(renderer.target,original); assert.equal(passage.mesh.visible,false); assert.equal(passage.mesh.count,500);
 });
