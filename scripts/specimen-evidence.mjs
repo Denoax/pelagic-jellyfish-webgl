@@ -284,6 +284,7 @@ try {
      }
      writeFileSync(`${out}/matched.json`,JSON.stringify({url,info,system,snapshots,errors},null,2));
    }else if(mode==='release-smoke'){
+     await send('Page.startScreencast',{format:'jpeg',quality:88,maxWidth:width,maxHeight:height,everyNthFrame:2});
      const privacy=await evaluate(`({release:window.__JELLYFISH_WORLD__?.oceanRelease,
        specimen:!!window.__SPECIMEN__,population:!!window.__POPULATION__,bubbles:!!window.__BUBBLE_PASSAGE__,lens:!!window.__LIVE_LENS__})`);
      if(privacy.release!=='milestone-4'||privacy.specimen||privacy.population||privacy.bubbles||privacy.lens)
