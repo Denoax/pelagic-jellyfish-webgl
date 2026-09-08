@@ -456,6 +456,13 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         // pass before exposing the scene.
         await renderer.compileAsync(app.scene, app.camera);
         await renderer.renderAsync(app.scene, app.camera);
+        if (population && bubblePassage) {
+          const { preparePopulationPassage } = await import('./population/PassageWarmup.js');
+          if (disposed) return;
+          const warmup = await preparePopulationPassage(renderer, app.scene, app.camera, bubblePassage);
+          if (disposed) return;
+          window.__POPULATION__.warmup = warmup;
+        }
         // Use the validated direct path on both backends. The inherited MRT
         // bloom pipeline is not a requirement for tissue glow and must not
         // silently replace a good frame with an unsupported black target.

@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { Object3D, Vector2, Vector3 } from 'three/webgpu';
 import { PopulationAnimal } from '../src/scene/population/PopulationAnimal.js';
 import { sampleSwimCycle } from '../src/scene/jellyMotion.js';
+import { preparePopulationPassage } from '../src/scene/population/PassageWarmup.js';
 
 // Immutable approved M4 implementation loaded alongside the candidate. Its
 // unchanged core imports resolve to real installed source, not a rewritten mock.
@@ -48,5 +49,32 @@ test('M4.1 preserves all approved M4 visible buffers and simulation through tier
       }
     }
     before.dispose(); after.dispose();
+  }
+});
+
+test('passage preparation reuses the input target, restores state and runs once without simulation', async () => {
+  for (const fail of [false, true]) {
+    const events = [], original = {}, input = { setSize: (w,h) => events.push(['size',w,h]) };
+    const renderer = { target: original, toneMapping: 7, outputColorSpace: 'srgb', xr: { enabled: true },
+      getRenderTarget() { return this.target; }, setRenderTarget(t) { this.target = t; },
+      getDrawingBufferSize(v) { v.set(1280,900); },
+      async compileAsync() { assert.equal(this.target,input); events.push('compile'); },
+      async renderAsync() { assert.equal(this.target,input); events.push('ocean'); } };
+    const mesh = { visible: false, count: 500 };
+    const passage = { mesh, lens: { size: new Vector2(), target: input, output: {
+      async renderAsync() {
+        assert.equal(renderer.target, original); assert.equal(mesh.count,1); events.push('output');
+        renderer.toneMapping=0; renderer.outputColorSpace='linear'; renderer.xr.enabled=false;
+        if (fail) throw Error('diagnostic failure');
+      },
+    } } };
+    const work = preparePopulationPassage(renderer, {}, {}, passage);
+    assert.equal(preparePopulationPassage(renderer, {}, {}, passage), work);
+    if (fail) await assert.rejects(work, /diagnostic failure/); else {
+      const result = await work; assert.equal(result.newTargets,0); assert.deepEqual(result.size,[1280,900]);
+    }
+    assert.deepEqual(events,[['size',1280,900],'compile','ocean','output']);
+    assert.equal(mesh.visible,false); assert.equal(mesh.count,500); assert.equal(renderer.target,original);
+    assert.equal(renderer.toneMapping,7); assert.equal(renderer.outputColorSpace,'srgb'); assert.equal(renderer.xr.enabled,true);
   }
 });
