@@ -10,7 +10,7 @@ mkdirSync(out,{recursive:true});
 const profile=mkdtempSync(`${out}/browser-profile-`);
 const browser=spawn(resolve('scripts/brave-headless.sh'),['--headless=new','--no-sandbox','--hide-scrollbars','--window-size=1280,1000','--use-gl=angle','--use-angle=gl','--enable-unsafe-webgpu','--remote-debugging-port=9279',`--user-data-dir=${profile}`,'about:blank'],{stdio:'ignore'});
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-let ws,send; const errors=[],frames=[];
+let ws,send,traceStream; const errors=[],frames=[];
 try {
  let page;
  for(let i=0;i<100;i++){try{page=await(await fetch('http://127.0.0.1:9279/json/new?about:blank',{method:'PUT'})).json();break;}catch{await sleep(100);}}
@@ -19,6 +19,7 @@ try {
  let id=0;const pending=new Map();
  send=(method,params={})=>new Promise((res,rej)=>{const n=++id;pending.set(n,{res,rej});ws.send(JSON.stringify({id:n,method,params}));});
  ws.addEventListener('message',({data})=>{const m=JSON.parse(data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);m.error?p?.rej(Error(JSON.stringify(m.error))):p?.res(m.result);}
+ else if(m.method==='Tracing.tracingComplete')traceStream=m.params.stream;
  else if(m.method==='Runtime.exceptionThrown'||(m.method==='Runtime.consoleAPICalled'&&m.params.type==='error'))errors.push(m.params);
  else if(m.method==='Page.screencastFrame'){const name=`motion-${String(frames.length).padStart(5,'0')}.jpg`;writeFileSync(`${out}/${name}`,Buffer.from(m.params.data,'base64'));frames.push({name,time:m.params.metadata.timestamp});send('Page.screencastFrameAck',{sessionId:m.params.sessionId});}});
  const evaluate=async expression=>{const r=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
@@ -59,7 +60,8 @@ try {
  if(info.visibility!=='visible')throw Error('Evidence page lost foreground visibility during warm-up');
  info.actualGL=await evaluate(`window.__AUDIT_GL__||null`);
  info.loadedScripts=await evaluate(`[...document.scripts].map(s=>s.src).filter(Boolean)`);
- info.uncommittedSource=spawnSync('git',['diff','--name-only','--','src'],{encoding:'utf8'}).stdout.trim();
+ info.sourceRoot=process.env.EVIDENCE_SOURCE_ROOT || process.cwd();
+ info.uncommittedSource=spawnSync('git',['-C',info.sourceRoot,'diff','--name-only','--','src'],{encoding:'utf8'}).stdout.trim();
  const system={adapter:await evaluate(`window.__actualAdapter||null`),browser:await send('Browser.getVersion')};
  if(process.env.EVIDENCE_EVAL)await evaluate(process.env.EVIDENCE_EVAL);
  if((mode==='perf'||mode==='bubble-inspect') && process.env.EVIDENCE_BUBBLE_STATE){
@@ -75,15 +77,32 @@ try {
    await evaluate(`window.__BENCH_STATE__={time:window.__SPECIMEN__.state().time,camera:window.__JELLYFISH_WORLD__.getCameraState(),actors:window.__JELLYFISH_WORLD__.getSwarmState(),field:window.__CONNECTED_OCEAN__.state(),shaderClock:${hold}}`);
  }
  info.controlledState=await evaluate(`window.__BENCH_STATE__||null`);
- if(mode==='perf'){
+  if(mode==='perf'){
+   if(process.env.EVIDENCE_TRACE==='1')await send('Tracing.start',{categories:'devtools.timeline,v8,v8.execute,disabled-by-default-v8.gc,blink.user_timing',transferMode:'ReturnAsStream'});
+   if(process.env.EVIDENCE_PROFILE==='1'){
+     await send('Profiler.enable');await send('Profiler.setSamplingInterval',{interval:1000});await send('Profiler.start');
+     await send('HeapProfiler.enable');await send('HeapProfiler.startSampling',{samplingInterval:32768,includeObjectsCollectedByMajorGC:true,includeObjectsCollectedByMinorGC:true});
+   }
    await evaluate(`window.__SPECIMEN__?.resetIntervals()`);
    await evaluate(`window.__AUDIT_RENDER__.reset()`);
    await evaluate(`window.__CONNECTED_OCEAN__?.resetCost()`);
    await evaluate(`window.__LIVE_LENS__?.resetCost()`);
    await evaluate(`window.__BUBBLE_PASSAGE__?.resetCost()`);
    await evaluate(`window.__POPULATION__?.resetCost()`);
+   if(process.env.EVIDENCE_TRACE==='1')await evaluate(`performance.mark('m4.1-measure-start')`);
    const intervals=await evaluate(`new Promise(resolve=>{const a=[];let last=0;const start=performance.now();function tick(t){if(last)a.push(t-last);last=t;if(t-start<${Number(seconds)*1000})requestAnimationFrame(tick);else resolve(a);}requestAnimationFrame(tick);})`);
    const sorted=[...intervals].sort((a,b)=>a-b);
+   if(process.env.EVIDENCE_TRACE==='1'){
+     await evaluate(`performance.mark('m4.1-measure-end')`);await send('Tracing.end');
+     for(let i=0;!traceStream && i<300;i++)await sleep(100);
+     if(!traceStream)throw Error('Missing trace stream');
+     let trace='';for(;;){const chunk=await send('IO.read',{handle:traceStream});trace+=chunk.base64Encoded?Buffer.from(chunk.data,'base64').toString():chunk.data;if(chunk.eof)break;}
+     await send('IO.close',{handle:traceStream});writeFileSync(`${out}/timeline.json`,trace);
+   }
+   if(process.env.EVIDENCE_PROFILE==='1'){
+     writeFileSync(`${out}/cpu-profile.json`,JSON.stringify((await send('Profiler.stop')).profile));
+     writeFileSync(`${out}/allocation-profile.json`,JSON.stringify((await send('HeapProfiler.stopSampling')).profile));
+   }
    writeFileSync(`${out}/profile.json`,JSON.stringify(await evaluate(`window.__POPULATION_PROFILE__||null`),null,2));
    writeFileSync(`${out}/population-cost.json`,JSON.stringify({cpu:await evaluate(`window.__POPULATION__?.cost()`),state:await evaluate(`window.__POPULATION__?.state()`)},null,2));
    writeFileSync(`${out}/lens-cost.json`,JSON.stringify({cpu:await evaluate(`window.__LIVE_LENS__?.cost()`),state:await evaluate(`window.__LIVE_LENS__?.state()`)},null,2));
