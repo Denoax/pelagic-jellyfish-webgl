@@ -3,6 +3,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { installOceanCompletionProbe } from './ocean-completion-probe.mjs';
+import { installWebGLStallProfile } from './webgl-stall-profile.mjs';
 const [url='http://127.0.0.1:5178/?idle=300', label='baseline', mode='capture', seconds='24'] = process.argv.slice(2);
 const out=resolve(process.env.EVIDENCE_ROOT || 'docs/implementation/milestone-1/evidence',label);
 const width=Number(process.env.EVIDENCE_WIDTH || 1280), height=Number(process.env.EVIDENCE_HEIGHT || 900);
@@ -40,6 +41,7 @@ try {
  // rAF callback resolves after await app.update(). Observe that completion,
  // not a second independent rAF loop. Reject hidden/busy callbacks.
  if(mode==='perf')await send('Page.addScriptToEvaluateOnNewDocument',{source:`(${installOceanCompletionProbe.toString()})();`});
+ if(process.env.EVIDENCE_GL_PROFILE==='1')await send('Page.addScriptToEvaluateOnNewDocument',{source:`(${installWebGLStallProfile.toString()})();`});
  await send('Page.addScriptToEvaluateOnNewDocument',{source:`let seed=7183;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};`});
  await send('Page.addScriptToEvaluateOnNewDocument',{source:`if(navigator.gpu){const request=navigator.gpu.requestAdapter.bind(navigator.gpu);navigator.gpu.requestAdapter=async (...args)=>{const a=await request(...args);window.__actualAdapter=a?{vendor:a.info?.vendor,device:a.info?.device,architecture:a.info?.architecture,description:a.info?.description,isFallbackAdapter:a.isFallbackAdapter}:null;return a;};}`});
  await send('Page.navigate',{url});
@@ -55,6 +57,7 @@ try {
  info.sourceRevision=process.env.EVIDENCE_SOURCE_REV || info.driverRevision;
  info.sourceIdentity=process.env.EVIDENCE_SOURCE_REV?'explicit source checkout/release; verify against deployment or worktree':'driver checkout only; may differ from target URL';
  info.release=await evaluate(`window.__JELLYFISH_WORLD__?.oceanRelease`);
+ info.populationWarmup=await evaluate(`window.__POPULATION__?.warmup||null`);
  info.hasSpecimenControls=await evaluate(`Boolean(window.__SPECIMEN__)`);
  info.visibility=await evaluate(`document.visibilityState`);
  if(info.visibility!=='visible')throw Error('Evidence page lost foreground visibility during warm-up');
@@ -89,9 +92,11 @@ try {
    await evaluate(`window.__LIVE_LENS__?.resetCost()`);
    await evaluate(`window.__BUBBLE_PASSAGE__?.resetCost()`);
    await evaluate(`window.__POPULATION__?.resetCost()`);
+   if(process.env.EVIDENCE_GL_PROFILE==='1')await evaluate(`window.__GL_STALL__.reset()`);
    if(process.env.EVIDENCE_TRACE==='1')await evaluate(`performance.mark('m4.1-measure-start')`);
    const intervals=await evaluate(`new Promise(resolve=>{const a=[];let last=0;const start=performance.now();function tick(t){if(last)a.push(t-last);last=t;if(t-start<${Number(seconds)*1000})requestAnimationFrame(tick);else resolve(a);}requestAnimationFrame(tick);})`);
    const sorted=[...intervals].sort((a,b)=>a-b);
+   if(process.env.EVIDENCE_GL_PROFILE==='1')writeFileSync(`${out}/webgl-cost.json`,JSON.stringify(await evaluate(`window.__GL_STALL__.read()`),null,2));
    if(process.env.EVIDENCE_TRACE==='1'){
      await evaluate(`performance.mark('m4.1-measure-end')`);await send('Tracing.end');
      for(let i=0;!traceStream && i<300;i++)await sleep(100);
