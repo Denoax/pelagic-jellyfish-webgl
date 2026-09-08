@@ -334,6 +334,7 @@ try {
      if(!valid)throw Error('Observation invalid: simulation stalled or page lost foreground visibility');
    }else if(mode==='lifecycle'){
      const key=async key=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code:key,windowsVirtualKeyCode:27});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code:key,windowsVirtualKeyCode:27});};
+     for(let i=0;i<120 && !await evaluate(`!!document.querySelector('.idle-screen.is-active')`);i++)await sleep(100);
      await shot('idle-entry');
      const idleBefore=await evaluate(`!!document.querySelector('.idle-screen.is-active')`);
      await key('Escape');await sleep(2900);
