@@ -1,5 +1,9 @@
 # Prototype Instructions
 
+## Current authorization: M6.1 refinement (2026-09-09)
+
+Start from `9b33b64357fa5c1e6c99d0868c7dcf6f4af55dcd`. Preserve the M6 Y −15 basin/layout and M1–M5.2. Refine ONLY: mineral-bearing granular plume (first, visually prove it before mineral shaders), true localized thermal refraction reusing M3's scene-color/depth/output with no duplicate ocean render, geologically motivated mineral deposition/scanned secondary detail, and smallest single-world portrait placement adjustment. Keep pooled animal illumination/current coupling. No camera/UI/scroll edits, unrelated idle repair, push/merge/deploy/Pages/M7. Fresh browser audit in all views, matched motion and seven-scene benchmarks are required; any materially obvious original defect means PARTIAL. M3 integration may extend its existing optical hook for thermal domains, not replace the renderer or alter approved bubble optics.
+
 ## Current authorization: M6 sanctuary (2026-09-09)
 
 Approved M5.2 baseline is `aef830b1619eef71e36be4e8b4cd8b924fb1bd8a`. M6 ONLY replaces the deep environment with a physically deeper dark basalt basin, clustered pillow flows/shelves, one monumental irregular sulfide chimney, localized mineral plume/current coupling, diffuse deposits and sparse vent life. Research and measured camera clearance precede geometric blockout; inspect every locked camera before material polish. No tropical coral, kelp, exposed lava, orange floodlights or opacity-fading solid terrain. One pooled animal-derived environmental light, preallocated plume, no extra ocean pass. Preserve M1–M5.2 animals, currents, refraction, population/LOD, camera tracks, View, scroll, Explore and idle. Local reversible commits only: NO push/merge/deploy/Pages/M7. This supersedes earlier no-M6 boundaries below, not their other safeguards.

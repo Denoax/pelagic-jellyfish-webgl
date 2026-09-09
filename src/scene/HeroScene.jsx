@@ -415,11 +415,17 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
         }
         // M6 observes the approved animal/current state; no feedback into it.
         environment.sanctuary.connect(connectedOcean?.field, appendages, app.camera);
+        environment.sanctuary.plume?.applyWater(Background);
         if (import.meta.env.DEV) window.__SANCTUARY_REVIEW__ = {
           state: () => environment.sanctuary.state(),
           cost: () => Array.from(environment.sanctuary.cpu.slice(0, environment.sanctuary.cpuCount)),
           resetCost: () => { environment.sanctuary.cpuCount = 0; environment.sanctuary.cpuCursor = 0; },
           renderStats: () => ({ ...renderer.info.render, memory: { ...renderer.info.memory } }),
+          plumeProbe: () => {
+            const s = environment.sanctuary;
+            return { meshVisible: s.plume.mesh.visible, instances: s.plume.mesh.geometry.instanceCount,
+              samples: Array.from({length:12}, (_,i) => ({position:Array.from(s.sim.position.slice(i*3,i*3+3)),alpha:s.sim.alpha[i],age:s.sim.age[i]})) };
+          },
         };
         if (lensRequested) {
           const { LiveOceanLens } = await import('./glass/LiveOceanLens.js');

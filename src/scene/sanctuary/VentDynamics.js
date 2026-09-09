@@ -7,7 +7,7 @@ export const DIFFUSE=Object.freeze([[2.1,1.4],[-1.8,2.2],[1.1,-2.1]].map(([x,z])
 // Fixed-size CPU simulation. Sources and random phases are immutable; only
 // numerical state changes. Fixed stepping discards suspension debt.
 export class VentDynamics {
-  constructor({count=144,diffuseCount=48,snowCount=80,reducedMotion=false}={}) {
+  constructor({count=768,diffuseCount=48,snowCount=80,reducedMotion=false}={}) {
     this.smokeCount=count;this.diffuseCount=diffuseCount;this.snowCount=snowCount;
     this.count=count+diffuseCount+snowCount;this.reducedMotion=reducedMotion;
     this.position=new Float32Array(this.count*3);this.velocity=new Float32Array(this.count*3);
@@ -25,7 +25,7 @@ export class VentDynamics {
     this.position[k]=isSnow?HERO.x+(seed(i,21)-.5)*14:origin.x+Math.sin(phase)*radius;
     this.position[k+1]=isSnow?FLOOR_Y+seed(i,22)*13:origin.y;
     this.position[k+2]=isSnow?HERO.z+(seed(i,23)-.5)*14:origin.z+Math.cos(phase)*radius;
-    this.velocity[k]=0;this.velocity[k+1]=isSmoke?1.15:isSnow?-.065:.12;this.velocity[k+2]=0;
+    this.velocity[k]=0;this.velocity[k+1]=isSmoke?1.6:isSnow?-.065:.12;this.velocity[k+2]=0;
     this.current[k]=this.current[k+1]=this.current[k+2]=0;this.age[i]=0;this.births++;
   }
   update(dt) {
@@ -49,17 +49,20 @@ export class VentDynamics {
       const h=Math.max(0,y-ORIFICE.y),entrainment=isSmoke?Math.min(1,h/6):0;
       const flowGain=isSmoke?.3+entrainment*3.5:isSnow?.5:.28;
       const turbulence=(isSmoke?.05+entrainment*.24:isSnow?.02:.025)*motion;
-      const tx=this.current[k]*flowGain+Math.sin(this.time*.48+y*.8+seed(i,6)*6.28)*turbulence;
-      const tz=this.current[k+2]*flowGain+Math.cos(this.time*.41+y*.7+seed(i,7)*6.28)*turbulence;
-      let ty=isSmoke?1.15*Math.exp(-age*.18)+.045:isSnow?-.065:.12*Math.exp(-age*.15);
+      // Nearby mineral packets share advected eddies, not independent jitter.
+      // The existing low-passed M2 current still bends their integrated history.
+      const tx=this.current[k]*flowGain+Math.sin(this.time*.48+y*.8+(isSmoke?z*.7:seed(i,6)*6.28))*turbulence;
+      const tz=this.current[k+2]*flowGain+Math.cos(this.time*.41+y*.7+(isSmoke?x*.65:seed(i,7)*6.28))*turbulence;
+      let ty=isSmoke?1.6*Math.exp(-age*.18)+.045:isSnow?-.065:.12*Math.exp(-age*.15);
       if(isSnow){const dx=x-ORIFICE.x,dz=z-ORIFICE.z;ty+=.35*Math.exp(-(dx*dx+dz*dz)/(1+h*.25))*Math.exp(-Math.abs(h)*.18);}
       ty+=this.current[k+1]*(isSmoke?.4:.2);
       const drag=1-Math.exp(-dt*(isSmoke?2.1:1.2));
       this.velocity[k]+=(tx-this.velocity[k])*drag;this.velocity[k+1]+=(ty-this.velocity[k+1])*drag;this.velocity[k+2]+=(tz-this.velocity[k+2])*drag;
       this.position[k]+=this.velocity[k]*dt;this.position[k+1]+=this.velocity[k+1]*dt;this.position[k+2]+=this.velocity[k+2]*dt;
       const envelope=Math.min(1,age/(isSmoke?.35:1.5))*Math.min(1,(1-u)/(isSmoke?.35:.25));
-      this.size[i]=isSmoke?(.2+Math.sqrt(h)*.36)*( .8+seed(i,16)*.45):isSnow?.025+seed(i,17)*.025:.065+age*.016;
-      this.alpha[i]=Math.max(0,envelope)*(isSmoke?.32*(1-u*.55):isSnow?.2:.09)*(isSmoke?1:1+Math.min(.6,this.flow.light||0));
+      // Packet spread, not sprite size: GPU grains resolve its internal density.
+      this.size[i]=isSmoke?(.065+Math.pow(h,1.35)*.075)*(.8+seed(i,16)*.45):isSnow?.025+seed(i,17)*.025:.065+age*.016;
+      this.alpha[i]=Math.max(0,envelope)*(isSmoke?.58*(1-u*.7):isSnow?.2:.09)*(isSmoke?1:1+Math.min(.6,this.flow.light||0));
     }
   }
   dispose(){this.field=null;this.accumulator=0;}
