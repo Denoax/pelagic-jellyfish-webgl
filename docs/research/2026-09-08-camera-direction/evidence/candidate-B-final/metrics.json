@@ -1,0 +1,175 @@
+{
+  "kind": "live browser camera telemetry; not render completion or GPU timings",
+  "h": 0.016666666666666666,
+  "derivativeSpanSeconds": 0.1,
+  "duration": 80.0166666666631,
+  "pathLength": 32.73392170454226,
+  "totalRotationDegrees": 31.212233479832243,
+  "speed": {
+    "median": 0.27961977524738385,
+    "p95": 2.242401438524354,
+    "max": 3.644943911031514
+  },
+  "angularSpeed": {
+    "median": 0.2172213175890957,
+    "p95": 1.7744524439441294,
+    "max": 6.01483792559078
+  },
+  "angularAcceleration": {
+    "median": 0.016559404901974408,
+    "p95": 0.9791279626629517,
+    "max": 9.876004001354879
+  },
+  "linearAcceleration": {
+    "median": 0.020661316022699185,
+    "p95": 0.8324837258025974,
+    "max": 5.471801522328765
+  },
+  "jerk": {
+    "median": 0.21236891656061835,
+    "p95": 2.3189164393350157,
+    "max": 23.461982395963897
+  },
+  "roll": [
+    -9.945291782614666e-17,
+    0.0000037456426324328934
+  ],
+  "fov": [
+    53,
+    53
+  ],
+  "nearStillIntervals": [
+    [
+      0.09999999999999964,
+      8.150000000000292
+    ],
+    [
+      63.03333333333073,
+      69.16666666666372
+    ],
+    [
+      76.29999999999664,
+      80.0166666666631
+    ]
+  ],
+  "reversalEvents": 0,
+  "closestConservativeBellEnvelope": 4.423523060621651,
+  "targetSpeed": {
+    "median": 0.27961977524738385,
+    "p95": 2.242401438524354,
+    "max": 3.644943911031514
+  },
+  "correctionTarget": {
+    "median": 0,
+    "p95": 0,
+    "max": 0
+  },
+  "correctionPosition": {
+    "median": 0,
+    "p95": 0,
+    "max": 0
+  },
+  "limitations": "Actor coordinates rounded to .01 by existing debug API. Bell radius proxy includes 12% variation allowance; no exact deformed appendage collision claim. Derivatives smoothed over 100 ms. Includes deliberate input reversals/jumps; inspect forward segment separately.",
+  "subjects": [
+    {
+      "id": 0,
+      "visibleSeconds": 31.1,
+      "edgeCrossings": 0,
+      "minDistance": 7.163615411895102,
+      "centerFraction": 0.03215434083601286
+    },
+    {
+      "id": 1,
+      "visibleSeconds": 26.3,
+      "edgeCrossings": 0,
+      "minDistance": 8.639122814451133,
+      "centerFraction": 0
+    },
+    {
+      "id": 2,
+      "visibleSeconds": 23.1,
+      "edgeCrossings": 2,
+      "minDistance": 5.7094802558393045,
+      "centerFraction": 0
+    },
+    {
+      "id": 3,
+      "visibleSeconds": 23.1,
+      "edgeCrossings": 4,
+      "minDistance": 8.469427624007745,
+      "centerFraction": 0.034482758620689655
+    },
+    {
+      "id": 4,
+      "visibleSeconds": 20.900000000000002,
+      "edgeCrossings": 2,
+      "minDistance": 6.189912827708485,
+      "centerFraction": 0.0390625
+    },
+    {
+      "id": 5,
+      "visibleSeconds": 11.100000000000001,
+      "edgeCrossings": 3,
+      "minDistance": 6.516656622180436,
+      "centerFraction": 0.0033003300330033004
+    },
+    {
+      "id": 6,
+      "visibleSeconds": 31,
+      "edgeCrossings": 2,
+      "minDistance": 8.603288626592985,
+      "centerFraction": 0
+    },
+    {
+      "id": 7,
+      "visibleSeconds": 20.200000000000003,
+      "edgeCrossings": 1,
+      "minDistance": 7.989105618650353,
+      "centerFraction": 0
+    }
+  ],
+  "forwardOnly": {
+    "angularSpeed": {
+      "median": 0.22110982640325585,
+      "p95": 0.6874649884148002,
+      "max": 0.7557882726252759
+    },
+    "angularAcceleration": {
+      "median": 0.01677570150104779,
+      "p95": 0.13857495911544446,
+      "max": 0.1822670736653528
+    },
+    "linearAcceleration": {
+      "median": 0.02091708833053006,
+      "p95": 0.08013281412811046,
+      "max": 0.1377466068550615
+    },
+    "jerk": {
+      "median": 0.2164504370003869,
+      "p95": 0.6697418715686176,
+      "max": 1.646483528718164
+    },
+    "worstAngular": [
+      {
+        "time": 56.59999999999775,
+        "progress": 0.8657119506957259,
+        "angularSpeed": 0.7557882726252759
+      },
+      {
+        "time": 56.9166666666644,
+        "progress": 0.8712099149458418,
+        "angularSpeed": 0.7509843801162942
+      },
+      {
+        "time": 56.299999999997766,
+        "progress": 0.8605071845888342,
+        "angularSpeed": 0.7476336258654463
+      },
+      {
+        "time": 56.01666666666445,
+        "progress": 0.8555839326494674,
+        "angularSpeed": 0.738772123934077
+      }
+    ]
+  }
+}

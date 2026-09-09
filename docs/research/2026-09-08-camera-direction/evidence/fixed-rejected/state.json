@@ -1,0 +1,187 @@
+{
+  "url": "http://127.0.0.1:5191/?hold=0&populationLod=1&bubblePassage=1&renderer=webgl&idle=300&cameraJourney=1",
+  "seed": 7183,
+  "step": 0.016666666666666666,
+  "state": {
+    "specimen": {
+      "time": 30,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": false,
+      "bloom": "off (normal production path)",
+      "phase": 0.47386270266160846,
+      "activation": 0,
+      "frames": 1800
+    },
+    "actors": {
+      "shot": "second-encounter",
+      "actors": [
+        {
+          "id": 0,
+          "presence": 0.1,
+          "feature": 0,
+          "scale": 0.9,
+          "position": [
+            -5.06,
+            2.49,
+            -6.45
+          ],
+          "velocity": 0.641,
+          "phase": 0.474,
+          "primaryThrust": 0,
+          "secondaryThrust": 0
+        },
+        {
+          "id": 1,
+          "presence": 1,
+          "feature": 0,
+          "scale": 0.31,
+          "position": [
+            3.98,
+            2.13,
+            -9.94
+          ],
+          "velocity": 0.646,
+          "phase": 0.612,
+          "primaryThrust": 0,
+          "secondaryThrust": 0.255
+        },
+        {
+          "id": 2,
+          "presence": 1,
+          "feature": 0.94,
+          "scale": 0.82,
+          "position": [
+            -1.14,
+            -1.52,
+            -5.2
+          ],
+          "velocity": 0.643,
+          "phase": 0.567,
+          "primaryThrust": 0,
+          "secondaryThrust": 0
+        },
+        {
+          "id": 3,
+          "presence": 1,
+          "feature": 0,
+          "scale": 0.35,
+          "position": [
+            8.66,
+            3.11,
+            -10.04
+          ],
+          "velocity": 0.683,
+          "phase": 0.781,
+          "primaryThrust": 0,
+          "secondaryThrust": 0.226
+        },
+        {
+          "id": 4,
+          "presence": 0,
+          "feature": 0,
+          "scale": 0.76,
+          "position": [
+            7.43,
+            -4.32,
+            -11.21
+          ],
+          "velocity": 0.341,
+          "phase": 0.867,
+          "primaryThrust": 0,
+          "secondaryThrust": 0
+        },
+        {
+          "id": 5,
+          "presence": 0,
+          "feature": 0,
+          "scale": 0.58,
+          "position": [
+            -6.37,
+            2.59,
+            -10.99
+          ],
+          "velocity": 0.842,
+          "phase": 0.133,
+          "primaryThrust": 0.953,
+          "secondaryThrust": 0
+        },
+        {
+          "id": 6,
+          "presence": 0,
+          "feature": 0,
+          "scale": 0.33,
+          "position": [
+            9.08,
+            3.18,
+            -12.62
+          ],
+          "velocity": 0.828,
+          "phase": 0.438,
+          "primaryThrust": 0,
+          "secondaryThrust": 0
+        },
+        {
+          "id": 7,
+          "presence": 0,
+          "feature": 0,
+          "scale": 0.27,
+          "position": [
+            -8.44,
+            -3.84,
+            -10.87
+          ],
+          "velocity": 1.168,
+          "phase": 0.187,
+          "primaryThrust": 0.198,
+          "secondaryThrust": 0
+        }
+      ]
+    },
+    "camera": {
+      "progress": 0.346,
+      "position": [
+        5.21612,
+        -0.24618,
+        3.48799
+      ],
+      "target": [
+        -1.45964,
+        -0.51984,
+        -9.41532
+      ],
+      "actor": [
+        -1.46,
+        -0.52,
+        -9.415
+      ],
+      "shot": "school-crossing",
+      "subjectStrength": 0,
+      "bankDegrees": 0,
+      "fov": 47,
+      "orbit": "full",
+      "authoredJourney": true,
+      "tissueClearance": 9.0692,
+      "safetyCorrection": 0,
+      "subjectId": 2,
+      "subjectNdc": [
+        -0.2502068912705746,
+        -0.23070249814018132,
+        0.9985406102523472
+      ]
+    },
+    "renderer": {
+      "backend": "WebGL 2",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+      "drawBuffer": [
+        1280,
+        900
+      ]
+    },
+    "viewport": [
+      1280,
+      900
+    ]
+  }
+}

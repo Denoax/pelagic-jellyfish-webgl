@@ -1,0 +1,29 @@
+{
+  "kind": "Node CPU microbenchmark, not browser whole-scene or GPU timing",
+  "costs": [
+    {
+      "direction": "A",
+      "iterations": 100000,
+      "meanCpuMsPerSample": 0.00014485022999999997,
+      "bytes": 67256
+    },
+    {
+      "direction": "B",
+      "iterations": 100000,
+      "meanCpuMsPerSample": 0.00016786277999999996,
+      "bytes": 67256
+    },
+    {
+      "direction": "C",
+      "iterations": 100000,
+      "meanCpuMsPerSample": 0.00020774646000000003,
+      "bytes": 67256
+    },
+    {
+      "direction": "D",
+      "iterations": 100000,
+      "meanCpuMsPerSample": 0.0001522725,
+      "bytes": 67256
+    }
+  ]
+}
