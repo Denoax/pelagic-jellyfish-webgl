@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { PerspectiveCamera, Quaternion } from 'three/webgpu';
+import { PerspectiveCamera, Quaternion, Euler } from 'three/webgpu';
 import { bakeTrack, ProgressSpring, TrackPlayer } from '../src/scene/dev/camera/CameraTrack.js';
 import { directions } from '../src/scene/dev/camera/directions.js';
 
@@ -16,8 +16,13 @@ test('forward/reverse symmetry, finite jumps, pause debt discarded', () => {
   for(let i=0;i<2000;i++){a.update(i%80<40?0:1,1/60);assert.ok(a.position>=0&&a.position<=1);assert.ok(Number.isFinite(a.velocity));}
 });
 for(const definition of Object.values(directions)) test(`${definition.id}: fixed lens, finite unit quaternions, hemisphere continuity and zero roll`, () => {
-  const track=bakeTrack(definition),camera=new PerspectiveCamera(),player=new TrackPlayer(track),q=new Quaternion(),prev=new Quaternion();
-  for(let i=0;i<track.count;i++){player.sample(i/(track.count-1),camera);q.copy(camera.quaternion);assert.ok(Math.abs(q.length()-1)<1e-10);if(i)assert.ok(q.dot(prev)>0);prev.copy(q);assert.equal(camera.fov,definition.fov);assert.ok(camera.position.toArray().every(Number.isFinite));}
+  const track=bakeTrack(definition),camera=new PerspectiveCamera(),player=new TrackPlayer(track),q=new Quaternion(),prev=new Quaternion(),euler=new Euler(0,0,0,'YXZ');
+  for(let i=0;i<track.count*2;i++){player.sample(i/(track.count*2-1),camera);q.copy(camera.quaternion);assert.ok(Math.abs(q.length()-1)<1e-10);assert.ok(Math.abs(euler.setFromQuaternion(q,'YXZ').z)<1e-5);if(i)assert.ok(q.dot(prev)>0);prev.copy(q);assert.equal(camera.fov,definition.fov);assert.ok(camera.position.toArray().every(Number.isFinite));}
+});
+for(const omega of [6,10,16])test(`response ${omega}: monotone step from rest and no lingering velocity`,()=>{
+ const s=new ProgressSpring(omega);let last=0;
+ for(let i=0;i<600;i++){s.update(1,1/60);assert.ok(s.position>=last&&s.position<=1);last=s.position;}
+ assert.ok(Math.abs(1-s.position)<1e-10);assert.ok(Math.abs(s.velocity)<1e-10);
 });
 test('holds remain exactly stationary and malformed authoring is rejected', () => {
   const player=new TrackPlayer(bakeTrack(directions.A)),c=new PerspectiveCamera();player.sample(.01,c);const p=c.position.clone(),q=c.quaternion.clone();player.sample(.12,c);assert.ok(c.position.distanceTo(p)<1e-12);assert.ok(c.quaternion.angleTo(q)<1e-7);

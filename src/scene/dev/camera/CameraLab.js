@@ -6,7 +6,8 @@ import { directions } from './directions.js';
 export class CameraLab {
   constructor(camera, director, query) {
     this.camera = camera; this.director = director; this.free = false; this.playing = false;
-    this.spring = new ProgressSpring(Number(query.get('response')) || 10);
+    const response = Number(query.get('response'));
+    this.spring = new ProgressSpring([6, 10, 16].includes(response) ? response : 10);
     this.keys = new Set(); this.euler = new Euler(0, 0, 0, 'YXZ'); this.move = new Vector3();
     this.id = directions[query.get('direction')] ? query.get('direction') : 'A';
     this.listeners = []; this.disposed = false; this.cpu = []; this.measuring = false;
@@ -60,6 +61,7 @@ export class CameraLab {
     document.body.append(this.panel); this.status = this.panel.querySelector('[data-status]'); this.editor = this.panel.querySelector('textarea'); this.editor.value = JSON.stringify(this.definition, null, 2);
     const control = name => this.panel.querySelector(`[data-${name}]`), choose = this.panel.querySelector('select'); choose.value = this.id;
     this.listen(choose, 'change', () => { this.select(choose.value); this.seek(0); control('fov').value = this.definition.fov; });
+    control('response').value = String(this.spring.omega);
     this.listen(control('response'), 'change', e => { this.spring.omega = Number(e.target.value); });
     this.listen(control('progress'), 'input', e => { this.playing = false; this.seek(Number(e.target.value)); });
     this.listen(control('free'), 'click', () => { this.free = !this.free; control('free').textContent = this.free ? 'Return to track' : 'Free camera'; });
