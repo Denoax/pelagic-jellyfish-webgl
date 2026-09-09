@@ -42,12 +42,23 @@ test('bubble buoyancy remains upward with restrained read-only shared current', 
   for (let i = 0; i < 600; i++) p.update(1 / 60, .35, field, place);
   assert.ok(samples > 100); assert.ok(p.pool.filter(b => b.live).every(b => b.y > -3));
 });
-test('approved animals, M2 water, camera and idle sources remain exact M3 baseline', () => {
+test('approved animals, M2 water, legacy camera and idle remain exact; shell permits only M5 View integration', () => {
   const paths = execFileSync('git', ['ls-tree', '-r', '--name-only', '78d723a', 'src'], {encoding:'utf8'}).trim().split('\n')
     .filter(p => /\.(js|jsx)$/.test(p) && !['src/scene/HeroScene.jsx','src/scene/glass/LiveOceanLens.js'].includes(p));
-  for (const p of paths) assert.equal(readFileSync(p, 'utf8'), execFileSync('git', ['show', `78d723a:${p}`], {encoding:'utf8'}), p);
+  for (const p of paths) {
+    let current = readFileSync(p, 'utf8');
+    // M5 explicitly authorizes adding View to the shell. Strip only those
+    // exact integration lines; all prior artwork/idle/chrome stays locked.
+    if (p === 'src/App.jsx') current = current
+      .replace('import { ViewMenu } from "./ui/ViewMenu.jsx";\n', '')
+      .replace('  const [viewController, setViewController] = useState(null);\n', '')
+      .replace(' onViewReady={setViewController}', '')
+      .replace("      {viewController && sceneStatus === 'ready' && <ViewMenu controller={viewController} idle={idle.active} />}\n", '');
+    assert.equal(current, execFileSync('git', ['show', `78d723a:${p}`], {encoding:'utf8'}), p);
+  }
   const hero = readFileSync('src/scene/HeroScene.jsx', 'utf8');
-  assert.match(hero, /bubblesRequested = import.meta.env.DEV &&/);
+  assert.match(hero, /bubblesRequested = viewRequested \|\| \(import.meta.env.DEV &&/,
+    'M5 public views use the approved bubbles; legacy inspection remains DEV-only');
   assert.ok(PLUME.heroes >= 4 && PLUME.heroes <= 6);
   const adapter = readFileSync('src/scene/glass/BubblePassage.js', 'utf8');
   assert.match(adapter, /behavior: 'instant'/, 'DEV replay must not restart CSS smooth-scroll every frame');

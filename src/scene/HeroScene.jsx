@@ -11,7 +11,7 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
-export function HeroScene({ reducedMotion = false, onStatusChange }) {
+export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }) {
   const mountRef = useRef(null);
   const [status, setStatus] = useState("loading");
   const [progress, setProgress] = useState(0);
@@ -93,6 +93,14 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     };
 
     const updatePointer = (event) => {
+      if (event.target.closest?.('[data-view-ui]') || cameraLab?.dragging) {
+        previousPointer.set(event.clientX / window.innerWidth, 1 - event.clientY / window.innerHeight);
+        hoverDirty = false;
+        hoveredTissue?.setHovered(false);
+        hoveredTissue = null;
+        mount.classList.remove('is-jelly-hover');
+        return;
+      }
       pointerClient.set(event.clientX, event.clientY);
       pointer.set(
         event.clientX / window.innerWidth,
@@ -139,6 +147,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     };
 
     const beginPointer = (event) => {
+      if (event.target.closest?.('[data-view-ui]') || event.button !== 0) return;
       if (!event.isPrimary) return;
       pointerDown = {
         x: event.clientX,
@@ -161,7 +170,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
         travel > 9 ||
         duration > 520 ||
         target?.closest(
-          "a, button, input, textarea, select, .scene-copy, .idle-screen",
+          "a, button, input, textarea, select, .scene-copy, .idle-screen, [data-view-ui]",
         )
       )
         return;
@@ -213,13 +222,14 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     const start = async () => {
       try {
         const query = new URLSearchParams(window.location.search);
-        const populationRequested = import.meta.env.DEV && (query.get('populationLod') === '1' || query.get('cameraLab') === '1');
-        const bubblesRequested = import.meta.env.DEV && (query.get('bubblePassage') === '1' || query.get('cameraLab') === '1');
+        const viewRequested = !(import.meta.env.DEV && (query.get('legacyCamera') === '1' || query.get('specimen') === '1' || query.get('liveLens') === '1'));
+        const populationRequested = viewRequested || (import.meta.env.DEV && query.get('populationLod') === '1');
+        const bubblesRequested = viewRequested || (import.meta.env.DEV && query.get('bubblePassage') === '1');
         const lensRequested = import.meta.env.DEV && query.get('liveLens') === '1' && !bubblesRequested;
         // Publishing selects the reviewed implementation, never its inspection
         // fixture. Production query strings cannot expose specimen controls.
         const releasedOcean = import.meta.env.PROD && import.meta.env.VITE_OCEAN_RELEASE === 'milestone-2';
-        const connectedRequested = releasedOcean || (import.meta.env.DEV && (query.get('connectedOcean') === '1' || lensRequested || bubblesRequested || populationRequested) && query.get('specimen') !== '1');
+        const connectedRequested = viewRequested || releasedOcean || (import.meta.env.DEV && (query.get('connectedOcean') === '1' || lensRequested || bubblesRequested || populationRequested) && query.get('specimen') !== '1');
         const previewRequested = import.meta.env.DEV && (query.get('specimen') === '1' || query.get('oceanPreview') === '1' || connectedRequested);
         const forceWebGL =
           releasedOcean || // Ship the verified backend; legacy full-ocean WebGPU remains a separate issue.
@@ -351,7 +361,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           activationCount: 0,
           lastActivated: null,
           getCameraState() {
-            return cameraRig.getState();
+            return cameraLab ? { ...cameraLab.summary(), position: app.camera.position.toArray(), quaternion: app.camera.quaternion.toArray() } : cameraRig.getState();
           },
           getSwarmState() {
             return {
@@ -391,10 +401,12 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           const { SpecimenPreview } = await import('./dev/SpecimenPreview.js');
           specimen = new SpecimenPreview(query, app, appendages, environment, schoolDirector);
         }
-        if (import.meta.env.DEV && query.get('cameraLab') === '1') {
-          const { CameraLab } = await import('./dev/camera/CameraLab.js');
+        if (viewRequested) {
+          const { ViewController } = await import('./camera/ViewController.js');
           if (disposed) return;
-          cameraLab = new CameraLab(app.camera, schoolDirector, query);
+          cameraLab = new ViewController(app.camera, schoolDirector, query, renderer.domElement);
+          onViewReady?.(cameraLab);
+          if (import.meta.env.DEV) window.__CAMERA_LAB__ = cameraLab;
         }
         if (connectedRequested) {
           const { ConnectedOcean } = await import('./ocean/ConnectedOcean.js');
@@ -530,7 +542,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
             }
             const scrollDamping =
               1 - Math.exp(-cameraDelta * (reducedMotion ? 5.8 : 3.5));
-            scrollProgress += (scrollTarget - scrollProgress) * scrollDamping;
+            if (cameraLab) scrollProgress = cameraLab.advance(scrollTarget, rawDelta, elapsed);
+            else scrollProgress += (scrollTarget - scrollProgress) * scrollDamping;
             const interactionMode =
               performance.now() - lastScrollTime < 180 ||
               Math.abs(scrollTarget - scrollProgress) > 0.0015;
@@ -558,7 +571,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
               current.value,
               journeyFocus,
             );
-            if (cameraLab) cameraLab.update(scrollTarget, rawDelta, elapsed);
+            if (cameraLab) cameraLab.updatePose(rawDelta, elapsed);
             else cameraRig.update(scrollProgress, cameraDelta, elapsed, directive);
             schoolDirector.actors.forEach((actor, index) => {
               appendages[index]?.setPresence(actor.presence, actor.feature);
@@ -641,6 +654,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
       delete window.__JELLYFISH_WORLD__;
       specimen?.dispose();
       cameraLab?.dispose();
+      onViewReady?.(null);
+      if (import.meta.env.DEV) delete window.__CAMERA_LAB__;
       liveLens?.dispose();
       bubblePassage?.dispose();
       delete window.__BUBBLE_PASSAGE__;
@@ -657,7 +672,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
       );
       renderer?.domElement?.remove();
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, onViewReady]);
 
   return (
     <>

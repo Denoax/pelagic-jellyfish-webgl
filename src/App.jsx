@@ -3,6 +3,7 @@ import { IdleScreen } from "./ui/IdleScreen.jsx";
 import { useMotionPreference } from "./core/useMotionPreference.js";
 import { useIdleScreen } from "./core/useIdleScreen.js";
 import { identity } from "./content/site.js";
+import { ViewMenu } from "./ui/ViewMenu.jsx";
 
 const HeroScene = lazy(() =>
   import("./scene/HeroScene.jsx").then((module) => ({ default: module.HeroScene })),
@@ -13,6 +14,7 @@ const chapterIds = ["intro", "work", "services", "about", "contact"];
 export function App() {
   const motion = useMotionPreference();
   const [sceneStatus, setSceneStatus] = useState("loading");
+  const [viewController, setViewController] = useState(null);
   const idleEnabled = !motion.reduced && sceneStatus === "ready";
   const idle = useIdleScreen(idleEnabled);
 
@@ -23,7 +25,7 @@ export function App() {
       </a>
 
       <Suspense fallback={<div className="ocean-stage ocean-stage--loading" aria-hidden="true" />}>
-        <HeroScene reducedMotion={motion.reduced} onStatusChange={setSceneStatus} />
+        <HeroScene reducedMotion={motion.reduced} onStatusChange={setSceneStatus} onViewReady={setViewController} />
       </Suspense>
 
       <header className="site-header" aria-label="Artist">
@@ -63,6 +65,7 @@ export function App() {
       </footer>
 
       <IdleScreen enabled={idleEnabled} active={idle.active} onDismiss={idle.dismiss} />
+      {viewController && sceneStatus === 'ready' && <ViewMenu controller={viewController} idle={idle.active} />}
     </>
   );
 }
