@@ -1,26 +1,59 @@
-// One bounded destination follower. Native scrolling requests a destination;
-// it cannot bypass the speed/acceleration limits. Fixed integration steps make
-// identical input events independent of ordinary rendering cadence.
-export const responsePresets = { cinematic: 1.6, balanced: 2.3, responsive: 3 };
+// One input-driven follower. No timer/playhead can request travel.
+export const responsePresets = { cinematic: 52, balanced: 72, responsive: 92 };
+export const WHEEL_LINE_PIXELS = 16;
+export const INPUT_SENSITIVITY = .0006; // normalized CSS pixels -> journey units
+const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+export function normalizeWheel(deltaY, deltaMode, viewportHeight) {
+  if (!Number.isFinite(deltaY)) return 0;
+  return deltaY * (deltaMode === 1 ? WHEEL_LINE_PIXELS : deltaMode === 2 ? Math.max(1, viewportHeight) : 1);
+}
 export class JourneyController {
-  constructor({ maxSpeed = .025, maxAcceleration = .025, response = 'balanced' } = {}) {
-    this.maxSpeed = maxSpeed; this.maxAcceleration = maxAcceleration;
-    this.response = response; this.position = 0; this.velocity = 0; this.debt = 0;
+  constructor({ maxSpeed = .14, maxAcceleration = 1.4, maxLead = .075, sensitivity = INPUT_SENSITIVITY, response = 'balanced' } = {}) {
+    Object.assign(this, { maxSpeed, maxAcceleration, maxLead, sensitivity, response });
+    this.position = 0; this.target = 0; this.velocity = 0; this.debt = 0;
+    this.acceleration = 0; this.direction = 0; this.leadClamped = false;
   }
   suspend() { this.debt = 0; }
-  update(target, dt) {
-    if (!Number.isFinite(target) || !Number.isFinite(dt) || dt <= 0) return this.position;
+  request(value) {
+    if (!Number.isFinite(value)) return;
+    const bounded = clamp(value, Math.max(0, this.position - this.maxLead), Math.min(1, this.position + this.maxLead));
+    this.leadClamped = Math.abs(value - bounded) > 1e-10;
+    this.target = bounded;
+  }
+  input(pixels) {
+    if (!Number.isFinite(pixels) || !pixels) return;
+    const direction = Math.sign(pixels);
+    // Opposite intent cancels the old queue, not physical camera momentum.
+    if (this.direction && direction !== this.direction) this.target = this.position;
+    this.direction = direction;
+    this.request(this.target + pixels * this.sensitivity);
+  }
+  seek(value) {
+    if (!Number.isFinite(value)) return;
+    this.position = this.target = clamp(value, 0, 1);
+    this.velocity = this.acceleration = this.debt = this.direction = 0;
+  }
+  update(_unusedTarget, dt) {
+    // Only explicit input/request changes destination; elapsed time is not input.
+    if (!Number.isFinite(dt) || dt <= 0) return this.position;
     if (dt > .25) { this.suspend(); return this.position; }
-    target = Math.max(0, Math.min(1, target));
     this.debt += dt;
-    const step = 1 / 240, omega = responsePresets[this.response] || 2.3;
+    const step = 1 / 240, gain = responsePresets[this.response] || responsePresets.balanced;
     while (this.debt + 1e-12 >= step) {
       this.debt -= step;
-      const acceleration = Math.max(-this.maxAcceleration, Math.min(this.maxAcceleration,
-        omega * omega * (target - this.position) - 2 * omega * this.velocity));
-      const next = Math.max(-this.maxSpeed, Math.min(this.maxSpeed, this.velocity + acceleration * step));
-      this.position += (this.velocity + next) * .5 * step;
-      this.velocity = next;
+      const error = this.target - this.position;
+      const desired = Math.sign(error) * Math.min(
+        this.maxSpeed * Math.tanh(gain * Math.abs(error)),
+        Math.sqrt(2 * this.maxAcceleration * Math.abs(error)),
+      );
+      const previous = this.velocity;
+      this.velocity += clamp(desired - previous, -this.maxAcceleration * step, this.maxAcceleration * step);
+      this.position += this.velocity * step;
+      // Exact rest after subpixel convergence, within one allowed braking step.
+      if (Math.abs(this.target - this.position) < 1e-7 && Math.abs(this.velocity) < this.maxAcceleration * step) {
+        this.position = this.target; this.velocity = 0;
+      }
+      this.acceleration = (this.velocity - previous) / step;
     }
     return this.position;
   }

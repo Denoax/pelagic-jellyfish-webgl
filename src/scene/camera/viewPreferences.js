@@ -10,7 +10,7 @@ export function readViewPreferences(storage) {
   let value; try { value = JSON.parse(storage?.getItem(key) || '{}'); } catch { value = {}; }
   if (!value || typeof value !== 'object') value = {};
   return {
-    mode: viewModes.some(m => m.id === value.mode) ? value.mode : 'A',
+    mode: viewModes.some(m => m.id === value.mode) ? value.mode : 'B',
     expanded: value.expanded === true,
     response: ['cinematic','balanced','responsive'].includes(value.response) ? value.response : 'balanced',
   };

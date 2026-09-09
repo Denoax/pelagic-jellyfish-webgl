@@ -1,7 +1,7 @@
 import { Euler, PerspectiveCamera, Vector3 } from 'three/webgpu';
 import { bakeTrack, TrackPlayer } from './CameraTrack.js';
 import { directions } from './directions.js';
-import { JourneyController } from './JourneyController.js';
+import { JourneyController, normalizeWheel } from './JourneyController.js';
 import { readViewPreferences, writeViewPreferences, viewModes } from './viewPreferences.js';
 
 // Owns only the observer and input state. Never creates/restarts the ocean,
@@ -11,11 +11,12 @@ export class ViewController {
     this.camera = camera; this.director = director; this.surface = surface;
     try { this.storage = window.localStorage; } catch { this.storage = null; }
     this.preferences = readViewPreferences(this.storage);
-    this.id = directions[query.get('direction')] ? query.get('direction') : this.preferences.mode === 'explore' ? 'A' : this.preferences.mode;
-    this.free = !directions[query.get('direction')] && this.preferences.mode === 'explore'; this.playing = false; this.paused = this.free;
+    this.id = directions[query.get('direction')] ? query.get('direction') : this.preferences.mode === 'explore' ? 'B' : this.preferences.mode;
+    this.free = !directions[query.get('direction')] && this.preferences.mode === 'explore';
     this.journey = new JourneyController({ response: this.preferences.response });
     this.spring = this.journey; // Existing local camera diagnostics use this read-only state.
-    this.destination = 0; this.lastRaw = null; this.replaying = false;
+    this.lastRaw = null; this.touchY = null; this.nativeWheelUntil = 0;
+    this.telemetry = import.meta.env?.DEV && query.get('scrollDebug') === '1' ? [] : null;
     this.definitions = Object.fromEntries(Object.entries(directions).map(([k,v]) => [k, structuredClone(v)]));
     this.players = Object.fromEntries(Object.entries(this.definitions).map(([k,v]) => [k, new TrackPlayer(bakeTrack(v))]));
     this.keys = new Set(); this.listeners = []; this.subscribers = new Set(); this.dragging = null;
@@ -24,12 +25,36 @@ export class ViewController {
     this.transition = 1; this.transitionDuration = .95; this.lastUI = -Infinity;
     this.players[this.id].sample(0, camera);
     this.setExploreClass();
-    const release = () => { this.keys.clear(); this.dragging = null; this.journey.suspend(); };
+    const release = () => { this.keys.clear(); this.dragging = null; this.touchY = null; this.journey.suspend(); };
     this.listen(document, 'visibilitychange', release); this.listen(window, 'blur', release);
     this.listen(window, 'keydown', e => {
-      if (document.querySelector('.idle-screen.is-active') || e.target.closest?.('input,textarea,select,button,[contenteditable=true],[data-view-ui]')) return;
+      if (e.defaultPrevented) return;
+      if (e.key === 'Escape' && this.free && !e.target.closest?.('[data-view-ui],input,textarea,select')) { this.select(this.id); e.preventDefault(); return; }
+      if (document.querySelector('.idle-screen.is-active') || e.target.closest?.('input,textarea,select,[contenteditable=true],[role=menu],[data-view-editor]')) return;
       if (this.free && ['KeyW','KeyA','KeyS','KeyD','KeyQ','KeyE'].includes(e.code)) { this.keys.add(e.code); e.preventDefault(); }
+      if (!this.free && !e.target.closest?.('[data-view-ui]') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const delta = {ArrowDown:64, ArrowUp:-64, PageDown:innerHeight*.6, PageUp:-innerHeight*.6, Space:(e.shiftKey?-1:1)*innerHeight*.6}[e.code];
+        if (delta) { this.input(delta, 'keyboard'); e.preventDefault(); }
+        if (e.code === 'Home' || e.code === 'End') { this.seek(e.code==='Home'?0:1); e.preventDefault(); }
+      }
     });
+    const canScroll = e => !this.free && !document.querySelector('.idle-screen.is-active') && !e.target.closest?.('[data-view-ui],input,textarea,select,[contenteditable=true]');
+    this.listen(window, 'wheel', e => {
+      if (!canScroll(e) || e.ctrlKey || e.metaKey || Math.abs(e.deltaX)>Math.abs(e.deltaY)) return;
+      const mode=e.deltaMode, pixels=normalizeWheel(e.deltaY,mode,innerHeight);
+      if(e.cancelable)e.preventDefault();
+      else this.nativeWheelUntil=performance.now()+250;
+      this.input(pixels,'wheel',e.deltaY,mode);
+    }, {passive:false});
+    this.listen(window, 'touchstart', e => { this.touchY=canScroll(e)&&e.touches.length===1?e.touches[0].clientY:null; }, {passive:true});
+    this.listen(window, 'touchmove', e => {
+      if (!canScroll(e)||e.touches.length!==1||this.touchY===null) { this.touchY=null; return; }
+      const y=e.touches[0].clientY, delta=this.touchY-y; this.touchY=y;
+      if(e.cancelable){e.preventDefault();this.input(delta,'touch');}
+    }, {passive:false});
+    this.listen(window, 'touchend', ()=>{this.touchY=null;}, {passive:true});
+    this.listen(window, 'touchcancel', ()=>{this.touchY=null;}, {passive:true});
+    this.listen(window, 'resize', ()=>this.syncDocument());
     this.listen(window, 'keyup', e => this.keys.delete(e.code));
     this.listen(surface, 'pointerdown', e => {
       if (!this.free || (e.button !== 2 && e.pointerType !== 'touch')) return;
@@ -46,12 +71,14 @@ export class ViewController {
     });
     this.listen(surface, 'pointerup', release); this.listen(surface, 'pointercancel', release);
     this.listen(surface, 'contextmenu', e => { if(this.free)e.preventDefault(); });
-    this.listen(window, 'click', e => { if(e.target.closest?.('a[href="#intro"]'))this.request(0); });
+    this.listen(window, 'click', e => { if(e.target.closest?.('a[href="#intro"]')){e.preventDefault();this.seek(0);} });
   }
-  listen(target,type,fn) { target?.addEventListener(type,fn); this.listeners.push(()=>target?.removeEventListener(type,fn)); }
+  listen(target,type,fn,options) { target?.addEventListener(type,fn,options); this.listeners.push(()=>target?.removeEventListener(type,fn,options)); }
   subscribe(fn) { this.subscribers.add(fn); return ()=>this.subscribers.delete(fn); }
   emit() { const state=this.summary(); this.subscribers.forEach(fn=>fn(state)); }
-  summary() { return { direction:this.id, mode:this.free?'explore':this.id, progress:this.journey.position, destination:this.destination, velocity:this.journey.velocity, response:this.journey.response, free:this.free, playing:this.playing, paused:this.paused, replaying:this.replaying, transitioning:this.transition<1, fixedFov:this.definitions[this.id].fov, roll:this.euler.setFromQuaternion(this.camera.quaternion,'YXZ').z*180/Math.PI }; }
+  get destination() { return this.journey.target; }
+  set destination(value) { this.journey.request(value); }
+  summary() { return { direction:this.id, mode:this.free?'explore':this.id, progress:this.journey.position, destination:this.destination, velocity:this.journey.velocity, acceleration:this.journey.acceleration, lead:this.destination-this.journey.position, leadClamped:this.journey.leadClamped, response:this.journey.response, free:this.free, transitioning:this.transition<1, fixedFov:this.definitions[this.id].fov, roll:this.euler.setFromQuaternion(this.camera.quaternion,'YXZ').z*180/Math.PI }; }
   actors() { return this.director.actors.map(a=>({id:a.id,position:a.position.toArray(),quaternion:a.quaternion.toArray(),scale:a.scale,presence:a.presence})); }
   persist(values) { Object.assign(this.preferences,values); writeViewPreferences(this.storage,this.preferences); }
   setExploreClass() { document.documentElement.classList.toggle('view-is-exploring',this.free); }
@@ -59,31 +86,36 @@ export class ViewController {
   select(mode) {
     if(!viewModes.some(m=>m.id===mode))return;
     this.keys.clear(); this.dragging=null;
-    if(mode==='explore') { this.free=true; this.playing=false; this.paused=true; this.replaying=false; this.transition=1; }
+    if(mode==='explore') { this.free=true; this.transition=1; }
     else { this.beginTransition(); this.free=false; this.id=mode; }
     this.setExploreClass(); this.persist({mode}); this.emit();
   }
-  request(value) {
-    if(!Number.isFinite(value))return;
-    this.destination=Math.max(0,Math.min(1,value)); this.playing=false; this.paused=false; this.replaying=false;
+  syncDocument() {
     window.scrollTo({top:this.destination*Math.max(1,document.documentElement.scrollHeight-innerHeight),behavior:'instant'});
-    this.lastRaw=window.scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight); this.emit();
+    this.lastRaw=window.scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);
   }
-  togglePlayback() {
-    if(this.free)return;
-    if(this.journey.position>.9999 && !this.replaying) { this.replay(); return; }
-    if(this.playing || (!this.paused && Math.abs(this.destination-this.journey.position)>.0002)) { this.paused=true; this.playing=false; this.replaying=false; }
-    else { this.paused=false; this.playing=true; this.destination=1; }
+  input(pixels,kind,deltaY=pixels,deltaMode=0) {
+    const before=this.destination;
+    this.journey.input(pixels);this.syncDocument();
+    if(this.telemetry){this.telemetry.push({...this.summary(),time:performance.now(),kind,deltaY,deltaMode,normalized:pixels,inputDirection:Math.sign(pixels),before,after:this.destination});if(this.telemetry.length>512)this.telemetry.shift();}
+  }
+  request(value) { this.journey.request(value); this.syncDocument(); this.emit(); }
+  seek(value) {
+    // Explicit authoring/anchor navigation only, never called by wheel/touch.
+    this.beginTransition(); this.journey.seek(value); this.syncDocument();
     this.emit();
   }
-  replay() { if(this.free)return; this.request(0); this.replaying=true; this.playing=true; this.emit(); }
   setResponse(value) { if(!['cinematic','balanced','responsive'].includes(value))return; this.journey.response=value; this.persist({response:value}); this.emit(); }
   advance(raw,dt,time) {
-    if(this.lastRaw===null) { this.lastRaw=raw; this.destination=raw; }
-    else if(Math.abs(raw-this.lastRaw)>.000001) { this.lastRaw=raw; if(!this.free){this.destination=raw;this.paused=false;this.playing=false;this.replaying=false;} }
-    if(!this.free) this.journey.update(this.paused?this.journey.position:this.destination,dt);
-    if(this.replaying && this.journey.position<.0001 && Math.abs(this.journey.velocity)<.0001) { this.replaying=false;this.destination=1; }
-    if(this.playing && !this.replaying && this.journey.position> .9999) { this.playing=false;this.paused=true; }
+    // Read actual DOM state, not a potentially one-frame-old scroll callback.
+    // Some browser wheel transactions are non-cancelable. They still carry
+    // intent; reconcile their native scroll echo instead of counting it twice.
+    // This only synchronizes the document, never adds another camera follower.
+    if(performance.now()<this.nativeWheelUntil)this.syncDocument();
+    const actual=window.scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);
+    if(this.lastRaw===null) { this.lastRaw=actual; this.journey.seek(actual); }
+    else if(Math.abs(actual-this.lastRaw)>.000001) { this.lastRaw=actual; if(!this.free){this.journey.request(actual);this.syncDocument();} }
+    if(!this.free) this.journey.update(null,dt);
     if(time-this.lastUI>.1) { this.lastUI=time;this.emit(); }
     return this.journey.position;
   }
