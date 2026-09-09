@@ -421,6 +421,10 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
           cost: () => Array.from(environment.sanctuary.cpu.slice(0, environment.sanctuary.cpuCount)),
           resetCost: () => { environment.sanctuary.cpuCount = 0; environment.sanctuary.cpuCursor = 0; },
           shimmer: value => { if(value!==undefined) environment.sanctuary.thermal.enabled=Boolean(value);return environment.sanctuary.thermal.state(); },
+          plumeCurrentForReview: (x,z) => {
+            const s=environment.sanctuary;
+            s.sim.field=x===null?connectedOcean?.field:{sample(px,py,pz,out){connectedOcean?.field.sample(px,py,pz,out);out.x=clamp(Number(x)||0,-.4,.4);out.z=clamp(Number(z)||0,-.4,.4);return out;}};
+          },
           renderStats: () => ({ ...renderer.info.render, memory: { ...renderer.info.memory } }),
           plumeProbe: () => {
             const s = environment.sanctuary;
