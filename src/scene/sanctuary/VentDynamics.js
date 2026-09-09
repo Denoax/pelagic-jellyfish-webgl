@@ -7,7 +7,7 @@ export const DIFFUSE=Object.freeze([[2.1,1.4],[-1.8,2.2],[1.1,-2.1]].map(([x,z])
 // Fixed-size CPU simulation. Sources and random phases are immutable; only
 // numerical state changes. Fixed stepping discards suspension debt.
 export class VentDynamics {
-  constructor({count=768,diffuseCount=48,snowCount=80,reducedMotion=false}={}) {
+  constructor({count=768,diffuseCount=16,snowCount=80,reducedMotion=false}={}) {
     this.smokeCount=count;this.diffuseCount=diffuseCount;this.snowCount=snowCount;
     this.count=count+diffuseCount+snowCount;this.reducedMotion=reducedMotion;
     this.position=new Float32Array(this.count*3);this.velocity=new Float32Array(this.count*3);
@@ -20,7 +20,9 @@ export class VentDynamics {
   }
   reset(i) {
     const k=i*3,isSmoke=i<this.smokeCount,isSnow=i>=this.smokeCount+this.diffuseCount;
-    const origin=isSmoke?ORIFICE:DIFFUSE[i%DIFFUSE.length],phase=seed(i,18)*Math.PI*2;
+    // First two diffuse outlets are clear refractive seeps. Only the third
+    // releases a few fine suspended grains; the black smoker stays distinct.
+    const origin=isSmoke?ORIFICE:DIFFUSE[2],phase=seed(i,18)*Math.PI*2;
     const radius=isSmoke?.08:.5;
     this.position[k]=isSnow?HERO.x+(seed(i,21)-.5)*14:origin.x+Math.sin(phase)*radius;
     this.position[k+1]=isSnow?FLOOR_Y+seed(i,22)*13:origin.y;

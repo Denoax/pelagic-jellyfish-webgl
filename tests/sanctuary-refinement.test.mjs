@@ -5,6 +5,7 @@ import {PerspectiveCamera,NormalBlending,Scene} from 'three/webgpu';
 import {ThermalShimmer} from '../src/scene/sanctuary/ThermalShimmer.js';
 import {Sanctuary} from '../src/scene/sanctuary/Sanctuary.js';
 import {HERO,FLOOR_Y} from '../src/scene/sanctuary/geology.js';
+import {VentDynamics,DIFFUSE} from '../src/scene/sanctuary/VentDynamics.js';
 import {directions} from '../src/scene/camera/directions.js';
 import {bakeTrack,TrackPlayer} from '../src/scene/camera/CameraTrack.js';
 
@@ -26,6 +27,13 @@ test('thermal domains cull, disable and dispose without creating GPU resources',
  const src=readFileSync(new URL('../src/scene/sanctuary/ThermalShimmer.js',import.meta.url),'utf8');
  assert.doesNotMatch(src,/new THREE\.(RenderTarget|PostProcessing|WebGPURenderer)|renderAsync\(/);
  assert.match(src,/texture\(lens.target.texture/);assert.match(src,/lens.target.depthTexture/);
+});
+test('diffuse particulate is confined to the third outlet; heat follows bounded current',()=>{
+ const s=new VentDynamics();for(let i=s.smokeCount;i<s.smokeCount+s.diffuseCount;i++){s.reset(i);assert.equal(s.position[i*3+1],Math.fround(DIFFUSE[2].y));}
+ const t=new ThermalShimmer(),field={sample(x,y,z,o){o.x=20;o.z=-20;}};
+ for(let i=0;i<120;i++)t.update(1/60,i/60,field);
+ assert.ok(t.current.value.x>0&&t.current.value.x<=.4);assert.ok(t.current.value.y<0&&t.current.value.y>=-.4);
+ const before=t.current.value.clone();t.update(30,2,field);assert.deepEqual(t.current.value,before);t.dispose();s.dispose();
 });
 test('one world retains the defining crown in all final portrait tracks',()=>{
  assert.equal(FLOOR_Y,-15);

@@ -52,7 +52,7 @@ export class Sanctuary {
     if(this.disposed)return;
     const started=performance.now(),dt=this.lastTime===null?0:elapsed-this.lastTime;this.lastTime=elapsed;
     if(this.sim){this.sim.update(dt);this.plume.update();this.diffuse.update();}
-    this.thermal.time.value=this.sim?.time||0;
+    this.thermal.update(dt,this.sim?.time||0,this.sim?.field);
     this.animalLight.update(dt,this.tissues);
     this.light.position.value.set(this.animalLight.x,this.animalLight.y,this.animalLight.z);this.light.power.value=this.animalLight.intensity;
     this.cpu[this.cpuCursor++%this.cpu.length]=performance.now()-started;this.cpuCount=Math.min(this.cpuCount+1,this.cpu.length);

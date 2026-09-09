@@ -7,6 +7,7 @@ import { ORIFICE, DIFFUSE } from './VentDynamics.js';
 export class ThermalShimmer {
   constructor(){
     this.time=uniform(0);this.enabled=true;this.disposed=false;
+    this.current=uniform(new THREE.Vector2());this.flow={x:0,y:0,z:0,light:0,wake:0};
     this.cameraWorld=uniform(new THREE.Matrix4());this.view=uniform(new THREE.Matrix4());
     this.frustum=new THREE.Frustum();this.matrix=new THREE.Matrix4();
     this.domains=[{p:ORIFICE,r:[.48,1.35,.48]},...DIFFUSE.slice(0,2).map(p=>({p,r:[.4,.6,.4]}))].map(({p,r},i)=>({
@@ -14,6 +15,15 @@ export class ThermalShimmer {
       strength:uniform(0),radius:Math.max(...r),gain:i===0?1:.55,
       sphere:new THREE.Sphere(new THREE.Vector3(p.x,p.y+r[1]*.8,p.z),Math.max(...r)),
     }));
+  }
+  update(dt,time,field){
+    if(this.disposed)return;this.time.value=time;
+    if(!Number.isFinite(dt)||dt<=0||dt>.25)return;
+    if(field)field.sample(ORIFICE.x,ORIFICE.y,ORIFICE.z,this.flow);
+    else{this.flow.x=.07;this.flow.z=.02;}
+    const a=1-Math.exp(-dt/.85),v=this.current.value;
+    v.x+=(Math.max(-.4,Math.min(.4,this.flow.x))-v.x)*a;
+    v.y+=(Math.max(-.4,Math.min(.4,this.flow.z))-v.y)*a;
   }
   prepare(camera){
     if(this.disposed)return false;
@@ -43,7 +53,9 @@ export class ThermalShimmer {
         const visible=pv.z.sub(sceneZ).smoothstep(0,.25);
         const mask=r2.smoothstep(.08,1).oneMinus().pow(2).mul(visible).mul(d.strength);
         // Smooth rising cells; world coordinates, not a screen-locked wiggle.
-        const flow=p.sub(d.center),y=flow.y.mul(5).sub(this.time.mul(1.8));
+        const local=p.sub(d.center);
+        const flow=local.sub(vec3(this.current.x,0,this.current.y).mul(local.y.max(0)));
+        const y=flow.y.mul(5).sub(this.time.mul(1.8));
         const a=y.add(flow.x.mul(6)).sin().mul(y.mul(.63).sub(flow.z.mul(5)).cos());
         const b=y.mul(.79).add(flow.z.mul(5)).cos().mul(flow.x.mul(4).sub(y.mul(.38)).sin());
         const moved=p.add(vec3(a,b.mul(.25),b).mul(.024));
