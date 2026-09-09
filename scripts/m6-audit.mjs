@@ -2,6 +2,9 @@ import {browserSession,sleep} from './view-r2-browser.mjs';
 const url=process.argv[2]||'http://127.0.0.1:5196/?renderer=webgl&idle=300';
 const b=await browserSession('../m6-evidence/'+(process.argv[3]||'before'));
 try{
+ const {windowId}=await b.send('Browser.getWindowForTarget');
+ await b.send('Browser.setWindowBounds',{windowId,bounds:{width:1300,height:1000}});
+ await b.send('Emulation.setVisibleSize',{width:1280,height:900});
  await b.navigate(url);await sleep(6000);b.save('identity',await b.ev(`({browser:navigator.userAgent,renderer:window.__SPECIMEN__.rendererInfo(),deep:window.__JELLYFISH_WORLD__.getDeepState?.()})`));
  const states=[];await b.record();
  for(const mode of ['A','B','C','D'])for(const p of [.5,.72,1]){

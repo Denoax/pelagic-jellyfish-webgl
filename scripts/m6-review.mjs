@@ -6,6 +6,9 @@ const state=()=>b.ev(`({camera:window.__JELLYFISH_WORLD__.getCameraState(),deep:
 const shot=async name=>{await b.shot(name);states.push({name,...await state()});};
 const wheel=async(direction,steps=40)=>{for(let i=0;i<steps;i++){await b.send('Input.dispatchMouseEvent',{type:'mouseWheel',x:width*.7,y:height*.55,deltaY:direction*35,deltaX:0});await sleep(150);}await sleep(1500);};
 try{
+ const {windowId}=await b.send('Browser.getWindowForTarget');
+ await b.send('Browser.setWindowBounds',{windowId,bounds:{width:width+20,height:height+100}});
+ await b.send('Emulation.setVisibleSize',{width,height});
  await b.navigate(url);await sleep(6000);b.save('identity',await b.send('Browser.getVersion'));
  await b.record();
  for(const mode of portrait==='1'?['B','D']:['B','D','A']){
