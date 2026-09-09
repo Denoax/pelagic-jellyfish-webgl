@@ -1,5 +1,9 @@
 # Prototype Instructions
 
+## Current authorization: M6 sanctuary (2026-09-09)
+
+Approved M5.2 baseline is `aef830b1619eef71e36be4e8b4cd8b924fb1bd8a`. M6 ONLY replaces the deep environment with a physically deeper dark basalt basin, clustered pillow flows/shelves, one monumental irregular sulfide chimney, localized mineral plume/current coupling, diffuse deposits and sparse vent life. Research and measured camera clearance precede geometric blockout; inspect every locked camera before material polish. No tropical coral, kelp, exposed lava, orange floodlights or opacity-fading solid terrain. One pooled animal-derived environmental light, preallocated plume, no extra ocean pass. Preserve M1–M5.2 animals, currents, refraction, population/LOD, camera tracks, View, scroll, Explore and idle. Local reversible commits only: NO push/merge/deploy/Pages/M7. This supersedes earlier no-M6 boundaries below, not their other safeguards.
+
 ## Current camera review boundary (Mani, 2026-09-08)
 
 M5.2 (2026-09-09) supersedes the playback/panel direction below: `57dbcf1` failed review. Cinematic travel is input-only, with normalized wheel/touch intent, one responsive capped follower, bounded queue and prompt reversal. No production autoplay, Play/Pause/Replay or public scrubber. Keep A/B/C/D tracks byte-unchanged; Drift is the fresh default because Documentary/Intimate intentionally hold at their openings. View is a compact mode menu, closes on every selection, and returns focus. Advanced is separate and authoring JSON requires another explicit disclosure. Explore closes the menu, shows help for a few seconds then fades, offers help rediscovery and Escape/on-screen exit to the last cinematic view. Preserve M1–M4.1, keep all work local, no push/merge/deploy/Pages/M6. Physical-device validation must not be inferred from browser-generated input.
