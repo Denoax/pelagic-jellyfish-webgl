@@ -533,7 +533,7 @@ export class PelagicEnvironment {
     this.deepGroup = this.sanctuary.group;
   }
 
-  async loadDeepAssets() { /* Procedural resources already allocated before prewarm. */ }
+  async loadDeepAssets() { await this.sanctuary.light.ready; }
   getDeepState() { return this.sanctuary.state(); }
 
   update(elapsed, progress, current, focus, interactionMode = false, prewarm = false) {

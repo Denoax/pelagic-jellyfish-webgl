@@ -3,7 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 export const FLOOR_Y = -15;
 export const BASIN_SIZE = 192;
-export const HERO = Object.freeze({ x: -4.6, z: -24, height: 12, radius: 1.65 });
+export const HERO = Object.freeze({ x: -2.4, z: -24, height: 12, radius: 1.65 });
 export function seed(i, salt = 1) { const v = Math.sin(i * 91.73 + salt * 37.11) * 43758.5453; return v - Math.floor(v); }
 export function floorHeight(x, z) {
   return FLOOR_Y + .18 * Math.sin(x * .19 + z * .13) + .09 * Math.cos(z * .41 - x * .22)
@@ -66,6 +66,11 @@ export function sanctuaryLayout() {
 
 // Sulfide growth: bent centerline, irregular accretion at several scales, offset
 // branch columns and actual thick-walled outlets. No rotationally symmetric cone.
+function crustRadius(t,a,salt,radius){
+  const foot=radius*(.26+.64*(1-t)**.7+.28*Math.exp(-t*12));
+  return foot*(1+.16*Math.sin(a*3+salt+t*3)+.105*Math.cos(a*5-t*8)+.065*Math.sin(a*11+t*21))
+    *(1+.08*Math.sin(t*37+3*Math.sin(t*11)+a*3)+.045*Math.sin(t*97+Math.sin(a*7)*2));
+}
 export function chimneyColumn({x=0,y=0,z=0,height=12,radius=1.6,salt=11}={}) {
   const radial=48,levels=70,positions=[],indices=[];
   const center=(t)=>[x+Math.sin(t*3.7+salt)*.28*t+Math.sin(t*8)*.1*t,z+Math.sin(t*4.5+salt)*.25*t];
@@ -73,9 +78,7 @@ export function chimneyColumn({x=0,y=0,z=0,height=12,radius=1.6,salt=11}={}) {
     const [cx,cz]=center(t);
     for(let j=0;j<=radial;j++) {
       const a=j/radial*Math.PI*2;
-      const foot=radius*(.26+.64*(1-t)**.7+.28*Math.exp(-t*12));
-      const r=foot*(1+.16*Math.sin(a*3+salt+t*3)+.105*Math.cos(a*5-t*8)+.065*Math.sin(a*11+t*21))
-        *(1+.11*Math.sin(t*49+Math.sin(a*3)*1.3)+.045*Math.sin(t*153+a*5))*(inner?.47:1);
+      const r=crustRadius(t,a,salt,radius)*(inner?.47:1);
       positions.push(cx+Math.cos(a)*r,y+t*height+(inner?-.3:0)+Math.sin(a*5+salt)*.055*t,cz+Math.sin(a)*r);
     }
   };
@@ -111,11 +114,9 @@ export function mineralAccretions() {
   const pieces=[],base=floorHeight(HERO.x,HERO.z)-.12,height=HERO.height+FLOOR_Y-base;
   for(let i=0;i<112;i++){
     const t=.08+seed(i,207)*.88,a=seed(i,208)*Math.PI*2;
-    const foot=HERO.radius*(.26+.64*(1-t)**.7+.28*Math.exp(-t*12));
-    const r=foot*(1+.16*Math.sin(a*3+11+t*3)+.105*Math.cos(a*5-t*8)+.065*Math.sin(a*11+t*21))
-      *(1+.11*Math.sin(t*49+Math.sin(a*3)*1.3)+.045*Math.sin(t*153+a*5));
+    const r=crustRadius(t,a,11,HERO.radius);
     const width=.08+seed(i,209)*.18;
-    pieces.push({p:[HERO.x+Math.sin(t*3.7+11)*.28*t+Math.sin(t*8)*.1*t+Math.cos(a)*(r-.035),base+t*height,HERO.z+Math.sin(t*4.5+11)*.25*t+Math.sin(a)*(r-.035)],s:[width,.04+seed(i,210)*.11,width*.8],r:[seed(i,211)*.3,a,seed(i,212)*.25]});
+    pieces.push({p:[HERO.x+Math.sin(t*3.7+11)*.28*t+Math.sin(t*8)*.1*t+Math.cos(a)*(r-.08),base+t*height,HERO.z+Math.sin(t*4.5+11)*.25*t+Math.sin(a)*(r-.08)],s:[width,.04+seed(i,210)*.11,width*.8],r:[seed(i,211)*.3,a,seed(i,212)*.25]});
   }
   return pieces;
 }

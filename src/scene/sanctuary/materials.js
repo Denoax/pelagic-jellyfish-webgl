@@ -1,31 +1,55 @@
 import * as THREE from 'three/webgpu';
-import { mix, normalWorld, positionWorld, vec3, uniform, mx_noise_float } from 'three/tsl';
-import { DIFFUSE } from './VentDynamics.js';
+import { mix, normalWorld, positionWorld, vec2, vec3, uniform, mx_noise_float, texture } from 'three/tsl';
+import { DIFFUSE, ORIFICE } from './VentDynamics.js';
+import { FLOOR_Y, HERO } from './geology.js';
 
-export function lightUniforms(){return{position:uniform(new THREE.Vector3()),power:uniform(0)};}
+export function lightUniforms(){
+  const scan=new THREE.Texture();
+  scan.wrapS=scan.wrapT=THREE.RepeatWrapping;
+  const ready=typeof document==='undefined'?Promise.resolve():new THREE.TextureLoader().loadAsync(
+    `${import.meta.env?.BASE_URL||'/'}assets/models/polyhaven/rock_07/textures/rock_07_diff_1k.jpg`
+  ).then(t=>{scan.image=t.image;scan.generateMipmaps=true;scan.minFilter=THREE.LinearMipmapLinearFilter;scan.magFilter=THREE.LinearFilter;scan.anisotropy=4;scan.needsUpdate=true;t.dispose();});
+  return{position:uniform(new THREE.Vector3()),power:uniform(0),scan,ready};
+}
 export function mineralMaterial(light,{chimney=false,life=false,floor=false}={}) {
   const m=new THREE.MeshBasicNodeMaterial({transparent:false,opacity:1,depthWrite:true});
   m.name=life?'vent-tubes':chimney?'sulfide-mineral-crust':'dark-pillow-basalt';
   const p=positionWorld;
-  const low=mx_noise_float(p.mul(chimney?1.8:.65));
-  const grain=mx_noise_float(p.mul(chimney?15:7));
-  const crust=low.mul(.38).add(grain.mul(.68)).smoothstep(.12,.35);
-  let pigment=vec3(.11,.13,.15).mul(grain.mul(.65).add(.8));
+  const low=mx_noise_float(p.mul(.24));
+  const meso=mx_noise_float(p.mul(vec3(1.4,.7,1.4)));
+  const weights=normalWorld.abs().pow(4);const w=weights.div(weights.x.add(weights.y).add(weights.z).max(.0001));
+  // Sample a valid photographed rock region, not the atlas's stretched padding.
+  // Mirrored patches have continuous edges; triplanar blending avoids UV seams.
+  // Only luminance survives: terrestrial browns do not tint the sulfide.
+  const scanUV=q=>q.mul(1.4).fract().sub(.5).abs().mul(2).mul(vec2(.18,.25)).add(vec2(.10,.50));
+  const scan=texture(light.scan,scanUV(p.yz)).rgb.mul(w.x)
+    .add(texture(light.scan,scanUV(p.xz)).rgb.mul(w.y)).add(texture(light.scan,scanUV(p.xy)).rgb.mul(w.z)).dot(vec3(.2126,.7152,.0722));
+  const grain=scan.sub(.5);
+  let pigment=vec3(.075,.082,.09).mul(meso.mul(.10).add(.93)).mul(scan.mul(.24).add(.76));
   if(chimney) {
-    const deposit=mix(vec3(.24,.205,.145),vec3(.38,.4,.4),low.smoothstep(.06,.3));
-    pigment=mix(pigment,deposit,crust.mul(.75));
+    const up=normalWorld.y.max(0),down=normalWorld.y.negate().max(0);
+    const height=p.y.sub(FLOOR_Y).div(HERO.height).clamp(0,1);
+    const source=p.sub(vec3(ORIFICE.x,ORIFICE.y,ORIFICE.z));
+    const fresh=source.length().smoothstep(.35,2.7).oneMinus();
+    const cavity=meso.smoothstep(-.2,.25).oneMinus().mul(.3).add(down.mul(.7));
+    const cap=up.smoothstep(.1,.65).mul(height.smoothstep(.55,.95));
+    const activeCrust=fresh.mul(cap.mul(.7).add(cavity.mul(.45))).mul(meso.mul(.22).add(.7)).clamp(0,.7);
+    const oxidized=height.smoothstep(.15,.55).mul(height.smoothstep(.7,.93).oneMinus())
+      .mul(fresh.oneMinus()).mul(up.smoothstep(.08,.5)).mul(low.smoothstep(.1,.38));
+    pigment=mix(pigment,vec3(.19,.17,.135),oxidized.mul(.45));
+    pigment=mix(pigment,vec3(.34,.35,.34),activeCrust);
   }
   if(life)pigment=vec3(.42,.43,.38).mul(grain.mul(.15).add(.85));
   if(floor)for(const source of DIFFUSE){
-    const radius=p.xz.sub(vec3(source.x,0,source.z).xz).length().add(low.mul(.5)).add(grain.mul(.22));
-    const mat=radius.smoothstep(.24,.8).oneMinus().mul(grain.mul(2).add(.7).clamp(0,1));
+    const radius=p.xz.sub(vec3(source.x,0,source.z).xz).length().add(low.mul(.3)).add(meso.mul(.12));
+    const mat=radius.smoothstep(.2,.85).oneMinus().mul(normalWorld.y.max(0)).mul(scan.mul(.3).add(.7));
     pigment=mix(pigment,vec3(.32,.31,.265),mat.mul(.8));
   }
   // Small rough facets, without shiny specular or caustics. The normal-dependent
   // term is a dim legibility fill, explicitly not sunlight or a moving ROV light.
   // Surface-gradient bump (same derivative principle as r175 BumpMapNode),
   // applied to procedural world-space height: no UV seam or texture dependency.
-  const height=grain.mul(chimney?.024:.05).add(low.mul(.025));
+  const height=grain.mul(.022).add(meso.mul(.012));
   const dx=p.dFdx(),dy=p.dFdy(),r1=dy.cross(normalWorld),r2=normalWorld.cross(dx);
   const determinant=dx.dot(r1);
   const gradient=r1.mul(height.dFdx()).add(r2.mul(height.dFdy())).mul(determinant.sign());
