@@ -92,10 +92,12 @@ try {
    await evaluate(`window.__LIVE_LENS__?.resetCost()`);
    await evaluate(`window.__BUBBLE_PASSAGE__?.resetCost()`);
    await evaluate(`window.__POPULATION__?.resetCost()`);
+   await evaluate(`window.__SANCTUARY_REVIEW__?.resetCost()`);
    if(process.env.EVIDENCE_GL_PROFILE==='1')await evaluate(`window.__GL_STALL__.reset()`);
    if(process.env.EVIDENCE_TRACE==='1')await evaluate(`performance.mark('m4.1-measure-start')`);
    const intervals=await evaluate(`new Promise(resolve=>{const a=[];let last=0;const start=performance.now();function tick(t){if(last)a.push(t-last);last=t;if(t-start<${Number(seconds)*1000})requestAnimationFrame(tick);else resolve(a);}requestAnimationFrame(tick);})`);
    const sorted=[...intervals].sort((a,b)=>a-b);
+   writeFileSync(`${out}/sanctuary-cost.json`,JSON.stringify(await evaluate(`({cpu:window.__SANCTUARY_REVIEW__?.cost(),state:window.__SANCTUARY_REVIEW__?.state(),render:window.__SANCTUARY_REVIEW__?.renderStats()})`),null,2));
    if(process.env.EVIDENCE_GL_PROFILE==='1')writeFileSync(`${out}/webgl-cost.json`,JSON.stringify(await evaluate(`window.__GL_STALL__.read()`),null,2));
    if(process.env.EVIDENCE_TRACE==='1'){
      await evaluate(`performance.mark('m4.1-measure-end')`);await send('Tracing.end');

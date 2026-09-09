@@ -57,7 +57,8 @@ test("approved M1 and M2 runtime ownership remains byte-for-byte unchanged", () 
     .split("\n")
     .filter(
       (path) =>
-        !path.endsWith("/HeroScene.jsx") && !path.endsWith("/AGENTS.md"),
+        // Authorized M6 deep replacement has a narrower school/water guard.
+        !path.endsWith("/HeroScene.jsx") && !path.endsWith("/PelagicEnvironment.js") && !path.endsWith("/AGENTS.md"),
     );
   for (const file of files)
     assert.equal(

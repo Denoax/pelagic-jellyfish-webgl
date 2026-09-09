@@ -1,22 +1,10 @@
 import * as THREE from "three/webgpu";
 import { createSoftParticles } from "./SoftParticles.js";
 import { Sanctuary } from "./sanctuary/Sanctuary.js";
-import {
-  color as tslColor,
-  mix as tslMix,
-  positionLocal,
-  smoothstep as tslSmoothstep,
-  positionWorld,
-  mx_noise_float,
-  texture as tslTexture,
-  triplanarTexture,
-} from "three/tsl";
 import { sampleSwimCycle } from "./jellyMotion.js";
 
 const SWIM_AXIS = new THREE.Vector3(0, 1, 0);
 const TWO_PI = Math.PI * 2;
-const PUBLIC_BASE = import.meta.env.BASE_URL;
-const DEEP_FLOOR_Y = -7.85;
 
 function clamp01(value) {
   return Math.min(1, Math.max(0, value));
@@ -30,43 +18,6 @@ function smoothstep(min, max, value) {
 function seeded(index, salt = 0) {
   const value = Math.sin(index * 91.73 + salt * 37.11) * 43758.5453;
   return value - Math.floor(value);
-}
-
-function deepTerrainHeight(x, z) {
-  const warpedX = x + Math.sin(z * 0.16) * 1.25;
-  const warpedZ = z + Math.sin(x * 0.13) * 1.1;
-  const shelfNoise =
-    Math.sin(warpedX * 0.27 + warpedZ * 0.14) * 0.2
-    + Math.sin(warpedX * 0.71 - warpedZ * 0.19) * 0.09
-    + Math.cos(warpedZ * 0.38) * 0.07
-    + Math.sin(warpedX * 1.72 + warpedZ * 1.21) * 0.026
-    + Math.cos(warpedX * 2.83 - warpedZ * 2.15) * 0.012;
-  const leftRidge = Math.max(0, 1 - Math.hypot((x + 11.5) / 5.8, (z + 14) / 10.5));
-  const rightRidge = Math.max(0, 1 - Math.hypot((x - 11.2) / 6.2, (z + 18) / 9.5));
-  const centerBasin = Math.max(0, 1 - Math.hypot(x / 7.5, (z + 13) / 11));
-  return shelfNoise + leftRidge * 1.05 + rightRidge * 0.82 - centerBasin * 0.22;
-}
-
-function createSedimentNormalTexture(size = 128) {
-  const data = new Uint8Array(size * size * 4);
-  for (let y = 0; y < size; y += 1) {
-    for (let x = 0; x < size; x += 1) {
-      const index = (y * size + x) * 4;
-      const waveX = Math.sin(x * 0.73 + Math.sin(y * 0.17)) * 0.5;
-      const waveY = Math.cos(y * 0.61 + Math.sin(x * 0.13)) * 0.5;
-      const grain = (seeded(x + y * size, 307) - 0.5) * 0.36;
-      data[index] = Math.round(128 + (waveX + grain) * 28);
-      data[index + 1] = Math.round(128 + (waveY + grain) * 28);
-      data[index + 2] = 238;
-      data[index + 3] = 255;
-    }
-  }
-  const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(13, 11);
-  texture.needsUpdate = true;
-  return texture;
 }
 
 function createSoftParticleTexture(size = 48) {
@@ -87,76 +38,6 @@ function createSoftParticleTexture(size = 48) {
   const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
   texture.needsUpdate = true;
   return texture;
-}
-
-function createWeatheredStoneGeometry(seedSalt, detail = 1) {
-  const geometry = new THREE.IcosahedronGeometry(1, detail);
-  const positions = geometry.attributes.position;
-  const point = new THREE.Vector3();
-  for (let index = 0; index < positions.count; index += 1) {
-    point.fromBufferAttribute(positions, index);
-    const direction = point.clone().normalize();
-    const strata = Math.sin(direction.y * 8.5 + seedSalt) * 0.055;
-    // The same spatial vertex receives the same displacement on every face.
-    // Per-index randomness cracked this non-indexed geometry at its seams.
-    const fracture = Math.sin(direction.x * 13.7 + direction.z * 9.3 + seedSalt)
-      * Math.cos(direction.y * 11.1 - direction.x * 5.3) * 0.045;
-    point.multiplyScalar(1 + strata + fracture);
-    point.y *= 0.72;
-    positions.setXYZ(index, point.x, point.y, point.z);
-  }
-  geometry.computeVertexNormals();
-  return geometry;
-}
-
-function createFissureRibbon(path, width, seedSalt, segmentChance = 1) {
-  const positions = new Float32Array(path.length * 2 * 3);
-  const indices = [];
-  const previous = new THREE.Vector3();
-  const next = new THREE.Vector3();
-  const tangent = new THREE.Vector3();
-  const perpendicular = new THREE.Vector3();
-  let cursor = 0;
-  path.forEach(([x, z], index) => {
-    const previousPoint = path[Math.max(0, index - 1)];
-    const nextPoint = path[Math.min(path.length - 1, index + 1)];
-    previous.set(previousPoint[0], 0, previousPoint[1]);
-    next.set(nextPoint[0], 0, nextPoint[1]);
-    tangent.subVectors(next, previous).normalize();
-    perpendicular.set(-tangent.z, 0, tangent.x);
-    const localWidth = width * (0.52 + seeded(index, seedSalt) * 0.72);
-    const y = DEEP_FLOOR_Y + deepTerrainHeight(x, z) + 0.035;
-    positions[cursor++] = x + perpendicular.x * localWidth;
-    positions[cursor++] = y;
-    positions[cursor++] = z + perpendicular.z * localWidth;
-    positions[cursor++] = x - perpendicular.x * localWidth;
-    positions[cursor++] = y + 0.002;
-    positions[cursor++] = z - perpendicular.z * localWidth;
-    if (
-      index < path.length - 1
-      && (segmentChance >= 1 || seeded(index, seedSalt + 97) < segmentChance)
-    ) {
-      const row = index * 2;
-      indices.push(row, row + 2, row + 1, row + 2, row + 3, row + 1);
-    }
-  });
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setIndex(indices);
-  geometry.computeVertexNormals();
-  return geometry;
-}
-
-function orientCylinderMatrix(dummy, start, end, radius = 1) {
-  const midpoint = start.clone().add(end).multiplyScalar(0.5);
-  const direction = end.clone().sub(start);
-  dummy.position.copy(midpoint);
-  dummy.quaternion.setFromUnitVectors(
-    new THREE.Vector3(0, 1, 0),
-    direction.clone().normalize(),
-  );
-  dummy.scale.set(radius, direction.length(), radius);
-  dummy.updateMatrix();
 }
 
 class DistantJellyField {
@@ -622,24 +503,6 @@ function createCurrentVeil() {
   });
   veil.frustumCulled = false;
   return veil;
-}
-
-function createKelpGeometry(bladeCount, segments) {
-  const positions = new Float32Array(bladeCount * (segments + 1) * 2 * 3);
-  const indices = [];
-  for (let blade = 0; blade < bladeCount; blade += 1) {
-    const offset = blade * (segments + 1) * 2;
-    for (let segment = 0; segment < segments; segment += 1) {
-      const row = offset + segment * 2;
-      const next = row + 2;
-      indices.push(row, next, row + 1, next, next + 1, row + 1);
-    }
-  }
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setIndex(indices);
-  geometry.attributes.position.setUsage(THREE.DynamicDrawUsage);
-  return geometry;
 }
 
 export class PelagicEnvironment {

@@ -44,7 +44,9 @@ test('bubble buoyancy remains upward with restrained read-only shared current', 
 });
 test('approved animals, M2 water, legacy camera and idle remain exact; shell permits only M5 View integration', () => {
   const paths = execFileSync('git', ['ls-tree', '-r', '--name-only', '78d723a', 'src'], {encoding:'utf8'}).trim().split('\n')
-    .filter(p => /\.(js|jsx)$/.test(p) && !['src/scene/HeroScene.jsx','src/scene/glass/LiveOceanLens.js'].includes(p));
+    // M6 replaces only the deep environment. Its embedded distant-school and
+    // water-layer ownership are checked against M5.2 in sanctuary.test.mjs.
+    .filter(p => /\.(js|jsx)$/.test(p) && !['src/scene/HeroScene.jsx','src/scene/glass/LiveOceanLens.js','src/scene/PelagicEnvironment.js'].includes(p));
   for (const p of paths) {
     let current = readFileSync(p, 'utf8');
     // M5 explicitly authorizes adding View to the shell. Strip only those

@@ -101,5 +101,21 @@ export function chimneyGeometry(height=HERO.height) {
     {x:HERO.x-1.15,y:FLOOR_Y-.2,z:HERO.z+.8,height:height*.5,radius:.86,salt:51},
     {x:HERO.x+.6,y:FLOOR_Y-.2,z:HERO.z-1.1,height:height*.83,radius:.87,salt:71},
   ];
+  // Bury each foot into the actual local basin, preserving the tested crown
+  // heights. A constant Y base leaves exposed air gaps over the depressed floor.
+  for(const p of params){const base=floorHeight(p.x,p.z)-.12;p.height+=p.y-base;p.y=base;}
   const parts=params.map(chimneyColumn),merged=mergeGeometries(parts);parts.forEach(g=>g.dispose());return merged;
+}
+
+export function mineralAccretions() {
+  const pieces=[],base=floorHeight(HERO.x,HERO.z)-.12,height=HERO.height+FLOOR_Y-base;
+  for(let i=0;i<112;i++){
+    const t=.08+seed(i,207)*.88,a=seed(i,208)*Math.PI*2;
+    const foot=HERO.radius*(.26+.64*(1-t)**.7+.28*Math.exp(-t*12));
+    const r=foot*(1+.16*Math.sin(a*3+11+t*3)+.105*Math.cos(a*5-t*8)+.065*Math.sin(a*11+t*21))
+      *(1+.11*Math.sin(t*49+Math.sin(a*3)*1.3)+.045*Math.sin(t*153+a*5));
+    const width=.08+seed(i,209)*.18;
+    pieces.push({p:[HERO.x+Math.sin(t*3.7+11)*.28*t+Math.sin(t*8)*.1*t+Math.cos(a)*(r-.035),base+t*height,HERO.z+Math.sin(t*4.5+11)*.25*t+Math.sin(a)*(r-.035)],s:[width,.04+seed(i,210)*.11,width*.8],r:[seed(i,211)*.3,a,seed(i,212)*.25]});
+  }
+  return pieces;
 }

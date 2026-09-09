@@ -413,6 +413,14 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
           connectedOcean = new ConnectedOcean(app, environment, appendages, isMobile);
           population?.setCurrentField(connectedOcean.field);
         }
+        // M6 observes the approved animal/current state; no feedback into it.
+        environment.sanctuary.connect(connectedOcean?.field, appendages, app.camera);
+        if (import.meta.env.DEV) window.__SANCTUARY_REVIEW__ = {
+          state: () => environment.sanctuary.state(),
+          cost: () => Array.from(environment.sanctuary.cpu.slice(0, environment.sanctuary.cpuCount)),
+          resetCost: () => { environment.sanctuary.cpuCount = 0; environment.sanctuary.cpuCursor = 0; },
+          renderStats: () => ({ ...renderer.info.render, memory: { ...renderer.info.memory } }),
+        };
         if (lensRequested) {
           const { LiveOceanLens } = await import('./glass/LiveOceanLens.js');
           if (disposed) return;
