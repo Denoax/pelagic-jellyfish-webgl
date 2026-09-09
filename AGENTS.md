@@ -1,5 +1,9 @@
 # Prototype Instructions
 
+## Current camera review boundary (Mani, 2026-09-08)
+
+M5 was rejected. M5-RD starts from approved M4.1 `a61d79be0fab528daa11a1cf72e00d986b4a5727`: primary research, measured anti-reference, and four independent DEV-only camera studies. Do not refine the rejected five-shot camera. Investigate one critically damped progress scalar driving baked position/quaternion, with no live animal tracking, corrective pushes, procedural bob or roll. Preserve M1–M4.1 biology/environment/quality. Human direction selection is required before production M5. For this task do not push, merge, deploy, modify Pages or start M6; this supersedes the publishing default below.
+
 When finishing authorized project work, commit only the relevant changes, push the appropriate feature/review branch, and update the GitHub Pages website through the existing main-branch deployment workflow by default (Mani, 2026-09-07 follow-up). Publishing is a review handoff, not visual approval or authorization to begin another milestone. Validate the production build, keep development controls private, preserve unrelated user changes, never force-push, and honor any newer explicit restriction.
 
 Run the local server yourself and open the preview in the browser available to this environment. Do not give the user server-start instructions when you can run it.

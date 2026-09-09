@@ -38,6 +38,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     let liveLens;
     let bubblePassage;
     let population;
+    let cameraLab;
     let connectedTime = 0;
     let frameId = 0;
     let frameBusy = false;
@@ -212,8 +213,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
     const start = async () => {
       try {
         const query = new URLSearchParams(window.location.search);
-        const populationRequested = import.meta.env.DEV && query.get('populationLod') === '1';
-        const bubblesRequested = import.meta.env.DEV && query.get('bubblePassage') === '1';
+        const populationRequested = import.meta.env.DEV && (query.get('populationLod') === '1' || query.get('cameraLab') === '1');
+        const bubblesRequested = import.meta.env.DEV && (query.get('bubblePassage') === '1' || query.get('cameraLab') === '1');
         const lensRequested = import.meta.env.DEV && query.get('liveLens') === '1' && !bubblesRequested;
         // Publishing selects the reviewed implementation, never its inspection
         // fixture. Production query strings cannot expose specimen controls.
@@ -390,6 +391,11 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
           const { SpecimenPreview } = await import('./dev/SpecimenPreview.js');
           specimen = new SpecimenPreview(query, app, appendages, environment, schoolDirector);
         }
+        if (import.meta.env.DEV && query.get('cameraLab') === '1') {
+          const { CameraLab } = await import('./dev/camera/CameraLab.js');
+          if (disposed) return;
+          cameraLab = new CameraLab(app.camera, schoolDirector, query);
+        }
         if (connectedRequested) {
           const { ConnectedOcean } = await import('./ocean/ConnectedOcean.js');
           connectedOcean = new ConnectedOcean(app, environment, appendages, isMobile);
@@ -552,7 +558,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
               current.value,
               journeyFocus,
             );
-            cameraRig.update(scrollProgress, cameraDelta, elapsed, directive);
+            if (cameraLab) cameraLab.update(scrollTarget, rawDelta, elapsed);
+            else cameraRig.update(scrollProgress, cameraDelta, elapsed, directive);
             schoolDirector.actors.forEach((actor, index) => {
               appendages[index]?.setPresence(actor.presence, actor.feature);
             });
@@ -633,6 +640,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange }) {
       socialTimers.forEach((timer) => window.clearTimeout(timer));
       delete window.__JELLYFISH_WORLD__;
       specimen?.dispose();
+      cameraLab?.dispose();
       liveLens?.dispose();
       bubblePassage?.dispose();
       delete window.__BUBBLE_PASSAGE__;
