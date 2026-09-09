@@ -150,7 +150,7 @@ export class LiveOceanLens {
       const st = screenUV,
         original = texture(this.target.texture, st).toVar();
       if (!this.slots.length) return this.opticalSample(this, st, original);
-      const result = original.rgb.toVar();
+      const result = (this.thermal ? this.thermal.sample(this, st, original).rgb : original.rgb).toVar();
       // Slots ordered back to front. Every optical lookup sees the SAME live
       // input; never repeatedly warp an already refracted result or rerender.
       for (const slot of this.slots) {
@@ -271,7 +271,8 @@ export class LiveOceanLens {
   }
   async render() {
     if (this.disposed) return;
-    if (!this.enabled || (this.slots.length && !this.slots.some(s => s.strength.value > 0)))
+    const thermalVisible = this.thermal?.prepare(this.camera) || false;
+    if (!this.enabled || (this.slots.length && !this.slots.some(s => s.strength.value > 0) && !thermalVisible))
       return this.renderer.renderAsync(this.scene, this.camera);
     const renderer = this.renderer;
     const started = performance.now(),
@@ -366,6 +367,7 @@ export class LiveOceanLens {
       backend: this.renderer.backend.isWebGLBackend ? "WebGL2" : "WebGPU",
       textures: this.renderer.info?.memory?.textures,
       bubbleSlots: this.slots.length,
+      thermal: this.thermal?.state() || null,
       legacyOutputTarget: this.renderer._frameBufferTarget
         ? [
             this.renderer._frameBufferTarget.width,
@@ -379,6 +381,11 @@ export class LiveOceanLens {
     this.resourcesReleased = true;
     this.output.dispose();
     this.target.dispose();
+  }
+  attachThermal(thermal) {
+    this.thermal = thermal;
+    this.output.outputNode = this.optics();
+    this.output.needsUpdate = true;
   }
   dispose() {
     if (this.disposed) return;

@@ -420,6 +420,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
           state: () => environment.sanctuary.state(),
           cost: () => Array.from(environment.sanctuary.cpu.slice(0, environment.sanctuary.cpuCount)),
           resetCost: () => { environment.sanctuary.cpuCount = 0; environment.sanctuary.cpuCursor = 0; },
+          shimmer: value => { if(value!==undefined) environment.sanctuary.thermal.enabled=Boolean(value);return environment.sanctuary.thermal.state(); },
           renderStats: () => ({ ...renderer.info.render, memory: { ...renderer.info.memory } }),
           plumeProbe: () => {
             const s = environment.sanctuary;
@@ -447,6 +448,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
           bubblePassage = new BubblePassage(app, connectedOcean?.field, appendages);
           if (query.get('bubbleReview') === '1') bubblePassage.reviewAge = 0;
           liveLens = bubblePassage.lens;
+          liveLens.attachThermal(environment.sanctuary.thermal);
           window.__BUBBLE_PASSAGE__ = {
             state: () => bubblePassage.state(),
             enable: value => { bubblePassage.enabled = Boolean(value); bubblePassage.update(0, scrollProgress); },

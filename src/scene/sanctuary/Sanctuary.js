@@ -5,6 +5,7 @@ import { seed, floorHeight, mineralAccretions } from './geology.js';
 import { VentDynamics, AnimalLight, DIFFUSE } from './VentDynamics.js';
 import { VentParticles } from './VentParticles.js';
 import { lightUniforms, mineralMaterial } from './materials.js';
+import { ThermalShimmer } from './ThermalShimmer.js';
 
 export class Sanctuary {
   constructor(scene,{reducedMotion=false}={}) {
@@ -14,6 +15,7 @@ export class Sanctuary {
     const query=typeof location==='undefined'?null:new URLSearchParams(location.search);
     this.blockout=Boolean(import.meta.env?.DEV&&query?.get('sanctuaryBlockout')==='1');
     this.light=lightUniforms();this.animalLight=new AnimalLight();
+    this.thermal=new ThermalShimmer();
     const mat=this.blockout?new THREE.MeshBasicNodeMaterial():mineralMaterial(this.light);
     if(this.blockout)mat.colorNode=color('#868686').mul(normalWorld.dot(vec3(-.4,.7,.55).normalize()).mul(.4).add(.6));
     const chimneyMat=this.blockout?mat:mineralMaterial(this.light,{chimney:true});
@@ -50,10 +52,11 @@ export class Sanctuary {
     if(this.disposed)return;
     const started=performance.now(),dt=this.lastTime===null?0:elapsed-this.lastTime;this.lastTime=elapsed;
     if(this.sim){this.sim.update(dt);this.plume.update();this.diffuse.update();}
+    this.thermal.time.value=this.sim?.time||0;
     this.animalLight.update(dt,this.tissues);
     this.light.position.value.set(this.animalLight.x,this.animalLight.y,this.animalLight.z);this.light.power.value=this.animalLight.intensity;
     this.cpu[this.cpuCursor++%this.cpu.length]=performance.now()-started;this.cpuCount=Math.min(this.cpuCount+1,this.cpu.length);
   }
   state(){return{floorY:FLOOR_Y,basinSize:BASIN_SIZE,chimney:{...HERO,height:this.height},solids:this.solids.length,opaque:this.solids.every(m=>!m.material.transparent&&m.material.opacity===1),geometries:this.geometries.size,materials:this.materials.size,blockout:this.blockout,plumeCount:this.sim?.smokeCount||0,diffuseCount:this.sim?.diffuseCount||0,localSnowCount:this.sim?.snowCount||0,plumeTime:this.sim?.time,light:{index:this.animalLight.index,intensity:this.animalLight.intensity,position:[this.animalLight.x,this.animalLight.y,this.animalLight.z]},extraOceanPasses:0};}
-  dispose(){if(this.disposed)return;this.disposed=true;this.group.removeFromParent();this.geometries.forEach(g=>g.dispose());this.materials.forEach(m=>m.dispose());this.sim?.dispose();this.plume?.dispose();this.diffuse?.dispose();this.animalLight.dispose();this.light.power.value=0;this.field=null;this.tissues=null;this.camera=null;if(import.meta.env?.DEV&&typeof window!=='undefined')delete window.__SANCTUARY_REVIEW__;}
+  dispose(){if(this.disposed)return;this.disposed=true;this.thermal.dispose();this.group.removeFromParent();this.geometries.forEach(g=>g.dispose());this.materials.forEach(m=>m.dispose());this.sim?.dispose();this.plume?.dispose();this.diffuse?.dispose();this.animalLight.dispose();this.light.power.value=0;this.field=null;this.tissues=null;this.camera=null;if(import.meta.env?.DEV&&typeof window!=='undefined')delete window.__SANCTUARY_REVIEW__;}
 }

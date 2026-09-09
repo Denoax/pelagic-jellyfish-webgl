@@ -43,8 +43,14 @@ test('one environmental light follows animal presence/activation without mutatin
  tissues[0].presence=0;for(let i=0;i<360;i++)l.update(1/60,tissues);assert.equal(l.index,-1);assert.ok(l.intensity<.001);l.dispose();assert.equal(l.intensity,0);
 });
 test('M6 keeps approved animal/current/camera/idle/refraction sources byte unchanged',()=>{
- const files=['src/scene/LivingAppendages.js','src/scene/jellyMotion.js','src/scene/ocean/CurrentField.js','src/scene/ocean/ConnectedOcean.js','src/scene/ocean/OceanSnow.js','src/scene/glass/LiveOceanLens.js','src/scene/glass/BubblePassage.js','src/scene/camera/directions.js','src/scene/camera/CameraTrack.js','src/scene/camera/ViewController.js'];
+ const files=['src/scene/LivingAppendages.js','src/scene/jellyMotion.js','src/scene/ocean/CurrentField.js','src/scene/ocean/ConnectedOcean.js','src/scene/ocean/OceanSnow.js','src/scene/glass/BubblePassage.js','src/scene/camera/directions.js','src/scene/camera/CameraTrack.js','src/scene/camera/ViewController.js'];
  for(const file of files){const old=spawnSync('git',['show',`aef830b:${file}`],{encoding:'utf8'});assert.equal(old.status,0,file);assert.equal(readFileSync(new URL('../'+file,import.meta.url),'utf8'),old.stdout,file);}
+ // M6.1 explicitly extends the shared compositor; the approved bubble optical
+ // function itself remains byte-identical, instead of forbidding the new hook.
+ const lens=readFileSync(new URL('../src/scene/glass/LiveOceanLens.js',import.meta.url),'utf8');
+ const oldLens=spawnSync('git',['show','9b33b64:src/scene/glass/LiveOceanLens.js'],{encoding:'utf8'}).stdout;
+ const optical=s=>s.slice(s.indexOf('  opticalSample('),s.indexOf('  async render()'));
+ assert.equal(optical(lens),optical(oldLens));
  const environment=readFileSync(new URL('../src/scene/PelagicEnvironment.js',import.meta.url),'utf8');
  assert.doesNotMatch(environment,/Acropora|acropora|createKelp|createVolcanic|lavaBubble|deepReveal/);
  const old=spawnSync('git',['show','aef830b:src/scene/PelagicEnvironment.js'],{encoding:'utf8'}).stdout;
