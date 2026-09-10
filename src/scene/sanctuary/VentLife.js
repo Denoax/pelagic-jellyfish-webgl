@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import {uniform,positionLocal,positionWorld,instanceIndex,vec3,mix} from 'three/tsl';
+import {uniform,positionLocal,positionWorld,instanceIndex,vec3,mix,float} from 'three/tsl';
 import {seed,floorHeight,gullyCenter} from './geology.js';
 import {DIFFUSE} from './VentDynamics.js';
 import {mineralMaterial} from './materials.js';
@@ -28,7 +28,7 @@ export class VentLife{
     this.layout=colonyLayout();this.disposed=false;this.time=uniform(0);this.current=uniform(new THREE.Vector2());this.flow={x:0,y:0,z:0};
     const light=owner.light,body=mineralMaterial(light,{life:true});
     const tip=positionLocal.y.add(.14).div(.28).clamp(0,1).pow(2);
-    const bend=this.time.mul(.6).add(instanceIndex.mul(2.399)).sin().mul(.009);
+    const bend=this.time.mul(.6).add(float(instanceIndex).mul(2.399)).sin().mul(.009);
     body.positionNode=positionLocal.add(vec3(this.current.x.mul(.06).add(bend),0,this.current.y.mul(.06)).mul(tip));
     const stem=new THREE.CylinderGeometry(.005,.012,.28,6,5),p=stem.attributes.position;
     for(let i=0;i<p.count;i++){const h=(p.getY(i)+.14)/.28;p.setX(i,p.getX(i)+Math.sin(h*2.4)*h*.025);}
@@ -38,7 +38,7 @@ export class VentLife{
     owner.instanced(new THREE.SphereGeometry(1,8,5),shell,this.layout.shells,'sheltered-vent-microfauna');
     const m=new THREE.MeshBasicNodeMaterial({depthWrite:true});m.name='rare-local-biological-light';
     const near=positionWorld.distance(light.position).div(8).oneMinus().clamp(0,1).pow(2).mul(light.power);
-    const hue=instanceIndex.mul(1.71).sin().mul(.5).add(.5);
+    const hue=float(instanceIndex).mul(1.71).sin().mul(.5).add(.5);
     // Rare pinpoints, not luminous stone. Warm mineral pigments remain reflected
     // color; only these tiny biological accents carry restrained emission.
     m.colorNode=mix(vec3(.035,.19,.16),vec3(.13,.07,.18),hue).mul(near.mul(2).add(.8));
