@@ -515,7 +515,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
         // silently replace a good frame with an unsupported black target.
         await app.update(1 / 60, clock.elapsedTime, { interactionMode: true, renderScene: liveLens?.render });
         if (disposed) return;
-        if (liveLens && bubblesRequested) {
+        const prepareIdle = async () => {
           const { OceanIdleGlass } = await import('./glass/OceanIdleGlass.js');
           if (disposed) return;
           await liveLens.attachIdle(new OceanIdleGlass(renderer));
@@ -533,7 +533,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
               return {maximum,invalid,values:data.length};
             },
           };
-        }
+        };
 
         schoolDirector.actors.forEach((actor, index) => {
           appendages[index]?.setPresence(actor.presence, actor.feature);
@@ -546,6 +546,8 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
           false,
         );
         setStatus("ready");
+        const idleReadyAt = performance.now();
+        let idlePreparationPending = Boolean(liveLens && bubblesRequested);
 
         const animate = async () => {
           if (disposed) return;
@@ -556,6 +558,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
           }
           if (frameBusy) return;
           frameBusy = true;
+          const frameStarted = performance.now();
           try {
             const clockDelta = clock.getDelta();
             liveLens?.idle?.setActive(idleRef.current);
@@ -675,6 +678,15 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
             });
             renderFailures = 0;
             specimen?.rendered();
+            // Prepare once after a quiet, inexpensive visible frame. This is
+            // serialized with the main renderer, never a competing GPU loop.
+            // Until ready, App keeps the idle timer disabled.
+            if (idlePreparationPending &&
+                performance.now() - Math.max(idleReadyAt, lastPointerTime, lastScrollTime) > 2200 &&
+                performance.now() - frameStarted < 20) {
+              idlePreparationPending = false;
+              await prepareIdle();
+            }
           } catch (error) {
             console.error("Living ocean frame failed", error);
             if (++renderFailures >= 3) graphicsLost();

@@ -47,3 +47,10 @@ test('single production renderer, clean-source refraction, no clock opacity ghos
  assert.equal((render.match(/renderAsync\(this.scene, this.camera\)/g)||[]).length,2); // mutually exclusive direct OR clean target paths
  assert.match(render,/idle\?\.visible \? this.idleOutput : this.output/);
 });
+test('idle prewarm follows ready and waits for quiet main-renderer time',()=>{
+ const hero=read('src/scene/HeroScene.jsx');
+ const ready=hero.indexOf('setStatus("ready")'),invoke=hero.indexOf('await prepareIdle()');
+ assert.ok(ready>0&&invoke>ready);
+ assert.match(hero,/Math.max\(idleReadyAt, lastPointerTime, lastScrollTime\) > 2200/);
+ assert.match(hero,/performance.now\(\) - frameStarted < 20/);
+});
