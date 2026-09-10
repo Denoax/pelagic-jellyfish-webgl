@@ -49,6 +49,9 @@ test('approved animals, M2 water, legacy camera and idle remain exact; shell per
     .filter(p => /\.(js|jsx)$/.test(p) && !['src/scene/HeroScene.jsx','src/scene/glass/LiveOceanLens.js','src/scene/PelagicEnvironment.js'].includes(p));
   for (const p of paths) {
     let current = readFileSync(p, 'utf8');
+    // M6.3 imports the existing water radiance graph from native-ESM tests.
+    // Permit only the explicit file extension, not any water/shader changes.
+    if (p === 'src/vendor/aurelia/background.js') current = current.replace('"./lights.js"', '"./lights"');
     // M5 explicitly authorizes adding View to the shell. Strip only those
     // exact integration lines; all prior artwork/idle/chrome stays locked.
     if (p === 'src/App.jsx') current = current

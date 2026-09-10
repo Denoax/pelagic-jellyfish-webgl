@@ -3,6 +3,7 @@ import {uniform,positionLocal,positionWorld,instanceIndex,vec3,mix,float} from '
 import {seed,floorHeight,gullyCenter} from './geology.js';
 import {DIFFUSE} from './VentDynamics.js';
 import {mineralMaterial} from './materials.js';
+import {geologicalWater} from './atmosphere.js';
 
 // Small ecological islands around chemistry, not a global scatter or new species
 // simulation. All instances and material graphs are created before scene prewarm.
@@ -23,6 +24,26 @@ export function colonyLayout(){
   return{sites,filaments,shells,points};
 }
 
+export function wideLifePoints(points,solids){
+  const result=points.map(p=>({p:[...p.p],s:[...p.s],r:[...p.r]}));
+  const ray=new THREE.Raycaster(),down=new THREE.Vector3(0,-1,0),origin=new THREE.Vector3();
+  const rocks=solids.filter(o=>['abyssal-basin','basalt-shelves','pillow-flows','layered-basalt-and-channel-banks','active-sulfide-complex'].includes(o.name));
+  // One-time attachment, before prewarm. M6.2 floor-only points can be buried
+  // under overlapping banks; reveal three existing points per colony, not a
+  // second population. Reject tall chimney tops to keep the glow benthic.
+  for(let site=0;site<5;site++){
+    let selected=0;
+    for(const offset of [0,3,6,1,4,7,2,5]){
+      const p=result[site*8+offset];ray.set(origin.set(p.p[0],0,p.p[2]),down);
+      const hit=ray.intersectObjects(rocks,false)[0];
+      if(!hit||hit.point.y-p.p[1]>2.8)continue;
+      p.p[1]=hit.point.y+.065;p.s=[.065,.065,.065];
+      if(++selected===3)break;
+    }
+  }
+  return result;
+}
+
 export class VentLife{
   constructor(owner){
     this.layout=colonyLayout();this.disposed=false;this.time=uniform(0);this.current=uniform(new THREE.Vector2());this.flow={x:0,y:0,z:0};
@@ -41,8 +62,11 @@ export class VentLife{
     const hue=float(instanceIndex).mul(1.71).sin().mul(.5).add(.5);
     // Rare pinpoints, not luminous stone. Warm mineral pigments remain reflected
     // color; only these tiny biological accents carry restrained emission.
-    m.colorNode=mix(vec3(.035,.19,.16),vec3(.13,.07,.18),hue).mul(near.mul(2).add(.8));
-    owner.materials.add(m);owner.instanced(new THREE.SphereGeometry(1,6,4),m,this.layout.points,'rare-benthic-light-points');
+    m.fog=false;
+    m.colorNode=geologicalWater(mix(vec3(.055,.36,.29),vec3(.22,.12,.36),hue).mul(near.mul(2).add(.8)));
+    owner.group.updateMatrixWorld(true);
+    this.widePoints=wideLifePoints(this.layout.points,owner.solids);
+    owner.materials.add(m);owner.instanced(new THREE.SphereGeometry(1,6,4),m,this.widePoints,'rare-benthic-light-points');
   }
   update(dt,time,field){
     if(this.disposed||!Number.isFinite(dt)||dt<=0||dt>.25)return;

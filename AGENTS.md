@@ -1,5 +1,9 @@
 # Prototype Instructions
 
+## Current authorization: M6.3 wide readability (2026-09-09)
+
+Start exactly from `685eaf5960251923bc4ae7012f8fd3c8c42bf46d`. Audit fixed-state wide views before runtime edits. Preserve M6.2 geology, plume, shimmer, ecosystem and M1–M5.2. Improve only geological macro color/atmospheric separation and minimum existing-life glow. No global exposure/ambient lift, new passes/lights/landmarks, camera/UI/scroll/idle edits, unrelated cyan-loss fix, push/merge/deploy/Pages/M7. Wide matched frames and motion, equal-setting performance, and retained abyssal blacks are the review gate; use PARTIAL if wide views still fail.
+
 ## Current authorization: M6.2 atmosphere/geology/life (2026-09-09)
 
 Start from `cb46120537ee6e56c02611f910c67de1e1a1f80f`. M6.1 is structural basis, not art approval. Add controlled abyssal color, geologically grouped basalt mass/rubble/dead spires, a real recessed basin gully, sparse vent-associated life and rare cyan/teal/violet accents. Keep one hero chimney, floor approximately Y −15, existing plume/current/thermal refraction and pooled animal illumination. Prefer shared instanced geometry and material response, not more lights/passes. Preserve M1–M5.2, all cameras/View/scroll/idle. No reef/fantasy/lava/global brightness wash, push/merge/deploy/Pages/M7 or unrelated cyan-idle fix. Fresh matched browser stills/motion and equal-setting benchmarks precede review; use PARTIAL if still monochrome/dead.

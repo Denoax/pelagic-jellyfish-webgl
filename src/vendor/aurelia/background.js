@@ -22,7 +22,7 @@ import {
     Loop,
     mix, output, vec4
 } from "three/tsl";
-import {Lights} from "./lights";
+import {Lights} from "./lights.js";
 
 const hash23 = /*@__PURE__*/ Fn( ( [ uv ] ) => {
     const a = 12.9898, b = 78.233, c = vec3(43758.5453, 43758.1947, 43758.42037);

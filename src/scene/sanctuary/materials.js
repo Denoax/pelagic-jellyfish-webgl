@@ -2,6 +2,7 @@ import * as THREE from 'three/webgpu';
 import { mix, normalWorld, positionWorld, vec2, vec3, uniform, mx_noise_float, texture } from 'three/tsl';
 import { DIFFUSE, ORIFICE } from './VentDynamics.js';
 import { FLOOR_Y, HERO, GULLY } from './geology.js';
+import { geologicalWater } from './atmosphere.js';
 
 export function lightUniforms(){
   const scan=new THREE.Texture();
@@ -30,6 +31,13 @@ export function mineralMaterial(light,{chimney=false,life=false,floor=false}={})
   // This is surface reflectance separation, not a lifted ocean ambient/exposure.
   const shoulder=normalWorld.y.smoothstep(.18,.75).mul(low.mul(.3).add(.65));
   pigment=mix(pigment,vec3(.26,.32,.35),shoulder.mul(.65));
+  // Broad geological regions lead at distance; existing meso crust and scanned
+  // micro relief remain on top. No per-rock randomness or extra material variants.
+  const east=p.x.smoothstep(-3,13),old=p.z.negate().smoothstep(25,42);
+  const upper=normalWorld.y.smoothstep(.05,.7);
+  const slate=mix(vec3(.17,.30,.34),vec3(.39,.225,.36),east);
+  const mineral=mix(slate,vec3(.54,.28,.13),old.mul(.7));
+  if(!life)pigment=mix(pigment,mineral,upper.mul(.65));
   if(chimney) {
     const up=normalWorld.y.max(0),down=normalWorld.y.negate().max(0);
     const height=p.y.sub(FLOOR_Y).div(HERO.height).clamp(0,1);
@@ -70,12 +78,17 @@ export function mineralMaterial(light,{chimney=false,life=false,floor=false}={})
   const n=normalWorld.mul(determinant.abs().max(.00000001)).sub(gradient).normalize();
   const relief=n.dot(vec3(-.4,.7,.5).normalize()).mul(.38).add(.55).max(.12);
   const ambient=vec3(.105,.14,.17).mul(relief);
+  // Dim, upward-plane pickup only. Cavities, downward faces and the ravine
+  // interior get no new fill. This is local reflected color, not global ambient.
+  const exposed=p.y.smoothstep(FLOOR_Y-1.1,FLOOR_Y+.3).mul(upper);
+  const bounce=vec3(.011,.021,.025).mul(exposed);
   const ray=light.position.sub(p),distance=ray.length();
   const diffuse=n.dot(ray.normalize()).max(0).mul(.88).add(.12);
   const falloff=distance.div(13).oneMinus().clamp(0,1).pow(2).div(distance.mul(distance).mul(.09).add(1));
   const grazing=n.dot(ray.normalize()).abs().oneMinus().pow(2);
   const hue=grazing.mul(.32).add(light.activation.mul(.22)).clamp(0,.5);
   const illumination=mix(vec3(.24,.64,.9),vec3(.65,.30,.60),hue).mul(light.power).mul(falloff).mul(diffuse).mul(3.6);
-  m.colorNode=pigment.mul(ambient.add(illumination));
+  m.fog=false; // Already composed with the same water radiance below, once only.
+  m.colorNode=geologicalWater(pigment.mul(ambient.add(illumination).add(bounce)));
   return m;
 }
