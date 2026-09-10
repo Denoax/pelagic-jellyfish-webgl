@@ -9,6 +9,7 @@ import { ThermalShimmer } from './ThermalShimmer.js';
 import { VentLife } from './VentLife.js';
 import { ledgeGeometry, mesoLayout } from './mesoGeology.js';
 import { BenthicSediment } from './BenthicSediment.js';
+import { refineShelfSilhouettes } from './shelfSilhouettes.js';
 
 export class Sanctuary {
   constructor(scene,{reducedMotion=false}={}) {
@@ -35,7 +36,7 @@ export class Sanctuary {
     this.add(chimneyColumn({x:-15,y:floorHeight(-15,-40)-.1,z:-40,height:7.4,radius:1.4,salt:151}),chimneyMat,'inactive-spire-west');
     this.group.updateMatrixWorld(true);
     this.meso=mesoLayout(this.layout,this.solids);
-    this.instanced(ledgeGeometry(),mat,this.meso,'connected-fracture-beds');
+    const beds=this.instanced(ledgeGeometry(),mat,this.meso,'connected-fracture-beds');
     if(!this.blockout){
       this.instanced(new THREE.IcosahedronGeometry(1,1),chimneyMat,mineralAccretions(),'sulfide-accretion-shoulders');
       const tubes=[];
@@ -53,6 +54,7 @@ export class Sanctuary {
       this.life=new VentLife(this);
       this.sediment=new BenthicSediment(this);
     }
+    this.shelfSilhouettes=refineShelfSilhouettes(this,beds);
     this.lastTime=null;this.cpu=new Float32Array(8192);this.cpuCursor=0;this.cpuCount=0;
     this.group.updateMatrixWorld(true);
   }

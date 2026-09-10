@@ -1,5 +1,9 @@
 # Prototype Instructions
 
+## Current authorization: M6.6 shelf silhouette (2026-09-10)
+
+Start exactly from accepted M6.5 material baseline `dd97923241e1d914e637263a6a94182b074c3bf0`. Fix only existing close/medium shelf/terrace silhouette repetition using deterministic, bounded shape variation and shared batching. Reproduce and identify worst foreground, stacks and ravine-edge instances before geometry edits. No additional rocks, ecology or material darkening; preserve ten pinpoints, colonies, ravine, chimney/spires, plume/shimmer, M1–M5.2, all cameras/View/scroll/Explore and known idle defect. Measure construction and six identical RTX4070 WebGL2 scenes; retain stall data. Matched multi-angle Explore/wide/portrait stills and five paired browser clips gate the result. Local commits only: no push/merge/deploy/Pages/M7 or invented M6.7. Stop after this defined fix; PARTIAL if reused primitives remain obvious or locked visuals/performance regress.
+
 ## Current authorization: M6.5 dark basalt material (2026-09-10)
 
 Start from M6.4 `518db86f0be40ac4273900081b5385a9f8ca25bf`, NOT M6.3. Preserve the 231 meso pieces, shelf relief, layout, five colonies, 72 sediment particles, plume/shimmer and M1–M5.2. Narrow material-only art pass: substantially darker rock-specific reflectance/fill, coarse mineral grain and restrained normals, selective shadow concealing plate repetition, very few tiny surface-attached pinpoints. No global exposure/lighting/bloom changes, new geology/particle systems, camera/View/scroll/idle work, push/merge/deploy/Pages/M7. Capture the same close Explore and wide Drift/Deep before/after, actual browser motion, six equal-quality RTX4070 WebGL2 performance scenes and construction diagnostic. PARTIAL if still waxy/bright/repetitive, ugly grain, unreadable darkness, broad glow, or substantially worse initialization. Known idle defect remains out of scope.

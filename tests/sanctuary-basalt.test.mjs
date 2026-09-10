@@ -9,8 +9,9 @@ import {pinpointLife} from '../src/scene/sanctuary/VentLife.js';
 const base='518db86f0be40ac4273900081b5385a9f8ca25bf';
 test('M6.5 changes only sanctuary material and pinpoint selection; geometry and other systems stay locked',()=>{
  const changed=execFileSync('git',['diff',base,'--name-only','--','src'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
- assert.ok(changed.every(f=>['src/scene/sanctuary/materials.js','src/scene/sanctuary/VentLife.js'].includes(f)),changed.join('\n'));
- for(const name of ['geology.js','mesoGeology.js','Sanctuary.js','BenthicSediment.js','VentDynamics.js','VentParticles.js','ThermalShimmer.js','atmosphere.js']){
+ // M6.6 authorizes only the post-attachment shelf refinement hook/module.
+ assert.ok(changed.every(f=>['src/scene/sanctuary/materials.js','src/scene/sanctuary/VentLife.js','src/scene/sanctuary/Sanctuary.js','src/scene/sanctuary/shelfSilhouettes.js'].includes(f)),changed.join('\n'));
+ for(const name of ['geology.js','mesoGeology.js','BenthicSediment.js','VentDynamics.js','VentParticles.js','ThermalShimmer.js','atmosphere.js']){
   const path='src/scene/sanctuary/'+name;
   assert.equal(readFileSync(new URL('../'+path,import.meta.url),'utf8'),execFileSync('git',['show',`${base}:${path}`],{encoding:'utf8'}));
  }
