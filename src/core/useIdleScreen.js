@@ -67,6 +67,8 @@ export function useIdleScreen(enabled) {
           event.type === "touchstart" ||
           (event.type === "keydown" && ["Enter", "Escape", " "].includes(event.key))
         ) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
           dismiss();
           window.requestAnimationFrame(schedule);
         }
@@ -88,14 +90,14 @@ export function useIdleScreen(enabled) {
     };
 
     ACTIVITY_EVENTS.forEach((event) =>
-      window.addEventListener(event, onActivity, { passive: true }),
+      window.addEventListener(event, onActivity, { passive: false, capture: true }),
     );
     document.addEventListener("visibilitychange", onVisibility);
     schedule();
 
     return () => {
       window.clearTimeout(timerRef.current);
-      ACTIVITY_EVENTS.forEach((event) => window.removeEventListener(event, onActivity));
+      ACTIVITY_EVENTS.forEach((event) => window.removeEventListener(event, onActivity, true));
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [dismiss, enabled]);

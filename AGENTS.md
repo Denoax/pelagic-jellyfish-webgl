@@ -1,5 +1,18 @@
 # Prototype Instructions
 
+## Current authorization: M7 ocean-to-glass integration (2026-09-10)
+
+Start at approved stable `046430847448206cfc58ce84758d9410121a97d3`. One main
+renderer, one ocean scene render, existing M3 color/depth/output reused for
+idle glass. First prove unified ownership, then live clock refraction,
+persistent bounded low-resolution spring/advection state, implicit droplets
+and topology, condensation, non-ghost minute changes and responsive exit.
+Freeze observer/journey during idle but keep world alive. Preserve all M1–M6.6.1
+visuals outside idle and finite spatial input guard. No second production idle
+renderer or full-resolution copy. Real browser evidence, 20-cycle/resource/
+resize/hidden/Explore checks and identical-quality capture-free benchmarks.
+Local reversible commits only: no push, merge, deploy, Pages or M8.
+
 ## Current authorization: M6.6.1 input/idle-return hotfix (2026-09-10)
 
 Approved visual baseline `a1fd998eab3a20b4fde99076ecde39058bac2298`. Diagnose and fix only the source of invalid geometry/cyan loss associated with strict idle-return checks. Reproduce before changes; find the first invalid input/state, not just downstream warnings. Preserve the complete world, all approved visuals, clocks, fixed-step tissue, LOD, cameras, UI and compositor unless evidence requires a narrow correction. Never sanitize final geometry or reset the world. Validate native and historical synthetic triggers separately, ten consecutive cycles (25 if practical), hidden/combined/freeze/resize/input paths, finite geometry, material/resource continuity, matched visuals and equal-quality performance. Local commits only; no push/merge/deploy/Pages/M7.

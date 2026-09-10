@@ -15,7 +15,8 @@ export function App() {
   const motion = useMotionPreference();
   const [sceneStatus, setSceneStatus] = useState("loading");
   const [viewController, setViewController] = useState(null);
-  const idleEnabled = !motion.reduced && sceneStatus === "ready";
+  const [idleReady, setIdleReady] = useState(false);
+  const idleEnabled = !motion.reduced && sceneStatus === "ready" && idleReady;
   const idle = useIdleScreen(idleEnabled);
 
   return (
@@ -25,7 +26,7 @@ export function App() {
       </a>
 
       <Suspense fallback={<div className="ocean-stage ocean-stage--loading" aria-hidden="true" />}>
-        <HeroScene reducedMotion={motion.reduced} onStatusChange={setSceneStatus} onViewReady={setViewController} />
+        <HeroScene reducedMotion={motion.reduced} onStatusChange={setSceneStatus} onViewReady={setViewController} idleActive={idle.active} onIdleReady={setIdleReady} />
       </Suspense>
 
       <header className="site-header" aria-label="Artist">

@@ -11,7 +11,9 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
-export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }) {
+export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, idleActive = false, onIdleReady }) {
+  const idleRef = useRef(idleActive);
+  idleRef.current = idleActive;
   const mountRef = useRef(null);
   const [status, setStatus] = useState("loading");
   const [progress, setProgress] = useState(0);
@@ -97,6 +99,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
       // before touching pointer history/current; undefined coordinates poison
       // the director and persistent tissue state even before idle begins.
       if (!Number.isFinite(event.clientX) || !Number.isFinite(event.clientY)) return;
+      if (idleRef.current) return;
       if (event.target.closest?.('[data-view-ui]') || cameraLab?.dragging) {
         previousPointer.set(event.clientX / window.innerWidth, 1 - event.clientY / window.innerHeight);
         hoverDirty = false;
@@ -151,6 +154,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
     };
 
     const beginPointer = (event) => {
+      if (idleRef.current) return;
       if (event.target.closest?.('[data-view-ui]') || event.button !== 0) return;
       if (!event.isPrimary) return;
       pointerDown = {
@@ -162,6 +166,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
     };
 
     const endPointer = (event) => {
+      if (idleRef.current) { pointerDown = null; return; }
       if (!pointerDown || pointerDown.id !== event.pointerId) return;
       const travel = Math.hypot(
         event.clientX - pointerDown.x,
@@ -510,6 +515,14 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
         // silently replace a good frame with an unsupported black target.
         await app.update(1 / 60, clock.elapsedTime, { interactionMode: true, renderScene: liveLens?.render });
         if (disposed) return;
+        if (liveLens && bubblesRequested) {
+          const { OceanIdleGlass } = await import('./glass/OceanIdleGlass.js');
+          if (disposed) return;
+          await liveLens.attachIdle(new OceanIdleGlass(renderer));
+          if (disposed) return;
+          onIdleReady?.(true);
+          if (import.meta.env.DEV) window.__OCEAN_IDLE__ = {state:()=>liveLens.idle.state()};
+        }
 
         schoolDirector.actors.forEach((actor, index) => {
           appendages[index]?.setPresence(actor.presence, actor.feature);
@@ -534,6 +547,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
           frameBusy = true;
           try {
             const clockDelta = clock.getDelta();
+            liveLens?.idle?.setActive(idleRef.current);
             const rawDelta = specimen ? specimen.advance(clockDelta) : connectedOcean ? Math.min(Math.max(clockDelta, 0), 0.05) : clockDelta;
             if (connectedOcean) connectedTime += rawDelta;
             sampleFrames += 1;
@@ -566,8 +580,10 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
             }
             const scrollDamping =
               1 - Math.exp(-cameraDelta * (reducedMotion ? 5.8 : 3.5));
-            if (cameraLab) scrollProgress = cameraLab.advance(scrollTarget, rawDelta, elapsed);
-            else scrollProgress += (scrollTarget - scrollProgress) * scrollDamping;
+            if (!idleRef.current) {
+              if (cameraLab) scrollProgress = cameraLab.advance(scrollTarget, rawDelta, elapsed);
+              else scrollProgress += (scrollTarget - scrollProgress) * scrollDamping;
+            }
             const interactionMode =
               performance.now() - lastScrollTime < 180 ||
               Math.abs(scrollTarget - scrollProgress) > 0.0015;
@@ -595,8 +611,10 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
               current.value,
               journeyFocus,
             );
-            if (cameraLab) cameraLab.updatePose(rawDelta, elapsed);
-            else cameraRig.update(scrollProgress, cameraDelta, elapsed, directive);
+            if (!idleRef.current) {
+              if (cameraLab) cameraLab.updatePose(rawDelta, elapsed);
+              else cameraRig.update(scrollProgress, cameraDelta, elapsed, directive);
+            }
             schoolDirector.actors.forEach((actor, index) => {
               appendages[index]?.setPresence(actor.presence, actor.feature);
             });
@@ -684,6 +702,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
       bubblePassage?.dispose();
       delete window.__BUBBLE_PASSAGE__;
       delete window.__LIVE_LENS__;
+      delete window.__OCEAN_IDLE__;
       connectedOcean?.dispose();
       population?.dispose();
       appendages.forEach((tissue) => tissue.dispose());

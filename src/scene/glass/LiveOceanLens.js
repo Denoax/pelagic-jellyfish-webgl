@@ -145,7 +145,7 @@ export class LiveOceanLens {
     document.addEventListener("visibilitychange", this.onHidden);
     window.addEventListener("keydown", this.onKey);
   }
-  optics() {
+  optics(withIdle = false) {
     return Fn(() => {
       const st = screenUV,
         original = texture(this.target.texture, st).toVar();
@@ -157,7 +157,8 @@ export class LiveOceanLens {
         const sample = this.opticalSample(slot, st, original, true);
         result.assign(mix(result, sample.rgb, sample.a));
       }
-      return vec4(result, original.a);
+      const combined = vec4(result, original.a);
+      return withIdle ? this.idle.sample(this, st, combined) : combined;
     })();
   }
   opticalSample(s, st, original, bubble = false) {
@@ -271,8 +272,9 @@ export class LiveOceanLens {
   }
   async render() {
     if (this.disposed) return;
+    this.idle?.update();
     const thermalVisible = this.thermal?.prepare(this.camera) || false;
-    if (!this.enabled || (this.slots.length && !this.slots.some(s => s.strength.value > 0) && !thermalVisible))
+    if ((!this.enabled || (this.slots.length && !this.slots.some(s => s.strength.value > 0) && !thermalVisible)) && !this.idle?.visible)
       return this.renderer.renderAsync(this.scene, this.camera);
     const renderer = this.renderer;
     const started = performance.now(),
@@ -343,7 +345,7 @@ export class LiveOceanLens {
       renderer.setRenderTarget(this.target);
       await renderer.renderAsync(this.scene, this.camera);
       renderer.setRenderTarget(previous);
-      if (!this.disposed) await this.output.renderAsync();
+      if (!this.disposed) await (this.idle?.visible ? this.idleOutput : this.output).renderAsync();
     } finally {
       renderer.setRenderTarget(previous);
       renderer.toneMapping = toneMapping;
@@ -380,7 +382,21 @@ export class LiveOceanLens {
     if (this.resourcesReleased) return;
     this.resourcesReleased = true;
     this.output.dispose();
+    this.idleOutput?.dispose();
+    this.idle?.dispose();
     this.target.dispose();
+  }
+  async attachIdle(idle) {
+    this.idle = idle;
+    this.idleOutput = new THREE.PostProcessing(this.renderer, this.optics(true));
+    // Compile using the normal output API into a tiny scratch surface.
+    const scratch = new THREE.RenderTarget(8, 8, {depthBuffer:false});
+    const previous = this.renderer.getRenderTarget();
+    try {
+      this.renderer.setRenderTarget(scratch);
+      await this.idleOutput.renderAsync();
+      idle.ready = true;
+    } finally { this.renderer.setRenderTarget(previous); scratch.dispose(); }
   }
   attachThermal(thermal) {
     this.thermal = thermal;
