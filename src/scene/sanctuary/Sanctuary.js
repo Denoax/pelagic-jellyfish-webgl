@@ -1,11 +1,12 @@
 import * as THREE from 'three/webgpu';
 import { color, normalWorld, vec3 } from 'three/tsl';
 import { FLOOR_Y, HERO, BASIN_SIZE, basinGeometry, lobeGeometry, shelfGeometry, sanctuaryLayout, chimneyGeometry, chimneyColumn } from './geology.js';
-import { seed, floorHeight, mineralAccretions } from './geology.js';
+import { seed, floorHeight, mineralAccretions, fractureGeometry, deadSpireGeometry } from './geology.js';
 import { VentDynamics, AnimalLight, DIFFUSE } from './VentDynamics.js';
 import { VentParticles } from './VentParticles.js';
 import { lightUniforms, mineralMaterial } from './materials.js';
 import { ThermalShimmer } from './ThermalShimmer.js';
+import { VentLife } from './VentLife.js';
 
 export class Sanctuary {
   constructor(scene,{reducedMotion=false}={}) {
@@ -23,6 +24,9 @@ export class Sanctuary {
     this.add(basinGeometry(),this.blockout?mat:mineralMaterial(this.light,{floor:true}),'abyssal-basin');
     const lobe=lobeGeometry();this.instanced(shelfGeometry(),mat,this.layout.shelves,'basalt-shelves');
     this.instanced(lobe,mat,this.layout.pillows,'pillow-flows');
+    const fracture=fractureGeometry();
+    this.instanced(fracture,mat,[...this.layout.terraces,...this.layout.banks,...this.layout.rubble],'layered-basalt-and-channel-banks');
+    this.add(deadSpireGeometry(),chimneyMat,'collapsed-secondary-spires');
     const height=import.meta.env?.DEV?Number(query?.get('chimneyHeight'))||HERO.height:HERO.height;
     this.height=height;this.add(chimneyGeometry(height),chimneyMat,'active-sulfide-complex');
     this.add(chimneyColumn({x:12,y:floorHeight(12,-35)-.1,z:-35,height:6.2,radius:1.2,salt:121}),chimneyMat,'inactive-spire-east');
@@ -41,6 +45,7 @@ export class Sanctuary {
       this.plume=new VentParticles(this.sim,this.light,0,this.sim.smokeCount,true);
       this.diffuse=new VentParticles(this.sim,this.light,this.sim.smokeCount,this.sim.diffuseCount+this.sim.snowCount);
       this.group.add(this.plume.mesh,this.diffuse.mesh);
+      this.life=new VentLife(this);
     }
     this.lastTime=null;this.cpu=new Float32Array(8192);this.cpuCursor=0;this.cpuCount=0;
     this.group.updateMatrixWorld(true);
@@ -53,10 +58,12 @@ export class Sanctuary {
     const started=performance.now(),dt=this.lastTime===null?0:elapsed-this.lastTime;this.lastTime=elapsed;
     if(this.sim){this.sim.update(dt);this.plume.update();this.diffuse.update();}
     this.thermal.update(dt,this.sim?.time||0,this.sim?.field);
+    this.life?.update(dt,this.sim?.time||0,this.field);
     this.animalLight.update(dt,this.tissues);
     this.light.position.value.set(this.animalLight.x,this.animalLight.y,this.animalLight.z);this.light.power.value=this.animalLight.intensity;
+    this.light.activation.value=this.animalLight.activation;
     this.cpu[this.cpuCursor++%this.cpu.length]=performance.now()-started;this.cpuCount=Math.min(this.cpuCount+1,this.cpu.length);
   }
   state(){return{floorY:FLOOR_Y,basinSize:BASIN_SIZE,chimney:{...HERO,height:this.height},solids:this.solids.length,opaque:this.solids.every(m=>!m.material.transparent&&m.material.opacity===1),geometries:this.geometries.size,materials:this.materials.size,blockout:this.blockout,plumeCount:this.sim?.smokeCount||0,diffuseCount:this.sim?.diffuseCount||0,localSnowCount:this.sim?.snowCount||0,plumeTime:this.sim?.time,light:{index:this.animalLight.index,intensity:this.animalLight.intensity,position:[this.animalLight.x,this.animalLight.y,this.animalLight.z]},extraOceanPasses:0};}
-  dispose(){if(this.disposed)return;this.disposed=true;this.thermal.dispose();this.light.scan.dispose();this.group.removeFromParent();this.geometries.forEach(g=>g.dispose());this.materials.forEach(m=>m.dispose());this.sim?.dispose();this.plume?.dispose();this.diffuse?.dispose();this.animalLight.dispose();this.light.power.value=0;this.field=null;this.tissues=null;this.camera=null;if(import.meta.env?.DEV&&typeof window!=='undefined')delete window.__SANCTUARY_REVIEW__;}
+  dispose(){if(this.disposed)return;this.disposed=true;this.life?.dispose();this.thermal.dispose();this.light.scan.dispose();this.group.removeFromParent();this.geometries.forEach(g=>g.dispose());this.materials.forEach(m=>m.dispose());this.sim?.dispose();this.plume?.dispose();this.diffuse?.dispose();this.animalLight.dispose();this.light.power.value=0;this.field=null;this.tissues=null;this.camera=null;if(import.meta.env?.DEV&&typeof window!=='undefined')delete window.__SANCTUARY_REVIEW__;}
 }

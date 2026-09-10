@@ -1,5 +1,9 @@
 # Prototype Instructions
 
+## Current authorization: M6.2 atmosphere/geology/life (2026-09-09)
+
+Start from `cb46120537ee6e56c02611f910c67de1e1a1f80f`. M6.1 is structural basis, not art approval. Add controlled abyssal color, geologically grouped basalt mass/rubble/dead spires, a real recessed basin gully, sparse vent-associated life and rare cyan/teal/violet accents. Keep one hero chimney, floor approximately Y −15, existing plume/current/thermal refraction and pooled animal illumination. Prefer shared instanced geometry and material response, not more lights/passes. Preserve M1–M5.2, all cameras/View/scroll/idle. No reef/fantasy/lava/global brightness wash, push/merge/deploy/Pages/M7 or unrelated cyan-idle fix. Fresh matched browser stills/motion and equal-setting benchmarks precede review; use PARTIAL if still monochrome/dead.
+
 ## Current authorization: M6.1 refinement (2026-09-09)
 
 Start from `9b33b64357fa5c1e6c99d0868c7dcf6f4af55dcd`. Preserve the M6 Y −15 basin/layout and M1–M5.2. Refine ONLY: mineral-bearing granular plume (first, visually prove it before mineral shaders), true localized thermal refraction reusing M3's scene-color/depth/output with no duplicate ocean render, geologically motivated mineral deposition/scanned secondary detail, and smallest single-world portrait placement adjustment. Keep pooled animal illumination/current coupling. No camera/UI/scroll edits, unrelated idle repair, push/merge/deploy/Pages/M7. Fresh browser audit in all views, matched motion and seven-scene benchmarks are required; any materially obvious original defect means PARTIAL. M3 integration may extend its existing optical hook for thermal domains, not replace the renderer or alter approved bubble optics.

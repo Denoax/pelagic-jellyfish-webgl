@@ -5,9 +5,17 @@ export const FLOOR_Y = -15;
 export const BASIN_SIZE = 192;
 export const HERO = Object.freeze({ x: -2.4, z: -24, height: 12, radius: 1.65 });
 export function seed(i, salt = 1) { const v = Math.sin(i * 91.73 + salt * 37.11) * 43758.5453; return v - Math.floor(v); }
+export const GULLY=Object.freeze({x:3,drift:.10,bend:.8,frequency:.13,depth:3.2,front:-12,back:-46});
+const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
+export function gullyCenter(z){return GULLY.x+(z+24)*GULLY.drift+Math.sin((z+24)*GULLY.frequency)*GULLY.bend;}
+export function gullyDepth(x,z){
+  const envelope=smooth(GULLY.front,GULLY.front-7,z)*smooth(GULLY.back,GULLY.back+7,z);
+  const width=1.3+.15*Math.sin(z*.21);
+  return GULLY.depth*envelope*(1-smooth(width*.35,width*1.9,Math.abs(x-gullyCenter(z))));
+}
 export function floorHeight(x, z) {
   return FLOOR_Y + .18 * Math.sin(x * .19 + z * .13) + .09 * Math.cos(z * .41 - x * .22)
-    - .65 * Math.exp(-(x*x / 190 + (z+23)**2 / 320));
+    - .65 * Math.exp(-(x*x / 190 + (z+23)**2 / 320))-gullyDepth(x,z);
 }
 
 // A quiet basin; sampling concentrated around the inhabited end, not a uniformly
@@ -34,11 +42,12 @@ export function lobeGeometry(salt=7) {
 }
 
 export function shelfGeometry() {
-  const g=new THREE.CylinderGeometry(1,.76,2,15,3),p=g.attributes.position;
+  const g=new THREE.SphereGeometry(1,40,20),p=g.attributes.position;
   for(let i=0;i<p.count;i++) {
     const x=p.getX(i),y=p.getY(i),z=p.getZ(i),a=Math.atan2(z,x);
-    const edge=1+.16*Math.sin(a*3+.8)+.08*Math.cos(a*7);
-    p.setXYZ(i,x*edge,y*.52+.08*Math.sin(x*4+z*3),z*edge);
+    const edge=1+.10*Math.sin(a*3+.8)+.05*Math.cos(a*7)+.024*Math.sin(a*17+y*8);
+    const strata=1+.025*Math.sin(y*29+a*2);
+    p.setXYZ(i,x*edge*strata,Math.sign(y)*Math.abs(y)**.48*.52+.025*Math.sin(x*9+z*7),z*edge*strata);
   }
   g.computeVertexNormals();return g;
 }
@@ -61,7 +70,45 @@ export function sanctuaryLayout() {
     pillows.push({p:[x,floorHeight(x,z)+.45+seed(i,32+stream)*.8,z],
       s:[.75+seed(i,41)*.65,.38+seed(i,53)*.45,1.3+seed(i,61)*1.4],r:[.13*seed(i),side*.4,.12*seed(i,2)]});
   }
-  return {shelves,pillows};
+  // Three related basalt terrace families. Shared orientation and buried lower
+  // tiers describe fractures/flows, not a field of independent scattered props.
+  const terraces=[];
+  for(const [family,x,z,angle]of [[0,-8,-22,.28],[1,10,-29,-.38],[2,-6,-38,.16]]){
+    for(let tier=0;tier<3;tier++){
+      const px=x+(family===1?-1:1)*tier*.8,pz=z+tier*1.1;
+      terraces.push({p:[px,floorHeight(px,pz)+.45+tier*.8,pz],s:[5-tier*.8,.85,3.5-tier*.55],r:[.04,angle,.025*(family-1)]});
+    }
+  }
+  const banks=[],rubble=[];
+  for(let station=0;station<9;station++){
+    const z=-16-station*3.1;
+    for(const side of [-1,1]){
+      const x=gullyCenter(z)+side*(2.3+seed(station,22)*.35);
+      banks.push({p:[x,floorHeight(x,z)+.05,z],s:[.9,.7+seed(station,27)*.45,1.7],r:[.06,side*.16+seed(station,33)*.12,side*.12]});
+      // Talus stays on the OUTER bank. Do not fill the channel's negative space.
+      for(let k=0;k<4;k++){
+        const salt=station*8+k+(side===1?4:0),px=x+side*(.8+seed(salt,301)*1.6),pz=z+(seed(salt,302)-.5)*2.5;
+        const scale=.16+seed(salt,303)*.5;
+        rubble.push({p:[px,floorHeight(px,pz)+scale*.15,pz],s:[scale,scale*.55,scale*1.4],r:[seed(salt,304)*.3,seed(salt,305)*6.28,seed(salt,306)*.2]});
+      }
+    }
+  }
+  return {shelves,pillows,terraces,banks,rubble};
+}
+
+export function fractureGeometry(){
+  const g=new THREE.SphereGeometry(1,24,12),p=g.attributes.position;
+  for(let i=0;i<p.count;i++){
+    const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+    p.setXYZ(i,x*(1+.11*Math.sin(z*6+y*2)),y*.65+.055*Math.sin(x*5+z*3),z*(1+.09*Math.sin(x*7)));
+  }
+  g.computeVertexNormals();return g;
+}
+
+export function deadSpireGeometry(){
+  const parts=[[-7,-26,3.1,.72],[7,-32,3.8,.85],[-5.5,-35,2.6,.65],[9,-22,2.1,.7]].map(([x,z,height,radius],i)=>
+    chimneyColumn({x,y:floorHeight(x,z)-.2,z,height,radius,salt:170+i*9,radial:24,levels:24}));
+  const merged=mergeGeometries(parts);parts.forEach(g=>g.dispose());return merged;
 }
 
 // Sulfide growth: bent centerline, irregular accretion at several scales, offset
@@ -71,8 +118,8 @@ function crustRadius(t,a,salt,radius){
   return foot*(1+.16*Math.sin(a*3+salt+t*3)+.105*Math.cos(a*5-t*8)+.065*Math.sin(a*11+t*21))
     *(1+.08*Math.sin(t*37+3*Math.sin(t*11)+a*3)+.045*Math.sin(t*97+Math.sin(a*7)*2));
 }
-export function chimneyColumn({x=0,y=0,z=0,height=12,radius=1.6,salt=11}={}) {
-  const radial=48,levels=70,positions=[],indices=[];
+export function chimneyColumn({x=0,y=0,z=0,height=12,radius=1.6,salt=11,radial=48,levels=70}={}) {
+  const positions=[],indices=[];
   const center=(t)=>[x+Math.sin(t*3.7+salt)*.28*t+Math.sin(t*8)*.1*t,z+Math.sin(t*4.5+salt)*.25*t];
   const ring=(t,inner=false)=>{
     const [cx,cz]=center(t);

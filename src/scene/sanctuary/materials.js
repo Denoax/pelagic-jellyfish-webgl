@@ -1,7 +1,7 @@
 import * as THREE from 'three/webgpu';
 import { mix, normalWorld, positionWorld, vec2, vec3, uniform, mx_noise_float, texture } from 'three/tsl';
 import { DIFFUSE, ORIFICE } from './VentDynamics.js';
-import { FLOOR_Y, HERO } from './geology.js';
+import { FLOOR_Y, HERO, GULLY } from './geology.js';
 
 export function lightUniforms(){
   const scan=new THREE.Texture();
@@ -9,7 +9,7 @@ export function lightUniforms(){
   const ready=typeof document==='undefined'?Promise.resolve():new THREE.TextureLoader().loadAsync(
     `${import.meta.env?.BASE_URL||'/'}assets/models/polyhaven/rock_07/textures/rock_07_diff_1k.jpg`
   ).then(t=>{scan.image=t.image;scan.generateMipmaps=true;scan.minFilter=THREE.LinearMipmapLinearFilter;scan.magFilter=THREE.LinearFilter;scan.anisotropy=4;scan.needsUpdate=true;t.dispose();});
-  return{position:uniform(new THREE.Vector3()),power:uniform(0),scan,ready};
+  return{position:uniform(new THREE.Vector3()),power:uniform(0),activation:uniform(0),scan,ready};
 }
 export function mineralMaterial(light,{chimney=false,life=false,floor=false}={}) {
   const m=new THREE.MeshBasicNodeMaterial({transparent:false,opacity:1,depthWrite:true});
@@ -25,7 +25,11 @@ export function mineralMaterial(light,{chimney=false,life=false,floor=false}={})
   const scan=texture(light.scan,scanUV(p.yz)).rgb.mul(w.x)
     .add(texture(light.scan,scanUV(p.xz)).rgb.mul(w.y)).add(texture(light.scan,scanUV(p.xy)).rgb.mul(w.z)).dot(vec3(.2126,.7152,.0722));
   const grain=scan.sub(.5);
-  let pigment=vec3(.075,.082,.09).mul(meso.mul(.10).add(.93)).mul(scan.mul(.24).add(.76));
+  let pigment=vec3(.12,.155,.19).mul(meso.mul(.10).add(.93)).mul(scan.mul(.24).add(.76));
+  // Large exposed shoulders carry slate while sheltered faces stay blue-black.
+  // This is surface reflectance separation, not a lifted ocean ambient/exposure.
+  const shoulder=normalWorld.y.smoothstep(.18,.75).mul(low.mul(.3).add(.65));
+  pigment=mix(pigment,vec3(.26,.32,.35),shoulder.mul(.65));
   if(chimney) {
     const up=normalWorld.y.max(0),down=normalWorld.y.negate().max(0);
     const height=p.y.sub(FLOOR_Y).div(HERO.height).clamp(0,1);
@@ -34,16 +38,26 @@ export function mineralMaterial(light,{chimney=false,life=false,floor=false}={})
     const cavity=meso.smoothstep(-.2,.25).oneMinus().mul(.3).add(down.mul(.7));
     const cap=up.smoothstep(.1,.65).mul(height.smoothstep(.55,.95));
     const activeCrust=fresh.mul(cap.mul(.7).add(cavity.mul(.45))).mul(meso.mul(.22).add(.7)).clamp(0,.7);
-    const oxidized=height.smoothstep(.15,.55).mul(height.smoothstep(.7,.93).oneMinus())
-      .mul(fresh.oneMinus()).mul(up.smoothstep(.08,.5)).mul(low.smoothstep(.1,.38));
-    pigment=mix(pigment,vec3(.19,.17,.135),oxidized.mul(.45));
-    pigment=mix(pigment,vec3(.34,.35,.34),activeCrust);
+    const oxidized=height.smoothstep(.12,.35).mul(height.smoothstep(.7,.93).oneMinus())
+      .mul(fresh.oneMinus()).mul(up.mul(.6).add(.4)).mul(low.smoothstep(-.14,.22));
+    pigment=mix(pigment,vec3(.62,.34,.10),oxidized.mul(.85));
+    pigment=mix(pigment,vec3(.78,.75,.59),activeCrust);
+    const seam=up.smoothstep(.25,.8).mul(cavity.mul(.4).add(.25)).mul(height.smoothstep(.08,.45));
+    const veins=meso.smoothstep(.12,.36).mul(low.smoothstep(-.25,.12)).mul(height.smoothstep(.05,.3));
+    pigment=mix(pigment,vec3(.66,.70,.67),seam.add(veins.mul(.62)).clamp(0,.72));
   }
-  if(life)pigment=vec3(.42,.43,.38).mul(grain.mul(.15).add(.85));
+  if(life)pigment=mix(vec3(.46,.43,.31),vec3(.57,.61,.56),scan).mul(grain.mul(.15).add(.9));
   if(floor)for(const source of DIFFUSE){
     const radius=p.xz.sub(vec3(source.x,0,source.z).xz).length().add(low.mul(.3)).add(meso.mul(.12));
-    const mat=radius.smoothstep(.2,.85).oneMinus().mul(normalWorld.y.max(0)).mul(scan.mul(.3).add(.7));
-    pigment=mix(pigment,vec3(.32,.31,.265),mat.mul(.8));
+    const mat=radius.smoothstep(.18,1.5).oneMinus().mul(normalWorld.y.max(0)).mul(scan.mul(.3).add(.7));
+    pigment=mix(pigment,mix(vec3(.40,.31,.12),vec3(.57,.56,.40),radius.smoothstep(.3,.9)),mat.mul(.85));
+  }
+  if(floor){
+    const z=p.z.add(24),center=z.mul(GULLY.drift).add(z.mul(GULLY.frequency).sin().mul(GULLY.bend)).add(GULLY.x);
+    const bank=p.x.sub(center).abs().sub(2.25).abs().smoothstep(.1,.75).oneMinus();
+    const reach=p.z.smoothstep(-45,-38).mul(p.z.smoothstep(-20,-13).oneMinus());
+    const crust=bank.mul(reach).mul(normalWorld.y.max(0)).mul(meso.smoothstep(-.12,.38));
+    pigment=mix(pigment,vec3(.23,.34,.32),crust.mul(.7));
   }
   // Small rough facets, without shiny specular or caustics. The normal-dependent
   // term is a dim legibility fill, explicitly not sunlight or a moving ROV light.
@@ -59,7 +73,9 @@ export function mineralMaterial(light,{chimney=false,life=false,floor=false}={})
   const ray=light.position.sub(p),distance=ray.length();
   const diffuse=n.dot(ray.normalize()).max(0).mul(.88).add(.12);
   const falloff=distance.div(13).oneMinus().clamp(0,1).pow(2).div(distance.mul(distance).mul(.09).add(1));
-  const illumination=vec3(.24,.64,.9).mul(light.power).mul(falloff).mul(diffuse).mul(3.6);
+  const grazing=n.dot(ray.normalize()).abs().oneMinus().pow(2);
+  const hue=grazing.mul(.32).add(light.activation.mul(.22)).clamp(0,.5);
+  const illumination=mix(vec3(.24,.64,.9),vec3(.65,.30,.60),hue).mul(light.power).mul(falloff).mul(diffuse).mul(3.6);
   m.colorNode=pigment.mul(ambient.add(illumination));
   return m;
 }
