@@ -23,7 +23,7 @@ export class IdleLiquidState {
     dt=Math.min(dt,.05);
     if(!this.active&&this.amount===0){this.accumulator=0;return 0}
     this.time+=dt;
-    if(this.active){this.age+=dt;this.amount=ease(this.age/1.8);this.phase=this.age<.8?'condensing':this.age<2.5?'coalescing':this.age<4?'forming':'settled';}
+    if(this.active){this.age+=dt;this.amount=ease(this.age/.55);this.phase=this.age<.8?'condensing':this.age<2.5?'coalescing':this.age<4?'forming':'settled';}
     else{this.exitAge+=dt;this.amount=this.exitFrom*(1-ease((this.exitAge-.55)/.3));if(this.amount===0)this.phase='ocean';}
     this.accumulator=Math.min(this.accumulator+dt,3*IDLE_STEP);
     const steps=Math.min(3,Math.floor((this.accumulator+1e-10)/IDLE_STEP));this.accumulator-=steps*IDLE_STEP;

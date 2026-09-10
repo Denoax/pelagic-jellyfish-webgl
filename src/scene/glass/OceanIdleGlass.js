@@ -121,7 +121,7 @@ export class OceanIdleGlass {
       const ob=choose(this.oldSites[1],this.oldSites[3],this.oldSites[5],this.oldSites[7]).toVar();
       const landscape=p.x.lessThan(this.cuts.x).select(this.changed.x,p.x.lessThan(this.cuts.y).select(this.changed.y,p.x.lessThan(this.cuts.z).select(this.changed.z,this.changed.w)));
       const portrait=p.y.lessThan(.5).select(p.x.lessThan(.5).select(this.changed.x,this.changed.y),p.x.lessThan(.5).select(this.changed.z,this.changed.w));
-      const isColon=this.portrait.lessThan(.5).and(p.x.greaterThan(this.colon.x)).and(p.x.lessThan(this.colon.y));
+      const isColon=this.portrait.lessThan(.5).and(p.x.greaterThan(this.colon.x)).and(p.x.lessThan(this.colon.y)).toVar();
       const changed=isColon.select(0,this.portrait.greaterThan(.5).select(portrait,landscape)).toVar();
       const phase=this.minute,loss=phase.lessThan(.5).select(phase.mul(2),phase.oneMinus().mul(2)).toVar();
       // Each changed stroke retracts toward its two local liquid reservoirs.
@@ -136,7 +136,7 @@ export class OceanIdleGlass {
       const clockUv=vec2(mapped.x,mapped.y.oneMinus()).toVar();
       const next=texture(this.clock,clockUv).r.toVar(),old=texture(this.previousClock,clockUv).r.toVar();
       const glyph=phase.lessThan(.5).select(old,next).sub(collapse.mul(1.03)).toVar();
-      const arrival=min(p.sub(a.xy).mul(aspect).length().mul(6.8).add(a.z),p.sub(b.xy).mul(aspect).length().mul(7.4).add(b.z)).toVar();
+      const arrival=isColon.select(p.y.sub(.5).abs().mul(2).add(1.35),min(p.sub(a.xy).mul(aspect).length().mul(6.8).add(a.z),p.sub(b.xy).mul(aspect).length().mul(7.4).add(b.z))).toVar();
       const localGrowth=smoothstep(arrival,arrival.add(.85),this.age).toVar();
       const exitFront=smoothstep(arrival.mul(.11),arrival.mul(.11).add(.55),this.exitAge).toVar();
       const clock=glyph.sub(localGrowth.oneMinus().mul(1.1)).sub(exitFront.mul(1.15));
