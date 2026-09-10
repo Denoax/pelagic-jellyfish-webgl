@@ -1,0 +1,32 @@
+// Browser-injected diagnostics only. Never imported by the application/bundle.
+export async function installProbe() {
+  const THREE=await import(performance.getEntriesByType('resource').find(r=>/\/three_webgpu\.js/.test(r.name)).name);
+  const {LivingAppendages}=await import('/src/scene/LivingAppendages.js');
+  const {PopulationAnimal}=await import('/src/scene/population/PopulationAnimal.js');
+  const {PopulationDetail}=await import('/src/scene/population/PopulationDetail.js');
+  const animals=new Map(), chain=[],seen=new Set(), events=[],contexts=[],warnings=[];
+  const warn=console.warn;console.warn=(...args)=>{if(warnings.length<20)warnings.push(args.map(String));warn.apply(console,args);};
+  let population, frame=0, lastElapsed=-1, trace=true, firstNumerical;
+  const plain=x=>JSON.parse(JSON.stringify(x,(_,v)=>typeof v==='number'&&!Number.isFinite(v)?String(v):v));
+  const arr=x=>x?.toArray?.()||x?.elements||x;
+  const bad=(a,label)=>{if(!a)return null;for(let i=0;i<a.length;i++)if(!Number.isFinite(a[i]))return{label,index:i,value:String(a[i])};return null;};
+  const state=t=>({id:t.index,frame,delta:t.auditArgs?.[0],elapsed:t.auditArgs?.[1],current:arr(t.auditArgs?.[2]),presence:t.presence,activation:t.activation,shape:t.getBellShape(t.auditArgs?.[1]||0),detail:t.detail,lod:t.detailState,bodyInitialized:t.bodyInitialized,deformAccumulator:t.deformAccumulator,simulationRemainder:t.simulationRemainder,body:arr(t.medusa.transformationObject.position),scale:arr(t.medusa.transformationObject.scale),quaternion:arr(t.medusa.transformationObject.quaternion),previousQuaternion:arr(t.previousBodyQuaternion),bodyDelta:arr(t.bodyDelta),lastBody:arr(t.lastBodyPosition),idle:!!document.querySelector('.idle-screen.is-active'),visibility:document.visibilityState,journey:window.__CAMERA_LAB__?.state?.()||window.__JELLYFISH_WORLD__?.getCameraState()});
+  const geometries=t=>[...new Set([t.bellGeometry,...(t.bellLevels||[]),t.armGeometry,...(t.armLevels||[]),t.tentacleGeometry,t.filamentGeometry,t.frillGeometry].filter(Boolean))];
+  const scan=t=>{
+    for(const g of geometries(t))for(const [name,a]of Object.entries(g.attributes)){const b=bad(a.array,`geometry:${g.uuid}:${name}`);if(b)return{...b,geometry:g.name||g.type,attribute:name,vertex:Math.floor(b.index/a.itemSize)};}
+    for(const name of ['tentacleChains','masterArms','filamentChains'])for(const[c, strand]of(t[name]||[]).entries())for(const[p,particle]of strand.particles.entries())for(const key of ['position','previous']){const b=bad(arr(particle[key]),`${name}:${c}:${p}:${key}`);if(b)return b;}
+    for(const[name,o]of[['body',t.medusa.transformationObject],['group',t.group]])for(const key of ['position','scale','quaternion','matrix','matrixWorld']){const b=bad(arr(o[key]),`${name}:${key}`);if(b)return b;}
+    for(const key of ['previousBodyQuaternion','rotationDelta','inverseQuaternion','inverseMatrix','lastBodyPosition','bodyDelta','surfaceCurrent']){const b=bad(arr(t[key]),key);if(b)return b;}
+    for(const g of geometries(t))if(g.boundingSphere){const b=bad([...g.boundingSphere.center.toArray(),g.boundingSphere.radius],`bounds:${g.uuid}`);if(b)return b;}
+    return null;
+  };
+  const mark=(stage,t,issue)=>{if(!issue||seen.has(stage)||chain.length>=16)return;seen.add(stage);chain.push(plain({stage,issue,state:state(t),wall:performance.now()}));};
+  const wrap=(proto,name,hook)=>{const fn=proto[name];proto[name]=function(...args){return hook.call(this,fn,args);};};
+  wrap(THREE.Vector2.prototype,'set',function(fn,args){if(!firstNumerical&&args.some(v=>!Number.isFinite(v)))firstNumerical={args:args.map(String),previous:this.toArray(),idle:!!document.querySelector('.idle-screen.is-active'),wall:performance.now(),stack:new Error().stack};return fn.apply(this,args);});
+  wrap(LivingAppendages.prototype,'update',function(fn,args){animals.set(this.index,this);this.auditArgs=args;if(lastElapsed!==args[1]){frame++;lastElapsed=args[1];}if(trace)mark('update-input',this,bad([args[0],args[1],args[2].x,args[2].y],'delta/elapsed/current'));const r=fn.apply(this,args);if(trace)mark('update-output',this,scan(this));return r;});
+  for(const proto of[LivingAppendages.prototype,PopulationAnimal.prototype])for(const name of['simulateChains','updateBellSurface','updateArmGeometry','updateTubeGeometry'])if(Object.hasOwn(proto,name))wrap(proto,name,function(fn,args){const r=fn.apply(this,args);if(trace)mark(name,this,scan(this));return r;});
+  wrap(PopulationDetail.prototype,'beforeTissue',function(fn,args){population=this;return fn.apply(this,args);});
+  window.addEventListener('pointermove',e=>{if(events.length<12)events.push({type:e.constructor.name,x:e.clientX??'missing',y:e.clientY??'missing',trusted:e.isTrusted,wall:performance.now(),idle:!!document.querySelector('.idle-screen.is-active')});},true);
+  for(const name of['webglcontextlost','webglcontextrestored'])document.addEventListener(name,e=>contexts.push({type:name,canvas:e.target.className,wall:performance.now()}),true);
+  window.__IDLE_AUDIT__={trace:v=>trace=v,resetEvents:()=>events.length=0,snapshot:()=>plain({warnings,optics:window.__BUBBLE_PASSAGE__?.state(),sanctuary:window.__SANCTUARY_REVIEW__?.state(),sameWorld:window.__HOTFIX_WORLD__===window.__JELLYFISH_WORLD__,aspect:population?.app.camera.aspect,firstNumerical,frame,chain,events,contexts,world:window.__JELLYFISH_WORLD__?.getCameraState(),renderer:window.__SPECIMEN__?.rendererInfo(),idle:!!document.querySelector('.idle-screen.is-active'),visibility:document.visibilityState,canvases:[...document.querySelectorAll('canvas')].map(c=>({class:c.className,size:[c.width,c.height],client:[c.clientWidth,c.clientHeight],rect:[c.getBoundingClientRect().width,c.getBoundingClientRect().height],display:getComputedStyle(c).display})),target:population?.app.renderer.getRenderTarget()?.uuid||null,memory:population?.app.renderer.info.memory,animals:[...animals.values()].map(t=>({state:state(t),invalid:scan(t),geometries:geometries(t).map(g=>g.uuid),material:{id:t.bell.material.uuid,opacity:t.bell.material.opacity,tissue:t.bell.material.userData.tissueOpacity?.value,map:t.bell.material.userData.detailMap?.uuid,visible:t.bell.visible,groupVisible:t.group.visible},strandSamples:(t.tentacleChains||[]).slice(0,1).flatMap(c=>[0,1,Math.floor(c.particles.length/2),c.particles.length-1].map(i=>({i,position:arr(c.particles[i].position),previous:arr(c.particles[i].previous),speed:c.particles[i].position.distanceTo(c.particles[i].previous)})))}))})};
+}
