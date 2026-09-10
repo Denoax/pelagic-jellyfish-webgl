@@ -521,7 +521,18 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
           await liveLens.attachIdle(new OceanIdleGlass(renderer));
           if (disposed) return;
           onIdleReady?.(true);
-          if (import.meta.env.DEV) window.__OCEAN_IDLE__ = {state:()=>liveLens.idle.state()};
+          if (import.meta.env.DEV) window.__OCEAN_IDLE__ = {
+            state:()=>liveLens.idle.state(),
+            resetCost:()=>{liveLens.idle.cpu.length=0;liveLens.idle.captureCost=true;},
+            cost:()=>liveLens.idle.cpu.slice(),
+            minute:iso=>{liveLens.idle.reviewDate=iso?new Date(iso):null;liveLens.idle.drawClock(false);},
+            field:async()=>{
+              const f=liveLens.idle.fluid,t=f.targets[f.current];
+              const data=await renderer.readRenderTargetPixelsAsync(t,0,0,t.width,t.height);
+              let maximum=0,invalid=0;for(const value of data){const n=data instanceof Uint16Array?THREE.DataUtils.fromHalfFloat(value):value;if(!Number.isFinite(n))invalid++;else maximum=Math.max(maximum,Math.abs(n));}
+              return {maximum,invalid,values:data.length};
+            },
+          };
         }
 
         schoolDirector.actors.forEach((actor, index) => {

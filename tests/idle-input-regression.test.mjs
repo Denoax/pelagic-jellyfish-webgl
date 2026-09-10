@@ -10,7 +10,7 @@ const file='src/scene/HeroScene.jsx';
 const source=readFileSync(new URL('../'+file,import.meta.url),'utf8');
 const old=execFileSync('git',['show',base+':'+file],{encoding:'utf8'});
 function fixture(text=source){
- const ctx={Number,window:{innerWidth:1280,innerHeight:900},performance:{now:()=>10},cameraLab:null,app:null,mount:{classList:{remove(){}}},hoveredTissue:null};
+ const ctx={Number,idleRef:{current:false},window:{innerWidth:1280,innerHeight:900},performance:{now:()=>10},cameraLab:null,app:null,mount:{classList:{remove(){}}},hoveredTissue:null};
  for(const key of ['pointerClient','pointer','pointerNdc','pointerGoal','currentTarget','previousPointer'])ctx[key]=new Vector2(.5,.5);
  runInNewContext(text.slice(text.indexOf('const updatePointer ='),text.indexOf('const findJellyAt ='))+';globalThis.handle=updatePointer;',ctx);
  return ctx;
@@ -58,9 +58,8 @@ test('repeated malformed activity leaves persistent population geometry/material
  }
  pair.forEach(a=>a.dispose());
 });
-test('hotfix changes only the pointer input boundary; approved world/idle/optics remain exact',()=>{
- const changed=execFileSync('git',['diff',base,'--name-only','--','src'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
- assert.deepEqual(changed,[file]);
+test('M6.6.1 pointer guard remains exact; M7 only suspends spatial interaction during idle',()=>{
  const addition=`      // Activity-only synthetic events have no spatial sample. Reject them\n      // before touching pointer history/current; undefined coordinates poison\n      // the director and persistent tissue state even before idle begins.\n      if (!Number.isFinite(event.clientX) || !Number.isFinite(event.clientY)) return;\n`;
- assert.ok(source.includes(addition));assert.equal(source.replace(addition,''),old);
+ const handler=s=>s.slice(s.indexOf('    const updatePointer ='),s.indexOf('    const findJellyAt ='));
+ assert.ok(source.includes(addition));assert.equal(handler(source).replace(addition,'').replace('      if (idleRef.current) return;\n',''),handler(old));
 });

@@ -272,7 +272,7 @@ export class LiveOceanLens {
   }
   async render() {
     if (this.disposed) return;
-    this.idle?.update();
+    if (this.idle) await this.idle.update();
     const thermalVisible = this.thermal?.prepare(this.camera) || false;
     if ((!this.enabled || (this.slots.length && !this.slots.some(s => s.strength.value > 0) && !thermalVisible)) && !this.idle?.visible)
       return this.renderer.renderAsync(this.scene, this.camera);
@@ -388,6 +388,7 @@ export class LiveOceanLens {
   }
   async attachIdle(idle) {
     this.idle = idle;
+    await idle.prepare();
     this.idleOutput = new THREE.PostProcessing(this.renderer, this.optics(true));
     // Compile using the normal output API into a tiny scratch surface.
     const scratch = new THREE.RenderTarget(8, 8, {depthBuffer:false});

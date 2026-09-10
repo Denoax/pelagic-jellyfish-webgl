@@ -42,11 +42,11 @@ test('bubble buoyancy remains upward with restrained read-only shared current', 
   for (let i = 0; i < 600; i++) p.update(1 / 60, .35, field, place);
   assert.ok(samples > 100); assert.ok(p.pool.filter(b => b.live).every(b => b.y > -3));
 });
-test('approved animals, M2 water, legacy camera and idle remain exact; shell permits only M5 View integration', () => {
+test('approved animals, M2 water and legacy camera remain exact; shell permits M5 View and M7 idle integration', () => {
   const paths = execFileSync('git', ['ls-tree', '-r', '--name-only', '78d723a', 'src'], {encoding:'utf8'}).trim().split('\n')
     // M6 replaces only the deep environment. Its embedded distant-school and
     // water-layer ownership are checked against M5.2 in sanctuary.test.mjs.
-    .filter(p => /\.(js|jsx)$/.test(p) && !['src/scene/HeroScene.jsx','src/scene/glass/LiveOceanLens.js','src/scene/PelagicEnvironment.js'].includes(p));
+    .filter(p => /\.(js|jsx)$/.test(p) && !['src/App.jsx','src/core/useIdleScreen.js','src/ui/IdleScreen.jsx','src/scene/HeroScene.jsx','src/scene/glass/LiveOceanLens.js','src/scene/PelagicEnvironment.js'].includes(p));
   for (const p of paths) {
     let current = readFileSync(p, 'utf8');
     // M6.3 imports the existing water radiance graph from native-ESM tests.
