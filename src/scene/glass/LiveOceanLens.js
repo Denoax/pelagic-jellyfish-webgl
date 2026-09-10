@@ -449,7 +449,7 @@ export class LiveOceanLens {
     const job=this.idlePreparation;
     if (!job?.complete || this.disposed) return false;
     this.finishingIdle=true;
-    const previous=this.renderer.getRenderTarget();
+    const previous=this.renderer.getRenderTarget(),tone=this.renderer.toneMapping,space=this.renderer.outputColorSpace,xr=this.renderer.xr.enabled;
     try {
       if(job.error)throw job.error;
       this.renderer.setRenderTarget(job.scratch);
@@ -457,7 +457,7 @@ export class LiveOceanLens {
       if (!this.disposed) this.idle.ready=true;
       return !this.disposed;
     } finally {
-      this.renderer.setRenderTarget(previous);job.scratch.dispose();
+      this.renderer.setRenderTarget(previous);this.renderer.toneMapping=tone;this.renderer.outputColorSpace=space;this.renderer.xr.enabled=xr;job.scratch.dispose();
       this.idle.prewarmMilliseconds=performance.now()-job.started;
       this.idlePreparation=null;this.preparingIdle=false;this.finishingIdle=false;
       if(this.disposed)this.releaseResources();

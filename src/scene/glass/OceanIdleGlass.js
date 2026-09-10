@@ -50,11 +50,12 @@ export class OceanIdleGlass {
     this.portrait.value=portrait?1:0;
     if(reset||!this.clockLayout){
       const c=this.maskProbe.getContext('2d');c.font='600 400px "Instrument Sans", sans-serif';
-      const width=portrait?768:1536,height=portrait?1280:864,text=`${digits.slice(0,2)}:${digits.slice(2)}`;
+      const width=portrait?768:1536,height=portrait?1280:864;
+      const cell=Math.max(...Array.from('0123456789',d=>c.measureText(d).width));
+      const colon=c.measureText(':').width,total=portrait?cell*2:cell*4+colon;
       this.clockLayout=Array.from({length:4},(_,i)=>{
-        const row=portrait?digits.slice(i<2?0:2,i<2?2:4):text,index=portrait?i%2:i<2?i:i+1;
-        const left=width/2-c.measureText(row).width/2+c.measureText(row.slice(0,index)).width;
-        const right=width/2-c.measureText(row).width/2+c.measureText(row.slice(0,index+1)).width;
+        const left=(width-total)/2+(portrait?i%2:i)*cell+(!portrait&&i>=2?colon:0);
+        const right=left+cell;
         return{left:left/width,right:right/width,cy:(portrait?(i<2?410:890):432)/height};
       });
       this.cuts.value.set(this.clockLayout[0].right,(this.clockLayout[1].right+this.clockLayout[2].left)/2,this.clockLayout[2].right,.5);
@@ -65,7 +66,8 @@ export class OceanIdleGlass {
       const ctx=c.getContext('2d');ctx.fillStyle='black';ctx.fillRect(0,0,c.width,c.height);
       ctx.fillStyle='white';ctx.textAlign='center';ctx.textBaseline='middle';ctx.filter='blur(8px)';
       ctx.font='600 400px "Instrument Sans", sans-serif';
-      // Fixed per-entry centers: a changed minute never slides the untouched hours.
+      // Tabular positions, original proportional glyph shapes: a 1→0 rollover
+      // cannot collide or push unchanged digits. Font and size are unchanged.
       for(let i=0;i<4;i++){const b=this.clockLayout[i];ctx.fillText(text[i],(b.left+b.right)*.5*c.width,b.cy*c.height);}
       if(!portrait)ctx.fillText(':',this.cuts.value.y*c.width,432);
       texture.needsUpdate=true;
@@ -114,13 +116,13 @@ export class OceanIdleGlass {
     const field=Fn(([uv])=>{
       const d=this.displacement.sample(uv.clamp(.001,.999)).zw;
       const p=uv.sub(d).toVar(),aspect=vec2(this.size.x.div(this.size.y),1);
-      const choose=(a,b,c,d)=>this.portrait.greaterThan(.5).select(p.y.lessThan(.5).select(p.x.lessThan(.5).select(a,b),p.x.lessThan(.5).select(c,d)),p.x.lessThan(this.cuts.x).select(a,p.x.lessThan(this.cuts.y).select(b,p.x.lessThan(this.cuts.z).select(c,d))));
+      const choose=(a,b,c,d)=>this.portrait.greaterThan(.5).select(p.y.lessThan(.5).select(p.x.lessThan(this.cuts.x).select(a,b),p.x.lessThan(this.cuts.z).select(c,d)),p.x.lessThan(this.cuts.x).select(a,p.x.lessThan(this.cuts.y).select(b,p.x.lessThan(this.cuts.z).select(c,d))));
       const a=choose(this.sites[0],this.sites[2],this.sites[4],this.sites[6]).toVar();
       const b=choose(this.sites[1],this.sites[3],this.sites[5],this.sites[7]).toVar();
       const oa=choose(this.oldSites[0],this.oldSites[2],this.oldSites[4],this.oldSites[6]).toVar();
       const ob=choose(this.oldSites[1],this.oldSites[3],this.oldSites[5],this.oldSites[7]).toVar();
       const landscape=p.x.lessThan(this.cuts.x).select(this.changed.x,p.x.lessThan(this.cuts.y).select(this.changed.y,p.x.lessThan(this.cuts.z).select(this.changed.z,this.changed.w)));
-      const portrait=p.y.lessThan(.5).select(p.x.lessThan(.5).select(this.changed.x,this.changed.y),p.x.lessThan(.5).select(this.changed.z,this.changed.w));
+      const portrait=p.y.lessThan(.5).select(p.x.lessThan(this.cuts.x).select(this.changed.x,this.changed.y),p.x.lessThan(this.cuts.z).select(this.changed.z,this.changed.w));
       const isColon=this.portrait.lessThan(.5).and(p.x.greaterThan(this.colon.x)).and(p.x.lessThan(this.colon.y)).toVar();
       const changed=isColon.select(0,this.portrait.greaterThan(.5).select(portrait,landscape)).toVar();
       const phase=this.minute,loss=phase.lessThan(.5).select(phase.mul(2),phase.oneMinus().mul(2)).toVar();
