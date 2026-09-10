@@ -1,7 +1,8 @@
 import {browserSession,sleep} from './view-r2-browser.mjs';
-const b=await browserSession('../m7-evidence/pass-audit');
+const base=process.argv[2]||'http://127.0.0.1:5215/';
+const b=await browserSession(process.argv[3]||'../m7-evidence/pass-audit');
 try{
- await b.navigate('http://127.0.0.1:5215/?renderer=webgl&idle=300');await b.ev(`__CAMERA_LAB__.select('D');__CAMERA_LAB__.seek(1)`);await sleep(5000);
+ await b.navigate(`${base}?renderer=webgl&idle=300`);await b.ev(`__CAMERA_LAB__.select('D');__CAMERA_LAB__.seek(1)`);await sleep(5000);
  await b.ev(`(async()=>{
   const T=await import(performance.getEntriesByType('resource').find(r=>/\\/three_webgpu\\.js/.test(r.name)).name);
   const original=T.WebGPURenderer.prototype.renderAsync,rows=[];

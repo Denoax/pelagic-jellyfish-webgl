@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import {browserSession,sleep} from './view-r2-browser.mjs';
 import {installProbe} from './m661-probe.mjs';
-const b=await browserSession('../m7-evidence/lifecycle'),rows=[];
+const base=process.argv[2]||'http://127.0.0.1:5215/';
+const b=await browserSession(process.argv[3]||'../m7-evidence/lifecycle'),rows=[];
 try{
  await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`window.__CONTEXTS__=[];const get=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){const r=get.call(this,type,...args);if(r&&/webgl|webgpu/.test(type)&&!__CONTEXTS__.includes(r))__CONTEXTS__.push(r);return r};`});
- await b.navigate('http://127.0.0.1:5215/?renderer=webgl&idle=300');await b.ev(`(${installProbe.toString()})()`);await b.ev(`__IDLE_AUDIT__.trace(false);window.__HOTFIX_WORLD__=__JELLYFISH_WORLD__;__CAMERA_LAB__.select('D');__CAMERA_LAB__.seek(1)`);await sleep(5000);
+ await b.navigate(`${base}?renderer=webgl&idle=300`);await b.ev(`(${installProbe.toString()})()`);await b.ev(`__IDLE_AUDIT__.trace(false);window.__HOTFIX_WORLD__=__JELLYFISH_WORLD__;__CAMERA_LAB__.select('D');__CAMERA_LAB__.seek(1)`);await sleep(5000);
  const state=()=>b.ev(`({idle:__OCEAN_IDLE__.state(),camera:__JELLYFISH_WORLD__.getCameraState(),world:__IDLE_AUDIT__.snapshot(),contexts:__CONTEXTS__.length,render:__SANCTUARY_REVIEW__.renderStats(),activation:__JELLYFISH_WORLD__.activationCount})`);
  const check=s=>{assert.equal(s.contexts,1);assert.equal(s.world.sameWorld,true);assert.ok(s.world.animals.every(a=>!a.invalid));};
  const initial=await state();check(initial);b.save('initial',initial);
@@ -27,6 +28,14 @@ try{
  await b.ev(`history.replaceState(null,'','?idle=1');window.dispatchEvent(new Event('focusin'))`);await sleep(2000);
  for(const[width,height]of[[800,900],[390,844],[1280,900]]){
   await b.send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});await b.send('Emulation.setVisibleSize',{width,height});await sleep(2000);check(await state());await b.shot('resize-'+width);b.save('resize-'+width,await state());
+ }
+ await b.ev(`history.replaceState(null,'','?idle=300')`);await b.key('Escape');await sleep(1200);
+ for(const input of ['space','touch']){
+  await b.ev(`history.replaceState(null,'','?idle=1');window.dispatchEvent(new Event('focusin'))`);await sleep(2600);const before=await state();
+  await b.ev(`history.replaceState(null,'','?idle=300')`);
+  if(input==='space')await b.key(' ','Space');
+  else{await b.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:640,y:450}]});await b.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
+  await sleep(1200);const after=await state();check(after);assert.equal(after.idle.amount,0);assert.equal(after.activation,before.activation);b.save('dismiss-'+input,{before,after});
  }
  await b.ev(`history.replaceState(null,'','?idle=300')`);
  const tab=await b.send('Target.createTarget',{url:'about:blank'});await b.send('Target.activateTarget',{targetId:tab.targetId});await sleep(1000);const hidden=await state();assert.equal(hidden.world.visibility,'hidden');b.save('hidden',hidden);await sleep(4000);await b.send('Target.activateTarget',{targetId:b.page.id});await sleep(1800);check(await state());b.save('hidden-return',await state());await b.send('Target.closeTarget',{targetId:tab.targetId});
