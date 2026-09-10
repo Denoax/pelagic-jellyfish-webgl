@@ -1,0 +1,1046 @@
+[
+  {
+    "side": "baseline",
+    "name": "normal",
+    "sha": "a1fd998eab3a20b4fde99076ecde39058bac2298",
+    "browser": "Chrome/152.0.7977.76",
+    "before": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "B",
+        "mode": "B",
+        "progress": 0.18,
+        "destination": 0.18,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 53,
+        "roll": 0,
+        "position": [
+          -1.8082669465599994,
+          0.767873585152,
+          3.92376172333589
+        ],
+        "quaternion": [
+          -0.017422255314508195,
+          -0.05874694377766254,
+          -0.0010254317179734477,
+          0.998120338489469
+        ]
+      },
+      "time": 10.869599999993993,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 1310,
+        "frameCalls": 2,
+        "drawCalls": 183,
+        "triangles": 884129,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 176,
+          "textures": 71
+        }
+      }
+    },
+    "after": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "B",
+        "mode": "B",
+        "progress": 0.18,
+        "destination": 0.18,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 53,
+        "roll": 0,
+        "position": [
+          -1.8082669465599994,
+          0.767873585152,
+          3.92376172333589
+        ],
+        "quaternion": [
+          -0.017422255314508195,
+          -0.05874694377766254,
+          -0.0010254317179734477,
+          0.998120338489469
+        ]
+      },
+      "time": 40.8849000000067,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 4912,
+        "frameCalls": 2,
+        "drawCalls": 185,
+        "triangles": 857257,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 181,
+          "textures": 71
+        }
+      }
+    },
+    "frame": {
+      "median": 16.69999998807907,
+      "p95": 17.899999976158142,
+      "max": 25.700000017881393,
+      "over50": 0,
+      "n": 1800
+    },
+    "cpu": {
+      "median": 0.30000001192092896,
+      "p95": 0.4000000059604645,
+      "max": 0.8999999761581421
+    },
+    "firstCompletionAfterDismiss": null,
+    "first10Intervals": [
+      17.69999998807907,
+      15.400000005960464,
+      17.799999982118607,
+      15.400000005960464,
+      17.5,
+      15.700000017881393,
+      19.099999994039536,
+      15.900000005960464,
+      16.099999994039536,
+      16
+    ],
+    "errors": 0
+  },
+  {
+    "side": "baseline",
+    "name": "sanctuary",
+    "sha": "a1fd998eab3a20b4fde99076ecde39058bac2298",
+    "browser": "Chrome/152.0.7977.76",
+    "before": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "D",
+        "mode": "D",
+        "progress": 1,
+        "destination": 1,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 50,
+        "roll": 0,
+        "position": [
+          0,
+          -4.200000000000003,
+          -7
+        ],
+        "quaternion": [
+          -0.10452846326765339,
+          0,
+          0,
+          0.9945218953682733
+        ]
+      },
+      "time": 10.826900000005915,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 1306,
+        "frameCalls": 2,
+        "drawCalls": 185,
+        "triangles": 850001,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 193,
+          "textures": 71
+        }
+      }
+    },
+    "after": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "D",
+        "mode": "D",
+        "progress": 1,
+        "destination": 1,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 50,
+        "roll": 0,
+        "position": [
+          0,
+          -4.200000000000003,
+          -7
+        ],
+        "quaternion": [
+          -0.10452846326765339,
+          0,
+          0,
+          0.9945218953682733
+        ]
+      },
+      "time": 40.842400000006556,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 4908,
+        "frameCalls": 2,
+        "drawCalls": 185,
+        "triangles": 856145,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 193,
+          "textures": 71
+        }
+      }
+    },
+    "frame": {
+      "median": 16.69999998807907,
+      "p95": 18.19999998807907,
+      "max": 29.200000017881393,
+      "over50": 0,
+      "n": 1800
+    },
+    "cpu": {
+      "median": 0.30000001192092896,
+      "p95": 0.4000000059604645,
+      "max": 1
+    },
+    "firstCompletionAfterDismiss": null,
+    "first10Intervals": [
+      18,
+      15.300000011920929,
+      17.900000005960464,
+      15.400000005960464,
+      17.899999976158142,
+      15.5,
+      17.900000005960464,
+      15.400000005960464,
+      17.900000005960464,
+      15.5
+    ],
+    "errors": 0
+  },
+  {
+    "side": "baseline",
+    "name": "post-idle",
+    "sha": "a1fd998eab3a20b4fde99076ecde39058bac2298",
+    "browser": "Chrome/152.0.7977.76",
+    "before": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "D",
+        "mode": "D",
+        "progress": 1,
+        "destination": 1,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 50,
+        "roll": 0,
+        "position": [
+          0,
+          -4.200000000000003,
+          -7
+        ],
+        "quaternion": [
+          -0.10452846326765339,
+          0,
+          0,
+          0.9945218953682733
+        ]
+      },
+      "time": 15.10889999997608,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 1820,
+        "frameCalls": 2,
+        "drawCalls": 185,
+        "triangles": 865081,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 193,
+          "textures": 71
+        }
+      }
+    },
+    "after": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "D",
+        "mode": "D",
+        "progress": 1,
+        "destination": 1,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 50,
+        "roll": 0,
+        "position": [
+          0,
+          -4.200000000000003,
+          -7
+        ],
+        "quaternion": [
+          -0.10452846326765339,
+          0,
+          0,
+          0.9945218953682733
+        ]
+      },
+      "time": 45.14099999997114,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 5424,
+        "frameCalls": 2,
+        "drawCalls": 184,
+        "triangles": 854321,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 193,
+          "textures": 71
+        }
+      }
+    },
+    "frame": {
+      "median": 16.69999998807907,
+      "p95": 18,
+      "max": 26.80000001192093,
+      "over50": 0,
+      "n": 1801
+    },
+    "cpu": {
+      "median": 0.30000001192092896,
+      "p95": 0.4000000059604645,
+      "max": 0.7999999523162842
+    },
+    "firstCompletionAfterDismiss": 17.19999998807907,
+    "first10Intervals": [
+      17.5,
+      15.5,
+      15.900000005960464,
+      17.400000005960464,
+      15.899999976158142,
+      17.400000005960464,
+      16,
+      17.400000005960464,
+      16,
+      17.30000001192093
+    ],
+    "errors": 0
+  },
+  {
+    "side": "candidate",
+    "name": "normal",
+    "sha": "5e0845752b7876802327429ac6122334f6ac24f6",
+    "browser": "Chrome/152.0.7977.76",
+    "before": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "B",
+        "mode": "B",
+        "progress": 0.18,
+        "destination": 0.18,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 53,
+        "roll": 0,
+        "position": [
+          -1.8082669465599994,
+          0.767873585152,
+          3.92376172333589
+        ],
+        "quaternion": [
+          -0.017422255314508195,
+          -0.05874694377766254,
+          -0.0010254317179734477,
+          0.998120338489469
+        ]
+      },
+      "time": 10.854200000017848,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 1308,
+        "frameCalls": 2,
+        "drawCalls": 183,
+        "triangles": 884129,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 176,
+          "textures": 71
+        }
+      }
+    },
+    "after": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "B",
+        "mode": "B",
+        "progress": 0.18,
+        "destination": 0.18,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 53,
+        "roll": 0,
+        "position": [
+          -1.8082669465599994,
+          0.767873585152,
+          3.92376172333589
+        ],
+        "quaternion": [
+          -0.017422255314508195,
+          -0.05874694377766254,
+          -0.0010254317179734477,
+          0.998120338489469
+        ]
+      },
+      "time": 40.8696000000245,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 4910,
+        "frameCalls": 2,
+        "drawCalls": 185,
+        "triangles": 857257,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 181,
+          "textures": 71
+        }
+      }
+    },
+    "frame": {
+      "median": 16.69999998807907,
+      "p95": 17.900000005960464,
+      "max": 25.900000005960464,
+      "over50": 0,
+      "n": 1800
+    },
+    "cpu": {
+      "median": 0.30000001192092896,
+      "p95": 0.5,
+      "max": 1.100000023841858
+    },
+    "firstCompletionAfterDismiss": null,
+    "first10Intervals": [
+      15.800000011920929,
+      17.19999998807907,
+      16.19999998807907,
+      17.30000001192093,
+      16.099999994039536,
+      17,
+      15.900000005960464,
+      17.599999994039536,
+      15.800000011920929,
+      17.400000005960464
+    ],
+    "errors": 0
+  },
+  {
+    "side": "candidate",
+    "name": "sanctuary",
+    "sha": "5e0845752b7876802327429ac6122334f6ac24f6",
+    "browser": "Chrome/152.0.7977.76",
+    "before": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "D",
+        "mode": "D",
+        "progress": 1,
+        "destination": 1,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 50,
+        "roll": 0,
+        "position": [
+          0,
+          -4.200000000000003,
+          -7
+        ],
+        "quaternion": [
+          -0.10452846326765339,
+          0,
+          0,
+          0.9945218953682733
+        ]
+      },
+      "time": 10.954999999999954,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 1322,
+        "frameCalls": 2,
+        "drawCalls": 185,
+        "triangles": 850001,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 193,
+          "textures": 71
+        }
+      }
+    },
+    "after": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "D",
+        "mode": "D",
+        "progress": 1,
+        "destination": 1,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 50,
+        "roll": 0,
+        "position": [
+          0,
+          -4.200000000000003,
+          -7
+        ],
+        "quaternion": [
+          -0.10452846326765339,
+          0,
+          0,
+          0.9945218953682733
+        ]
+      },
+      "time": 40.970299999982835,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 4924,
+        "frameCalls": 2,
+        "drawCalls": 185,
+        "triangles": 856145,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 193,
+          "textures": 71
+        }
+      }
+    },
+    "frame": {
+      "median": 16.69999998807907,
+      "p95": 18.099999994039536,
+      "max": 27.80000001192093,
+      "over50": 0,
+      "n": 1800
+    },
+    "cpu": {
+      "median": 0.30000001192092896,
+      "p95": 0.4000000059604645,
+      "max": 0.699999988079071
+    },
+    "firstCompletionAfterDismiss": null,
+    "first10Intervals": [
+      18.400000005960464,
+      15,
+      17.099999994039536,
+      16.5,
+      17.69999998807907,
+      15.5,
+      17.700000017881393,
+      15.699999988079071,
+      17.80000001192093,
+      15.599999994039536
+    ],
+    "errors": 0
+  },
+  {
+    "side": "candidate",
+    "name": "post-idle",
+    "sha": "5e0845752b7876802327429ac6122334f6ac24f6",
+    "browser": "Chrome/152.0.7977.76",
+    "before": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "D",
+        "mode": "D",
+        "progress": 1,
+        "destination": 1,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 50,
+        "roll": 0,
+        "position": [
+          0,
+          -4.200000000000003,
+          -7
+        ],
+        "quaternion": [
+          -0.10452846326765339,
+          0,
+          0,
+          0.9945218953682733
+        ]
+      },
+      "time": 15.160700000017778,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 1826,
+        "frameCalls": 2,
+        "drawCalls": 185,
+        "triangles": 865081,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 193,
+          "textures": 71
+        }
+      }
+    },
+    "after": {
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1280,
+          900
+        ]
+      },
+      "ratio": 1,
+      "viewport": [
+        1280,
+        900
+      ],
+      "buffers": [
+        [
+          1280,
+          900
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          300,
+          150
+        ]
+      ],
+      "camera": {
+        "direction": "D",
+        "mode": "D",
+        "progress": 1,
+        "destination": 1,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 50,
+        "roll": 0,
+        "position": [
+          0,
+          -4.200000000000003,
+          -7
+        ],
+        "quaternion": [
+          -0.10452846326765339,
+          0,
+          0,
+          0.9945218953682733
+        ]
+      },
+      "time": 45.192800000012824,
+      "bloom": "approved direct rendering, bloom off",
+      "quality": "unchanged adaptive policy",
+      "render": {
+        "calls": 5428,
+        "frameCalls": 2,
+        "drawCalls": 184,
+        "triangles": 854321,
+        "points": 0,
+        "lines": 0,
+        "timestamp": 0,
+        "memory": {
+          "geometries": 193,
+          "textures": 71
+        }
+      }
+    },
+    "frame": {
+      "median": 16.600000023841858,
+      "p95": 17.899999976158142,
+      "max": 28.5,
+      "over50": 0,
+      "n": 1800
+    },
+    "cpu": {
+      "median": 0.30000001192092896,
+      "p95": 0.4000000059604645,
+      "max": 1
+    },
+    "firstCompletionAfterDismiss": 17.400000005960464,
+    "first10Intervals": [
+      17.599999994039536,
+      15.699999988079071,
+      17.5,
+      16,
+      17.600000023841858,
+      16.19999998807907,
+      17.19999998807907,
+      16,
+      17.600000023841858,
+      15.599999994039536
+    ],
+    "errors": 0
+  }
+]
