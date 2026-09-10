@@ -1,7 +1,8 @@
 import * as THREE from 'three/webgpu';
-import {Fn,uniform,texture,vec2,vec3,vec4,normalize,dot,max,min,smoothstep,mix,exp} from 'three/tsl';
+import {Fn,Loop,If,uniformArray,uniform,texture,vec2,vec3,vec4,normalize,dot,max,min,smoothstep,mix,exp} from 'three/tsl';
 import {IdleDisplacement} from './IdleDisplacement.js';
 import {IdleLiquidState,DROPLETS,clockDigits,ease} from './IdleLiquidState.js';
+import {strokeAnchors,entryDrop,exitDrop} from './LiquidChoreography.js';
 
 // Same clock/ocean compositor proved at gate one, now driven by scalar topology
 // and persistent displacement. No color feedback, renderer or ocean copy.
@@ -12,10 +13,22 @@ export class OceanIdleGlass {
     this.clock=new THREE.CanvasTexture(document.createElement('canvas'));
     this.clock.colorSpace=THREE.NoColorSpace; this.clock.generateMipmaps=false;
     this.clock.minFilter=THREE.LinearFilter; this.clock.magFilter=THREE.LinearFilter;
-    this.previousClock=this.clock.clone();this.previousClock.image=document.createElement('canvas');
+    // Texture.clone shares Source in r175. Minute topology needs independent masks.
+    this.previousClock=new THREE.CanvasTexture(document.createElement('canvas'));
+    this.previousClock.colorSpace=THREE.NoColorSpace;this.previousClock.generateMipmaps=false;
+    this.previousClock.minFilter=THREE.LinearFilter;this.previousClock.magFilter=THREE.LinearFilter;
     this.controller=new IdleLiquidState();this.growth=uniform(0);this.erosion=uniform(0);this.minute=uniform(1);
     this.changed=uniform(new THREE.Vector4());this.portrait=uniform(0);
-    this.droplets=DROPLETS.map(()=>uniform(new THREE.Vector3()));
+    this.cuts=uniform(new THREE.Vector4(.33,.5,.67,.5));this.colon=uniform(new THREE.Vector2(.44,.51));this.clockLayout=null;
+    this.droplets=DROPLETS.map(()=>uniform(new THREE.Vector4()));
+    this.sites=DROPLETS.map(()=>uniform(new THREE.Vector4()));
+    this.oldSites=DROPLETS.map(()=>uniform(new THREE.Vector4()));
+    this.necks=DROPLETS.map(()=>uniform(new THREE.Vector4()));
+    this.dropArray=uniformArray(this.droplets.map(d=>d.value),'vec4');
+    this.neckArray=uniformArray(this.necks.map(d=>d.value),'vec4');
+    this.age=uniform(0);this.exitAge=uniform(0);this.events=new Uint8Array(8);
+    this.dropState=DROPLETS.map(()=>({}));this.anchors=[];
+    this.maskProbe=document.createElement('canvas');this.maskProbe.width=192;this.maskProbe.height=192;
     this.fluid=new IdleDisplacement(renderer);this.displacement=texture(this.fluid.texture);
     this.pointerHandler=e=>{if(this.active)this.fluid.move(e,innerWidth,innerHeight)};
     this.hiddenHandler=()=>{this.last=performance.now();this.controller.accumulator=0;this.fluid.fresh=false;this.fluid.pointerSeen=false;};
@@ -35,22 +48,43 @@ export class OceanIdleGlass {
     const digits=clockDigits(date),old=this.clockKey.replace(':','');
     const portrait=this.size.value.y>this.size.value.x*1.15;
     this.portrait.value=portrait?1:0;
+    if(reset||!this.clockLayout){
+      const c=this.maskProbe.getContext('2d');c.font='600 400px "Instrument Sans", sans-serif';
+      const width=portrait?768:1536,height=portrait?1280:864,text=`${digits.slice(0,2)}:${digits.slice(2)}`;
+      this.clockLayout=Array.from({length:4},(_,i)=>{
+        const row=portrait?digits.slice(i<2?0:2,i<2?2:4):text,index=portrait?i%2:i<2?i:i+1;
+        const left=width/2-c.measureText(row).width/2+c.measureText(row.slice(0,index)).width;
+        const right=width/2-c.measureText(row).width/2+c.measureText(row.slice(0,index+1)).width;
+        return{left:left/width,right:right/width,cy:(portrait?(i<2?410:890):432)/height};
+      });
+      this.cuts.value.set(this.clockLayout[0].right,(this.clockLayout[1].right+this.clockLayout[2].left)/2,this.clockLayout[2].right,.5);
+      this.colon.value.set(this.clockLayout[1].right,this.clockLayout[2].left);
+    }
     const draw=(texture,text)=>{
       const c=texture.image;c.width=portrait?768:1536;c.height=portrait?1280:864;
       const ctx=c.getContext('2d');ctx.fillStyle='black';ctx.fillRect(0,0,c.width,c.height);
       ctx.fillStyle='white';ctx.textAlign='center';ctx.textBaseline='middle';ctx.filter='blur(8px)';
       ctx.font='600 400px "Instrument Sans", sans-serif';
-      if(portrait){ctx.fillText(text.slice(0,2),384,410);ctx.fillText(text.slice(2),384,890)}else ctx.fillText(`${text.slice(0,2)}:${text.slice(2)}`,768,432);
+      // Fixed per-entry centers: a changed minute never slides the untouched hours.
+      for(let i=0;i<4;i++){const b=this.clockLayout[i];ctx.fillText(text[i],(b.left+b.right)*.5*c.width,b.cy*c.height);}
+      if(!portrait)ctx.fillText(':',this.cuts.value.y*c.width,432);
       texture.needsUpdate=true;
     };
     draw(this.previousClock,reset||!old?digits:old);draw(this.clock,digits);
+    const probe=this.maskProbe,ctx=probe.getContext('2d',{willReadFrequently:true});
+    ctx.drawImage(this.clock.image,0,0,192,192);
+    const anchors=strokeAnchors(ctx.getImageData(0,0,192,192).data,192,192,portrait,this.clockLayout);
+    this.sites.forEach((s,i)=>{this.oldSites[i].value.copy(s.value);const a=anchors[i];s.value.set(a.x,a.y,a.start,0);if(reset)this.oldSites[i].value.copy(s.value)});
+    this.anchors=anchors;
     this.changed.value.set(...Array.from({length:4},(_,i)=>!reset&&old[i]!==digits[i]?1:0));
+    if(!reset&&this.active)for(let i=0;i<4;i++)if(old[i]!==digits[i]){const a=anchors[i*2];this.fluid.impulse(a.x,a.y,-.05);}
     this.minute.value=reset?1:0;
     this.clockKey=`${digits.slice(0,2)}:${digits.slice(2)}`;
   }
   setActive(value){
     value=Boolean(value);if(value===this.active)return;
     this.active=value;this.controller.setActive(value);this.fluid.pointerSeen=false;this.fluid.fresh=false;
+    this.events.fill(0);this.fluid.eventCount=0;
     if(value)this.drawClock(true);
   }
   async prepare(){await document.fonts.ready;this.drawClock(true);await this.fluid.prepare();}
@@ -61,17 +95,16 @@ export class OceanIdleGlass {
     this.elapsed+=dt;
     const steps=this.controller.advance(dt,document.hidden);
     this.amount.value=this.controller.amount;this.growth.value=this.controller.clockGrowth;this.erosion.value=this.controller.erosion;
+    this.age.value=this.controller.age;this.exitAge.value=this.controller.active?0:this.controller.exitAge;
     this.minute.value=Math.min(1,this.minute.value+dt/2.8);
     if(this.elapsed-this.checkAt>1){this.checkAt=this.elapsed;const d=this.reviewDate||new Date();if(`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`!==this.clockKey)this.drawClock(false,d);}
-    const t=this.controller.time,entry=this.controller.clockGrowth;
-    DROPLETS.forEach((d,i)=>{
-      const drift=Math.sin(t*(.035+i*.002)+d.phase),coalesce=ease((this.controller.age-1)/4);
-      // Two beads approach the colon's persistent liquid anchors, making an
-      // actual implicit neck while the numeral masses acquire cohesion.
-      const joins=i===2||i===3;
-      const x=d.x+drift*.006+(joins?(.5-d.x)*coalesce:i<6?(.5-d.x)*.08*coalesce:0);
-      const y=d.y+Math.cos(t*.028+d.phase)*.008+(joins?((i===2?.46:.55)-d.y)*coalesce:i<6?(.5-d.y)*.55*coalesce:0);
-      this.droplets[i].value.set(x,y,d.radius*(.35+.65*ease(this.controller.age/2))*(1-entry*.22)*(1-this.erosion.value));
+    const aspect=this.size.value.x/this.size.value.y;
+    this.anchors.forEach((a,i)=>{
+      const d=this.active?entryDrop(this.controller.age,a,i,aspect,this.dropState[i]):exitDrop(this.controller.exitAge,a,i,aspect,this.dropState[i]);
+      this.droplets[i].value.set(d.x,d.y,d.radius,d.stretch);
+      this.necks[i].value.set(a.x+d.recoil/aspect,a.y,d.neck,0);
+      if(this.active&&!this.events[i]&&this.controller.age>a.start+.93){this.events[i]=1;this.fluid.impulse(a.x,a.y,-.065);}
+      if(!this.active&&!this.events[i]&&this.controller.exitAge>.54+(i%3)*.025){this.events[i]=1;this.fluid.impulse(a.x,a.y,.08);}
     });
     if(this.captureCost&&this.cpu.length<20000)this.cpu.push(performance.now()-now);
     await this.fluid.run(steps,dt);this.displacement.value=this.fluid.texture;
@@ -80,29 +113,51 @@ export class OceanIdleGlass {
   sample(lens,st,base) {
     const field=Fn(([uv])=>{
       const d=this.displacement.sample(uv.clamp(.001,.999)).zw;
-      const p=uv.sub(d).toVar(),clockUv=vec2(p.x,p.y.oneMinus());
-      const next=texture(this.clock,clockUv).r,old=texture(this.previousClock,clockUv).r;
-      const landscape=p.x.lessThan(.33).select(this.changed.x,p.x.lessThan(.5).select(this.changed.y,p.x.lessThan(.67).select(this.changed.z,this.changed.w)));
+      const p=uv.sub(d).toVar(),aspect=vec2(this.size.x.div(this.size.y),1);
+      const choose=(a,b,c,d)=>this.portrait.greaterThan(.5).select(p.y.lessThan(.5).select(p.x.lessThan(.5).select(a,b),p.x.lessThan(.5).select(c,d)),p.x.lessThan(this.cuts.x).select(a,p.x.lessThan(this.cuts.y).select(b,p.x.lessThan(this.cuts.z).select(c,d))));
+      const a=choose(this.sites[0],this.sites[2],this.sites[4],this.sites[6]).toVar();
+      const b=choose(this.sites[1],this.sites[3],this.sites[5],this.sites[7]).toVar();
+      const oa=choose(this.oldSites[0],this.oldSites[2],this.oldSites[4],this.oldSites[6]).toVar();
+      const ob=choose(this.oldSites[1],this.oldSites[3],this.oldSites[5],this.oldSites[7]).toVar();
+      const landscape=p.x.lessThan(this.cuts.x).select(this.changed.x,p.x.lessThan(this.cuts.y).select(this.changed.y,p.x.lessThan(this.cuts.z).select(this.changed.z,this.changed.w)));
       const portrait=p.y.lessThan(.5).select(p.x.lessThan(.5).select(this.changed.x,this.changed.y),p.x.lessThan(.5).select(this.changed.z,this.changed.w));
-      const changed=this.portrait.greaterThan(.5).select(portrait,landscape);
-      // Changed glyphs erode to narrow residual liquid, then regrow. Never
-      // simultaneously opacity-blend two complete numerals.
-      const phase=this.minute,loss=phase.lessThan(.5).select(phase.mul(2),phase.oneMinus().mul(2));
-      const glyph=phase.lessThan(.5).select(old,next).sub(loss.mul(.96).mul(changed));
-      const organic=exp(p.sub(vec2(.34,.48)).length().mul(-5)).mul(.12);
-      const clock=glyph.sub(this.growth.oneMinus().mul(1.1)).add(organic.mul(this.growth.oneMinus())).sub(this.erosion.mul(1.15));
+      const isColon=this.portrait.lessThan(.5).and(p.x.greaterThan(this.colon.x)).and(p.x.lessThan(this.colon.y));
+      const changed=isColon.select(0,this.portrait.greaterThan(.5).select(portrait,landscape)).toVar();
+      const phase=this.minute,loss=phase.lessThan(.5).select(phase.mul(2),phase.oneMinus().mul(2)).toVar();
+      // Each changed stroke retracts toward its two local liquid reservoirs.
+      // The reservoirs migrate before the new strokes reconnect. No glyph alpha mix.
+      const localA=mix(oa.xy,a.xy,smoothstep(.22,.78,phase)).toVar();
+      const localB=mix(ob.xy,b.xy,smoothstep(.22,.78,phase)).toVar();
+      const share=smoothstep(-.045,.045,p.sub(localB).mul(aspect).length().sub(p.sub(localA).mul(aspect).length())).toVar();
+      const center=mix(localB,localA,share).toVar();
+      const source=phase.lessThan(.5).select(mix(ob.xy,oa.xy,share),mix(b.xy,a.xy,share)).toVar();
+      const collapse=smoothstep(.04,.86,loss).mul(changed).toVar();
+      const mapped=mix(p,source.add(p.sub(center).div(collapse.mul(-.65).add(1))),changed).toVar();
+      const clockUv=vec2(mapped.x,mapped.y.oneMinus()).toVar();
+      const next=texture(this.clock,clockUv).r.toVar(),old=texture(this.previousClock,clockUv).r.toVar();
+      const glyph=phase.lessThan(.5).select(old,next).sub(collapse.mul(1.03)).toVar();
+      const arrival=min(p.sub(a.xy).mul(aspect).length().mul(6.8).add(a.z),p.sub(b.xy).mul(aspect).length().mul(7.4).add(b.z)).toVar();
+      const localGrowth=smoothstep(arrival,arrival.add(.85),this.age).toVar();
+      const exitFront=smoothstep(arrival.mul(.11),arrival.mul(.11).add(.55),this.exitAge).toVar();
+      const clock=glyph.sub(localGrowth.oneMinus().mul(1.1)).sub(exitFront.mul(1.15));
       const liquid=clock.max(0).toVar();
-      const lx=p.x.lessThan(.33).select(.26,p.x.lessThan(.5).select(.41,p.x.lessThan(.67).select(.60,.75)));
-      const center=this.portrait.greaterThan(.5).select(vec2(p.x.lessThan(.5).select(.35,.65),p.y.lessThan(.5).select(.32,.70)),vec2(lx,.49));
-      const beadDistance=p.sub(center).mul(vec2(this.size.x.div(this.size.y),1));
-      liquid.addAssign(exp(dot(beadDistance,beadDistance).div(-.001)).mul(loss.pow(4)).mul(changed).mul(this.growth).mul(this.erosion.oneMinus()));
-      for(const drop of this.droplets){
-        const q=p.sub(drop.xy).mul(vec2(this.size.x.div(this.size.y),1));
-        liquid.addAssign(exp(dot(q,q).div(max(drop.z.mul(drop.z),.000001)).mul(-1.8)).mul(.9));
+      for(const site of [localA,localB]){
+        const q=p.sub(site).mul(aspect);
+        liquid.addAssign(exp(dot(q,q).div(-.0014)).mul(smoothstep(.18,.65,loss)).mul(changed).mul(this.growth).mul(this.erosion.oneMinus()));
       }
+      If(this.age.lessThan(4).or(this.exitAge.greaterThan(0)),()=>{Loop(8,({i})=>{
+        const drop=this.dropArray.element(i).toVar(),neck=this.neckArray.element(i).toVar();
+        const q=p.sub(drop.xy).mul(aspect).toVar(),axis=neck.xy.sub(drop.xy).mul(aspect).toVar();
+        const direction=axis.div(max(axis.length(),.00001)).toVar();
+        const along=dot(q,direction).toVar(),across=q.sub(direction.mul(along)).toVar();
+        const oval=along.div(drop.w.mul(.6).add(1)).pow(2).add(dot(across,across).mul(drop.w.mul(.2).add(1))).toVar();
+        liquid.addAssign(exp(oval.div(max(drop.z.mul(drop.z),.000001)).mul(-1.8)).mul(.9));
+        const t=dot(q,axis).div(max(dot(axis,axis),.000001)).clamp(0,1).toVar(),bridge=q.sub(axis.mul(t)).toVar();
+        liquid.addAssign(exp(dot(bridge,bridge).div(max(neck.z.mul(neck.z),.0000001)).mul(-1.8)).mul(neck.z.greaterThan(.0001).select(.7,0)));
+      });});
       // Additive implicit masses form a shared neck, not intersecting circles.
       return smoothstep(.12,.95,liquid).mul(this.amount);
-    });
+    }).setLayout({name:'pelagicIdleLiquid',type:'float',inputs:[{name:'uv',type:'vec2'}]});
     return Fn(()=>{
       const e=vec2(1.7).div(this.size),h=field(st).toVar();
       const grad=vec2(field(st.add(vec2(e.x,0))).sub(field(st.sub(vec2(e.x,0)))),field(st.add(vec2(0,e.y))).sub(field(st.sub(vec2(0,e.y))))).toVar();

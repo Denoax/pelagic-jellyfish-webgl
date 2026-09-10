@@ -1,5 +1,16 @@
 # Prototype Instructions
 
+## Current authorization: M7.1 liquid choreography only (2026-09-10)
+
+Baseline `b6450239e64764dbba36ae9c913e15f3d847ee65` is technically accepted,
+not artistically approved. Refine local clock nucleation, meaningful droplet
+feeding, readable contact/neck/absorption, event-driven settling, pinch-off,
+changed-digit liquid migration and quick dispersive exit. Keep the M7 optical
+formula, one renderer/context/ocean, persistent bounded field, lifecycle and
+all M1–M6.6.1 visuals locked. Do not add droplets or optical decoration to hide
+motion problems. Baseline-first motion evidence and equal-quality profiling
+are mandatory. Local reversible commits only; no push/merge/deploy/Pages/M8.
+
 ## Current authorization: M7 ocean-to-glass integration (2026-09-10)
 
 Start at approved stable `046430847448206cfc58ce84758d9410121a97d3`. One main

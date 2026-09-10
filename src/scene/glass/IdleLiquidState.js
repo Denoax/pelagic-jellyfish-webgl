@@ -23,12 +23,12 @@ export class IdleLiquidState {
     dt=Math.min(dt,.05);
     if(!this.active&&this.amount===0){this.accumulator=0;return 0}
     this.time+=dt;
-    if(this.active){this.age+=dt;this.amount=ease(this.age/1.8);this.phase=this.age<2?'condensing':this.age<5.5?'coalescing':this.age<7?'forming':'settled';}
-    else{this.exitAge+=dt;this.amount=this.exitFrom*(1-ease(this.exitAge/.85));if(this.amount===0)this.phase='ocean';}
+    if(this.active){this.age+=dt;this.amount=ease(this.age/1.8);this.phase=this.age<.8?'condensing':this.age<2.5?'coalescing':this.age<4?'forming':'settled';}
+    else{this.exitAge+=dt;this.amount=this.exitFrom*(1-ease((this.exitAge-.55)/.3));if(this.amount===0)this.phase='ocean';}
     this.accumulator=Math.min(this.accumulator+dt,3*IDLE_STEP);
     const steps=Math.min(3,Math.floor((this.accumulator+1e-10)/IDLE_STEP));this.accumulator-=steps*IDLE_STEP;
     return steps;
   }
-  get clockGrowth(){return ease((this.age-1.4)/5.6)}
+  get clockGrowth(){return ease((this.age-.5)/3.3)}
   get erosion(){return this.active?0:ease(this.exitAge/.85)}
 }

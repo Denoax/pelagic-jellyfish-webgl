@@ -41,7 +41,9 @@ test('glass rejects malformed pointer and invalid viewport before spatial use',(
 });
 test('single production renderer, clean-source refraction, no clock opacity ghost',()=>{
  assert.doesNotMatch(read('src/ui/IdleScreen.jsx'),/IdleGlassScene|WebGLRenderer|canvas/);
- const glass=read('src/scene/glass/OceanIdleGlass.js');assert.doesNotMatch(glass,/new THREE\.(WebGLRenderer|WebGPURenderer)|getImageData|toDataURL/);
+ const glass=read('src/scene/glass/OceanIdleGlass.js');assert.doesNotMatch(glass,/new THREE\.(WebGLRenderer|WebGPURenderer)|toDataURL/);
+ // M7.1 reads ONLY a 192² CPU typography canvas to locate real stroke anchors.
+ assert.match(glass,/strokeAnchors\(ctx.getImageData\(0,0,192,192\).data/);
  assert.match(glass,/texture\(lens.target.texture/);assert.match(glass,/phase.lessThan\(.5\).select\(old,next\)/);
  const lens=read('src/scene/glass/LiveOceanLens.js');const render=lens.slice(lens.indexOf('  async render()'),lens.indexOf('  state()'));
  assert.equal((render.match(/renderAsync\(this.scene, this.camera\)/g)||[]).length,2); // mutually exclusive direct OR clean target paths

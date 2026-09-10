@@ -11,6 +11,7 @@ export class IdleDisplacement {
     this.pointer=new THREE.Vector2(.5,.5);this.previous=this.pointer.clone();
     this.p=uniform(this.pointer.clone());this.prev=uniform(this.previous.clone());
     this.velocity=uniform(new THREE.Vector2());this.input=uniform(0);this.aspect=uniform(1);
+    this.event=uniform(new THREE.Vector3());this.eventQueue=new Float32Array(24);this.eventHead=0;this.eventCount=0;
     this.texel=uniform(new THREE.Vector2());this.camera=new THREE.Camera();
     this.material=new THREE.MeshBasicNodeMaterial({depthTest:false,depthWrite:false,toneMapped:false});
     this.scene=new THREE.Scene();this.mesh=new THREE.Mesh(new THREE.PlaneGeometry(2,2),this.material);this.mesh.frustumCulled=false;this.scene.add(this.mesh);
@@ -28,6 +29,8 @@ export class IdleDisplacement {
     const t=dot(a,b).div(max(dot(b,b),.000001)).clamp(0,1),q=a.sub(b.mul(t));
     const brush=exp(dot(q,q).div(-.009));
     const v=mix(s.xy,adjacent.xy,.12).add(adjacent.zw.sub(s.zw).mul(36).sub(s.zw.mul(5.5)).mul(IDLE_STEP)).mul(DAMPING).add(this.velocity.mul(brush).mul(this.input).mul(INPUT_STEP)).clamp(-.58,.58).toVar();
+    const eventOffset=st.sub(this.event.xy),eventQ=eventOffset.mul(vec2(this.aspect,1));
+    v.addAssign(eventOffset.mul(exp(dot(eventQ,eventQ).div(-.0025))).mul(this.event.z));
     const d=s.zw.add(v.mul(IDLE_STEP)).clamp(-.17,.17);
     const edge=smoothstep(0,.035,st.x).mul(smoothstep(0,.035,st.y)).mul(smoothstep(0,.035,st.x.oneMinus())).mul(smoothstep(0,.035,st.y.oneMinus()));
     return vec4(v,d).mul(edge);
@@ -45,6 +48,7 @@ export class IdleDisplacement {
     this.pointerSeen=true;this.fresh=true;return true;
   }
   async prepare(){await this.renderer.compileAsync(this.scene,this.camera);await this.run(1,IDLE_STEP);}
+  impulse(x,y,strength){if(Number.isFinite(x+y+strength)&&this.eventCount<8){const n=((this.eventHead+this.eventCount)%8)*3;this.eventQueue[n]=x;this.eventQueue[n+1]=y;this.eventQueue[n+2]=THREE.MathUtils.clamp(strength,-.1,.1);this.eventCount++;}}
   async run(steps,dt){
     if(!steps&&!this.needsClear)return;
     const r=this.renderer,target=r.getRenderTarget(),tone=r.toneMapping,space=r.outputColorSpace;
@@ -54,7 +58,10 @@ export class IdleDisplacement {
       if(this.needsClear){r.setClearColor(0,0);for(const t of this.targets){r.setRenderTarget(t);await r.clearAsync();}this.needsClear=false;this.current=0;}
       this.velocity.value.copy(this.pointer).sub(this.previous).divideScalar(Math.max(dt,IDLE_STEP)).clampLength(0,1.5);
       this.p.value.copy(this.pointer);this.prev.value.copy(this.previous);this.input.value=this.fresh?1:0;
-      for(let i=0;i<steps;i++){this.read.value=this.targets[this.current].texture;r.setRenderTarget(this.targets[1-this.current]);await r.renderAsync(this.scene,this.camera);this.current=1-this.current;this.steps++;}
+      for(let i=0;i<steps;i++){
+        if(this.eventCount){const n=this.eventHead*3;this.event.value.set(this.eventQueue[n],this.eventQueue[n+1],this.eventQueue[n+2]);this.eventHead=(this.eventHead+1)%8;this.eventCount--;}else this.event.value.set(0,0,0);
+        this.read.value=this.targets[this.current].texture;r.setRenderTarget(this.targets[1-this.current]);await r.renderAsync(this.scene,this.camera);this.current=1-this.current;this.steps++;
+      }
       if(steps){this.previous.copy(this.pointer);this.fresh=false;}
     }finally{r.setRenderTarget(target);r.toneMapping=tone;r.outputColorSpace=space;r.setClearColor(clear,alpha);}
   }
