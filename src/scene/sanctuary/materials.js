@@ -33,10 +33,10 @@ export function mineralMaterial(light,{chimney=false,life=false,floor=false}={})
   pigment=mix(pigment,vec3(.26,.32,.35),shoulder.mul(.65));
   // Broad geological regions lead at distance; existing meso crust and scanned
   // micro relief remain on top. No per-rock randomness or extra material variants.
-  const east=p.x.smoothstep(-3,13),old=p.z.negate().smoothstep(25,42);
+  const east=p.x.smoothstep(-3,13),old=p.z.negate().smoothstep(21,34);
   const upper=normalWorld.y.smoothstep(.05,.7);
-  const slate=mix(vec3(.17,.30,.34),vec3(.39,.225,.36),east);
-  const mineral=mix(slate,vec3(.54,.28,.13),old.mul(.7));
+  const slate=mix(vec3(.17,.30,.34),vec3(.59,.17,.33),east);
+  const mineral=mix(slate,vec3(.72,.235,.075),old.mul(.7));
   if(!life)pigment=mix(pigment,mineral,upper.mul(.65));
   if(chimney) {
     const up=normalWorld.y.max(0),down=normalWorld.y.negate().max(0);
