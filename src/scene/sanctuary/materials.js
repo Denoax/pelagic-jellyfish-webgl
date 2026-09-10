@@ -31,13 +31,29 @@ export function mineralMaterial(light,{chimney=false,life=false,floor=false}={})
   // This is surface reflectance separation, not a lifted ocean ambient/exposure.
   const shoulder=normalWorld.y.smoothstep(.18,.75).mul(low.mul(.3).add(.65));
   pigment=mix(pigment,vec3(.26,.32,.35),shoulder.mul(.65));
-  // Broad geological regions lead at distance; existing meso crust and scanned
-  // micro relief remain on top. No per-rock randomness or extra material variants.
-  const east=p.x.smoothstep(-3,13),old=p.z.negate().smoothstep(21,34);
+  // Mineral accumulation follows bedding, exposed upward faces, sheltered
+  // channel banks and actual diffuse chemistry; never a left/right hue split.
   const upper=normalWorld.y.smoothstep(.05,.7);
-  const slate=mix(vec3(.17,.30,.34),vec3(.59,.17,.33),east);
-  const mineral=mix(slate,vec3(.72,.235,.075),old.mul(.7));
-  if(!life)pigment=mix(pigment,mineral,upper.mul(.65));
+  const channelZ=p.z.add(24);
+  const channelX=channelZ.mul(GULLY.drift).add(channelZ.mul(GULLY.frequency).sin().mul(GULLY.bend)).add(GULLY.x);
+  const bankDistance=p.x.sub(channelX).abs().sub(2.25).abs();
+  const bankZone=bankDistance.smoothstep(.3,2.7).oneMinus().mul(p.z.smoothstep(-45,-37)).mul(p.z.smoothstep(-21,-13).oneMinus());
+  const bedding=p.y.mul(3.3).add(p.x.mul(.16)).add(p.z.mul(.21)).add(low.mul(2)).sin().smoothstep(-.25,.65);
+  const exposedDeposit=upper.mul(bedding).mul(meso.smoothstep(-.4,.25));
+  if(!life){
+    pigment=mix(pigment,vec3(.34,.355,.35),exposedDeposit.mul(.8));
+    // Dark bedding discontinuities and scanned grain are reflectance variation
+    // on the same form, not a new illumination layer.
+    pigment=pigment.mul(bedding.mul(.32).add(.68)).mul(scan.mul(.5).add(.65));
+    // Old ochre lies in sheltered bedding breaks, not across half the basin.
+    const oldDeposit=bedding.oneMinus().mul(upper).mul(low.smoothstep(.02,.35)).mul(bankZone.mul(.45).add(.25));
+    pigment=mix(pigment,vec3(.39,.255,.135),oldDeposit.mul(.72));
+    pigment=mix(pigment,vec3(.21,.30,.29),bankZone.mul(exposedDeposit).mul(.55));
+    for(const source of DIFFUSE){
+      const seep=p.xz.sub(vec2(source.x,source.z)).length().smoothstep(.6,3.1).oneMinus();
+      pigment=mix(pigment,vec3(.44,.46,.36),seep.mul(upper).mul(bedding.mul(.4).add(.6)).mul(.78));
+    }
+  }
   if(chimney) {
     const up=normalWorld.y.max(0),down=normalWorld.y.negate().max(0);
     const height=p.y.sub(FLOOR_Y).div(HERO.height).clamp(0,1);

@@ -42,12 +42,17 @@ export function lobeGeometry(salt=7) {
 }
 
 export function shelfGeometry() {
-  const g=new THREE.SphereGeometry(1,40,20),p=g.attributes.position;
+  // Same five shelf masses and transforms. Moderate extra sampling resolves
+  // actual bed breaks in the surface instead of hiding a smooth cap with props.
+  const g=new THREE.SphereGeometry(1,64,32),p=g.attributes.position;
   for(let i=0;i<p.count;i++) {
     const x=p.getX(i),y=p.getY(i),z=p.getZ(i),a=Math.atan2(z,x);
     const edge=1+.10*Math.sin(a*3+.8)+.05*Math.cos(a*7)+.024*Math.sin(a*17+y*8);
     const strata=1+.025*Math.sin(y*29+a*2);
-    p.setXYZ(i,x*edge*strata,Math.sign(y)*Math.abs(y)**.48*.52+.025*Math.sin(x*9+z*7),z*edge*strata);
+    const top=smooth(.08,.55,y),ridge=Math.sin(x*15+z*3+Math.sin(z*5)*.7);
+    const beds=smooth(-.45,.18,ridge)*.15+smooth(-.3,.3,Math.sin(z*12-x*4))*.09;
+    const joint=Math.exp(-1*((z-x*.28+.07*Math.sin(x*8))/.055)**2)*.14;
+    p.setXYZ(i,x*edge*strata,Math.sign(y)*Math.abs(y)**.48*.52+.025*Math.sin(x*9+z*7)+top*(beds-joint-.07),z*edge*strata);
   }
   g.computeVertexNormals();return g;
 }
@@ -97,10 +102,11 @@ export function sanctuaryLayout() {
 }
 
 export function fractureGeometry(){
-  const g=new THREE.SphereGeometry(1,24,12),p=g.attributes.position;
+  const g=new THREE.SphereGeometry(1,32,16),p=g.attributes.position;
   for(let i=0;i<p.count;i++){
     const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
-    p.setXYZ(i,x*(1+.11*Math.sin(z*6+y*2)),y*.65+.055*Math.sin(x*5+z*3),z*(1+.09*Math.sin(x*7)));
+    const bed=smooth(-.2,.45,y)*(smooth(-.35,.2,Math.sin(x*11-z*3))*.22-.08);
+    p.setXYZ(i,x*(1+.11*Math.sin(z*6+y*2)),y*.65+.055*Math.sin(x*5+z*3)+bed,z*(1+.09*Math.sin(x*7)));
   }
   g.computeVertexNormals();return g;
 }

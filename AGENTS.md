@@ -1,5 +1,9 @@
 # Prototype Instructions
 
+## Current authorization: M6.4 geological integration (2026-09-10)
+
+Start from failed M6.3 `8752d1af1f01bd1142bad1d55ae2b047cacb1d8d`. Wide Explore/Deep is the gate, not close-ups. Preserve macro shelf masses and add connected meso fractures/ledges/collapse fans, readable recessed channel banks, chimney/spire foot transitions. Replace left/right cyan-violet tint with slope/deposition/seep-context material zones; reuse five existing ecology sites and make a few physically attached colonies readable. Only minimal current-coupled benthic sediment; upper black water remains intact. Preserve M1–M5.2, camera tracks, View/scroll, M6.1 plume/shimmer, and the known idle-return defect. No extra passes/shadows/lights, push/merge/deploy/Pages/M7. Strict matched wide frames, real browser motion and equal-quality six-scene measurements; PARTIAL if a major shelf still reads as a flat tinted slab.
+
 ## Current authorization: M6.3 wide readability (2026-09-09)
 
 Start exactly from `685eaf5960251923bc4ae7012f8fd3c8c42bf46d`. Audit fixed-state wide views before runtime edits. Preserve M6.2 geology, plume, shimmer, ecosystem and M1–M5.2. Improve only geological macro color/atmospheric separation and minimum existing-life glow. No global exposure/ambient lift, new passes/lights/landmarks, camera/UI/scroll/idle edits, unrelated cyan-loss fix, push/merge/deploy/Pages/M7. Wide matched frames and motion, equal-setting performance, and retained abyssal blacks are the review gate; use PARTIAL if wide views still fail.
