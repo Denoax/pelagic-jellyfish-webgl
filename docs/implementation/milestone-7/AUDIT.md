@@ -6,6 +6,27 @@ Approved baseline: `046430847448206cfc58ce84758d9410121a97d3`, clean local
 
 ## Source map
 
+### Review-protocol ordering correction
+
+The local approved checkout, source, installed APIs and baseline were inspected
+before editing. The standing protocol's *public browser inspection first* step
+was missed: the live audit and final reread of the September 7 documents happened
+late in this turn. This is an ordering deviation, not a claim that the published
+release was used as the implementation baseline.
+
+Public browser audit: Pages reached `ready`, animated, and logged no errors.
+Assets: `index-Du7wn8Xk.js`, `index-DpyDdchG.css`. Public main and latest successful
+[Pages workflow 34182837955](https://github.com/Denoax/pelagic-jellyfish-webgl/actions/runs/34182837955)
+identify `a2ed3bc89c700ba5c792ecac19747939e9f09b8d` (M4 publication,
+2026-09-08). The unauthenticated legacy Pages-build endpoint returned 404;
+workflow identity is the available deployment evidence, not an embedded HTML SHA.
+Actual browser evidence is `../m7-evidence/public-audit/`.
+
+The September 7 documents are absent from the approved baseline tree and exist
+as untracked user files in the older `site` worktree. They were read there, not
+copied, staged or overwritten. Their scene-color / single-renderer direction
+matches the verified local implementation. Approved M6.6.1 remains authoritative.
+
 `App` owns useIdleScreen; enabled only after HeroScene ready and without reduced
 motion. HeroScene keeps its world in one mount effect. It uses r175
 WebGPURenderer (`three/webgpu`) with the validated WebGL2 backend. Production
