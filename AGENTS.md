@@ -1,5 +1,9 @@
 # Prototype Instructions
 
+## Current authorization: M6.6.1 input/idle-return hotfix (2026-09-10)
+
+Approved visual baseline `a1fd998eab3a20b4fde99076ecde39058bac2298`. Diagnose and fix only the source of invalid geometry/cyan loss associated with strict idle-return checks. Reproduce before changes; find the first invalid input/state, not just downstream warnings. Preserve the complete world, all approved visuals, clocks, fixed-step tissue, LOD, cameras, UI and compositor unless evidence requires a narrow correction. Never sanitize final geometry or reset the world. Validate native and historical synthetic triggers separately, ten consecutive cycles (25 if practical), hidden/combined/freeze/resize/input paths, finite geometry, material/resource continuity, matched visuals and equal-quality performance. Local commits only; no push/merge/deploy/Pages/M7.
+
 ## Current authorization: M6.6 shelf silhouette (2026-09-10)
 
 Start exactly from accepted M6.5 material baseline `dd97923241e1d914e637263a6a94182b074c3bf0`. Fix only existing close/medium shelf/terrace silhouette repetition using deterministic, bounded shape variation and shared batching. Reproduce and identify worst foreground, stacks and ravine-edge instances before geometry edits. No additional rocks, ecology or material darkening; preserve ten pinpoints, colonies, ravine, chimney/spires, plume/shimmer, M1–M5.2, all cameras/View/scroll/Explore and known idle defect. Measure construction and six identical RTX4070 WebGL2 scenes; retain stall data. Matched multi-angle Explore/wide/portrait stills and five paired browser clips gate the result. Local commits only: no push/merge/deploy/Pages/M7 or invented M6.7. Stop after this defined fix; PARTIAL if reused primitives remain obvious or locked visuals/performance regress.

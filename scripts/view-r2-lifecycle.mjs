@@ -23,7 +23,7 @@ try{
  await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[p]});await sleep(500);await send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});await sleep(100);const moved=await state();await sleep(350);const stopped=await state();
  checks.touchMove={distance:Math.hypot(...moved.position.map((v,i)=>v-start.position[i])),stopped:JSON.stringify(moved.position)===JSON.stringify(stopped.position)};assert(checks.touchMove.distance>.3&&checks.touchMove.stopped,'Touch move/cancel stuck');
  await b.click('.view-exit');await sleep(1400);
- await sleep(650);await ev(`document.activeElement.blur();history.replaceState(null,'','?idle=1');window.dispatchEvent(new Event('pointermove'));`);
+ await sleep(650);await ev(`document.activeElement.blur();history.replaceState(null,'','?idle=1');window.dispatchEvent(new Event('focusin'));`);
  for(let i=0;i<80;i++){if(await ev(`Boolean(document.querySelector('.idle-screen.is-active'))`))break;await sleep(100);}
  checks.idle=await ev(`({active:!!document.querySelector('.idle-screen.is-active'),hidden:document.querySelector('.view-ui').hidden,same:window.__REVIEW_WORLD__===window.__JELLYFISH_WORLD__})`);assert(Object.values(checks.idle).every(Boolean),'Idle entry failed');await sleep(2500);await b.shot('idle');
  await ev(`history.replaceState(null,'','?idle=300')`);await b.key('Enter');await sleep(3200);

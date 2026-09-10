@@ -20,7 +20,7 @@ try {
  checks.hidden=await ev('document.visibilityState');assert(checks.hidden==='hidden','Tab did not background');
  await send('Target.activateTarget',{targetId:b.page.id});await send('Page.bringToFront');await send('Target.closeTarget',{targetId:other.targetId});await sleep(700);
  const afterHidden=await ev('window.__JELLYFISH_WORLD__.getDeepState()');checks.background={beforeHidden,afterHidden};if(Number.isFinite(afterHidden.plumeTime))assert(afterHidden.plumeTime-beforeHidden.plumeTime<1.5,'Plume caught up hidden wall time');await b.shot('resume');
- await ev(`document.activeElement.blur();history.replaceState(null,'','?renderer=webgl&idle=1');window.dispatchEvent(new Event('pointermove'));`);
+ await ev(`document.activeElement.blur();history.replaceState(null,'','?renderer=webgl&idle=1');window.dispatchEvent(new Event('focusin'));`);
  for(let i=0;i<100;i++){if(await ev(`!!document.querySelector('.idle-screen.is-active')`))break;await sleep(100);}
  checks.idle=await ev(`({active:!!document.querySelector('.idle-screen.is-active'),hidden:document.querySelector('.view-ui').hidden,same:window.__M6_ORIGINAL_WORLD__===window.__JELLYFISH_WORLD__})`);assert(Object.values(checks.idle).every(Boolean),'Idle entry');await sleep(2500);await b.shot('idle');
  await ev(`history.replaceState(null,'','?renderer=webgl&idle=300')`);await b.key('Enter');await sleep(3200);

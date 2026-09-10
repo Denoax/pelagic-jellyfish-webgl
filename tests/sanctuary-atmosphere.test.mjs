@@ -38,7 +38,8 @@ test('new life shares bounded current, discards background debt, reuses resource
  s.dispose();assert.equal(s.life.disposed,true);assert.equal(scene.children.length,0);
 });
 test('M6.2 leaves plume, thermal optics, renderer, water and application wiring intact',()=>{
- for(const file of ['src/scene/sanctuary/VentDynamics.js','src/scene/sanctuary/VentParticles.js','src/scene/sanctuary/ThermalShimmer.js','src/scene/glass/LiveOceanLens.js','src/scene/PelagicEnvironment.js','src/scene/HeroScene.jsx']){
+ // HeroScene's sole M6.6.1 input-boundary addition is exact-source checked in idle-input-regression.
+ for(const file of ['src/scene/sanctuary/VentDynamics.js','src/scene/sanctuary/VentParticles.js','src/scene/sanctuary/ThermalShimmer.js','src/scene/glass/LiveOceanLens.js','src/scene/PelagicEnvironment.js']){
   assert.equal(readFileSync(new URL('../'+file,import.meta.url),'utf8'),execFileSync('git',['show',`cb46120:${file}`],{encoding:'utf8'}),file);
  }
 });

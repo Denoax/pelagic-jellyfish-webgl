@@ -30,7 +30,7 @@ test('bounded reusable shelf family has deterministic finite watertight nondegen
 });
 test('M6.5 material, life, sediment, geology and camera systems remain source-locked',()=>{
  const changed=execFileSync('git',['diff',base,'--name-only','--','src'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
- assert.ok(changed.every(f=>['src/scene/sanctuary/Sanctuary.js','src/scene/sanctuary/shelfSilhouettes.js'].includes(f)),changed.join('\n'));
+ assert.ok(changed.every(f=>['src/scene/sanctuary/Sanctuary.js','src/scene/sanctuary/shelfSilhouettes.js','src/scene/HeroScene.jsx'].includes(f)),changed.join('\n')); // M6.6.1 exact input-only delta is locked by idle-input-regression.
  for(const name of ['materials.js','VentLife.js','geology.js','mesoGeology.js','BenthicSediment.js','VentDynamics.js','VentParticles.js','ThermalShimmer.js']){
   const path='src/scene/sanctuary/'+name;assert.equal(readFileSync(new URL('../'+path,import.meta.url),'utf8'),execFileSync('git',['show',base+':'+path],{encoding:'utf8'}));
  }

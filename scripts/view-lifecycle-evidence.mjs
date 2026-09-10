@@ -49,7 +49,7 @@ try{
  await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[p]});await sleep(500);await send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});await sleep(100);
  const after=await ev('window.__JELLYFISH_WORLD__.getCameraState().position');await sleep(300);const settled=await ev('window.__JELLYFISH_WORLD__.getCameraState().position');
  checks.touchPad={distance:Math.hypot(...after.map((v,i)=>v-before[i])),released:JSON.stringify(after)===JSON.stringify(settled)};assert(checks.touchPad.distance>.3&&checks.touchPad.released,'Touch move/cancel failed');
- await sleep(650);await ev(`document.activeElement.blur();history.replaceState(null,'','?idle=1');window.dispatchEvent(new Event('pointermove'));`);
+ await sleep(650);await ev(`document.activeElement.blur();history.replaceState(null,'','?idle=1');window.dispatchEvent(new Event('focusin'));`);
  for(let i=0;i<80;i++){if(await ev(`Boolean(document.querySelector('.idle-screen.is-active'))`))break;await sleep(100);}
  checks.idle=await ev(`({active:!!document.querySelector('.idle-screen.is-active'),viewHidden:document.querySelector('.view-ui').hidden,sameWorld:window.__JELLYFISH_WORLD__===window.__REVIEW_WORLD__})`);assert(checks.idle.active&&checks.idle.viewHidden&&checks.idle.sameWorld,'Idle integration failed');await sleep(3000);await shot('idle');
  await ev(`history.replaceState(null,'','?idle=300')`);await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13,text:'\r'});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});await sleep(3200);

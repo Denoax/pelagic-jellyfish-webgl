@@ -13,6 +13,7 @@ test('M6.4 preserves macro geometry, dynamics, plume, optics, animals, camera, U
  const changed=execFileSync('git',['diff',baseline,'--name-only','--','src'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
  const allowed=['src/scene/sanctuary/materials.js','src/scene/sanctuary/VentLife.js','src/scene/sanctuary/atmosphere.js','src/vendor/aurelia/background.js','src/scene/sanctuary/Sanctuary.js','src/scene/sanctuary/geology.js','src/scene/sanctuary/mesoGeology.js','src/scene/sanctuary/BenthicSediment.js'];
  allowed.push('src/scene/sanctuary/shelfSilhouettes.js'); // Authorized M6.6 shared silhouette variants.
+ allowed.push('src/scene/HeroScene.jsx'); // M6.6.1 input validation only; exact delta tested separately.
  assert.ok(changed.every(f=>allowed.includes(f)),changed.join('\n'));
  for(const f of ['VentDynamics.js','VentParticles.js','ThermalShimmer.js'])assert.equal(read('src/scene/sanctuary/'+f),old('src/scene/sanctuary/'+f));
  const omitShelf=s=>s.replace(/export function shelfGeometry\(\) \{[\s\S]*?\n\}/,'SHELF').replace(/export function fractureGeometry\(\)\{[\s\S]*?\n\}/,'FRACTURE');

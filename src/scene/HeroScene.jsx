@@ -93,6 +93,10 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady }
     };
 
     const updatePointer = (event) => {
+      // Activity-only synthetic events have no spatial sample. Reject them
+      // before touching pointer history/current; undefined coordinates poison
+      // the director and persistent tissue state even before idle begins.
+      if (!Number.isFinite(event.clientX) || !Number.isFinite(event.clientY)) return;
       if (event.target.closest?.('[data-view-ui]') || cameraLab?.dragging) {
         previousPointer.set(event.clientX / window.innerWidth, 1 - event.clientY / window.innerHeight);
         hoverDirty = false;
