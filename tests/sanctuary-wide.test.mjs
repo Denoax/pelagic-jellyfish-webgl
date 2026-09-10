@@ -17,7 +17,7 @@ test('M6.3 preserves geometry, dynamics, plume, optics, animals, camera, UI and 
  // Native ESM now imports this shared radiance graph; extension fix only.
  const bg='src/vendor/aurelia/background.js';assert.equal(read(bg),old(bg).replace('"./lights"','"./lights.js"'));
 });
-test('wide biological accents reuse the exact existing sites and 40 positions',()=>{
+test('wide biological accents reuse the exact existing sites and 40 horizontal positions',()=>{
  const c=colonyLayout();assert.equal(c.points.length,40);assert.equal(c.filaments.length,160);assert.equal(c.shells.length,80);
  assert.ok(c.points.every(p=>p.s[0]===.018));
  const s=new Sanctuary(new Scene()),wide=s.life.widePoints;
@@ -28,6 +28,8 @@ test('wide biological accents reuse the exact existing sites and 40 positions',(
  assert.deepEqual(c,colonyLayout());
  // Only the local point radius changed: all non-accent geometry/layout is locked.
  const source=read('src/scene/sanctuary/VentLife.js');assert.ok(source.includes('y+.045+seed(id,707)*.055'));
+ const layout=s=>s.match(/export function colonyLayout\(\)\{[\s\S]*?return\{sites,filaments,shells,points\};\n\}/)[0];
+ assert.equal(layout(source),layout(old('src/scene/sanctuary/VentLife.js')));
 });
 test('sanctuary resources remain constant through current/light updates and teardown',()=>{
  const scene=new Scene(),s=new Sanctuary(scene),before=s.state();

@@ -1,0 +1,502 @@
+[
+  {
+    "name": "baseline-clean-illumination",
+    "frame": {
+      "median": 16.7,
+      "p95": 18.3,
+      "max": 25.4,
+      "over50": 0,
+      "n": 1803
+    },
+    "cpu": {
+      "median": 0.3,
+      "p95": 0.4,
+      "max": 1,
+      "over50": 0,
+      "n": 1802
+    },
+    "ratio": [
+      1,
+      1
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "gl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "errors": 0,
+    "draw": {
+      "calls": 4926,
+      "frameCalls": 2,
+      "drawCalls": 178,
+      "triangles": 789457,
+      "points": 0,
+      "lines": 0,
+      "timestamp": 0,
+      "memory": {
+        "geometries": 189,
+        "textures": 71
+      }
+    },
+    "source": "685eaf5960251923bc4ae7012f8fd3c8c42bf46d"
+  },
+  {
+    "name": "baseline-clean-orbit",
+    "frame": {
+      "median": 16.7,
+      "p95": 17.8,
+      "max": 23.1,
+      "over50": 0,
+      "n": 1802
+    },
+    "cpu": {
+      "median": 0.3,
+      "p95": 0.4,
+      "max": 0.8,
+      "over50": 0,
+      "n": 1801
+    },
+    "ratio": [
+      1,
+      1
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "gl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "errors": 0,
+    "draw": {
+      "calls": 4924,
+      "frameCalls": 2,
+      "drawCalls": 176,
+      "triangles": 667017,
+      "points": 0,
+      "lines": 0,
+      "timestamp": 0,
+      "memory": {
+        "geometries": 197,
+        "textures": 71
+      }
+    },
+    "source": "685eaf5960251923bc4ae7012f8fd3c8c42bf46d"
+  },
+  {
+    "name": "baseline-clean-portrait",
+    "frame": {
+      "median": 16.7,
+      "p95": 19,
+      "max": 29.3,
+      "over50": 0,
+      "n": 1800
+    },
+    "cpu": {
+      "median": 0.4,
+      "p95": 0.6,
+      "max": 1.6,
+      "over50": 0,
+      "n": 1801
+    },
+    "ratio": [
+      1,
+      1
+    ],
+    "buffers": [
+      [
+        390,
+        844
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "gl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "errors": 0,
+    "draw": {
+      "calls": 4906,
+      "frameCalls": 2,
+      "drawCalls": 99,
+      "triangles": 530931,
+      "points": 0,
+      "lines": 0,
+      "timestamp": 0,
+      "memory": {
+        "geometries": 117,
+        "textures": 42
+      }
+    },
+    "source": "685eaf5960251923bc4ae7012f8fd3c8c42bf46d"
+  },
+  {
+    "name": "baseline-clean-stationary",
+    "frame": {
+      "median": 16.7,
+      "p95": 18,
+      "max": 26,
+      "over50": 0,
+      "n": 1802
+    },
+    "cpu": {
+      "median": 0.3,
+      "p95": 0.4,
+      "max": 1,
+      "over50": 0,
+      "n": 1802
+    },
+    "ratio": [
+      1,
+      1
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "gl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "errors": 0,
+    "draw": {
+      "calls": 6002,
+      "frameCalls": 2,
+      "drawCalls": 178,
+      "triangles": 789777,
+      "points": 0,
+      "lines": 0,
+      "timestamp": 0,
+      "memory": {
+        "geometries": 189,
+        "textures": 71
+      }
+    },
+    "source": "685eaf5960251923bc4ae7012f8fd3c8c42bf46d"
+  },
+  {
+    "name": "baseline-clean-wide",
+    "frame": {
+      "median": 16.7,
+      "p95": 17.9,
+      "max": 22.1,
+      "over50": 0,
+      "n": 1805
+    },
+    "cpu": {
+      "median": 0.3,
+      "p95": 0.4,
+      "max": 0.6,
+      "over50": 0,
+      "n": 1802
+    },
+    "ratio": [
+      1,
+      1
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "gl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "errors": 0,
+    "draw": {
+      "calls": 4930,
+      "frameCalls": 2,
+      "drawCalls": 178,
+      "triangles": 815017,
+      "points": 0,
+      "lines": 0,
+      "timestamp": 0,
+      "memory": {
+        "geometries": 193,
+        "textures": 71
+      }
+    },
+    "source": "685eaf5960251923bc4ae7012f8fd3c8c42bf46d"
+  },
+  {
+    "name": "candidate-illumination",
+    "frame": {
+      "median": 16.7,
+      "p95": 17.9,
+      "max": 27.4,
+      "over50": 0,
+      "n": 1804
+    },
+    "cpu": {
+      "median": 0.3,
+      "p95": 0.4,
+      "max": 0.7,
+      "over50": 0,
+      "n": 1802
+    },
+    "ratio": [
+      1,
+      1
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "gl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "errors": 0,
+    "draw": {
+      "calls": 4930,
+      "frameCalls": 2,
+      "drawCalls": 178,
+      "triangles": 789457,
+      "points": 0,
+      "lines": 0,
+      "timestamp": 0,
+      "memory": {
+        "geometries": 189,
+        "textures": 71
+      }
+    },
+    "source": "0937f05fd836e721fb1fbe70d6fe1864d84d748d"
+  },
+  {
+    "name": "candidate-orbit",
+    "frame": {
+      "median": 16.6,
+      "p95": 18.7,
+      "max": 27.6,
+      "over50": 0,
+      "n": 1802
+    },
+    "cpu": {
+      "median": 0.3,
+      "p95": 0.4,
+      "max": 1,
+      "over50": 0,
+      "n": 1802
+    },
+    "ratio": [
+      1,
+      1
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "gl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "errors": 0,
+    "draw": {
+      "calls": 4904,
+      "frameCalls": 2,
+      "drawCalls": 176,
+      "triangles": 667017,
+      "points": 0,
+      "lines": 0,
+      "timestamp": 0,
+      "memory": {
+        "geometries": 197,
+        "textures": 71
+      }
+    },
+    "source": "0937f05fd836e721fb1fbe70d6fe1864d84d748d"
+  },
+  {
+    "name": "candidate-portrait",
+    "frame": {
+      "median": 16.7,
+      "p95": 19,
+      "max": 30.8,
+      "over50": 0,
+      "n": 1800
+    },
+    "cpu": {
+      "median": 0.4,
+      "p95": 0.6,
+      "max": 2.5,
+      "over50": 0,
+      "n": 1801
+    },
+    "ratio": [
+      1,
+      1
+    ],
+    "buffers": [
+      [
+        390,
+        844
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "gl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "errors": 0,
+    "draw": {
+      "calls": 4914,
+      "frameCalls": 2,
+      "drawCalls": 99,
+      "triangles": 530931,
+      "points": 0,
+      "lines": 0,
+      "timestamp": 0,
+      "memory": {
+        "geometries": 117,
+        "textures": 42
+      }
+    },
+    "source": "0937f05fd836e721fb1fbe70d6fe1864d84d748d"
+  },
+  {
+    "name": "candidate-stationary",
+    "frame": {
+      "median": 16.4,
+      "p95": 19.1,
+      "max": 26.1,
+      "over50": 0,
+      "n": 1803
+    },
+    "cpu": {
+      "median": 0.3,
+      "p95": 0.4,
+      "max": 0.6,
+      "over50": 0,
+      "n": 1802
+    },
+    "ratio": [
+      1,
+      1
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "gl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "errors": 0,
+    "draw": {
+      "calls": 6002,
+      "frameCalls": 2,
+      "drawCalls": 178,
+      "triangles": 789777,
+      "points": 0,
+      "lines": 0,
+      "timestamp": 0,
+      "memory": {
+        "geometries": 189,
+        "textures": 71
+      }
+    },
+    "source": "0937f05fd836e721fb1fbe70d6fe1864d84d748d"
+  },
+  {
+    "name": "candidate-wide",
+    "frame": {
+      "median": 16.7,
+      "p95": 18,
+      "max": 27.5,
+      "over50": 0,
+      "n": 1804
+    },
+    "cpu": {
+      "median": 0.3,
+      "p95": 0.4,
+      "max": 0.8,
+      "over50": 0,
+      "n": 1801
+    },
+    "ratio": [
+      1,
+      1
+    ],
+    "buffers": [
+      [
+        1280,
+        900
+      ],
+      [
+        1280,
+        900
+      ]
+    ],
+    "gl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)"
+    },
+    "errors": 0,
+    "draw": {
+      "calls": 4926,
+      "frameCalls": 2,
+      "drawCalls": 178,
+      "triangles": 815017,
+      "points": 0,
+      "lines": 0,
+      "timestamp": 0,
+      "memory": {
+        "geometries": 193,
+        "textures": 71
+      }
+    },
+    "source": "0937f05fd836e721fb1fbe70d6fe1864d84d748d"
+  }
+]
