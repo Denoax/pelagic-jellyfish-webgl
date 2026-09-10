@@ -1,5 +1,18 @@
 # Prototype Instructions
 
+## Current authorization: M7.2 contact readability + long-run validation (2026-09-10)
+
+Runtime baseline `bfbe9837f4e0587662f79d481af8e7b1dcb94156`; branching from
+`0492ff6` is permitted because subsequent commits are QA/docs only. Improve
+ONLY local contact/neck/absorption/settle and exit throat/pinch/recoil at normal
+full-frame 1× presentation. Instrument actual footprint/timing first. Preserve
+typography, minute reservoirs, eight bead sizes/count, optical equation, one
+renderer/context/ocean, existing targets, persistent field and M1–M6.6.1.
+Reproduce the adverse M7.1 long sequence with capture-free balanced long runs
+against M7 b645023; do not optimize before finding cause or erase adverse data.
+Separate visual, DEV instrumentation, demonstrated fixes and QA commits.
+No push/merge/deploy/Pages/M8 or speculative architectural/optical work.
+
 ## Current authorization: M7.1 liquid choreography only (2026-09-10)
 
 Baseline `b6450239e64764dbba36ae9c913e15f3d847ee65` is technically accepted,

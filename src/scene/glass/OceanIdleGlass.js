@@ -2,7 +2,7 @@ import * as THREE from 'three/webgpu';
 import {Fn,Loop,If,uniformArray,uniform,texture,vec2,vec3,vec4,normalize,dot,max,min,smoothstep,mix,exp} from 'three/tsl';
 import {IdleDisplacement} from './IdleDisplacement.js';
 import {IdleLiquidState,DROPLETS,clockDigits,ease} from './IdleLiquidState.js';
-import {strokeAnchors,entryDrop,exitDrop} from './LiquidChoreography.js';
+import {strokeAnchors,contactSites,entryDrop,exitDrop} from './LiquidChoreography.js';
 
 // Same clock/ocean compositor proved at gate one, now driven by scalar topology
 // and persistent displacement. No color feedback, renderer or ocean copy.
@@ -77,7 +77,7 @@ export class OceanIdleGlass {
     ctx.drawImage(this.clock.image,0,0,192,192);
     const anchors=strokeAnchors(ctx.getImageData(0,0,192,192).data,192,192,portrait,this.clockLayout);
     this.sites.forEach((s,i)=>{this.oldSites[i].value.copy(s.value);const a=anchors[i];s.value.set(a.x,a.y,a.start,0);if(reset)this.oldSites[i].value.copy(s.value)});
-    this.anchors=anchors;
+    this.anchors=contactSites(ctx.getImageData(0,0,192,192).data,192,192,anchors);
     this.changed.value.set(...Array.from({length:4},(_,i)=>!reset&&old[i]!==digits[i]?1:0));
     if(!reset&&this.active)for(let i=0;i<4;i++)if(old[i]!==digits[i]){const a=anchors[i*2];this.fluid.impulse(a.x,a.y,-.05);}
     this.minute.value=reset?1:0;
@@ -102,11 +102,11 @@ export class OceanIdleGlass {
     if(this.elapsed-this.checkAt>1){this.checkAt=this.elapsed;const d=this.reviewDate||new Date();if(`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`!==this.clockKey)this.drawClock(false,d);}
     const aspect=this.size.value.x/this.size.value.y;
     this.anchors.forEach((a,i)=>{
-      const d=this.active?entryDrop(this.controller.age,a,i,aspect,this.dropState[i]):exitDrop(this.controller.exitAge,a,i,aspect,this.dropState[i]);
+      const d=this.active?entryDrop(this.controller.age,a,i,aspect,this.dropState[i],this.size.value.y):exitDrop(this.controller.exitAge,a,i,aspect,this.dropState[i],this.size.value.y);
       this.droplets[i].value.set(d.x,d.y,d.radius,d.stretch);
-      this.necks[i].value.set(a.x+d.recoil/aspect,a.y,d.neck,0);
-      if(this.active&&!this.events[i]&&this.controller.age>a.start+.93){this.events[i]=1;this.fluid.impulse(a.x,a.y,-.065);}
-      if(!this.active&&!this.events[i]&&this.controller.exitAge>.54+(i%3)*.025){this.events[i]=1;this.fluid.impulse(a.x,a.y,.08);}
+      this.necks[i].value.set(d.rootX+d.recoil/aspect,d.rootY,d.neck,d.bulge);
+      if(this.active&&!this.events[i]&&this.controller.age>d.contact+.60){this.events[i]=1;this.fluid.impulse(d.rootX,d.rootY,-.065);}
+      if(!this.active&&!this.events[i]&&this.controller.exitAge>d.breakTime){this.events[i]=1;this.fluid.impulse(d.rootX,d.rootY,.08);}
     });
     if(this.captureCost&&this.cpu.length<20000)this.cpu.push(performance.now()-now);
     await this.fluid.run(steps,dt);this.displacement.value=this.fluid.texture;
@@ -140,7 +140,7 @@ export class OceanIdleGlass {
       const glyph=phase.lessThan(.5).select(old,next).sub(collapse.mul(1.03)).toVar();
       const arrival=isColon.select(p.y.sub(.5).abs().mul(2).add(1.35),min(p.sub(a.xy).mul(aspect).length().mul(6.8).add(a.z),p.sub(b.xy).mul(aspect).length().mul(7.4).add(b.z))).toVar();
       const localGrowth=smoothstep(arrival,arrival.add(.85),this.age).toVar();
-      const exitFront=smoothstep(arrival.mul(.11),arrival.mul(.11).add(.55),this.exitAge).toVar();
+      const exitFront=smoothstep(arrival.mul(.06).add(.58),arrival.mul(.06).add(.80),this.exitAge).toVar();
       const clock=glyph.sub(localGrowth.oneMinus().mul(1.1)).sub(exitFront.mul(1.15));
       const liquid=clock.max(0).toVar();
       for(const site of [localA,localB]){
@@ -156,6 +156,8 @@ export class OceanIdleGlass {
         liquid.addAssign(exp(oval.div(max(drop.z.mul(drop.z),.000001)).mul(-1.8)).mul(.9));
         const t=dot(q,axis).div(max(dot(axis,axis),.000001)).clamp(0,1).toVar(),bridge=q.sub(axis.mul(t)).toVar();
         liquid.addAssign(exp(dot(bridge,bridge).div(max(neck.z.mul(neck.z),.0000001)).mul(-1.8)).mul(neck.z.greaterThan(.0001).select(.7,0)));
+        const root=p.sub(neck.xy).mul(aspect).toVar();
+        liquid.addAssign(exp(dot(root,root).div(max(neck.w.mul(neck.w),.0000001)).mul(-1.8)).mul(neck.w.greaterThan(.0001).select(.65,0)));
       });});
       // Additive implicit masses form a shared neck, not intersecting circles.
       return smoothstep(.12,.95,liquid).mul(this.amount);

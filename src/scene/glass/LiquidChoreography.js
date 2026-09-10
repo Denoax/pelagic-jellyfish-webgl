@@ -28,32 +28,51 @@ export function arrivalAt(x,y,a,b,aspect){
  return Math.min(a.start+Math.hypot((x-a.x)*aspect,y-a.y)*6.8,b.start+Math.hypot((x-b.x)*aspect,y-b.y)*7.4);
 }
 
+// Contact attaches to the facing surface, not the interior stroke anchor.
+// The anchor/front itself is unchanged. Find the first outgoing mask boundary.
+export function contactSites(pixels,w,h,anchors){
+ return anchors.map(a=>{let y=Math.floor(a.y*h),x=Math.min(w-1,Math.max(0,Math.floor(a.x*w)));
+  for(let n=0;n<h*.24;n++){const next=y+a.side;if(next<1||next>=h-1||pixels[(next*w+x)*4]<135)break;y=next;}
+  return{...a,surfaceX:a.x,surfaceY:(y+.5)/h};
+ });
+}
+
 // Original bounded event director, not a fluid solver. Positions are in UV,
 // lengths in viewport-height units. Every drop transfers its finite mass;
 // the rest of each stroke condenses from the thin film (explicit reservoir).
-export function entryDrop(age,a,i,aspect,out={}){
- const contact=a.start+.55,approach=ease((age-.1-i%3*.08)/(contact+.3));
- const transfer=ease((age-contact-.3)/1.05),birth=ease(age/.65);
- const dx=(i%3-1)*.026,dy=a.side*(.102+(i%2)*.018);
- const gap=1-approach*.76-ease((age-contact-.3)/1.05)*.24;
- out.x=a.x+dx*gap/aspect;out.y=a.y+dy*gap;
- out.radius=(.034+(i%3)*.003)*Math.sqrt((1-transfer)*birth);
- out.stretch=ease((age-contact+.4)/.5)*(1-transfer);
- out.neck=.020*ease((age-contact+.02)/.48)*(1-transfer);
+export function entryDrop(age,a,i,aspect,out={},height=900){
+ const contact=a.start+1.06,t=age-contact;
+ const transfer=ease((t-.29)/.58),birth=ease(age/.65);
+ const radius=.034+(i%3)*.003;
+ const approach=ease((age-.1-i%3*.08)/(contact-.18));
+ const pull=ease((t+.18)/.18);
+ // Keep two identifiable surfaces on either side of a ~12px clear gap.
+ const gap=(radius*1.13+.026)+(.103-radius*1.13-.026)*(1-approach)-.006*pull;
+ const sx=a.surfaceX??a.x,sy=a.surfaceY??a.y;
+ out.x=sx+(i%3-1)*.009*(1-approach)/aspect;
+ out.y=sy+a.side*(gap*(1-transfer)-.009*transfer);
+ out.radius=radius*Math.sqrt((1-transfer)*birth);
+ out.stretch=.24*pull*(1-transfer);
+ const thin=2.2/(.773*Math.max(600,height));
+ out.neck=(thin*ease(t/.055)+(.012-thin)*ease((t-.19)/.23))*(1-transfer);
  out.mass=1-transfer;out.transferred=transfer;out.contact=contact;
- // One finite compression/release, tied to absorption, not ambient wobble.
- const t=age-contact-.38;
- out.recoil=t>0&&t<1.8?Math.sin(t*8)*Math.exp(-t*3.8)*.004:0;
+ const settle=ease((t-.60)/.10)*(1-ease((t-.77)/.22));
+ out.recoil=.0035*settle;out.rootX=sx;out.rootY=sy+a.side*.003*pull*(1-transfer);
+ out.bulge=.005*pull*(1-transfer)+.013*settle;out.breakTime=0;
  return out;
 }
 
-export function exitDrop(age,a,i,aspect,out={}){
- const delay=(i%3)*.025,t=Math.max(0,age-delay),travel=ease(t/.85);
- out.x=a.x+(i%3-1)*.025*travel/aspect;out.y=a.y+a.side*.10*travel;
- out.radius=.031*Math.sqrt(ease(t/.18)*(1-ease((t-.62)/.35)));
- out.stretch=(1-ease(t/.7))*.65;
- out.neck=.021*(1-ease((t-.18)/.36));
+export function exitDrop(age,a,i,aspect,out={},height=900){
+ const delay=(i%3)*.015,t=Math.max(0,age-delay),travel=ease(t/.25);
+ const sx=a.surfaceX??a.x,sy=a.surfaceY??a.y;
+ const recoil=ease((t-.52)/.045)*(1-ease((t-.60)/.10));
+ out.x=sx;out.y=sy+a.side*(.056*travel+.004*recoil);
+ out.radius=.031*Math.sqrt(ease(t/.16)*(1-ease((t-.73)/.18)));
+ out.stretch=(1-ease(t/.25))*.3;
+ const thin=2.4/(.773*Math.max(600,height));
+ out.neck=(.014+(thin-.014)*ease((t-.19)/.15))*(1-ease((t-.39)/.13));
  out.mass=clamp01((out.radius/.031)**2);out.transferred=0;
- out.recoil=t>.54?.004*Math.sin((t-.54)*10)*Math.exp(-(t-.54)*8):0;
+ out.recoil=-.003*recoil;out.rootX=sx;out.rootY=sy-a.side*.003*recoil;
+ out.bulge=.012*(1-ease((t-.65)/.10));out.breakTime=.52+delay;
  return out;
 }
