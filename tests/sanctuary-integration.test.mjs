@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {Scene,Vector3,Raycaster} from 'three/webgpu';
 import {Sanctuary} from '../src/scene/sanctuary/Sanctuary.js';
 import {ledgeGeometry} from '../src/scene/sanctuary/mesoGeology.js';
-import {gullyCenter,gullyDepth} from '../src/scene/sanctuary/geology.js';
+import {gullyCenter,gullyDepth,floorHeight} from '../src/scene/sanctuary/geology.js';
 
 test('meso beds are deterministic, bounded and rooted in geology; ravine remains recessed',()=>{
  const a=new Sanctuary(new Scene()),b=new Sanctuary(new Scene());
@@ -11,6 +11,7 @@ test('meso beds are deterministic, bounded and rooted in geology; ravine remains
  const tags=new Set(a.meso.map(x=>x.tag));assert.deepEqual([...tags].sort(),['attached-bed','bank-lip','edge-collapse','vent-apron']);
  for(const item of a.meso){assert.ok(item.p.every(Number.isFinite));assert.ok(item.p[1]-.7*item.s[1]<item.support);if(item.p[2]<-16&&item.p[2]>-43)assert.ok(Math.abs(item.p[0]-gullyCenter(item.p[2]))>=1.35);}
  assert.ok(gullyDepth(gullyCenter(-27),-27)>3);
+ for(const item of a.meso)if(item.supportName==='active-sulfide-complex'||item.tag==='vent-apron')assert.ok(item.support<=floorHeight(item.p[0],item.p[2])+2.5);
  const g=ledgeGeometry(),positions=g.attributes.position.array,normals=g.attributes.normal.array;
  assert.ok(positions.every(Number.isFinite)&&normals.every(Number.isFinite));
  // Outward face winding, including the side faces rejected in the first trial.
@@ -39,6 +40,6 @@ test('sediment shares bounded current, discards pause/reverse debt and never rea
  const before=d.position.slice(),time=d.time;
  for(const dt of [-1,30,NaN,0])d.update(dt,field);
  assert.deepEqual(d.position,before);assert.equal(d.time,time);
- assert.deepEqual([d.position,d.origin,d.velocity,d.size,d.alpha],arrays);assert.equal(d.renderer.mesh.geometry,g);assert.equal(d.count,72);
+ [d.position,d.origin,d.velocity,d.size,d.alpha].forEach((a,i)=>assert.equal(a,arrays[i]));assert.equal(d.renderer.mesh.geometry,g);assert.equal(d.count,72);
  let disposed=0;g.addEventListener('dispose',()=>disposed++);s.dispose();s.dispose();assert.equal(disposed,1);assert.equal(d.disposed,true);
 });

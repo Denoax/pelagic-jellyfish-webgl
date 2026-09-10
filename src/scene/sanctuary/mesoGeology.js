@@ -26,11 +26,11 @@ export function mesoLayout(layout,solids){
   const add=(x,z,sx,sy,sz,angle,tag,tilt=0)=>{
     const hit=sample(x,z);if(!hit)return;
     // A base fan must not use an overhead chimney shoulder as its support.
-    if(tag==='vent-apron'&&hit.point.y>floorHeight(x,z)+2.5)return;
+    if((tag==='vent-apron'||hit.object.name==='active-sulfide-complex')&&hit.point.y>floorHeight(x,z)+2.5)return;
     // Bottom penetrates its support. Upper tiers grow FROM a parent, never
     // hover above it. Preserve the channel's original open central footprint.
     if(Math.abs(x-gullyCenter(z))<1.35&&z< -16&&z> -43)return;
-    items.push({p:[x,hit.point.y+sy*.10,z],s:[sx,sy,sz],r:[tilt,angle,tilt*.4],tag,support:hit.point.y});
+    items.push({p:[x,hit.point.y+sy*.10,z],s:[sx,sy,sz],r:[tilt,angle,tilt*.4],tag,support:hit.point.y,supportName:hit.object.name});
   };
   layout.shelves.forEach((s,f)=>{
     o.position.fromArray(s.p);o.rotation.set(...s.r);o.scale.fromArray(s.s);o.updateMatrix();
