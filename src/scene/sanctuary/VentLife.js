@@ -71,6 +71,18 @@ export function anchoredColonies(layout,solids){
   return{filaments:layout.filaments.map((a,i)=>anchor(a,Math.floor(i/32),'filament',i)),shells:layout.shells.map((a,i)=>anchor(a,Math.floor(i/16),'shell',i)),points:layout.points.map((a,i)=>anchor(a,Math.floor(i/8),'point',i))};
 }
 
+// Two retained geological anchors per colony, ten total, not another system.
+// Only sites 0/1/3 get a distant signature; the others reward close inspection.
+export function pinpointLife(points,shells){
+  return [0,1,2,3,4].flatMap(site=>[0,4].map((offset,j)=>{
+    const a=points[site*8+offset],shell=shells[site*16+offset*2],signature=j===0&&[0,1,3].includes(site);
+    // On the existing shell/nodule's normal-axis apex, not buried beneath it.
+    // No additional attachment raycasts or geometry; shell bodies are static.
+    const anchor=shell.p.map((v,i)=>v+shell.normal[i]*shell.s[1]),radius=signature?.036:.011;
+    return{...a,anchor,normal:shell.normal,p:anchor.map((v,i)=>v+shell.normal[i]*radius*.35),s:[radius,radius*.65,radius],signature,supportShell:site*16+offset*2};
+  }));
+}
+
 export class VentLife{
   constructor(owner){
     this.layout=colonyLayout();this.disposed=false;this.time=uniform(0);this.current=uniform(new THREE.Vector2());this.flow={x:0,y:0,z:0};
@@ -92,9 +104,9 @@ export class VentLife{
     // Rare pinpoints, not luminous stone. Warm mineral pigments remain reflected
     // color; only these tiny biological accents carry restrained emission.
     m.fog=false;
-    m.colorNode=geologicalWater(mix(vec3(.055,.36,.29),vec3(.22,.12,.36),hue).mul(near.mul(2).add(.8)));
+    m.colorNode=geologicalWater(mix(vec3(.18,.50,.46),vec3(.36,.53,.66),hue).mul(near.mul(.3).add(.95)));
     owner.group.updateMatrixWorld(true);
-    this.widePoints=this.anchored.points;
+    this.widePoints=pinpointLife(this.anchored.points,this.anchored.shells);
     owner.materials.add(m);owner.instanced(new THREE.SphereGeometry(1,6,4),m,this.widePoints,'rare-benthic-light-points');
   }
   update(dt,time,field){

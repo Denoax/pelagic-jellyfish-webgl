@@ -4,6 +4,11 @@ import { DIFFUSE, ORIFICE } from './VentDynamics.js';
 import { FLOOR_Y, HERO, GULLY } from './geology.js';
 import { geologicalWater } from './atmosphere.js';
 
+// Reflectance/art controls, not renderer exposure or a second lighting system.
+// BasicNodeMaterial has no specular BRDF: the rough read comes from diffuse
+// surface-gradient relief. A PBR roughness assignment here would do nothing.
+export const BASALT_FINISH=Object.freeze({albedo:.70,ambient:.62,bounce:.18,grainFrequency:19,grainHeight:.008,scanHeight:.034,crustHeight:.020});
+
 export function lightUniforms(){
   const scan=new THREE.Texture();
   scan.wrapS=scan.wrapT=THREE.RepeatWrapping;
@@ -87,17 +92,32 @@ export function mineralMaterial(light,{chimney=false,life=false,floor=false}={})
   // term is a dim legibility fill, explicitly not sunlight or a moving ROV light.
   // Surface-gradient bump (same derivative principle as r175 BumpMapNode),
   // applied to procedural world-space height: no UV seam or texture dependency.
-  const height=grain.mul(.022).add(meso.mul(.012));
+  // World-space, deterministic mineral pores. Fade subpixel frequencies using
+  // the actual surface footprint; avoid crawling glitter at wide distances.
+  const footprint=p.dFdx().length().max(p.dFdy().length());
+  const resolved=footprint.mul(BASALT_FINISH.grainFrequency).smoothstep(.35,1.25).oneMinus();
+  const grit=life?meso:mx_noise_float(p.mul(BASALT_FINISH.grainFrequency));
+  const crust=meso.mul(2.6).add(low).sin().mul(.5).add(.5);
+  const height=life?grain.mul(.022).add(meso.mul(.012)):
+    grain.mul(BASALT_FINISH.scanHeight).add(meso.mul(BASALT_FINISH.crustHeight))
+      .add(grit.mul(BASALT_FINISH.grainHeight).mul(resolved));
   const dx=p.dFdx(),dy=p.dFdy(),r1=dy.cross(normalWorld),r2=normalWorld.cross(dx);
   const determinant=dx.dot(r1);
   const gradient=r1.mul(height.dFdx()).add(r2.mul(height.dFdy())).mul(determinant.sign());
   const n=normalWorld.mul(determinant.abs().max(.00000001)).sub(gradient).normalize();
   const relief=n.dot(vec3(-.4,.7,.5).normalize()).mul(.38).add(.55).max(.12);
-  const ambient=vec3(.105,.14,.17).mul(relief);
+  // Downward faces, continuous bedding recesses and the channel depth recede.
+  // This is a contact/crevice approximation, not baked AO or new shadow maps.
+  const facing=normalWorld.y.smoothstep(-.32,.45);
+  const cavity=bedding.mul(.20).add(.80).mul(facing.mul(.35).add(.65));
+  const ravine=p.y.smoothstep(FLOOR_Y-2.6,FLOOR_Y+.2);
+  if(!life)pigment=pigment.mul(BASALT_FINISH.albedo).mul(cavity).mul(ravine.mul(.38).add(.62))
+    .mul(crust.mul(.22).add(.78)).mul(grit.mul(.13).mul(resolved).add(.94));
+  const ambient=vec3(.105,.14,.17).mul(relief).mul(life?.64:chimney?.85:BASALT_FINISH.ambient);
   // Dim, upward-plane pickup only. Cavities, downward faces and the ravine
   // interior get no new fill. This is local reflected color, not global ambient.
   const exposed=p.y.smoothstep(FLOOR_Y-1.1,FLOOR_Y+.3).mul(upper);
-  const bounce=vec3(.011,.021,.025).mul(exposed);
+  const bounce=vec3(.011,.021,.025).mul(exposed).mul(life?.4:BASALT_FINISH.bounce);
   const ray=light.position.sub(p),distance=ray.length();
   const diffuse=n.dot(ray.normalize()).max(0).mul(.88).add(.12);
   const falloff=distance.div(13).oneMinus().clamp(0,1).pow(2).div(distance.mul(distance).mul(.09).add(1));

@@ -1,5 +1,9 @@
 # Prototype Instructions
 
+## Current authorization: M6.5 dark basalt material (2026-09-10)
+
+Start from M6.4 `518db86f0be40ac4273900081b5385a9f8ca25bf`, NOT M6.3. Preserve the 231 meso pieces, shelf relief, layout, five colonies, 72 sediment particles, plume/shimmer and M1–M5.2. Narrow material-only art pass: substantially darker rock-specific reflectance/fill, coarse mineral grain and restrained normals, selective shadow concealing plate repetition, very few tiny surface-attached pinpoints. No global exposure/lighting/bloom changes, new geology/particle systems, camera/View/scroll/idle work, push/merge/deploy/Pages/M7. Capture the same close Explore and wide Drift/Deep before/after, actual browser motion, six equal-quality RTX4070 WebGL2 performance scenes and construction diagnostic. PARTIAL if still waxy/bright/repetitive, ugly grain, unreadable darkness, broad glow, or substantially worse initialization. Known idle defect remains out of scope.
+
 ## Current authorization: M6.4 geological integration (2026-09-10)
 
 Start from failed M6.3 `8752d1af1f01bd1142bad1d55ae2b047cacb1d8d`. Wide Explore/Deep is the gate, not close-ups. Preserve macro shelf masses and add connected meso fractures/ledges/collapse fans, readable recessed channel banks, chimney/spire foot transitions. Replace left/right cyan-violet tint with slope/deposition/seep-context material zones; reuse five existing ecology sites and make a few physically attached colonies readable. Only minimal current-coupled benthic sediment; upper black water remains intact. Preserve M1–M5.2, camera tracks, View/scroll, M6.1 plume/shimmer, and the known idle-return defect. No extra passes/shadows/lights, push/merge/deploy/Pages/M7. Strict matched wide frames, real browser motion and equal-quality six-scene measurements; PARTIAL if a major shelf still reads as a flat tinted slab.
