@@ -119,6 +119,6 @@ export class OceanIdleGlass {
       return vec4(mix(base.rgb,bent.add(light),smoothstep(.02,.3,h).mul(strength)),base.a);
     })();
   }
-  state(){return{ready:this.ready,active:this.active,amount:this.amount.value,clock:this.clockKey,minute:this.minute.value,phase:this.controller.phase,time:this.controller.time,size:this.size.value.toArray(),renderer:this.renderer.backend.isWebGLBackend?'WebGL2':'WebGPU',clockTextures:2,simulationTargets:2,field:[this.fluid.targets[0].width,this.fluid.targets[0].height],steps:this.fluid.steps,resources:[this.clock.uuid,this.previousClock.uuid,...this.fluid.targets.map(t=>t.texture.uuid)]};}
+  state(){return{ready:this.ready,prewarmMilliseconds:this.prewarmMilliseconds,active:this.active,amount:this.amount.value,clock:this.clockKey,minute:this.minute.value,phase:this.controller.phase,time:this.controller.time,size:this.size.value.toArray(),renderer:this.renderer.backend.isWebGLBackend?'WebGL2':'WebGPU',clockTextures:2,simulationTargets:2,field:[this.fluid.targets[0].width,this.fluid.targets[0].height],steps:this.fluid.steps,resources:[this.clock.uuid,this.previousClock.uuid,...this.fluid.targets.map(t=>t.texture.uuid)]};}
   dispose(){window.removeEventListener('pointermove',this.pointerHandler);document.removeEventListener('visibilitychange',this.hiddenHandler);this.fluid.dispose();this.clock.dispose();this.previousClock.dispose();}
 }

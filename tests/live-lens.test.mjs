@@ -159,6 +159,25 @@ test("same renderer receives ocean target then output, restores state on failure
     await pendingRender;
     assert.equal(outputs, 0);
     assert.equal(pendingLens.resourcesReleased, true);
+    // Teardown must wait for idle GPU preparation and simulation as well.
+    for (const operation of ['prepare', 'update']) {
+      const waiting = new LiveOceanLens(renderer, camera);
+      let resolve, disposed = 0, renders = 0;
+      renderer.renderAsync = async () => { renders++; };
+      const idle = { dispose() { disposed++; }, [operation]: () => new Promise(r => { resolve = r; }) };
+      let task;
+      if (operation === 'prepare') task = waiting.attachIdle(idle);
+      else { waiting.idle = idle; task = waiting.render(); }
+      waiting.dispose();
+      assert.equal(waiting.resourcesReleased, undefined);
+      assert.equal(disposed, 0);
+      resolve();
+      await task;
+      assert.equal(waiting.resourcesReleased, true);
+      assert.equal(disposed, 1);
+      assert.equal(renders, 0);
+      assert.equal(waiting.idleOutput, undefined);
+    }
   } finally {
     globalThis.window = previousWindow;
     globalThis.document = previousDocument;

@@ -272,7 +272,15 @@ export class LiveOceanLens {
   }
   async render() {
     if (this.disposed) return;
-    if (this.idle) await this.idle.update();
+    if (this.idle) {
+      this.updatingIdle = true;
+      try { await this.idle.update(); }
+      finally {
+        this.updatingIdle = false;
+        if (this.disposed) this.releaseResources();
+      }
+      if (this.disposed) return;
+    }
     const thermalVisible = this.thermal?.prepare(this.camera) || false;
     if ((!this.enabled || (this.slots.length && !this.slots.some(s => s.strength.value > 0) && !thermalVisible)) && !this.idle?.visible)
       return this.renderer.renderAsync(this.scene, this.camera);
@@ -388,16 +396,26 @@ export class LiveOceanLens {
   }
   async attachIdle(idle) {
     this.idle = idle;
-    await idle.prepare();
-    this.idleOutput = new THREE.PostProcessing(this.renderer, this.optics(true));
-    // Compile using the normal output API into a tiny scratch surface.
-    const scratch = new THREE.RenderTarget(8, 8, {depthBuffer:false});
+    this.preparingIdle = true;
+    const started = performance.now();
     const previous = this.renderer.getRenderTarget();
+    let scratch;
     try {
+      await idle.prepare();
+      if (this.disposed) return;
+      this.idleOutput = new THREE.PostProcessing(this.renderer, this.optics(true));
+      // Compile using the normal output API into a tiny scratch surface.
+      scratch = new THREE.RenderTarget(8, 8, {depthBuffer:false});
       this.renderer.setRenderTarget(scratch);
       await this.idleOutput.renderAsync();
-      idle.ready = true;
-    } finally { this.renderer.setRenderTarget(previous); scratch.dispose(); }
+      if (!this.disposed) idle.ready = true;
+    } finally {
+      this.renderer.setRenderTarget(previous);
+      scratch?.dispose();
+      idle.prewarmMilliseconds = performance.now() - started;
+      this.preparingIdle = false;
+      if (this.disposed) this.releaseResources();
+    }
   }
   attachThermal(thermal) {
     this.thermal = thermal;
@@ -414,6 +432,6 @@ export class LiveOceanLens {
     window.removeEventListener("blur", this.onHidden);
     document.removeEventListener("visibilitychange", this.onHidden);
     window.removeEventListener("keydown", this.onKey);
-    if (!this.rendering) this.releaseResources();
+    if (!this.rendering && !this.preparingIdle && !this.updatingIdle) this.releaseResources();
   }
 }
