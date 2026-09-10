@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Scene,Vector3,Raycaster} from 'three/webgpu';
 import {Sanctuary} from '../src/scene/sanctuary/Sanctuary.js';
-import {ledgeGeometry} from '../src/scene/sanctuary/mesoGeology.js';
+import {ledgeGeometry,surfaceSampler} from '../src/scene/sanctuary/mesoGeology.js';
 import {gullyCenter,gullyDepth,floorHeight} from '../src/scene/sanctuary/geology.js';
 
 test('meso beds are deterministic, bounded and rooted in geology; ravine remains recessed',()=>{
@@ -29,6 +29,12 @@ test('five existing life sites retain counts with embedded roots and geological 
    else assert.ok(offset<a.s[1]);
  }
  assert.equal(life.points.filter(x=>x.s[0]>.02).length,32);
+ s.dispose();
+});
+test('cached geological broadphase matches original Three raycasts exactly',()=>{
+ const s=new Sanctuary(new Scene()),fast=surfaceSampler(s.solids),slow=surfaceSampler(s.solids,{accelerated:false});
+ const points=[...s.meso.map(a=>a.p),...s.life.anchored.filaments.map(a=>a.p)];
+ for(const p of points){const a=fast(p[0],p[2]),b=slow(p[0],p[2]);assert.equal(Boolean(a),Boolean(b));if(a){assert.equal(a.object,b.object);assert.equal(a.instanceId,b.instanceId);assert.deepEqual(a.point,b.point);assert.deepEqual(a.face.normal,b.face.normal);}}
  s.dispose();
 });
 test('sediment shares bounded current, discards pause/reverse debt and never reallocates',()=>{

@@ -16,9 +16,32 @@ export function ledgeGeometry(){
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setIndex(idx);g.computeVertexNormals();return g;
 }
 
-export function surfaceSampler(solids){
+export function surfaceSampler(solids,{accelerated=true}={}){
   const ray=new THREE.Raycaster(),down=new THREE.Vector3(0,-1,0),origin=new THREE.Vector3();
-  return(x,z,maxY=0)=>{ray.set(origin.set(x,maxY,z),down);return ray.intersectObjects(solids,false)[0]||null;};
+  if(!accelerated)return(x,z,maxY=0)=>{ray.set(origin.set(x,maxY,z),down);return ray.intersectObjects(solids,false)[0]||null;};
+  // Measured startup hot path: InstancedMesh.raycast retested every instance
+  // for every root. Cache static world AABBs and test only supporting columns.
+  // This changes neither mesh data nor ray intersections; no new GPU resources.
+  if(!solids.length)return()=>null;
+  const entries=[],local=new THREE.Matrix4(),proxy=new THREE.Mesh(solids[0].geometry,solids[0].material);
+  for(const object of solids){
+    if(!object.geometry.boundingBox)object.geometry.computeBoundingBox();
+    for(let i=0;i<(object.isInstancedMesh?object.count:1);i++){
+      const matrix=object.matrixWorld.clone();
+      if(object.isInstancedMesh){object.getMatrixAt(i,local);matrix.multiply(local);}
+      entries.push({object,id:object.isInstancedMesh?i:undefined,matrix,box:object.geometry.boundingBox.clone().applyMatrix4(matrix)});
+    }
+  }
+  return(x,z,maxY=0)=>{
+    ray.set(origin.set(x,maxY,z),down);const hits=[];
+    for(const e of entries){
+      if(x<e.box.min.x||x>e.box.max.x||z<e.box.min.z||z>e.box.max.z||maxY<e.box.min.y)continue;
+      proxy.geometry=e.object.geometry;proxy.material=e.object.material;proxy.matrixWorld.copy(e.matrix);
+      const start=hits.length;proxy.raycast(ray,hits);
+      for(let i=start;i<hits.length;i++){hits[i].object=e.object;if(e.id!==undefined)hits[i].instanceId=e.id;}
+    }
+    hits.sort((a,b)=>a.distance-b.distance);return hits[0]||null;
+  };
 }
 
 export function mesoLayout(layout,solids){
