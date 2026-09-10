@@ -178,6 +178,30 @@ test("same renderer receives ocean target then output, restores state on failure
       assert.equal(renders, 0);
       assert.equal(waiting.idleOutput, undefined);
     }
+    // Deferred shader linking may overlap ordinary frames, never output drawing.
+    // Dispose safely before link completion, after it, and during first draw.
+    for (const stage of ['linking','linked','drawing','ready']) {
+      const waiting=new LiveOceanLens(renderer,camera);
+      let link,draw,disposed=0,renders=0;
+      renderer.xr={enabled:false};
+      renderer.compileAsync=()=>new Promise(r=>{link=r;});
+      renderer.renderAsync=()=>{renders++;return stage==='drawing'?new Promise(r=>{draw=r;}):Promise.resolve();};
+      const idle={prepare:async()=>{},sample:(_lens,_st,base)=>base,dispose(){disposed++;}};
+      await waiting.attachIdle(idle,true);
+      assert.equal(renderer.target,null);assert.equal(renderer.toneMapping,THREE.ACESFilmicToneMapping);
+      assert.equal(renders,0);assert.equal(idle.ready,undefined);
+      if(stage==='linking')waiting.dispose();
+      link();await Promise.resolve();
+      if(stage==='linked')waiting.dispose();
+      if(stage==='drawing'||stage==='ready'){
+        const finish=waiting.finishIdlePreparation();
+        if(stage==='drawing'){waiting.dispose();assert.equal(disposed,0);draw();}
+        await finish;
+        if(stage==='ready'){assert.equal(idle.ready,true);waiting.dispose();}
+      }
+      assert.equal(disposed,1);assert.equal(waiting.resourcesReleased,true);
+      assert.equal(renderer.target,null);assert.equal(waiting.idlePreparation,null);
+    }
   } finally {
     globalThis.window = previousWindow;
     globalThis.document = previousDocument;

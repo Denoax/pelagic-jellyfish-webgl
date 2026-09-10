@@ -394,12 +394,12 @@ export class LiveOceanLens {
     this.idle?.dispose();
     this.target.dispose();
   }
-  async attachIdle(idle) {
+  async attachIdle(idle, deferredCompile = false) {
     this.idle = idle;
     this.preparingIdle = true;
     const started = performance.now();
     const previous = this.renderer.getRenderTarget();
-    let scratch;
+    let scratch, pending = false;
     try {
       await idle.prepare();
       if (this.disposed) return;
@@ -407,14 +407,60 @@ export class LiveOceanLens {
       // Compile using the normal output API into a tiny scratch surface.
       scratch = new THREE.RenderTarget(8, 8, {depthBuffer:false});
       this.renderer.setRenderTarget(scratch);
+      if (deferredCompile) {
+        // r175 compileAsync restores its render tree BEFORE awaiting driver
+        // linking. Start it between frames, restore our output state immediately,
+        // and never draw this material until linking has actually completed.
+        this.idleOutput._update();
+        const tone=this.renderer.toneMapping,space=this.renderer.outputColorSpace;
+        let compilation;
+        try {
+          this.renderer.toneMapping=THREE.NoToneMapping;
+          this.renderer.outputColorSpace=THREE.LinearSRGBColorSpace;
+          const quad=this.idleOutput._quadMesh;
+          compilation=this.renderer.compileAsync(quad,quad.camera);
+        } finally {
+          this.renderer.toneMapping=tone;this.renderer.outputColorSpace=space;
+        }
+        const job={scratch,started,complete:false,error:null};
+        this.idlePreparation=job;pending=true;
+        compilation.then(()=>{job.complete=true;this.cancelDisposedIdlePreparation();},error=>{job.error=error;job.complete=true;this.cancelDisposedIdlePreparation();});
+        return;
+      }
       await this.idleOutput.renderAsync();
       if (!this.disposed) idle.ready = true;
     } finally {
       this.renderer.setRenderTarget(previous);
-      scratch?.dispose();
-      idle.prewarmMilliseconds = performance.now() - started;
-      this.preparingIdle = false;
-      if (this.disposed) this.releaseResources();
+      if (!pending) {
+        scratch?.dispose();
+        idle.prewarmMilliseconds = performance.now() - started;
+        this.preparingIdle = false;
+        if (this.disposed) this.releaseResources();
+      }
+    }
+  }
+  cancelDisposedIdlePreparation() {
+    if (!this.disposed || !this.idlePreparation?.complete || this.finishingIdle) return;
+    this.idlePreparation.scratch.dispose();this.idlePreparation=null;
+    this.preparingIdle=false;
+    if (!this.rendering && !this.updatingIdle) this.releaseResources();
+  }
+  async finishIdlePreparation() {
+    const job=this.idlePreparation;
+    if (!job?.complete || this.disposed) return false;
+    this.finishingIdle=true;
+    const previous=this.renderer.getRenderTarget();
+    try {
+      if(job.error)throw job.error;
+      this.renderer.setRenderTarget(job.scratch);
+      await this.idleOutput.renderAsync();
+      if (!this.disposed) this.idle.ready=true;
+      return !this.disposed;
+    } finally {
+      this.renderer.setRenderTarget(previous);job.scratch.dispose();
+      this.idle.prewarmMilliseconds=performance.now()-job.started;
+      this.idlePreparation=null;this.preparingIdle=false;this.finishingIdle=false;
+      if(this.disposed)this.releaseResources();
     }
   }
   attachThermal(thermal) {
@@ -425,6 +471,7 @@ export class LiveOceanLens {
   dispose() {
     if (this.disposed) return;
     this.disposed = true;
+    this.cancelDisposedIdlePreparation();
     window.removeEventListener("pointerdown", this.onDown, true);
     window.removeEventListener("pointermove", this.onMove, true);
     window.removeEventListener("pointerup", this.onUp, true);

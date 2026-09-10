@@ -518,9 +518,10 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
         const prepareIdle = async () => {
           const { OceanIdleGlass } = await import('./glass/OceanIdleGlass.js');
           if (disposed) return;
-          await liveLens.attachIdle(new OceanIdleGlass(renderer));
+          await liveLens.attachIdle(new OceanIdleGlass(renderer), true);
           if (disposed) return;
-          onIdleReady?.(true);
+          // Driver linking continues while ordinary ocean frames render.
+          // Readiness is published only after the serialized valid first draw.
           if (import.meta.env.DEV) window.__OCEAN_IDLE__ = {
             state:()=>liveLens.idle.state(),
             resetCost:()=>{liveLens.idle.cpu.length=0;liveLens.idle.captureCost=true;},
@@ -678,6 +679,9 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
             });
             renderFailures = 0;
             specimen?.rendered();
+            if (liveLens?.idlePreparation?.complete && await liveLens.finishIdlePreparation()) {
+              if (!disposed) onIdleReady?.(true);
+            }
             // Prepare once after a quiet, inexpensive visible frame. This is
             // serialized with the main renderer, never a competing GPU loop.
             // Until ready, App keeps the idle timer disabled.

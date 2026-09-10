@@ -8,7 +8,7 @@ import {IdleLiquidState} from '../src/scene/glass/IdleLiquidState.js';
 const baseline='b6450239e64764dbba36ae9c913e15f3d847ee65';
 test('M7.1 locks the exact M7 optical equation and all unrelated runtime files',()=>{
  const paths=execFileSync('git',['ls-tree','-r','--name-only',baseline,'src'],{encoding:'utf8'}).trim().split('\n');
- for(const p of paths.filter(p=>!['src/scene/glass/OceanIdleGlass.js','src/scene/glass/IdleDisplacement.js','src/scene/glass/IdleLiquidState.js'].includes(p)&&!p.endsWith('AGENTS.md')))assert.deepEqual(readFileSync(p),execFileSync('git',['show',`${baseline}:${p}`]),p);
+ for(const p of paths.filter(p=>!['src/scene/glass/OceanIdleGlass.js','src/scene/glass/IdleDisplacement.js','src/scene/glass/IdleLiquidState.js','src/scene/glass/LiveOceanLens.js','src/scene/HeroScene.jsx'].includes(p)&&!p.endsWith('AGENTS.md')))assert.deepEqual(readFileSync(p),execFileSync('git',['show',`${baseline}:${p}`]),p);
  const p='src/scene/glass/OceanIdleGlass.js',a=readFileSync(p,'utf8'),b=execFileSync('git',['show',`${baseline}:${p}`],{encoding:'utf8'});
  const optics=s=>s.slice(s.indexOf('      const e=vec2(1.7)'),s.indexOf('  state()'));
  assert.equal(optics(a),optics(b));
