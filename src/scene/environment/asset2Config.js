@@ -8,7 +8,7 @@ export const ASSET2=Object.freeze({
  fade:{coreR:.85,geometryR:[1,1.65],cameraR:[1,2.1],belowFloor:[-23,-14]},
  light:{max:1,reuses:'M6 AnimalLight; no new selection or lights',radiusR:.12,gain:3,surfaceGain:1.9},
  particles:{simulation:'approved M2 unchanged',layerBase:[.65,.4,.35],corridorGain:[.25,1.35,.65],corridorRadius:3.5},
- ao:{material:0,gtao:false},shafts:{count:0},
+ ao:{material:.35,gtao:false},shafts:{count:0},
  guide:{retained:false,testedWeight:.12,reason:'no material gain; slightly worse MAE'},
 });
 export function smoothRange(x,a,b){const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);}

@@ -4,6 +4,12 @@
 
 Approved `bce3571b0300ecfe5dc6e5dd45f28a9cda57006e`, isolated baseline worktree, native NVIDIA WebGL2. 130 tests, production build, approved-motion and default-animal parity passed. Reference metrics reproduced; the pack does not define its center/border ROI, so our explicitly documented ROI is used consistently for all three images. Baseline evidence is in `../asset2-evidence/phase-0/` (relative to checkout).
 
+## Phase 4 — grounding
+
+Retained a restrained opaque-only underside/pocket/bedding factor on top of the existing M6 crevice treatment. No per-frame raycasts, geometry changes, AO over animals or global blur. Compared material off/on and GTAO variants; the pinned WebGL2 depth limitation is documented fully in `GTAO_PROTOTYPE.md`. GTAO is rejected, not silently called successful after compilation. Its DEV module is never imported by production.
+
+Matched still and comparison: `../asset2-evidence/phase-4/material-only/frame.png`, `phase-4/comparison/comparison.png`. Floor edge density .06863; dark coverage93.10%; MAE .00677742. Material grounding is subtle and preserves the scan and local reveal; it passes this phase's inexpensive-grounding gate. The broader final reference match, motion sweep and performance gate remain unfinished.
+
 ## Phase 3 — local light hierarchy
 
 One existing M6 light owner is reused; no new lights, selection loop or animal writes. Its bounded surface pickup restores mineral detail locally, with the original scan/relief/pigment retained. Existing ten pinpoints and five colonies are retained, with no new benthic population. M2 snow receives a world-space presentation envelope around a broad diagonal corridor; positions, advection, alpha simulation and wake/activation equations remain byte-identical. The optional guide was removed after its failed value test.

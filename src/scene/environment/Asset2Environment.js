@@ -9,8 +9,9 @@ import {ASSET2 as C} from './asset2Config.js';
 export class Asset2Environment {
  constructor(scene,sanctuary){
   this.scene=scene;this.sanctuary=sanctuary;this.previousBackground=scene.backgroundNode;
-  this.enabled=uniform(1);this.spires=uniform(1);this.atmosphere=uniform(1);this.phase=3;this.cpu=0;this.disposed=false;
+  this.enabled=uniform(1);this.spires=uniform(1);this.atmosphere=uniform(1);this.phase=4;this.cpu=0;this.disposed=false;
   this.haze=uniform(1);this.outer=uniform(1);this.localLight=uniform(1);this.particles=uniform(1);
+  this.materialAO=uniform(1);
   this.cpuSamples=new Float32Array(8192);this.cpuCursor=0;this.cpuCount=0;this.particleSurfaces=[];
   this.group=new THREE.Group();this.group.name='asset2-far-spire-field';scene.add(this.group);
   const bounds=new THREE.Box3();sanctuary.group.updateMatrixWorld(true);
@@ -55,12 +56,16 @@ export class Asset2Environment {
    const pickup=mix(vec3(...C.fog.ambient),vec3(C.light.surfaceGain),reveal);
    // Keep the existing ten biological pinpoints, including their color and
    // activation response. No extra colonies or glow billboard is introduced.
-   const surface=material.name==='rare-local-biological-light'?original:original.mul(pickup);
+   const sheltered=normalWorld.y.smoothstep(-.45,.35).oneMinus();
+   const floorPocket=positionWorld.y.smoothstep(-17,-14.3).oneMinus();
+   const bedding=positionWorld.y.mul(2.2).add(positionWorld.x.mul(.21)).sin().mul(.18).add(.82);
+   const contact=sheltered.mul(floorPocket.mul(.4).add(.6)).mul(bedding).mul(C.ao.material).mul(this.materialAO).oneMinus();
+   const surface=material.name==='rare-local-biological-light'?original:original.mul(pickup).mul(contact);
    const treated=mix(water,surface,transmittance);
    material.colorNode=mix(original,treated,this.atmosphere.mul(Background.depth.smoothstep(.35,.82)));
    this.surfaces.push({material,original});
   }
-  if(import.meta.env?.DEV)window.__ASSET2__={state:()=>this.state(),cost:()=>Array.from(this.cpuSamples.slice(0,this.cpuCount)),resetCost:()=>{this.cpuCount=0;this.cpuCursor=0;},toggle:(name,on)=>{if(name==='spires'){this.spires.value=Number(Boolean(on));this.group.visible=Boolean(on);}if(name==='background')this.enabled.value=Number(Boolean(on));if(name==='atmosphere')this.atmosphere.value=Number(Boolean(on));if(name==='haze')this.haze.value=Number(Boolean(on));if(name==='outer')this.outer.value=Number(Boolean(on));if(name==='light')this.localLight.value=Number(Boolean(on));if(name==='particles')this.particles.value=Number(Boolean(on));}};
+  if(import.meta.env?.DEV)window.__ASSET2__={state:()=>this.state(),cost:()=>Array.from(this.cpuSamples.slice(0,this.cpuCount)),resetCost:()=>{this.cpuCount=0;this.cpuCursor=0;},toggle:(name,on)=>{if(name==='spires'){this.spires.value=Number(Boolean(on));this.group.visible=Boolean(on);}if(name==='background')this.enabled.value=Number(Boolean(on));if(name==='atmosphere')this.atmosphere.value=Number(Boolean(on));if(name==='haze')this.haze.value=Number(Boolean(on));if(name==='outer')this.outer.value=Number(Boolean(on));if(name==='light')this.localLight.value=Number(Boolean(on));if(name==='particles')this.particles.value=Number(Boolean(on));if(name==='ao')this.materialAO.value=Number(Boolean(on));}};
  }
  worldVisibility(p){
   const r=p.xz.sub(vec2(this.center.x,this.center.z)).length().div(this.radius);
@@ -88,7 +93,7 @@ export class Asset2Environment {
  }
  connect(camera,snow,view,reviewContext=null){
   this.camera=camera;this.snow=snow;this.view=view;
-  if(import.meta.env?.DEV)window.__ASSET2__.context=()=>reviewContext;
+  if(import.meta.env?.DEV)window.__ASSET2__.context=()=>({...reviewContext,environment:this});
   const qa=qaCamera(),point=(u,v)=>new THREE.Vector3(u*2-1,1-v*2,.5).unproject(qa).sub(qa.position).normalize().multiplyScalar(20).add(qa.position);
   const a=point(.23,.31),b=point(.59,.50),ab=b.clone().sub(a),length=ab.length();ab.normalize();
   snow?.layers.forEach((layer,i)=>{
