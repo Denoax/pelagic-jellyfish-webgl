@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Mani Marami Milani" />
+  <title>Pelagic technical preprint</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="paper.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Pelagic — Technical Supplement</h1>
+<p class="author">Mani Marami Milani</p>
+<p class="date">2026 · Local publication-review edition</p>
+</header>
+<h1 id="s0.-identity-and-evidence-rules">S0. Identity and evidence
+rules</h1>
+<p>This supplement accompanies the independent Pelagic technical
+preprint. Primary runtime:
+<code>bce3571b0300ecfe5dc6e5dd45f28a9cda57006e</code>. Later
+documentation commits do not change the runtime. Asset2
+<code>99ac8336be832c18230dcadefd815308c6c83c8f</code> remains an
+unapproved experiment. No release, DOI, arXiv submission or peer review
+is implied.</p>
+<p>Three evidence types are kept separate: source-derived diagrams,
+actual browser captures, and capture-free performance measurements. The
+diagrams explain code; they are not screenshots. Video preserves
+observed browser timing and records frame timestamps before encoding. A
+30 fps file does not prove the application rendered 30 unique frames
+each second. Benchmark data is collected without screencasting,
+screenshots or concurrent video encoding.</p>
+<h1 id="s1s12.-motion-catalog">S1–S12. Motion catalog</h1>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>ID</th>
+<th>Subject and claim</th>
+<th>Inspection task</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1</td>
+<td>Approved pulse in specimen view</td>
+<td>Follow several contraction/refill/coast cycles, not one favorable
+silhouette</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>Stateful appendage motion</td>
+<td>Compare body turn with lagging membrane/tentacle history; inspect
+underside</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>Connected activation</td>
+<td>Observe animal response, nearby particulate and decay; do not call
+it a fluid solve</td>
+</tr>
+<tr>
+<td>S4</td>
+<td>Population during camera movement</td>
+<td>Watch changing projected scale and detail, retaining original
+behavior</td>
+</tr>
+<tr>
+<td>S5</td>
+<td>Bubble passage</td>
+<td>Look for moving background distortion through a hero, not merely its
+outline</td>
+</tr>
+<tr>
+<td>S6</td>
+<td>Four authored camera views and Explore</td>
+<td>One world persists through observer changes</td>
+</tr>
+<tr>
+<td>S7</td>
+<td>Sanctuary plume</td>
+<td>Inspect localized discharge, sparse ecology and dark geological
+scale</td>
+</tr>
+<tr>
+<td>S8</td>
+<td>Idle condensation</td>
+<td>Ocean stays alive while the clock forms in the same compositor</td>
+</tr>
+<tr>
+<td>S9</td>
+<td>Contact and merging at normal size</td>
+<td>Surface approach, narrow neck and transfer must be visible without a
+diagnostic zoom</td>
+</tr>
+<tr>
+<td>S10</td>
+<td>Pointer deformation and recovery</td>
+<td>Persistent field remembers input and settles afterward</td>
+</tr>
+<tr>
+<td>S11</td>
+<td>Minute change</td>
+<td>Changed cells retract and reconnect; unchanged digits retain their
+place</td>
+</tr>
+<tr>
+<td>S12</td>
+<td>Pinch dismissal</td>
+<td>Throat narrows and separates before optical presentation
+disappears</td>
+</tr>
+</tbody>
+</table>
+<p>Every clip has a JSON record containing SHA, backend, browser,
+viewport, drawing buffer, DPR, camera state, seed, simulation time,
+duration, observed source rate, encoded rate and capture tool path.
+Master videos and frame timestamps are staged outside normal Git. The
+small committed gallery and manifest point to local-review assets until
+a future release is actually authorized. No invented remote video URL is
+used.</p>
+<h1 id="s13.-numerical-and-timing-interpretation">S13. Numerical and
+timing interpretation</h1>
+<p>The paper’s fixed-step values belong to different accumulators, not
+one global physics solve. Tissue uses 1/60 s with bounded admission; the
+journey follower uses 1/240 s; idle admits at most three 1/60 s steps
+per update. Main-route locomotion uses its own bounded delta and
+exponential factors. Therefore the whole application is not bitwise
+frame-rate independent merely because several subsystems use fixed
+steps.</p>
+<p>The current field’s analytical ambient expression is divergence-free
+before local effects. Its envelopes, drift and speed clamp invalidate a
+general incompressibility claim. The word “wake” names a visual
+disturbance seeded by motion/pulse observations, not a solved vorticity
+field. The secondary thrust window supplies a perceptual rhythm inspired
+by biology without estimating real pressure or efficiency.</p>
+<p>The liquid field’s velocity clamp precedes the queued event impulse.
+Its final displacement remains clamped, and edges are attenuated.
+Reporting only the first clamp as a bound on every intermediate would be
+inaccurate. Similarly, the implicit field normal uses differences at a
+1.7-pixel spacing without dividing by that spacing. It is an authored
+optical normal, not a numerically convergent measurement of a physical
+height derivative.</p>
+<h1 id="s14.-historical-negative-results">S14. Historical negative
+results</h1>
+<p>These are development records, not controlled comparisons against
+other research systems. The evidence links point to the relevant
+versioned records; their original local-review URLs are not reproduction
+dependencies.</p>
+<h2 id="n1.-camera-ownership">N1. Camera ownership</h2>
+<p><strong>Hypothesis:</strong> independent camera position,
+point-of-interest and safety corrections could keep moving animals
+attractively framed. <strong>Implementation:</strong> earlier camera
+experiments combined multiple correction sources. <strong>Observed
+failure:</strong> the author rejected overdirected/janky travel.
+<strong>Replacement:</strong> bounded input progress and baked
+position/quaternion tracks. <strong>Evidence:</strong> the M5/M5.2
+history and current
+<code>JourneyController</code>/<code>CameraTrack</code>.
+<strong>Conclusion boundary:</strong> this explains an ownership
+decision; no unsupported jerk reduction or isolated performance
+percentage is published.</p>
+<h2 id="n2.-giant-analytic-lens">N2. Giant analytic lens</h2>
+<p><strong>Hypothesis:</strong> one large analytic lens would clearly
+demonstrate live refraction. <strong>Implementation:</strong> the M3
+development lens used a world-space ellipsoid and the real scene target.
+<strong>Observed failure:</strong> technical bending was accepted before
+the large dark-disc presentation was artistically accepted.
+<strong>Replacement:</strong> a brief passage of sparse refractive hero
+bubbles with cheaper ambient films. <strong>Evidence:</strong> M3 review
+history and <code>BubblePopulation</code>. <strong>Conclusion
+boundary:</strong> the optical architecture survived; rejecting the
+presentation does not mean analytic refraction failed.</p>
+<h2 id="n3.-bright-repetitive-geology">N3. Bright repetitive
+geology</h2>
+<p><strong>Hypothesis:</strong> larger shelf masses and broad color
+zones would clarify the abyss. <strong>Observed failure:</strong>
+successive M6 reviews found flat, bright or repetitive slabs.
+<strong>Replacement:</strong> connected meso geology, darker mineral
+response, restrained highlights and deterministic silhouette variation.
+<strong>Evidence:</strong> M6.4–M6.6 reports and
+<code>shelfSilhouettes</code>/<code>materials</code>. <strong>Conclusion
+boundary:</strong> the result is an art-directed basalt garden, not a
+photogrammetric geological reconstruction or physically measured
+material.</p>
+<h2 id="n4.-separate-idle-renderer">N4. Separate idle renderer</h2>
+<p><strong>Hypothesis:</strong> a transparent independent idle canvas
+could supply a liquid clock over a moving ocean. <strong>Observed
+limitation:</strong> that canvas did not contain the live ocean color to
+refract. <strong>Replacement:</strong> M7 integrates topology and field
+deformation into the existing live-ocean optical output.
+<strong>Evidence:</strong> historical <code>IdleGlassScene.jsx</code>,
+current <code>IdleScreen.jsx</code>, <code>OceanIdleGlass</code> and
+<code>LiveOceanLens</code>. <strong>Conclusion boundary:</strong> the
+old file is retained history, not the active architecture; no second
+ocean is maintained.</p>
+<h2 id="n5.-invalid-pointer-versus-idle-corruption">N5. Invalid pointer
+versus idle corruption</h2>
+<p><strong>Initial hypothesis:</strong> idle return damaged dynamic
+geometry. <strong>Investigation:</strong> strict QA identified malformed
+synthetic pointer events lacking finite spatial coordinates before the
+symptom appeared. <strong>Correction:</strong> finite spatial-input
+validation at the boundary, not sanitizing final geometry.
+<strong>Evidence:</strong> M6.6.1 input/idle-return test history and
+guarded pointer path. <strong>Conclusion boundary:</strong> this does
+not prove every context-loss or frozen-tab case is fixed. It
+demonstrates why the first non-finite input matters more than the
+eventual renderer symptom.</p>
+<h2 id="n6.-asset2-optional-gtao-not-the-publication-runtime">N6. Asset2
+/ optional GTAO — not the publication runtime</h2>
+<p><strong>Hypothesis:</strong> material grounding and a narrowly scoped
+GTAO experiment could improve a background reference match without
+changing approved subjects. <strong>Implementation:</strong> a
+review-only environment pass and a separate QA-only AO prototype using
+the pinned scene depth. <strong>Observed failure:</strong> the first
+shader adapter had a depth-fetch type mismatch; the corrected prototype
+compiled but returned identity AO. Depth readback showed no useful
+variation. The installed WebGL multisample fallback resolves color with
+<code>COLOR_BUFFER_BIT</code> only.</p>
+<p><strong>Evidence:</strong> Asset2 <code>GTAO_PROTOTYPE.md</code> at
+documentation commit
+<code>b4ca42faa3b80e465d39995ebb0537a2aa948148</code>; its retained
+range/readback record. The main image-metric improvement was about
+1.47%, not the requested 30%. Pooled phases improved only about 0.55%,
+with an adverse phase retained. <strong>Replacement:</strong> the
+candidate retained material-space approximation, not GTAO.
+<strong>Conclusion boundary:</strong> those timings do not measure
+useful AO. Asset2 is not approved and is excluded from primary
+publication frames and fresh results.</p>
+<h1 id="s15.-optical-information-boundary">S15. Optical information
+boundary</h1>
+<p>The clean ocean color is real and current. This establishes live
+image distortion, not complete ray transport. The following limits
+remain:</p>
+<ul>
+<li>Transparent tissue generally writes no depth; its visible color is
+already composited with other layers.</li>
+<li>Opaque-depth masking is coded, but useful depth resolution is
+backend- dependent. The pinned NVIDIA WebGL MSAA issue is not repaired
+by publication.</li>
+<li>A bounded virtual image plane supplies missing transparent-layer
+depth.</li>
+<li>Offscreen color cannot be recovered; border fades and displacement
+caps reduce artifacts rather than reconstruct it.</li>
+<li>Overlapping bubble/thermal/idle contributions sample one clean
+source. They do not trace nested refractions through each other’s
+outputs.</li>
+<li>Idle thickness is a scalar field with an artistic normal. It is not
+a watertight three-dimensional liquid volume.</li>
+</ul>
+<h1 id="s16.-reproduction-and-fresh-results">S16. Reproduction and fresh
+results</h1>
+<p>Follow the root reproducibility guide, lockfile and publication
+manifest. Build before running the packaging test. Benchmark tools
+record raw frame intervals and summary statistics; they never rename
+those intervals GPU time. Tables in the primary paper are derived from
+<code>results/benchmark.json</code>. Historical milestone numbers remain
+separate.</p>
+<p>Browser-generated desktop/narrow/portrait input is not physical
+device testing. The publication does not claim Safari, Firefox, hardware
+WebGPU or mobile validation absent a named record. The legacy full-ocean
+WebGPU problem remains outside this publication task. Existing runtime
+source is held byte-identical.</p>
+<h1 id="s17.-licensing-and-authorship">S17. Licensing and
+authorship</h1>
+<p>Author: <strong>Mani Marami Milani</strong>. Codex/OpenAI assistance
+covered implementation, audit, writing and tooling under the author’s
+direction. Original code is MIT; original paper, diagrams, documentation
+and project-generated media are CC BY 4.0. Third-party exceptions remain
+controlling and are enumerated in asset provenance and retained notices.
+External reference artwork is not copied into this supplement.
+Preparation of a source archive does not assert arXiv submission, DOI
+assignment, acceptance or peer review.</p>
+</body>
+</html>

@@ -1,0 +1,570 @@
+{
+  "runtimeSha": "bce3571b0300ecfe5dc6e5dd45f28a9cda57006e",
+  "files": [
+    {
+      "path": ".openai/hosting.json",
+      "bytes": 31,
+      "sha256": "d532abb65cf9ae20634b464d954cb4a08a0de9f3cd3cdf7f9c3ec8948826d947"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 67658,
+      "sha256": "b144f7370c383c386d0306a04eeb0c148de78bc65f88c453618b3b7e0d95ec81"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1156,
+      "sha256": "e5092874093b8bce64a39ab8ab672b5b5ec420ec207db25aa4f9aaa4983c5c2a"
+    },
+    {
+      "path": "public/assets/generated/abyssal-jellyfish-icon-v1.webp",
+      "bytes": 5832,
+      "sha256": "e3520688a6616eaafb57071a4763e56833e195f94d663902bf9cda161e2748cd"
+    },
+    {
+      "path": "public/assets/generated/abyssal-jellyfish-poster-v1.webp",
+      "bytes": 64704,
+      "sha256": "6216542797f98b604a366f7a00fd66572c7089bdad64d9dede361cd2d3695e9e"
+    },
+    {
+      "path": "public/assets/models/README.md",
+      "bytes": 1721,
+      "sha256": "3a2b3c11139e2baf60c165966a4f533f632ccd0470dfc60f38646e318a3e1226"
+    },
+    {
+      "path": "public/assets/models/polyhaven/moon_rock_02/moon_rock_02.bin",
+      "bytes": 78928,
+      "sha256": "3ba6af10eebb46347e4e0c9d3e2a836d1328525d9d47e82b798a13d9ca2b216f"
+    },
+    {
+      "path": "public/assets/models/polyhaven/moon_rock_02/moon_rock_02_1k.gltf",
+      "bytes": 2782,
+      "sha256": "fada2419ab6de440c24081bf06545f37c41c3d4f8bb57fc4d1ba45bdb35baf5d"
+    },
+    {
+      "path": "public/assets/models/polyhaven/moon_rock_02/textures/moon_rock_02_arm_1k.jpg",
+      "bytes": 10268,
+      "sha256": "bcbbee6993c878fc38b13ca2e8f4c855f2e1818fa67178425510fa8c24f59a63"
+    },
+    {
+      "path": "public/assets/models/polyhaven/moon_rock_02/textures/moon_rock_02_diff_1k.jpg",
+      "bytes": 10352,
+      "sha256": "2c7f2bd0ff6b8771e3c14c60b6015d07123429f5bc29ae8279d6f824c986e2d9"
+    },
+    {
+      "path": "public/assets/models/polyhaven/moon_rock_02/textures/moon_rock_02_nor_gl_1k.jpg",
+      "bytes": 41972,
+      "sha256": "11b2ae5ae42ff4a68800dfb217e7595f76f2bb5c67882ca7462434176e6ee37d"
+    },
+    {
+      "path": "public/assets/models/polyhaven/rock_07/rock_07.bin",
+      "bytes": 468936,
+      "sha256": "e4a532a6d6cf4a08c288f501b790f32cba0528136a29959ce774c3cd39369e7e"
+    },
+    {
+      "path": "public/assets/models/polyhaven/rock_07/rock_07_1k.gltf",
+      "bytes": 2979,
+      "sha256": "efcc2dcaa133ff8ad5c865dc2135772e8f5dbc83fa38db2ee2cf25382436b6e6"
+    },
+    {
+      "path": "public/assets/models/polyhaven/rock_07/textures/rock_07_arm_1k.jpg",
+      "bytes": 17037,
+      "sha256": "66e68d9a232eaae5e8388943eb66ea77d4b7b17f8127f0cd3f3d7f95608e6b89"
+    },
+    {
+      "path": "public/assets/models/polyhaven/rock_07/textures/rock_07_diff_1k.jpg",
+      "bytes": 42478,
+      "sha256": "747cf6f56a83b312d3725658e37933f35f5b092c7c79908aa90db90461ebdab1"
+    },
+    {
+      "path": "public/assets/models/polyhaven/rock_07/textures/rock_07_nor_gl_1k.jpg",
+      "bytes": 54178,
+      "sha256": "872c82f1aff53c31d2b38e9cd4962f38aea9df0def2b4edbb7e7c023ef97dd94"
+    },
+    {
+      "path": "public/assets/models/polyhaven/rock_09/rock_09.bin",
+      "bytes": 286592,
+      "sha256": "780c37d6fc11ca3a01c3763535ef883908b6007271a46bd446d2289ded820751"
+    },
+    {
+      "path": "public/assets/models/polyhaven/rock_09/rock_09_1k.gltf",
+      "bytes": 2745,
+      "sha256": "636e57eb0090889627da18edaec202ff9f65f83101b94f91b7da4d21dc080ab9"
+    },
+    {
+      "path": "public/assets/models/polyhaven/rock_09/textures/rock_09_arm_1k.jpg",
+      "bytes": 21617,
+      "sha256": "5e4aa049055e8d1f36f4acf965b471f4370fc839c6a533bf35994792144d0627"
+    },
+    {
+      "path": "public/assets/models/polyhaven/rock_09/textures/rock_09_diff_1k.jpg",
+      "bytes": 33473,
+      "sha256": "1d348ac59cb47ba740abd63143c41e8052f6b4cfa9f6d8ab96fe81b6fc1751b5"
+    },
+    {
+      "path": "public/assets/models/polyhaven/rock_09/textures/rock_09_nor_gl_1k.jpg",
+      "bytes": 59662,
+      "sha256": "f189ea3963dbce2027baf70cc19035b1a6f8ca502b28678d0d15db8d772ca645"
+    },
+    {
+      "path": "public/assets/models/smithsonian-acropora-palmata.glb",
+      "bytes": 1829132,
+      "sha256": "9be105ac8297b6f3ab9f56c96953468e261aabbb3f5b8c01e203fb7c40e194f0"
+    },
+    {
+      "path": "public/assets/models/smithsonian-diploria.glb",
+      "bytes": 2483864,
+      "sha256": "0534e023664d201e4661f97dd79e2f1c3d42cf4ee8b88f600e2e73b339f17286"
+    },
+    {
+      "path": "public/assets/models/smithsonian-pocillopora.glb",
+      "bytes": 3055216,
+      "sha256": "e9b658c193ec39b0559e461753f8fe5e3db65426b16d7d5a498540f25c9d0737"
+    },
+    {
+      "path": "public/assets/projects/portfolio-gravity.jpg",
+      "bytes": 82554,
+      "sha256": "8f54365c46f1c40cabb374e57bef873e984779c50cf2d948a8b59f63ecae8560"
+    },
+    {
+      "path": "scripts/prepare-sites-build.mjs",
+      "bytes": 910,
+      "sha256": "b6a6adaa4fab3234676116dd1c9cb6611275ab9d92dd26f5bf402393e3744bf6"
+    },
+    {
+      "path": "src/App.jsx",
+      "bytes": 2642,
+      "sha256": "70fd4cebbdf880bb20551e6b196b4fb8867279c26221c7e4bc7e33b054ce9990"
+    },
+    {
+      "path": "src/content/site.js",
+      "bytes": 3311,
+      "sha256": "c18ad20bf442efefb0d0050d23ee0f2d94df752ec4f9de2e73c1f6647cbc6b06"
+    },
+    {
+      "path": "src/core/useIdleScreen.js",
+      "bytes": 2950,
+      "sha256": "660a4dd669aea91dfac93faef91998979ac38bf2113c1d7a4a5192c52e1a6a8d"
+    },
+    {
+      "path": "src/core/useMotionPreference.js",
+      "bytes": 857,
+      "sha256": "1b444cdf57f2a09aba8265b9d4ce6c22f314ff0e49a7fa640f7c90b1a0ca93d9"
+    },
+    {
+      "path": "src/main.jsx",
+      "bytes": 553,
+      "sha256": "6e31e94f247f62076e2678e959ee190674e4cdf9fe6bbe40a1788d788c7b51e4"
+    },
+    {
+      "path": "src/scene/FreeParticleDrift.js",
+      "bytes": 4389,
+      "sha256": "b015a307d617d627075647f572450e8cd1608f697116ccdc66846bdbc9c2bb3c"
+    },
+    {
+      "path": "src/scene/HeroScene.jsx",
+      "bytes": 32943,
+      "sha256": "0c5ece24a12fef2904b3e664203a197628e7c2761ef7d1ec5f008c3e69fac008"
+    },
+    {
+      "path": "src/scene/IdleGlassScene.jsx",
+      "bytes": 14627,
+      "sha256": "bbd802d53690ededb84c250557b5070a4cf7eb904c389a9c01e6a5b8af89325a"
+    },
+    {
+      "path": "src/scene/JellySchoolDirector.js",
+      "bytes": 13357,
+      "sha256": "e02c348499f3fc5b96cec2b5508bf9fdca54084e8b63057a1d3eba4ad7764588"
+    },
+    {
+      "path": "src/scene/LivingAppendages.js",
+      "bytes": 64662,
+      "sha256": "ba0296ab3ef1912842809ab0271c4ff864c74eb17f07ff457ea219c1acc9291b"
+    },
+    {
+      "path": "src/scene/PelagicCameraRig.js",
+      "bytes": 12917,
+      "sha256": "bdedfca0158dbe5b1b19f570c57ad16c8004e665993d7079a6655f20790df0fe"
+    },
+    {
+      "path": "src/scene/PelagicEnvironment.js",
+      "bytes": 23690,
+      "sha256": "31ef22ae62aed696d034804969a9548fbd4ff690f8272623206d7a63422c9a9c"
+    },
+    {
+      "path": "src/scene/ReefEnvironment.js",
+      "bytes": 13446,
+      "sha256": "061a963ab41b2b013f55399bcc55003d9d631d89648c4a37257d59a3ce2e11d2"
+    },
+    {
+      "path": "src/scene/SoftParticles.js",
+      "bytes": 2933,
+      "sha256": "b3bc62604e7a8ef7bd2b98c103dfecf64a3066fabb34a8e4249709bbd55e5ea7"
+    },
+    {
+      "path": "src/scene/anatomy/AGENTS.md",
+      "bytes": 819,
+      "sha256": "8f286a9efe0060a4b898b54a15a4bb27ebbc3f3d07f0f6c0379309287486efa1"
+    },
+    {
+      "path": "src/scene/anatomy/mantle.js",
+      "bytes": 2884,
+      "sha256": "30d4c65305e19acc127587ba4f27e4eae0e9d25dd9c1bcb8895af152ea2b43d4"
+    },
+    {
+      "path": "src/scene/camera/CameraTrack.js",
+      "bytes": 4116,
+      "sha256": "10411613d4e35ae77884518aeb96420dd2b5d86160603463276361073f6005e1"
+    },
+    {
+      "path": "src/scene/camera/JourneyController.js",
+      "bytes": 3008,
+      "sha256": "2974517ada7ac5796097176757c2459005d6c630b5780b7dff2d9c69d2e836c4"
+    },
+    {
+      "path": "src/scene/camera/ViewController.js",
+      "bytes": 13387,
+      "sha256": "0cd13ae32836bd0de51dc03f7a2892f9627c0e6843bae02a3c27a83fb0c280c6"
+    },
+    {
+      "path": "src/scene/camera/directions.js",
+      "bytes": 1501,
+      "sha256": "6d0f07a922abbc1b9a63df60763058726d8ec2dd38129423fc1dd917910039af"
+    },
+    {
+      "path": "src/scene/camera/viewPreferences.js",
+      "bytes": 1106,
+      "sha256": "bc307e1ab7282663cb521a722dbec839d3d5458940a737a6d00a416cea395b43"
+    },
+    {
+      "path": "src/scene/dev/SpecimenPreview.js",
+      "bytes": 4851,
+      "sha256": "b7827eb562ffb46298a1b283195f53ecafdf277690339b7297e1549eb95c6345"
+    },
+    {
+      "path": "src/scene/dev/camera/CameraLab.js",
+      "bytes": 10014,
+      "sha256": "b2686a258afec1b619f526efcd4bdb0d25b8f5a71e5c4b52b160b7438c9bec4b"
+    },
+    {
+      "path": "src/scene/dev/camera/CameraTrack.js",
+      "bytes": 120,
+      "sha256": "2ee7fb84b4300e8cbcee03e5d99eb5c1566bea12366028578f858f1e9fe58c6f"
+    },
+    {
+      "path": "src/scene/dev/camera/directions.js",
+      "bytes": 44,
+      "sha256": "c69633d4c9883941bb32c5b7373ca44a2470a8da084fd909ec2b35ea720b0845"
+    },
+    {
+      "path": "src/scene/glass/AGENTS.md",
+      "bytes": 1517,
+      "sha256": "d534e3f711ba75bbe9a1c4ca54fe8c770eadd4828c65c7a4e114ff5def6bc3d2"
+    },
+    {
+      "path": "src/scene/glass/BubblePassage.js",
+      "bytes": 11100,
+      "sha256": "e63ec22e3f5e23b958ab8082747bf4859d78c7510980f5c2ac40aab7f9345d62"
+    },
+    {
+      "path": "src/scene/glass/BubblePopulation.js",
+      "bytes": 6477,
+      "sha256": "fcab999135e127466ef93bc2e4a731afaf4626034c448bc5e5760041acf71f25"
+    },
+    {
+      "path": "src/scene/glass/IdleDisplacement.js",
+      "bytes": 5452,
+      "sha256": "fabc5b63947e9a2470bcfc27941db3d9e8105f8265007038a6325eec5eda8c87"
+    },
+    {
+      "path": "src/scene/glass/IdleLiquidState.js",
+      "bytes": 2184,
+      "sha256": "fa20e69670accaa0b43dd3ad3a4b4d5fc47b86b9700c4a2c6ea9aa5407837005"
+    },
+    {
+      "path": "src/scene/glass/LensDeformation.js",
+      "bytes": 1474,
+      "sha256": "4eec9aa3fd6ff38b4b379f2ae934c5245db487a1500e8f99a79f4bae02bd7289"
+    },
+    {
+      "path": "src/scene/glass/LiquidChoreography.js",
+      "bytes": 3695,
+      "sha256": "5844d7c7e10d23aaea3bb54491d9103ec3dee4bd767c22e4e659f900357148e5"
+    },
+    {
+      "path": "src/scene/glass/LiveOceanLens.js",
+      "bytes": 19118,
+      "sha256": "e2c3b0b44d02b7139bba5aa5c03dd680bdd17a1337ea4f4bf7b8421eac9d26f7"
+    },
+    {
+      "path": "src/scene/glass/OceanIdleGlass.js",
+      "bytes": 14446,
+      "sha256": "1a295aee239fe0a41309fe783eac9a1231825bef46b1c90bdee2071838d2f38d"
+    },
+    {
+      "path": "src/scene/jellyMotion.js",
+      "bytes": 1827,
+      "sha256": "2f277c9d476cdc32021ba72ba2c31b6da7f50113734a49e0b60c1cdf01c818a4"
+    },
+    {
+      "path": "src/scene/materials/AGENTS.md",
+      "bytes": 899,
+      "sha256": "e71ef855c360d468bc111943903e2ff1fda2e0da9c4a4a11865d734c02648059"
+    },
+    {
+      "path": "src/scene/materials/BioluminescenceMap.js",
+      "bytes": 2190,
+      "sha256": "2812ea816900e050357903e6cd296e0b5d73a34f89cfa7e89adb8461b79e391d"
+    },
+    {
+      "path": "src/scene/materials/JellyTissue.js",
+      "bytes": 4066,
+      "sha256": "121f921710ff179c4df84a3520cf3146b92f56c3a6cc33449e471805a9f5ecc4"
+    },
+    {
+      "path": "src/scene/ocean/AGENTS.md",
+      "bytes": 894,
+      "sha256": "b87d38eb1e07ef7394507db3d73a161f74d02560a948228f0d88517f9eef300f"
+    },
+    {
+      "path": "src/scene/ocean/ConnectedOcean.js",
+      "bytes": 4523,
+      "sha256": "e79269bd6d61278e0533149fd210d3a426bf170ff0c3e26f5e3655e60eea556f"
+    },
+    {
+      "path": "src/scene/ocean/CurrentField.js",
+      "bytes": 4985,
+      "sha256": "98075c993290920545a46905dc3121c4eaa8ea61db221dc9df076051795a5bb1"
+    },
+    {
+      "path": "src/scene/ocean/OceanSnow.js",
+      "bytes": 3878,
+      "sha256": "99eb48cb1a38c5253bb87ded37ce835638589c6a989ec6eb0a253a4a6a36238b"
+    },
+    {
+      "path": "src/scene/population/Importance.js",
+      "bytes": 2221,
+      "sha256": "9272c61b57a703386b67323e13e6a55cc8a827a839d3586c1ca5bdb38b6b4f38"
+    },
+    {
+      "path": "src/scene/population/PassageWarmup.js",
+      "bytes": 1938,
+      "sha256": "f13133dea8012292a7933aeb1f423639e97571dc4f275a7cfc8eb7298a10a732"
+    },
+    {
+      "path": "src/scene/population/PopulationAnimal.js",
+      "bytes": 10699,
+      "sha256": "d02041b045586c052e1263fe74cdf665b4f98e716bb43e77ba0e0971f0c35536"
+    },
+    {
+      "path": "src/scene/population/PopulationDetail.js",
+      "bytes": 7265,
+      "sha256": "c8ab0eb63b6a04dc11112e015b815abc9b5d669ad095cdd2e98bc7b4b91d7360"
+    },
+    {
+      "path": "src/scene/population/SurfaceLod.js",
+      "bytes": 12774,
+      "sha256": "de5e325256dd0ff61b7f4e44fd289e1bf9fd5d21f214bab839abc1a6bbb86056"
+    },
+    {
+      "path": "src/scene/population/TubeSampling.js",
+      "bytes": 2866,
+      "sha256": "a8a8aa1b0e1e02885bbeaaa24c0e1183f0098cad171e51d11e1be45a6a97f1a8"
+    },
+    {
+      "path": "src/scene/sanctuary/BenthicSediment.js",
+      "bytes": 2132,
+      "sha256": "b8300b9e2ed95d6db4e7384ad5409a32a818cab391194b82a34f80bdd23c29d3"
+    },
+    {
+      "path": "src/scene/sanctuary/Sanctuary.js",
+      "bytes": 6718,
+      "sha256": "856e993d21171f5f770883d1a204427a083dd2b97bfeae68527832cc32ce188f"
+    },
+    {
+      "path": "src/scene/sanctuary/ThermalShimmer.js",
+      "bytes": 4272,
+      "sha256": "ba6fbee670463fcd4514a564bf6e79e499d86d35e18824de7d26975970a0942a"
+    },
+    {
+      "path": "src/scene/sanctuary/VentDynamics.js",
+      "bytes": 6421,
+      "sha256": "8dea911c1e7baf9b14e511db7e87884abee71a2f816e5973d9fa7f6bab58c092"
+    },
+    {
+      "path": "src/scene/sanctuary/VentLife.js",
+      "bytes": 7477,
+      "sha256": "9012c266db140e81052b87693905dd9816a39a50bdef7f5a2ebfda3693e83bdc"
+    },
+    {
+      "path": "src/scene/sanctuary/VentParticles.js",
+      "bytes": 4125,
+      "sha256": "390354f3de4199ebed971fe3a3a7e47378add82cb08d4e7094ecd1f9a7948cb5"
+    },
+    {
+      "path": "src/scene/sanctuary/atmosphere.js",
+      "bytes": 1110,
+      "sha256": "ad8d022c25267c0ae685c35c02121639707620b2a9a3b17899c700e5a1fdeaed"
+    },
+    {
+      "path": "src/scene/sanctuary/geology.js",
+      "bytes": 8894,
+      "sha256": "5a48dbe5b6d2d303d1f5db35053d56686773e50e3201fa6a5ec7406b47b78cc4"
+    },
+    {
+      "path": "src/scene/sanctuary/materials.js",
+      "bytes": 9235,
+      "sha256": "f606c04db1bae88184c2929469e848e49d17e6cfb3e5a25899172c7de50607fa"
+    },
+    {
+      "path": "src/scene/sanctuary/mesoGeology.js",
+      "bytes": 5568,
+      "sha256": "01bf8867cd1fa16137f5805c625f49054b7ee144d83939d8699ba3d74410ea7b"
+    },
+    {
+      "path": "src/scene/sanctuary/shelfSilhouettes.js",
+      "bytes": 5329,
+      "sha256": "45574eafe5ae712f0d481150e3ed5bda08fd976978505e359615a68bd7ee1e76"
+    },
+    {
+      "path": "src/styles.css",
+      "bytes": 8830,
+      "sha256": "ad5c7fff637592c5a98df337d9330d864430052e870336d5b45e3c7dae78c96b"
+    },
+    {
+      "path": "src/ui/Header.jsx",
+      "bytes": 2294,
+      "sha256": "7b634928b91ac80a9a61a1a12cf6567b63f768b65c081e2a0013c24002cb56c9"
+    },
+    {
+      "path": "src/ui/IdleScreen.jsx",
+      "bytes": 501,
+      "sha256": "354321317ba112cf800cd641063cdb59e0adcb754f903603aa371a5081f41298"
+    },
+    {
+      "path": "src/ui/ViewMenu.jsx",
+      "bytes": 9154,
+      "sha256": "866cee53c6528ef65ce2021c0b666d364c8f959b58233ae33bb896fa8640d73d"
+    },
+    {
+      "path": "src/ui/view-menu.css",
+      "bytes": 5381,
+      "sha256": "17e7ca6a65144bcb50f66d8ad178ce1b7eb1addf9f5c91343fcb24e2813f44fe"
+    },
+    {
+      "path": "src/vendor/aurelia/app.js",
+      "bytes": 8969,
+      "sha256": "55866f62f74bcc3b5d07a1068c613f6579698c0efd9a91eb6c894778cd1431fd"
+    },
+    {
+      "path": "src/vendor/aurelia/background.js",
+      "bytes": 3678,
+      "sha256": "9498544c04c04f826e4dd2d9a69b0362b66807830fe12dcc1b15c5d50382fb4b"
+    },
+    {
+      "path": "src/vendor/aurelia/common/noise.js",
+      "bytes": 140,
+      "sha256": "ba110765fef140123736fe3cd9011427f5fd5d984113f7a28b85a1b664ea8a1b"
+    },
+    {
+      "path": "src/vendor/aurelia/conf.js",
+      "bytes": 421,
+      "sha256": "c5f461af8e40158db6cbccd43b193e391a77148eaaf9b6319ea36cba44dad385"
+    },
+    {
+      "path": "src/vendor/aurelia/godrays.js",
+      "bytes": 5358,
+      "sha256": "641cc909f7e03c24a151567838a36761802762890936c419ffdda071ea7d96af"
+    },
+    {
+      "path": "src/vendor/aurelia/info.js",
+      "bytes": 1326,
+      "sha256": "c7c20a9e0612858f08d72d11af9000eaeb526994613565e562447d64a72a6ad7"
+    },
+    {
+      "path": "src/vendor/aurelia/lights.js",
+      "bytes": 539,
+      "sha256": "132ea1735d4a460db307924397f0ad5a69bb71064e54d73882e7732e2b372962"
+    },
+    {
+      "path": "src/vendor/aurelia/medusa.js",
+      "bytes": 3986,
+      "sha256": "720443d4640351a741ec60a6e413e39f525a6896c7055483219caef71e7b3c78"
+    },
+    {
+      "path": "src/vendor/aurelia/medusaBell.js",
+      "bytes": 1184,
+      "sha256": "e7d73d0eba9aaca4ba7f5e45444a8a29311fafa37d8af2870a00ace99eb5f4e5"
+    },
+    {
+      "path": "src/vendor/aurelia/medusaBellBottom.js",
+      "bytes": 5708,
+      "sha256": "6227580d7ffc2c8889f6c778379173762e9fac18435fcdc637f1216aae694519"
+    },
+    {
+      "path": "src/vendor/aurelia/medusaBellFormula.js",
+      "bytes": 1539,
+      "sha256": "a0c97fb4f27b13bd4c7001354d015a6d581dd35dac481ab93d4cbc9958894238"
+    },
+    {
+      "path": "src/vendor/aurelia/medusaBellGeometry.js",
+      "bytes": 9130,
+      "sha256": "66cf3e8df19d39c4eb973d8ecca88c58ab17c69a3d5d84f753e055963451ecfc"
+    },
+    {
+      "path": "src/vendor/aurelia/medusaBellMargin.js",
+      "bytes": 6751,
+      "sha256": "5099c442b03ded0ee34d934ea1cf2a95079ecaec738efaced760ea6e2275dad1"
+    },
+    {
+      "path": "src/vendor/aurelia/medusaBellPattern.js",
+      "bytes": 4820,
+      "sha256": "0d99e37ee1c8a47c8fca3a0e5b6200e22de7c276abdf88ceb2a4fc7ecd50c6aa"
+    },
+    {
+      "path": "src/vendor/aurelia/medusaBellTop.js",
+      "bytes": 5651,
+      "sha256": "de6db71102bbab514ab337752993b6858d4c15182f1938288963d9ee465d6618"
+    },
+    {
+      "path": "src/vendor/aurelia/medusaOralArms.js",
+      "bytes": 11062,
+      "sha256": "55452569122b8c3ca41e69ff1370dc32169120d96bae931fc8a79d5da3f1b265"
+    },
+    {
+      "path": "src/vendor/aurelia/medusaTentacles.js",
+      "bytes": 7550,
+      "sha256": "ab263ad26358c5af4e32052de54fc92e4ac1369c6270d6b7cc38d3a2f523397e"
+    },
+    {
+      "path": "src/vendor/aurelia/medusaVerletBridge.js",
+      "bytes": 6331,
+      "sha256": "17faf3f428cb1e690b0dc1b8cac6b3cbd14b0f294f3c1ba4af07b6c921f4101f"
+    },
+    {
+      "path": "src/vendor/aurelia/physics/springVisualizer.js",
+      "bytes": 1393,
+      "sha256": "eaa18db07edc0d9ebe787b68a0e24503ea890ab7351d35e8adef72174d18471a"
+    },
+    {
+      "path": "src/vendor/aurelia/physics/verletPhysics.js",
+      "bytes": 7586,
+      "sha256": "2216f0363becde8c12e90c4b85b7949c3a99530ab7e57675fea1b47d5b86681d"
+    },
+    {
+      "path": "src/vendor/aurelia/physics/vertexVisualizer.js",
+      "bytes": 695,
+      "sha256": "bfe96158331afcbc3f4ad29f1cf6dd5791d8446927dedd77ea4953924b6fbc41"
+    },
+    {
+      "path": "src/vendor/aurelia/plankton.js",
+      "bytes": 4288,
+      "sha256": "65ab6289a85fafd10969e0a8cdc8e5aaf82c53d058c580b4c76605873ecf4933"
+    },
+    {
+      "path": "worker/index.js",
+      "bytes": 483,
+      "sha256": "2dd0615a445143933d88d4271f54f5d63ee951421fcd08c5a7617bb09c564389"
+    }
+  ]
+}

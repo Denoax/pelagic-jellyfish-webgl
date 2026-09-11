@@ -13,3 +13,9 @@ dist/
 /audit-*/
 /competitive-audit-*/
 /swarm-audit-*/
+
+# Publication build intermediates; curated PDFs/figures are tracked explicitly.
+/paper/.build/
+/paper/*.log
+/paper/*.aux
+/paper/*.out
