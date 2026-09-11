@@ -1,9 +1,9 @@
 import * as THREE from 'three/webgpu';
 import {floorHeight,seed} from '../sanctuary/geology.js';
 
-// The camera is sampled from the APPROVED Drift endpoint, never changed to fit
+// The camera is sampled from APPROVED Drift progress .55, never changed to fit
 // this environment. These are frozen composition coordinates, not a new track.
-export const QA_POSE=Object.freeze({position:[.3,-3.6,-8.2],quaternion:[-.0784322097552987,.026096253512354825,.0020538196931502704,.9965757150614236],fov:53,aspect:1672/941});
+export const QA_POSE=Object.freeze({progress:.55,time:8,position:[.5642370370370373,-.7495267509677421,-1.5095754305291214],quaternion:[-.017628854191455136,-.019758087781289953,-.00034843464513902993,.9996492985344516],fov:53,aspect:1672/941});
 export const PROFILES=Object.freeze([
  {h:[0,.16,.34,.55,.74,.90,1],r:[.34,.39,.33,.28,.20,.12,.05],x:[0,.02,-.01,.04,.03,.01,0],z:[0,-.01,.02,.02,-.01,.01,0],segments:7},
  {h:[0,.14,.31,.49,.67,.84,1],r:[.54,.60,.52,.47,.38,.27,.11],x:[0,-.03,-.02,.01,.04,.02,0],z:[0,.02,.04,0,-.02,.01,0],segments:9},
@@ -34,10 +34,16 @@ export function fitSpireLayout(){
   // The lower C/D/E regions belong to LOCKED near geology. Fit their background
   // continuation at the terrain-facing mid-depth band rather than inserting
   // a new foreground landmark in front of the approved sanctuary.
-  const baseV=Math.min(rect[3],cluster===5?.67:.70);
-  ray.setFromCamera(new THREE.Vector2(u*2-1,1-baseV*2),camera);
-  let distance=(-15-camera.position.y)/ray.ray.direction.y;
-  for(let i=0;i<5;i++){ray.ray.at(distance,v);distance=(floorHeight(v.x,v.z)-camera.position.y)/ray.ray.direction.y;}
+  // The approved camera clips at48. Fit a submerged base at a useful real
+  // distance first; a rectangle's drawn base is not necessarily the seabed.
+  // The three depth ranges stay real geometry, not a single background card.
+  const desiredDistance=[43,40,37,36,39,44][cluster];let baseV=Math.min(rect[3],.78),distance=Infinity;
+  for(let attempt=0;attempt<160;attempt++){
+   ray.setFromCamera(new THREE.Vector2(u*2-1,1-baseV*2),camera);
+   distance=(-15-camera.position.y)/ray.ray.direction.y;
+   for(let i=0;i<5;i++){ray.ray.at(distance,v);distance=(floorHeight(v.x,v.z)-camera.position.y)/ray.ray.direction.y;}
+   if(distance<=desiredDistance)break;baseV+=.004;
+  }
   ray.ray.at(distance,v);const base=v.clone();base.y-=.8;
   let lo=.5,hi=42;
   for(let i=0;i<40;i++){const h=(lo+hi)/2;v.copy(base).add(new THREE.Vector3(0,h,0)).project(camera);if((1-v.y)*.5>rect[1])lo=h;else hi=h;}

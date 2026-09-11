@@ -31,18 +31,18 @@ export class Asset2Environment {
   const detail=normalWorld.y.max(0).mul(.00025).add(.00010);
   const pigment=vec3(.12,.36,.58).mul(detail);
   // Proxies establish distant scale, never become inspectable near landmarks.
-  const silhouette=d.smoothstep(...C.spires.nearFade).mul(d.smoothstep(...C.spires.extinction).oneMinus()).mul(C.spires.contrast).mul(Background.depth.smoothstep(.35,.82));
+  const silhouette=d.smoothstep(...C.spires.nearFade).mul(d.mul(-C.spires.density).exp()).mul(d.smoothstep(...C.spires.extinction).oneMinus()).mul(C.spires.contrast).mul(Background.depth.smoothstep(...C.journeyDepth));
   // Real alpha fade: a proxy with zero contrast must not write an invisible
   // occluder in front of approved transparent animals. Render these background
   // silhouettes before the approved transparent population, with depth test on.
   this.material.colorNode=pigment;
   const anchor=attribute('asset2Anchor','vec4');
-  const apparentSizeFade=anchor.xyz.distance(cameraPosition).div(anchor.w).smoothstep(1.2,2.2);
-  this.material.opacityNode=silhouette.mul(apparentSizeFade).mul(this.worldVisibility(positionWorld));
+  const approachFade=anchor.xyz.distance(cameraPosition).div(anchor.w).smoothstep(.4,.8);
+  this.material.opacityNode=silhouette.mul(approachFade).mul(this.worldVisibility(positionWorld));
   const o=new THREE.Object3D();
   for(let k=0;k<4;k++){
    const g=spireGeometry(k),items=this.items.filter(a=>a.archetype===k),mesh=new THREE.InstancedMesh(g,this.material,items.length);
-   g.setAttribute('asset2Anchor',new THREE.InstancedBufferAttribute(new Float32Array(items.flatMap(a=>[a.p[0],a.p[1]+a.s[1]*.5,a.p[2],a.s[1]])),4));
+   g.setAttribute('asset2Anchor',new THREE.InstancedBufferAttribute(new Float32Array(items.flatMap(a=>{const y=a.p[1]+a.s[1]*.5;return[a.p[0],y,a.p[2],Math.hypot(a.p[0]-QA_POSE.position[0],y-QA_POSE.position[1],a.p[2]-QA_POSE.position[2])]})),4));
    items.forEach((a,i)=>{o.position.fromArray(a.p);o.scale.fromArray(a.s);o.rotation.set(0,a.r,0);o.updateMatrix();mesh.setMatrixAt(i,o.matrix);});
    mesh.name=`asset2-spire-archetype-${k}`;mesh.renderOrder=-5;mesh.computeBoundingSphere();this.group.add(mesh);this.geometries.push(g);
   }
@@ -63,7 +63,9 @@ export class Asset2Environment {
    const clipFade=distance.smoothstep(...C.fog.clipFade).oneMinus();
    const transmittance=vec3(...C.fog.spectral).mul(distance).mul(density).negate().exp().mul(footprint).mul(clipFade).mul(this.worldVisibility(positionWorld));
    const water=this.radiance(positionWorld.sub(cameraPosition).normalize());
-   const light=sanctuary.light,delta=light.position.sub(positionWorld),distanceToLight=delta.length();
+   // A vertically elongated scattering pool makes the existing animal light
+   // reach the floor without a broad ambient fill or another selected animal.
+   const light=sanctuary.light,delta=light.position.sub(positionWorld),distanceToLight=delta.mul(vec3(1,C.light.verticalScale,1)).length();
    const reveal=distanceToLight.div(this.radius*C.light.radiusR).oneMinus().clamp(0,1).pow(2)
     .mul(light.power).mul(normalWorld.dot(delta.normalize()).max(0).mul(.8).add(.2)).mul(this.localLight).mul(C.light.gain).clamp(0,1);
    const pickup=mix(vec3(...C.fog.ambient),vec3(C.light.surfaceGain),reveal);
@@ -73,9 +75,9 @@ export class Asset2Environment {
    const floorPocket=positionWorld.y.smoothstep(-17,-14.3).oneMinus();
    const bedding=positionWorld.y.mul(2.2).add(positionWorld.x.mul(.21)).sin().mul(.18).add(.82);
    const contact=sheltered.mul(floorPocket.mul(.4).add(.6)).mul(bedding).mul(C.ao.material).mul(this.materialAO).oneMinus();
-   const surface=material.name==='rare-local-biological-light'?original:original.mul(pickup).mul(contact);
+   const surface=material.name==='rare-local-biological-light'?original.mul(C.benthic.presentationGain):original.mul(pickup).mul(contact);
    const treated=mix(water,surface,transmittance);
-   material.colorNode=mix(original,treated,this.atmosphere.mul(Background.depth.smoothstep(.35,.82)));
+   material.colorNode=mix(original,treated,this.atmosphere.mul(Background.depth.smoothstep(...C.journeyDepth)));
    this.surfaces.push({material,original});
   }
   if(import.meta.env?.DEV)window.__ASSET2__={state:()=>this.state(),cost:()=>Array.from(this.cpuSamples.slice(0,this.cpuCount)),resetCost:()=>{this.cpuCount=0;this.cpuCursor=0;},toggle:(name,on)=>{if(name==='spires'){this.spires.value=Number(Boolean(on));this.group.visible=Boolean(on);}if(name==='background')this.enabled.value=Number(Boolean(on));if(name==='atmosphere')this.atmosphere.value=Number(Boolean(on));if(name==='haze')this.haze.value=Number(Boolean(on));if(name==='outer')this.outer.value=Number(Boolean(on));if(name==='light')this.localLight.value=Number(Boolean(on));if(name==='particles')this.particles.value=Number(Boolean(on));if(name==='ao')this.materialAO.value=Number(Boolean(on));if(name==='shafts')this.shafts.value=Number(Boolean(on));if(name==='dither')this.dither.value=Number(Boolean(on));}};
@@ -112,7 +114,7 @@ export class Asset2Environment {
   const light=vec3(...C.shafts.color).mul(shaft).mul(coarse).mul(C.shafts.gain).mul(this.shafts);
   const grain=screenUV.dot(vec2(127.1,311.7)).sin().mul(43758.5453).fract().sub(.5).mul(C.dither.amplitude).mul(this.dither);
   const deep=vec3(...C.abyss.base).add(vec3(...C.abyss.opening).mul(window).mul(coarse).mul(this.haze)).add(light).mul(presence).add(vec3(...C.abyss.void)).add(grain).max(0);
-  return mix(Background.waterRadiance(ray),deep,Background.depth.smoothstep(.35,.82));
+  return mix(Background.waterRadiance(ray),deep,Background.depth.smoothstep(...C.journeyDepth));
  }
  connect(camera,snow,view,reviewContext=null){
   this.camera=camera;this.snow=snow;this.view=view;
@@ -126,11 +128,11 @@ export class Asset2Environment {
    const light=this.sanctuary.light,near=positionWorld.sub(light.position).length().div(this.radius*C.light.radiusR).oneMinus().clamp(0,1).pow(2).mul(light.power);
    const presentation=connector.mul(C.particles.corridorGain[i]).add(C.particles.layerBase[i]).add(near.mul(.35))
     .mul(this.worldVisibility(positionWorld));
-   material.opacityNode=original.mul(mix(1,presentation,this.particles.mul(Background.depth.smoothstep(.35,.82))));
+   material.opacityNode=original.mul(mix(1,presentation,this.particles.mul(Background.depth.smoothstep(...C.journeyDepth))));
    this.particleSurfaces.push({material,original});
   });
  }
- update(elapsed){if(this.disposed)return;const start=performance.now();if(Number.isFinite(elapsed)){this.waterTime.value+=this.lastElapsed===null?0:Math.max(0,Math.min(.05,elapsed-this.lastElapsed));this.lastElapsed=elapsed;}this.group.visible=Boolean(this.spires.value)&&Background.depth.value>.35;this.cpu=performance.now()-start;this.cpuSamples[this.cpuCursor++%this.cpuSamples.length]=this.cpu;this.cpuCount=Math.min(this.cpuCount+1,this.cpuSamples.length);}
+ update(elapsed){if(this.disposed)return;const start=performance.now();if(Number.isFinite(elapsed)){this.waterTime.value+=this.lastElapsed===null?0:Math.max(0,Math.min(.05,elapsed-this.lastElapsed));this.lastElapsed=elapsed;}this.group.visible=Boolean(this.spires.value)&&Background.depth.value>C.journeyDepth[0];this.cpu=performance.now()-start;this.cpuSamples[this.cpuCursor++%this.cpuSamples.length]=this.cpu;this.cpuCount=Math.min(this.cpuCount+1,this.cpuSamples.length);}
  state(){return{phase:this.phase,center:this.center.toArray(),R:this.radius,bounds:this.bounds,instances:this.items.length,batches:4,archetypes:4,anchors:this.anchors,localLights:1,light:{position:this.sanctuary.light.position.value.toArray(),power:this.sanctuary.light.power.value},particleLayers:this.particleSurfaces.length,extraOceanPasses:0,extraTargets:0,cpuMs:this.cpu};}
  dispose(){if(this.disposed)return;this.disposed=true;this.scene.backgroundNode=this.previousBackground;this.surfaces.forEach(({material,original})=>{material.colorNode=original;});this.particleSurfaces.forEach(({material,original})=>{material.opacityNode=original;});this.group.removeFromParent();this.geometries.forEach(g=>g.dispose());this.material.dispose();if(import.meta.env?.DEV)delete window.__ASSET2__;}
 }
