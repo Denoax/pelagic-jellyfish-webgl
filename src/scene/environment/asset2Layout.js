@@ -17,9 +17,9 @@ export function spireGeometry(index){
  // outline exposed in the first matched capture. Four shared meshes only.
  for(let j=0;j<levels;j++)for(let i=0;i<n;i++){
   const base=Math.min(s.h.length-2,Math.floor(j/3)),t=(j-base*3)/3,lerp=a=>a[base]+(a[base+1]-a[base])*t;
-  const a=i/n*Math.PI*2+.09*Math.sin(j*.8+index),shoulder=1+.085*Math.sin(j*2.1+a*2+index);
+  const a=i/n*Math.PI*2+.13*Math.sin(j*.8+index),shoulder=1+.14*Math.sin(j*2.1+a*2+index);
   const r=lerp(s.r)*shoulder*(1+.12*Math.cos(a*3+j*.19+index)+.065*Math.sin(a*5-j*.27));
-  p.push(lerp(s.x)+Math.cos(a)*r,lerp(s.h)+(j===0?0:.01*Math.sin(a*3+j*.5+index)),lerp(s.z)+Math.sin(a)*r);
+  p.push(lerp(s.x)+Math.cos(a)*r,lerp(s.h)+(j===0?0:.025*Math.sin(a*3+j*.5+index)),lerp(s.z)+Math.sin(a)*r);
  }
  for(let j=0;j<levels-1;j++)for(let i=0;i<n;i++){const a=j*n+i,b=j*n+(i+1)%n;indices.push(a,a+n,b,b,a+n,b+n);}
  const bottom=p.length/3;p.push(0,0,0);const top=p.length/3;p.push(s.x.at(-1),1.012,s.z.at(-1));

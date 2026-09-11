@@ -4,6 +4,16 @@
 
 Approved `bce3571b0300ecfe5dc6e5dd45f28a9cda57006e`, isolated baseline worktree, native NVIDIA WebGL2. 130 tests, production build, approved-motion and default-animal parity passed. Reference metrics reproduced; the pack does not define its center/border ROI, so our explicitly documented ROI is used consistently for all three images. Baseline evidence is in `../asset2-evidence/phase-0/` (relative to checkout).
 
+## Phase 5 — bounded polish and cross-view corrections
+
+R1 added three very weak world-anchored analytic shaft envelopes and a static sub-code-value dither; its noise was too visibly mottled. R2 reduced the density modulation and added environmental extinction before the immutable camera far plane (48), ending contrast by46. R3 reduced proxy contrast after the stationary/Explore comparison exposed overly obvious simple profiles.
+
+The actual Explore orbit exposed a further issue: an opaque proxy could visually fade to the water color while still writing depth. R4 gives the four new background batches true alpha, depth-test on/depth-write off, and draws them before approved transparency. R5 adds a static per-instance center/height attribute and bounded distance/height fade, so a large nearby proxy does not become an inspectable foreground landmark. These changes affect ONLY newly added proxies. Their four shared profiles gain slightly less regular shoulders/crowns; existing M6 geology remains byte-identical. The QA framing is not changed.
+
+Final phase stills and all single-component ablations: `../asset2-evidence/phase-5/r5/`. The 20-second-plus Explore pilot clips prompted the correction; final clips replace those pilot paths. There is no additional render target, ocean render, shader-displaced floor, exposure change, animal edit, or full-screen AA/blur. Dither is time-independent and below one display code in ordinary deep water; shafts change by only ±3.5% on an approximately251-second cycle. They do not supply the main atmosphere.
+
+The four uniformly sampled temporal comparisons (14/24/34/44, R2 diagnostic) show a consistently missing reference central-hero energy, not one unlucky chosen frame. The whole-image MAE and center/border targets are NOT called passed. Their explicit hero-composition exception must be judged alongside the unmasked metrics and final motion, not used to brighten/reposition the approved animals. Final lifecycle, performance and visual-review status are reported separately after validation.
+
 ## Phase 4 — grounding
 
 Retained a restrained opaque-only underside/pocket/bedding factor on top of the existing M6 crevice treatment. No per-frame raycasts, geometry changes, AO over animals or global blur. Compared material off/on and GTAO variants; the pinned WebGL2 depth limitation is documented fully in `GTAO_PROTOTYPE.md`. GTAO is rejected, not silently called successful after compilation. Its DEV module is never imported by production.

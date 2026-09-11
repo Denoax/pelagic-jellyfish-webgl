@@ -560,7 +560,7 @@ export class PelagicEnvironment {
       this.distantJellies.update(elapsed, progress, focus, this.reducedMotion);
     }
     this.sanctuary.update(elapsed, progress);
-    this.backgroundPresentation.update();
+    this.backgroundPresentation.update(elapsed);
   }
 
   dispose() {

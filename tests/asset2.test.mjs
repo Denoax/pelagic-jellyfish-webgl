@@ -24,6 +24,7 @@ test('Asset 2: bounded ownership restores original environment nodes and never m
  const snow={layers:[{mesh:{material:pm},position,alpha}]};e.connect(camera,snow,null);
  for(let i=0;i<10000;i++)e.update();assert.ok(e.cpuCount<=8192);assert.deepEqual([...position],[1,2,3]);assert.equal(alpha[0],Math.fround(.4));assert.ok(light.position.value.toArray().every(Number.isFinite));assert.equal(light.power.value,.5);
  assert.equal(e.group.children.length,4);assert.equal(e.state().extraOceanPasses,0);assert.equal(e.state().extraTargets,0);
+ assert.equal(e.material.transparent,true);assert.equal(e.material.depthWrite,false);assert.ok(e.group.children.every(m=>m.renderOrder<0));
  e.dispose();e.dispose();assert.equal(scene.backgroundNode,background);assert.equal(material.colorNode,original);assert.equal(pm.opacityNode,opacity);assert.equal(e.group.parent,null);geometry.dispose();material.dispose();pm.dispose();
 });
 test('Asset 2: every approved runtime source outside the two exact environment seams is byte-identical',()=>{
