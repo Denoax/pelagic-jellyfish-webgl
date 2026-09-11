@@ -1,0 +1,134 @@
+{
+  "version": 1,
+  "reference": "REF_00_ASSET2_ORIGINAL.png",
+  "reference_viewport": [
+    1672,
+    941
+  ],
+  "screen_targets": {
+    "central_haze_center_uv": [
+      0.42,
+      0.42
+    ],
+    "central_haze_radius_uv": [
+      0.38,
+      0.48
+    ],
+    "dark_right_negative_space_min_x": 0.78,
+    "floor_start_y": 0.56,
+    "particle_stream_start_uv": [
+      0.23,
+      0.31
+    ],
+    "particle_stream_end_uv": [
+      0.59,
+      0.5
+    ],
+    "primary_spire_screen_regions": [
+      [
+        0.0,
+        0.15,
+        0.18,
+        0.7
+      ],
+      [
+        0.15,
+        0.23,
+        0.31,
+        0.72
+      ],
+      [
+        0.23,
+        0.44,
+        0.38,
+        0.86
+      ],
+      [
+        0.36,
+        0.48,
+        0.5,
+        0.97
+      ],
+      [
+        0.55,
+        0.46,
+        0.73,
+        0.98
+      ],
+      [
+        0.7,
+        0.2,
+        1.0,
+        0.9
+      ]
+    ]
+  },
+  "luminance_targets": {
+    "median_linear": 0.0029,
+    "p90_linear": 0.0093,
+    "p95_linear": 0.0146,
+    "p99_linear": 0.137,
+    "fraction_below_0_01": 0.91,
+    "fraction_below_0_02": 0.96,
+    "center_border_ratio_target": 5.4,
+    "center_border_ratio_acceptable_review_band": [
+      4.2,
+      6.8
+    ]
+  },
+  "depth_band_visibility": {
+    "near": {
+      "contrast": 1.0,
+      "surface_detail": 1.0,
+      "blue_shift": 0.0
+    },
+    "mid": {
+      "contrast": 0.55,
+      "surface_detail": 0.35,
+      "blue_shift": 0.25
+    },
+    "far": {
+      "contrast": 0.22,
+      "surface_detail": 0.05,
+      "blue_shift": 0.55
+    },
+    "extreme": {
+      "contrast": 0.04,
+      "surface_detail": 0.0,
+      "blue_shift": 0.75
+    }
+  },
+  "world_fade_normalized_to_sanctuary_radius_R": {
+    "core_end": 0.85,
+    "fade_start": 1.0,
+    "fade_end": 1.65,
+    "near_black_end": 2.1,
+    "curve": "1 - smoothstep(fade_start, fade_end, radialDistance/R)^2; multiply with distance extinction"
+  },
+  "recommended_prototypes": {
+    "far_spire_archetypes": 4,
+    "far_spire_instances_initial_range": [
+      24,
+      36
+    ],
+    "shaft_count": [
+      3,
+      5
+    ],
+    "jelly_light_sources_max": 4,
+    "gtao_resolution_scale": 0.5,
+    "gtao_samples_start": 8,
+    "secondary_benthic_microglows": [
+      8,
+      18
+    ],
+    "runtime_lowfreq_guide_opacity_authored_views": [
+      0.08,
+      0.18
+    ],
+    "runtime_lowfreq_guide_opacity_explore": [
+      0.0,
+      0.04
+    ]
+  }
+}
