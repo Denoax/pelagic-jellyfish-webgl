@@ -5,10 +5,26 @@ import {execFileSync} from 'node:child_process';
 import {spireGeometry,fitSpireLayout} from '../src/scene/environment/asset2Layout.js';
 import {asset2Paths,withoutAsset2Seams} from './asset2-scope.mjs';
 import {ASSET2,outerVisibility} from '../src/scene/environment/asset2Config.js';
+import * as THREE from 'three/webgpu';
+import {vec3,uniform} from 'three/tsl';
+import {Asset2Environment} from '../src/scene/environment/Asset2Environment.js';
 const baseline='bce3571b0300ecfe5dc6e5dd45f28a9cda57006e';
 test('Asset 2: atmosphere parameters finite; world fade bounded and monotonic',()=>{
  const inspect=o=>{for(const v of Object.values(o)){if(typeof v==='number')assert.ok(Number.isFinite(v));else if(v&&typeof v==='object')inspect(v);}};inspect(ASSET2);
  let previous=1;for(let r=0;r<4;r+=.005){const v=outerVisibility(r);assert.ok(v>=0&&v<=previous);previous=v;}assert.equal(outerVisibility(.85),1);assert.equal(outerVisibility(2.1),0);assert.equal(ASSET2.light.max,1);
+});
+test('Asset 2: bounded ownership restores original environment nodes and never mutates simulation buffers',()=>{
+ const scene=new THREE.Scene(),background=vec3(.01);scene.backgroundNode=background;
+ const group=new THREE.Group();scene.add(group);const material=new THREE.MeshBasicNodeMaterial(),original=vec3(.1);material.colorNode=original;
+ const geometry=new THREE.BoxGeometry(192,4,192),mesh=new THREE.Mesh(geometry,material);mesh.position.set(0,-15,-28);group.add(mesh);
+ const light={position:uniform(new THREE.Vector3(1,-12,-25)),power:uniform(.5),activation:uniform(0)};
+ const sanctuary={group,solids:[mesh],light};
+ const e=new Asset2Environment(scene,sanctuary),camera=new THREE.PerspectiveCamera();
+ const position=new Float32Array([1,2,3]),alpha=new Float32Array([.4]),pm=new THREE.MeshBasicNodeMaterial(),opacity=uniform(.4);pm.opacityNode=opacity;
+ const snow={layers:[{mesh:{material:pm},position,alpha}]};e.connect(camera,snow,null);
+ for(let i=0;i<10000;i++)e.update();assert.ok(e.cpuCount<=8192);assert.deepEqual([...position],[1,2,3]);assert.equal(alpha[0],Math.fround(.4));assert.ok(light.position.value.toArray().every(Number.isFinite));assert.equal(light.power.value,.5);
+ assert.equal(e.group.children.length,4);assert.equal(e.state().extraOceanPasses,0);assert.equal(e.state().extraTargets,0);
+ e.dispose();e.dispose();assert.equal(scene.backgroundNode,background);assert.equal(material.colorNode,original);assert.equal(pm.opacityNode,opacity);assert.equal(e.group.parent,null);geometry.dispose();material.dispose();pm.dispose();
 });
 test('Asset 2: every approved runtime source outside the two exact environment seams is byte-identical',()=>{
  const paths=execFileSync('git',['ls-tree','-r','--name-only',baseline,'src'],{encoding:'utf8'}).trim().split('\n');

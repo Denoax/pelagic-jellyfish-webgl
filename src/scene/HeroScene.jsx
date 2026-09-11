@@ -424,7 +424,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
         }
         // M6 observes the approved animal/current state; no feedback into it.
         environment.sanctuary.connect(connectedOcean?.field, appendages, app.camera);
-        environment.backgroundPresentation.connect(app.camera, connectedOcean?.snow, cameraLab);
+        environment.backgroundPresentation.connect(app.camera, connectedOcean?.snow, cameraLab, import.meta.env.DEV ? { renderer, lens: () => liveLens } : null);
         environment.sanctuary.plume?.applyWater(Background);
         if (import.meta.env.DEV) window.__SANCTUARY_REVIEW__ = {
           state: () => environment.sanctuary.state(),

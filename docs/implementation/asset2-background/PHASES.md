@@ -4,6 +4,12 @@
 
 Approved `bce3571b0300ecfe5dc6e5dd45f28a9cda57006e`, isolated baseline worktree, native NVIDIA WebGL2. 130 tests, production build, approved-motion and default-animal parity passed. Reference metrics reproduced; the pack does not define its center/border ROI, so our explicitly documented ROI is used consistently for all three images. Baseline evidence is in `../asset2-evidence/phase-0/` (relative to checkout).
 
+## Phase 3 — local light hierarchy
+
+One existing M6 light owner is reused; no new lights, selection loop or animal writes. Its bounded surface pickup restores mineral detail locally, with the original scan/relief/pigment retained. Existing ten pinpoints and five colonies are retained, with no new benthic population. M2 snow receives a world-space presentation envelope around a broad diagonal corridor; positions, advection, alpha simulation and wake/activation equations remain byte-identical. The optional guide was removed after its failed value test.
+
+R1 matched floor-edge density .06861 versus reference .07910 and baseline .09118. Dark coverage 93.11%. Overall low-frequency MAE .00677776; the full-image final gate remains open. Actual 31.96-second near-floor browser clip (960 screencast frames), samples and extracted contact sheet: `../asset2-evidence/phase-3/local-reveal/`. The same local light moves between observed animals and fades through owner changes; no broad constant floor fill or permanent glow halo is added. Off/on stills include `light-off.png`, `particles-off.png`, `on.png`. This passes the local-light phase gate. Final reference matching and grounding remain unfinished.
+
 ## Phase 2 — atmosphere / visibility
 
 Five matched drafts were inspected. A uniform increase in the blue opening made the comparison worse (r3 relative MAE .928); this was rejected. R5 uses two broad world-space density scales, environment-only opaque extinction and a darker ambient floor. The original M6 material graphs, pigment, grain and pooled illumination remain intact underneath the wrapper. No animal fog node is changed. The exposed horizon is attenuated before the actual square basin edge, and Explore below the open basin now loses environmental contrast smoothly instead of exposing its underside. Radial fade uses the geometry-derived R; an additional actual-footprint fade is necessary because the square's edge is nearer than its corner-derived R.

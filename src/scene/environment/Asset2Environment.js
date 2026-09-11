@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import {Fn,uniform,vec2,vec3,mix,texture,positionWorld,cameraPosition,normalWorld,mx_noise_float} from 'three/tsl';
+import {Fn,uniform,vec2,vec3,mix,positionWorld,cameraPosition,normalWorld,mx_noise_float} from 'three/tsl';
 import {Background} from '../../vendor/aurelia/background.js';
 import {QA_POSE,qaCamera,spireGeometry,fitSpireLayout} from './asset2Layout.js';
 import {ASSET2 as C} from './asset2Config.js';
@@ -9,11 +9,9 @@ import {ASSET2 as C} from './asset2Config.js';
 export class Asset2Environment {
  constructor(scene,sanctuary){
   this.scene=scene;this.sanctuary=sanctuary;this.previousBackground=scene.backgroundNode;
-  this.enabled=uniform(1);this.spires=uniform(1);this.atmosphere=uniform(1);this.phase=2;this.cpu=0;this.disposed=false;
-  this.haze=uniform(1);this.outer=uniform(1);this.guideWeight=uniform(0);this.guideAngle=uniform(0);
-  this.guide=new THREE.TextureLoader().load(new URL('../../../docs/reference/asset2/RUNTIME_GUIDE_asset2_lowfreq_atmosphere_256x144.png',import.meta.url).href);
-  this.guide.colorSpace=THREE.SRGBColorSpace;this.guide.generateMipmaps=false;this.guide.minFilter=THREE.LinearFilter;
-  this.cameraForward=new THREE.Vector3();
+  this.enabled=uniform(1);this.spires=uniform(1);this.atmosphere=uniform(1);this.phase=3;this.cpu=0;this.disposed=false;
+  this.haze=uniform(1);this.outer=uniform(1);this.localLight=uniform(1);this.particles=uniform(1);
+  this.cpuSamples=new Float32Array(8192);this.cpuCursor=0;this.cpuCount=0;this.particleSurfaces=[];
   this.group=new THREE.Group();this.group.name='asset2-far-spire-field';scene.add(this.group);
   const bounds=new THREE.Box3();sanctuary.group.updateMatrixWorld(true);
   for(const m of sanctuary.solids)bounds.expandByObject(m);
@@ -51,11 +49,18 @@ export class Asset2Environment {
    const density=nearFloor.mul(C.fog.nearFloor).add(C.fog.base).add(distance.smoothstep(...C.fog.farRange).mul(C.fog.far));
    const transmittance=distance.mul(density).negate().exp().mul(footprint).mul(this.worldVisibility(positionWorld));
    const water=this.radiance(positionWorld.sub(cameraPosition).normalize());
-   const treated=mix(water,original.mul(vec3(...C.fog.ambient)),transmittance);
+   const light=sanctuary.light,delta=light.position.sub(positionWorld),distanceToLight=delta.length();
+   const reveal=distanceToLight.div(this.radius*C.light.radiusR).oneMinus().clamp(0,1).pow(2)
+    .mul(light.power).mul(normalWorld.dot(delta.normalize()).max(0).mul(.8).add(.2)).mul(this.localLight).mul(C.light.gain).clamp(0,1);
+   const pickup=mix(vec3(...C.fog.ambient),vec3(C.light.surfaceGain),reveal);
+   // Keep the existing ten biological pinpoints, including their color and
+   // activation response. No extra colonies or glow billboard is introduced.
+   const surface=material.name==='rare-local-biological-light'?original:original.mul(pickup);
+   const treated=mix(water,surface,transmittance);
    material.colorNode=mix(original,treated,this.atmosphere.mul(Background.depth.smoothstep(.35,.82)));
    this.surfaces.push({material,original});
   }
-  if(import.meta.env?.DEV)window.__ASSET2__={state:()=>this.state(),toggle:(name,on)=>{if(name==='spires'){this.spires.value=Number(Boolean(on));this.group.visible=Boolean(on);}if(name==='background')this.enabled.value=Number(Boolean(on));if(name==='atmosphere')this.atmosphere.value=Number(Boolean(on));if(name==='haze')this.haze.value=Number(Boolean(on));if(name==='outer')this.outer.value=Number(Boolean(on));if(name==='guide')this.guideWeight.value=on?.12:0;}};
+  if(import.meta.env?.DEV)window.__ASSET2__={state:()=>this.state(),cost:()=>Array.from(this.cpuSamples.slice(0,this.cpuCount)),resetCost:()=>{this.cpuCount=0;this.cpuCursor=0;},toggle:(name,on)=>{if(name==='spires'){this.spires.value=Number(Boolean(on));this.group.visible=Boolean(on);}if(name==='background')this.enabled.value=Number(Boolean(on));if(name==='atmosphere')this.atmosphere.value=Number(Boolean(on));if(name==='haze')this.haze.value=Number(Boolean(on));if(name==='outer')this.outer.value=Number(Boolean(on));if(name==='light')this.localLight.value=Number(Boolean(on));if(name==='particles')this.particles.value=Number(Boolean(on));}};
  }
  worldVisibility(p){
   const r=p.xz.sub(vec2(this.center.x,this.center.z)).length().div(this.radius);
@@ -78,14 +83,26 @@ export class Asset2Environment {
   // toe clips extremely small inputs; measure the displayed result, not numbers.
   const visitor=cameraPosition.xz.sub(vec2(this.center.x,this.center.z)).length().div(this.radius);
   const presence=mix(1,visitor.smoothstep(C.fade.coreR,C.fade.cameraR[1]).oneMinus().pow(2).mul(cameraPosition.y.smoothstep(...C.fade.belowFloor)),this.outer);
-  const projected=ray.dot(vec3(...this.forward.toArray())).max(.001);
-  const guideUV=vec2(ray.dot(vec3(...this.right.toArray())).div(projected.mul(1.77)).add(.5),ray.dot(vec3(...this.up.toArray())).div(projected.mul(.996)).add(.5));
-  const guide=texture(this.guide,guideUV).rgb.mul(this.guideWeight).mul(this.guideAngle);
-  const deep=vec3(...C.abyss.base).add(vec3(...C.abyss.opening).mul(window).mul(coarse).mul(this.haze)).add(guide).mul(presence).add(vec3(...C.abyss.void));
+  const deep=vec3(...C.abyss.base).add(vec3(...C.abyss.opening).mul(window).mul(coarse).mul(this.haze)).mul(presence).add(vec3(...C.abyss.void));
   return mix(Background.waterRadiance(ray),deep,Background.depth.smoothstep(.35,.82));
  }
- connect(camera,snow,view){this.camera=camera;this.snow=snow;this.view=view;}
- update(){if(this.disposed)return;const start=performance.now();this.group.visible=Boolean(this.spires.value)&&Background.depth.value>.35;if(this.camera){this.camera.getWorldDirection(this.cameraForward);const dot=this.cameraForward.dot(this.forward),t=THREE.MathUtils.clamp((dot-Math.cos(35*Math.PI/180))/(Math.cos(12*Math.PI/180)-Math.cos(35*Math.PI/180)),0,1);this.guideAngle.value=t*t*(3-2*t)*(this.view?.free?.25:1);}this.cpu=performance.now()-start;}
- state(){return{phase:this.phase,center:this.center.toArray(),R:this.radius,bounds:this.bounds,instances:this.items.length,batches:4,archetypes:4,anchors:this.anchors,extraOceanPasses:0,extraTargets:0,cpuMs:this.cpu};}
- dispose(){if(this.disposed)return;this.disposed=true;this.scene.backgroundNode=this.previousBackground;this.surfaces.forEach(({material,original})=>{material.colorNode=original;});this.group.removeFromParent();this.geometries.forEach(g=>g.dispose());this.material.dispose();this.guide.dispose();if(import.meta.env?.DEV)delete window.__ASSET2__;}
+ connect(camera,snow,view,reviewContext=null){
+  this.camera=camera;this.snow=snow;this.view=view;
+  if(import.meta.env?.DEV)window.__ASSET2__.context=()=>reviewContext;
+  const qa=qaCamera(),point=(u,v)=>new THREE.Vector3(u*2-1,1-v*2,.5).unproject(qa).sub(qa.position).normalize().multiplyScalar(20).add(qa.position);
+  const a=point(.23,.31),b=point(.59,.50),ab=b.clone().sub(a),length=ab.length();ab.normalize();
+  snow?.layers.forEach((layer,i)=>{
+   const material=layer.mesh.material,original=material.opacityNode,p=positionWorld.sub(vec3(...a.toArray())),axis=vec3(...ab.toArray());
+   const along=p.dot(axis).clamp(0,length),across=p.sub(axis.mul(along)).length();
+   const connector=across.div(C.particles.corridorRadius).pow(2).negate().exp();
+   const light=this.sanctuary.light,near=positionWorld.sub(light.position).length().div(this.radius*C.light.radiusR).oneMinus().clamp(0,1).pow(2).mul(light.power);
+   const presentation=connector.mul(C.particles.corridorGain[i]).add(C.particles.layerBase[i]).add(near.mul(.35))
+    .mul(this.worldVisibility(positionWorld));
+   material.opacityNode=original.mul(mix(1,presentation,this.particles.mul(Background.depth.smoothstep(.35,.82))));
+   this.particleSurfaces.push({material,original});
+  });
+ }
+ update(){if(this.disposed)return;const start=performance.now();this.group.visible=Boolean(this.spires.value)&&Background.depth.value>.35;this.cpu=performance.now()-start;this.cpuSamples[this.cpuCursor++%this.cpuSamples.length]=this.cpu;this.cpuCount=Math.min(this.cpuCount+1,this.cpuSamples.length);}
+ state(){return{phase:this.phase,center:this.center.toArray(),R:this.radius,bounds:this.bounds,instances:this.items.length,batches:4,archetypes:4,anchors:this.anchors,localLights:1,light:{position:this.sanctuary.light.position.value.toArray(),power:this.sanctuary.light.power.value},particleLayers:this.particleSurfaces.length,extraOceanPasses:0,extraTargets:0,cpuMs:this.cpu};}
+ dispose(){if(this.disposed)return;this.disposed=true;this.scene.backgroundNode=this.previousBackground;this.surfaces.forEach(({material,original})=>{material.colorNode=original;});this.particleSurfaces.forEach(({material,original})=>{material.opacityNode=original;});this.group.removeFromParent();this.geometries.forEach(g=>g.dispose());this.material.dispose();if(import.meta.env?.DEV)delete window.__ASSET2__;}
 }
