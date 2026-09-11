@@ -11,7 +11,7 @@ for(const name of scenes){
   await b.send('Emulation.setVisibleSize',{width:1280,height:900});
   await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`(${installOceanCompletionProbe.toString()})();let seed=7183;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};`});
   await b.navigate(`${base}?renderer=webgl&idle=${name==='idle'?2:300}&qaDebug&asset2qa=1&direction=B`);
-  await b.ev(`window.__CAMERA_LAB__.seek(${name==='journey'?.28:1})`);
+  await b.ev(`window.__CAMERA_LAB__.seek(${name==='journey'?.28:name==='qa-pose'?.55:1})`);
   await sleep(8000);
   if(name.startsWith('explore'))await b.ev(`(()=>{const v=window.__CAMERA_LAB__;v.select('explore');v.camera.position.set(${name==='explore-near'?'7,-11,-15':'240,-11,-28'});v.camera.lookAt(${name==='explore-near'?'2,-15,-28':'280,-11,-50'});v.camera.updateMatrixWorld()})()`);
   if(name==='sanctuary')await b.ev(`window.__CAMERA_LAB__.select('D')`);

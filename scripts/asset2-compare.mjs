@@ -38,6 +38,11 @@ function inspect(file,name){
 const r=inspect(reference,'reference'),b=inspect(baseline,'baseline'),c=inspect(candidate,'candidate');
 const error=x=>x.low.reduce((sum,v,i)=>sum+Math.abs(v-r.low[i]),0)/r.low.length;
 const result={method:{linear:'IEC sRGB to linear; Rec709 luma',lowFrequency:'64x36 linear-luma area means; no normalization',center:[.25,.25,.75,.75],border:'outer 10% on all edges',edges:'linear-luma Sobel magnitude > .006 in bottom third'},reference:r.metrics,baseline:{...b.metrics,lowFrequencyMAE:error(b)},candidate:{...c.metrics,lowFrequencyMAE:error(c)},relativeError:error(c)/error(b)};
+// Diagnostic only: do not mask the official whole-image metric or normalize
+// away the approved animal's mismatch with the art reference. Attribute error
+// to bright reference cells separately so the exception is measurable.
+const partition=x=>{let bright=0,dark=0,brightCells=0;for(let i=0;i<r.low.length;i++){const e=Math.abs(x.low[i]-r.low[i]);if(r.low[i]>.025){bright+=e;brightCells++;}else dark+=e;}return{brightCells,totalCells:r.low.length,brightReferenceError:bright/r.low.length,remainingError:dark/r.low.length,brightShare:bright/(bright+dark)};};
+result.diagnosticErrorPartition={threshold:.025,notAnAcceptanceMetric:true,baseline:partition(b),candidate:partition(c)};
 writeFileSync(`${out}/metrics.json`,JSON.stringify(result,null,2));
 ff(['-y','-i',reference,'-i',baseline,'-i',candidate,'-filter_complex',`[0:v]scale=836:470[a];[1:v]scale=836:470[b];[2:v]scale=836:470[c];[a][b][c]vstack=inputs=3`,'-frames:v','1','-threads','1',`${out}/comparison.png`]);
 console.log(JSON.stringify(result,null,2));
