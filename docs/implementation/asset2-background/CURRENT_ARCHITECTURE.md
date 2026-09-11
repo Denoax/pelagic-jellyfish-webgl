@@ -86,6 +86,15 @@ additional inverse-distance attenuation. Texture/uniform state is reused.
 
 ## Fixed comparison pose
 
+**Historical initial pose below is superseded.** Final calibration uses the
+existing Drift track at **progress .55, time 8**, position
+`[0.5642370370370373, -0.7495267509677421, -1.5095754305291214]`, quaternion
+`[-0.017628854191455136, -0.019758087781289953, -0.00034843464513902993, 0.9996492985344516]`.
+FOV53, seed7183, 1672×941, DPR1, exposure .94 and bloom-off remain unchanged.
+A baseline-only progress sweep and then a baseline-only animation-phase sweep
+found this closer to the supplied landmark scale and right-side animal.
+All initial endpoint evidence is retained as historical evidence; see PHASES.
+
 `ASSET2_QA_POSE`: approved **Drift (B), progress 1**, FOV53, aspect1672/941.
 Position **[0.3, −3.6, −8.2]**; quaternion
 **[−0.0784322097552987, 0.026096253512354825, 0.0020538196931502704,

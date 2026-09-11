@@ -1,5 +1,35 @@
 # Asset 2 phase journal
 
+## Final closure — runtime99ac833
+
+R10 is the final runtime. All earlier phase metrics below are historical and
+must not be quoted as the calibrated final result. Final source/baseline/candidate
+comparison is `final/comparison/`; current original candidate is
+`phase-5/r10/on.png`. Full metrics and adverse temporal results are in REPORT.md.
+
+Eight final browser clips run30.26–31.50seconds each. ClipC/E inspection framing
+was corrected after its pilot missed the intended floor/outward subject; pilots
+remain under `final/capture-framing-pilots/`. No runtime/camera-track change for
+that evidence correction. Corrected C shows the moving local floor pool; E
+shows the core receding into atmosphere/void without an exposed authored edge.
+M7entry/settled/return, portrait, all Views and near/side/above/below Explore
+checks are retained. Nine R10 ablations and optional-method rejection evidence
+remain accessible through the local review page.
+
+135tests/build/two exact animal-motion parity suites pass.20idle cycles,
+hidden-tab recovery, five modes, three resize sizes, native resource and actual
+render-pass audits pass.54review images load,8videos play and the QA launcher
+reaches its documented pose. Twelve capture-free baseline/candidate benchmark
+runs are complete; no>50ms intervals, candidate median16.7ms in all six scenes.
+No runtime edit was made after those measurements.
+
+Qualitative world gate: ready for Mani's review with the explicit numeric
+guardrail exception, **not** a claim that the image-error target passed.
+Whole-image improvement is only1.47% for the main fixed frame and.55% pooled
+across four phases. The larger approved population, constrained near geometry
+and approximate scattering remain transparent compromises. Do not start a new
+beauty pass/M8 or publish this result without a new instruction.
+
 ## Phase 0 — exact baseline
 
 Approved `bce3571b0300ecfe5dc6e5dd45f28a9cda57006e`, isolated baseline worktree, native NVIDIA WebGL2. 130 tests, production build, approved-motion and default-animal parity passed. Reference metrics reproduced; the pack does not define its center/border ROI, so our explicitly documented ROI is used consistently for all three images. Baseline evidence is in `../asset2-evidence/phase-0/` (relative to checkout).

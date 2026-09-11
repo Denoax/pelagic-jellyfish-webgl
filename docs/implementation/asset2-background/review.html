@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Asset 2 — local evidence</title>
+<style>
+body{margin:0;background:#080d13;color:#d5dfe8;font:16px/1.55 system-ui}main{max-width:1480px;margin:auto;padding:32px}h1,h2{font-weight:500}h2{margin-top:56px}a{color:#8bc8f2}p{max-width:1000px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}figure{margin:0;background:#0e1721;padding:12px}img,video{display:block;width:100%;height:auto}figcaption{font-size:14px;margin:8px 0 0}.note{border-left:3px solid #7ea9ca;padding:12px 20px;background:#101b26}pre{white-space:pre-wrap;font-size:13px}summary{cursor:pointer} @media(max-width:800px){main{padding:16px}.grid,.pair{grid-template-columns:1fr}}
+</style>
+<main>
+<h1>Asset 2 · background-only evidence</h1>
+<p>Local development evidence. No public deployment. The approved animals, camera, currents and M7 glass remain owned by their original systems.</p>
+<p><a href="/?renderer=webgl&idle=300&direction=B">Open the interactive candidate</a> · <a href="http://127.0.0.1:5221/?renderer=webgl&idle=300&direction=B">Exact approved M7 baseline</a> · <a href="REPORT.md">Full report</a></p>
+<p><button id="fixed">Open repeatable QA pose</button> <span id="fixed-status"></span> · This local-only launcher selects the existing Drift55% pose at time8.</p>
+<p class="note">The final QA pose is the existing Drift track at55%, time8, after an explicit calibration sweep corrected the initially selected endpoint. The approved population still differs from the reference. Full-image metrics retain that mismatch; no exposure normalization, replacement animal or painted hero is used. Motion evidence below is actual Brave/WebGL2 browser capture, not an offline render.</p>
+<h2>Immutable reference / approved M7 / candidate</h2><div class="grid" id="main"></div>
+<h2>Luminance and structure</h2><p>Same pixels and explicit linear-sRGB luminance method. False color saturates at linear luminance .025. Blurred previews use sigma28; numerical MAE uses 64×36 linear area means.</p><div id="metrics-images"></div><details><summary>Measured fixed-frame metrics</summary><pre id="metrics"></pre></details>
+<h2>Environment ablations</h2><p>All-off comparisons below disable one component at a time. Animals, camera and rendering settings are unchanged.</p><div id="ablations"></div>
+<h2>Actual browser motion</h2><p>Use full screen to inspect boundaries, stationary stability, local light and the live M7 refraction. Capture timing is not used for performance claims.</p><div class="pair" id="motion"></div>
+<h2>All approved Views and unrestricted Explore</h2><div class="grid" id="views"></div>
+<h2>Optional methods rejected</h2><p>The low-frequency guide added no useful depth and slightly worsened MAE. GTAO compiled after adapting the installed API, but the sampled multisample depth remained uniformly 1: its output was identity white, not working occlusion. No renderer patch, second ocean render or MSAA reduction was retained.</p><div class="pair" id="rejected"></div>
+<h2>Temporal composition check</h2><p>Four evenly spaced states at the calibrated existing pose. The review state at8 was selected from the approved-baseline-only calibration for the closest right-side animal presentation, before inspecting these candidate comparisons. All four phases and unmasked metrics are retained.</p><div class="pair" id="temporal"></div>
+</main>
+<script type="module">
+const evidence='/@fs/home/mani/dev/jellyfish-studio/asset2-evidence/';
+const reference='/docs/reference/asset2/REF_00_ASSET2_ORIGINAL.png';
+document.getElementById('fixed').onclick=()=>{const w=window.open('/?renderer=webgl&idle=300&qaDebug&asset2qa=1&direction=B&hold=8','_blank');const label=document.getElementById('fixed-status');if(!w){label.textContent='Allow the local review popup to continue.';return;}label.textContent='Loading approved camera fixture…';let tries=0;const timer=setInterval(()=>{if(w.closed||tries++>600){clearInterval(timer);label.textContent='The review window was closed or did not become ready.';return;}if(w.__CAMERA_LAB__&&w.__SPECIMEN__){w.__CAMERA_LAB__.seek(.55);clearInterval(timer);label.textContent='QA window ready. Console __SPECIMEN__.resume() resumes ordinary motion.';}},100);};
+function figure(root,src,label,video=false){const f=document.createElement('figure'),m=document.createElement(video?'video':'img');m.src=src;if(video){m.controls=true;m.preload='metadata';m.playsInline=true;}else{m.alt=label;m.loading='lazy';}const c=document.createElement('figcaption');c.textContent=label;f.append(m,c);document.getElementById(root).append(f);}
+figure('main',reference,'REF_00 · immutable art source');figure('main',evidence+'temporal/calibrated-baseline/t8.png','Approved M7 · Drift55%, time8');figure('main',evidence+'phase-5/r10/on.png','Candidate · same camera, resolution and time8');
+for(const kind of ['gray','blur','false-color','edges']){const row=document.createElement('div');row.className='grid';row.id=kind;document.getElementById('metrics-images').append(row);for(const name of ['reference','baseline','candidate'])figure(kind,evidence+`final/comparison/${name}-${kind}.png`,`${name} · ${kind}`);}
+fetch(evidence+'final/comparison/metrics.json').then(r=>r.json()).then(m=>document.getElementById('metrics').textContent=JSON.stringify(m,null,2));
+for(const name of ['spires','haze','atmosphere','outer','light','particles','ao','shafts','dither']){const row=document.createElement('div');row.className='pair';row.id=name;document.getElementById('ablations').append(row);figure(name,evidence+`phase-5/r10/${name}-off.png`,`${name} OFF`);figure(name,evidence+'phase-5/r10/on.png',`${name} ON`);}
+const clips={A:'Stationary QA · 30 seconds',B:'Descent into the deep',C:'Moving animal light over the floor',D:'Explore orbit · real and proxy spires',E:'Explore · core to fade to void',F:'Approved M7 · entry, settled, exit',G:'Reverse journey',H:'390×844 portrait motion'};
+for(const[id,label]of Object.entries(clips))figure('motion',evidence+`final/motion-${id}/motion.mp4`,`${id} · ${label}`,true);
+for(const[id,label]of Object.entries({A:'Documentary',B:'Drift',C:'Intimate',D:'Deep',near:'Explore near',between:'Between spires',above:'Above sanctuary','below-camera':'Below authored camera',side:'Proxy side view',fade:'Outer fade',abyss:'Abyss',void:'Void',under:'Below basin'}))figure('views',evidence+`final/views/${id}.png`,label);
+figure('views',evidence+'final/motion-H/start.png','Portrait 390×844');figure('views',evidence+'final/motion-F/settled.png','M7 settled over final environment');
+figure('rejected',evidence+'phase-2/ablation/guide-on.png','Rejected guide prototype');figure('rejected',evidence+'phase-4/ao-proof-r2/C.png','Rejected GTAO · identity, not effective occlusion');
+for(const t of [4,8,12,16])figure('temporal',evidence+`temporal/calibrated-comparison-t${t}/comparison.png`,`Reference / baseline / candidate · time ${t}`);
+</script></html>
