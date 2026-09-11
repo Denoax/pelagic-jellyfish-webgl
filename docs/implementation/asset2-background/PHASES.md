@@ -4,6 +4,14 @@
 
 Approved `bce3571b0300ecfe5dc6e5dd45f28a9cda57006e`, isolated baseline worktree, native NVIDIA WebGL2. 130 tests, production build, approved-motion and default-animal parity passed. Reference metrics reproduced; the pack does not define its center/border ROI, so our explicitly documented ROI is used consistently for all three images. Baseline evidence is in `../asset2-evidence/phase-0/` (relative to checkout).
 
+## Phase 2 — atmosphere / visibility
+
+Five matched drafts were inspected. A uniform increase in the blue opening made the comparison worse (r3 relative MAE .928); this was rejected. R5 uses two broad world-space density scales, environment-only opaque extinction and a darker ambient floor. The original M6 material graphs, pigment, grain and pooled illumination remain intact underneath the wrapper. No animal fog node is changed. The exposed horizon is attenuated before the actual square basin edge, and Explore below the open basin now loses environmental contrast smoothly instead of exposing its underside. Radial fade uses the geometry-derived R; an additional actual-footprint fade is necessary because the square's edge is nearer than its corner-derived R.
+
+R5: dark coverage 93.58%, MAE .00665925 (13.5% improvement), center/border 1.89, floor edge density .03838. This passes the atmosphere-specific depth/boundary check, **not** the final reference gate. The fixed reference hero is absent at our approved camera/time; it is not painted back into the background to inflate the center metric. Local floor reveal and final haze balance remain to be evaluated in subsequent phases.
+
+Actual browser ablations: `../asset2-evidence/phase-2/ablation/` includes spires/haze/extinction/guide off/on and Explore core, edge, abyss, void, underside. R3 guide weight .12 changes relative MAE .92829 → .93123 and adds a weak blue blob without useful depth. Reject it; preserve this prototype commit for reproducibility, then remove the texture sampler/storage from retained runtime. No additional ocean render, target or context was used. R5 still/combined reference: `phase-2/r5/frame.png`, `phase-2/r5-comparison/comparison.png`.
+
 ## Phase 1 — macro composition
 
 Three actual-browser iterations: r1 was too dark under the locked ACES toe; r2 recovered the blue opening but exposed overly simple silhouettes; r3 adds restrained shoulders to the four shared proxy profiles. Thirty instances, six screen-fitted clusters, four batches, no texture/pass/target. Existing near geology is unchanged; the lower portions of reference rectangles C/D/E are reserved for that geology, not filled with new near landmarks.

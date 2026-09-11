@@ -4,7 +4,12 @@ import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {spireGeometry,fitSpireLayout} from '../src/scene/environment/asset2Layout.js';
 import {asset2Paths,withoutAsset2Seams} from './asset2-scope.mjs';
+import {ASSET2,outerVisibility} from '../src/scene/environment/asset2Config.js';
 const baseline='bce3571b0300ecfe5dc6e5dd45f28a9cda57006e';
+test('Asset 2: atmosphere parameters finite; world fade bounded and monotonic',()=>{
+ const inspect=o=>{for(const v of Object.values(o)){if(typeof v==='number')assert.ok(Number.isFinite(v));else if(v&&typeof v==='object')inspect(v);}};inspect(ASSET2);
+ let previous=1;for(let r=0;r<4;r+=.005){const v=outerVisibility(r);assert.ok(v>=0&&v<=previous);previous=v;}assert.equal(outerVisibility(.85),1);assert.equal(outerVisibility(2.1),0);assert.equal(ASSET2.light.max,1);
+});
 test('Asset 2: every approved runtime source outside the two exact environment seams is byte-identical',()=>{
  const paths=execFileSync('git',['ls-tree','-r','--name-only',baseline,'src'],{encoding:'utf8'}).trim().split('\n');
  for(const p of paths.filter(p=>!p.endsWith('AGENTS.md'))){
