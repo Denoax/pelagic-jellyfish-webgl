@@ -1,6 +1,7 @@
 import * as THREE from "three/webgpu";
 import { createSoftParticles } from "./SoftParticles.js";
 import { Sanctuary } from "./sanctuary/Sanctuary.js";
+import { Asset2Environment } from "./environment/Asset2Environment.js";
 import { sampleSwimCycle } from "./jellyMotion.js";
 
 const SWIM_AXIS = new THREE.Vector3(0, 1, 0);
@@ -531,6 +532,7 @@ export class PelagicEnvironment {
 
     this.sanctuary = new Sanctuary(scene, { mobile, reducedMotion });
     this.deepGroup = this.sanctuary.group;
+    this.backgroundPresentation = new Asset2Environment(scene, this.sanctuary);
   }
 
   async loadDeepAssets() { await this.sanctuary.light.ready; }
@@ -558,6 +560,7 @@ export class PelagicEnvironment {
       this.distantJellies.update(elapsed, progress, focus, this.reducedMotion);
     }
     this.sanctuary.update(elapsed, progress);
+    this.backgroundPresentation.update();
   }
 
   dispose() {
@@ -568,6 +571,7 @@ export class PelagicEnvironment {
     this.currentVeil.geometry.dispose();
     this.currentVeil.material.dispose();
     this.sanctuary.dispose();
+    this.backgroundPresentation.dispose();
     this.distantJellies.dispose();
     this.group.removeFromParent();
     this.deepGroup.removeFromParent();
