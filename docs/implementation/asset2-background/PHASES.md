@@ -16,6 +16,10 @@ R9 reuses the same one M6 light but gives its environmental scattering a narrowe
 
 The full-image target is still assessed without masks/exposure normalization. Dense approved foreground animals remain a substantial mismatch with the reference population. This must remain explicit in the final report; calibrated screenshots are not a claim that whole-image metrics passed.
 
+### R10 — proxy compositing correction
+
+The final side-angle sweep exposed internal triangle overlap in concave proxies when low contrast was implemented entirely as weak alpha. R10 resolves the distant silhouette contrast in radiance, then uses real alpha only for approach/world/clip fades. Near fade multiplies contrast as well, so overlapping triangles are insignificant during withdrawal. Depth writing remains OFF and the approved transparent population is still rendered afterward; no invisible depth occluder or extra pass is introduced. The matched side view no longer shows the internal triangle bands. This correction costs an analytic water-radiance evaluation on those four background batches and is included in final whole-scene benchmarks, not hidden behind a resolution reduction.
+
 R1 added three very weak world-anchored analytic shaft envelopes and a static sub-code-value dither; its noise was too visibly mottled. R2 reduced the density modulation and added environmental extinction before the immutable camera far plane (48), ending contrast by46. R3 reduced proxy contrast after the stationary/Explore comparison exposed overly obvious simple profiles.
 
 The actual Explore orbit exposed a further issue: an opaque proxy could visually fade to the water color while still writing depth. R4 gives the four new background batches true alpha, depth-test on/depth-write off, and draws them before approved transparency. R5 adds a static per-instance center/height attribute and bounded distance/height fade, so a large nearby proxy does not become an inspectable foreground landmark. These changes affect ONLY newly added proxies. Their four shared profiles gain slightly less regular shoulders/crowns; existing M6 geology remains byte-identical. The QA framing is not changed.

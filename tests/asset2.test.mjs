@@ -22,6 +22,7 @@ test('Asset 2: bounded ownership restores original environment nodes and never m
  const e=new Asset2Environment(scene,sanctuary),camera=new THREE.PerspectiveCamera();
  const position=new Float32Array([1,2,3]),alpha=new Float32Array([.4]),pm=new THREE.MeshBasicNodeMaterial(),opacity=uniform(.4);pm.opacityNode=opacity;
  const snow={layers:[{mesh:{material:pm},position,alpha}]};e.connect(camera,snow,null);
+ e.update(0);e.update(.016);e.update(1000);assert.ok(e.waterTime.value<=.067,'Background-tab debt is not shader animation time');
  for(let i=0;i<10000;i++)e.update();assert.ok(e.cpuCount<=8192);assert.deepEqual([...position],[1,2,3]);assert.equal(alpha[0],Math.fround(.4));assert.ok(light.position.value.toArray().every(Number.isFinite));assert.equal(light.power.value,.5);
  assert.equal(e.group.children.length,4);assert.equal(e.state().extraOceanPasses,0);assert.equal(e.state().extraTargets,0);
  assert.equal(e.material.transparent,true);assert.equal(e.material.depthWrite,false);assert.ok(e.group.children.every(m=>m.renderOrder<0));

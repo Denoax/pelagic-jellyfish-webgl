@@ -35,10 +35,15 @@ export class Asset2Environment {
   // Real alpha fade: a proxy with zero contrast must not write an invisible
   // occluder in front of approved transparent animals. Render these background
   // silhouettes before the approved transparent population, with depth test on.
-  this.material.colorNode=pigment;
   const anchor=attribute('asset2Anchor','vec4');
   const approachFade=anchor.xyz.distance(cameraPosition).div(anchor.w).smoothstep(.4,.8);
-  this.material.opacityNode=silhouette.mul(approachFade).mul(this.worldVisibility(positionWorld));
+  const visibility=approachFade.mul(this.worldVisibility(positionWorld));
+  // Resolve distant optical contrast in radiance, not by stacking weak alpha
+  // over every intersecting triangle of a concave low-poly mesh. Full-strength
+  // distant proxies overwrite with the same water radiance plus a silhouette;
+  // approach/edge fades remain true alpha and never write invisible depth.
+  this.material.colorNode=mix(this.radiance(ray.normalize()),pigment,silhouette.mul(visibility));
+  this.material.opacityNode=visibility.mul(d.smoothstep(...C.spires.nearFade)).mul(d.smoothstep(...C.spires.extinction).oneMinus());
   const o=new THREE.Object3D();
   for(let k=0;k<4;k++){
    const g=spireGeometry(k),items=this.items.filter(a=>a.archetype===k),mesh=new THREE.InstancedMesh(g,this.material,items.length);
