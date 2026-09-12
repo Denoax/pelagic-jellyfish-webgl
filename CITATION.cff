@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "Please cite the independent Pelagic technical preprint and record the runtime commit used. This is a local-review, unreleased edition."
+type: software
+title: Pelagic
+authors:
+  - family-names: Marami Milani
+    given-names: Mani
+version: 1.0.0-preprint
+commit: bce3571b0300ecfe5dc6e5dd45f28a9cda57006e
+repository-code: https://github.com/Denoax/pelagic-jellyfish-webgl
+license: MIT
+preferred-citation:
+  type: unpublished
+  title: "Pelagic: A Real-Time Mathematical Rendering System for Procedural Jellyfish, Stateful Appendages, Underwater Optics, and Interactive Liquid Glass"
+  authors:
+    - family-names: Marami Milani
+      given-names: Mani
+  notes: "Independent technical preprint, local-review edition. Original publication content is CC BY 4.0. No DOI, release date or peer-review claim."

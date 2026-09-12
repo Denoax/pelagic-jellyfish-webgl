@@ -23,7 +23,9 @@ try{
   const raw=await b.ev('({completion:__AUDIT_RENDER__.read(),animal:__POPULATION__.cost(),connected:__CONNECTED_OCEAN__.cost(),idle:__OCEAN_IDLE__.cost()})');
   const after=await b.state();assert.equal(after.dpr,1);assert.deepEqual(after.renderer.drawBuffer,[1280,900]);assert.match(after.renderer.gpu,/NVIDIA.*4070/);assert.equal(raw.completion.matched,1);assert.equal(b.errors.length,0);
   results.push({name,kind,mode,progress,measurementSeconds:(Date.now()-start)/1000,warmupSeconds:11,sceneWarmupSeconds:kind==='bubble'?1.5:5,idleWarmupSeconds:['idle','pointer'].includes(kind)?7:0,before,after,frame:stats(raw.completion.intervals),raw});
-  json(join(out,'benchmark.json'),{runtimeSha,publicationToolSha:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),browser:await b.version(),backend:'NVIDIA WebGL2',hardware:process.env.PELAGIC_HARDWARE||'Record host hardware separately',capture:false,quality:'approved DPR 1; production bloom off; existing DEV fixture disables adaptive downshift',probe:'async-render-completion-v2',durationPolicy:'30 seconds per scene; bubble window may finish naturally within measurement',results});
+  let publicationToolSha=process.env.PUBLICATION_TOOL_SHA;
+  if(!publicationToolSha){try{publicationToolSha=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();}catch{throw Error('Outside Git, set PUBLICATION_TOOL_SHA to the paper/tool SHA in the artifact manifest');}}
+  json(join(out,'benchmark.json'),{runtimeSha,publicationToolSha,browser:await b.version(),backend:'NVIDIA WebGL2',hardware:process.env.PELAGIC_HARDWARE||'Record host hardware separately',capture:false,quality:'approved DPR 1; production bloom off; existing DEV fixture disables adaptive downshift',probe:'async-render-completion-v2',durationPolicy:'30 seconds per scene; bubble window may finish naturally within measurement',results});
   console.log(name,JSON.stringify(results.at(-1).frame));
  }
 }finally{await b.close();}

@@ -2,9 +2,19 @@
   "runtimeSha": "bce3571b0300ecfe5dc6e5dd45f28a9cda57006e",
   "files": [
     {
+      "path": ".npmrc",
+      "bytes": 23,
+      "sha256": "f7dbda001b627b3a792fb6929303b517f047f03916f2c55227e81216d38a2008"
+    },
+    {
       "path": ".openai/hosting.json",
       "bytes": 31,
       "sha256": "d532abb65cf9ae20634b464d954cb4a08a0de9f3cd3cdf7f9c3ec8948826d947"
+    },
+    {
+      "path": "index.html",
+      "bytes": 1756,
+      "sha256": "a6043bb7f3817d4d44ee18888ed5965425a4faa2d33a9d74cf0688469f909f84"
     },
     {
       "path": "package-lock.json",
@@ -560,6 +570,11 @@
       "path": "src/vendor/aurelia/plankton.js",
       "bytes": 4288,
       "sha256": "65ab6289a85fafd10969e0a8cdc8e5aaf82c53d058c580b4c76605873ecf4933"
+    },
+    {
+      "path": "vite.config.mjs",
+      "bytes": 519,
+      "sha256": "50d97f1b188b7172abd806f307afeac13efb1ea55ad8b616a53e0806c993b36f"
     },
     {
       "path": "worker/index.js",

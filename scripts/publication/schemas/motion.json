@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pelagic motion artifact metadata",
+  "type": "object",
+  "required": [
+    "id", "runtimeSha", "renderer", "backend", "viewport", "drawingBuffer",
+    "dpr", "durationSeconds", "captureDate", "sourceFps", "encodedFps"
+  ],
+  "properties": {
+    "id": {"type": "string"},
+    "claim": {"type": "string"},
+    "runtimeSha": {"type": "string"},
+    "renderer": {"type": "string"},
+    "backend": {"type": "string"},
+    "viewport": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {"width": {"type": "integer"}, "height": {"type": "integer"}}
+    },
+    "drawingBuffer": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {"width": {"type": "integer"}, "height": {"type": "integer"}}
+    },
+    "dpr": {"type": "number"},
+    "viewMode": {"type": ["string", "null"]},
+    "journeyProgress": {"type": ["number", "null"]},
+    "seed": {"type": ["number", "string", "null"]},
+    "simulationTime": {"type": ["number", "null"]},
+    "durationSeconds": {"type": "number"},
+    "sourceFps": {"type": "number"},
+    "encodedFps": {"type": "number"},
+    "captureDate": {"type": "string"},
+    "captureScript": {"type": "string"},
+    "notes": {"type": "string"}
+  }
+}

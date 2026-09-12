@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pelagic publication artifact manifest",
+  "type": "object",
+  "required": ["publicationVersion", "runtimeSha", "paperSha", "files"],
+  "properties": {
+    "publicationVersion": {"type": "string"},
+    "runtimeSha": {"type": "string"},
+    "paperSha": {"type": "string"},
+    "releaseTag": {"type": ["string", "null"]},
+    "threeVersion": {"type": "string"},
+    "nodeVersion": {"type": "string"},
+    "browserVersion": {"type": "string"},
+    "backend": {"type": "string"},
+    "captureHardware": {"type": "object"},
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256", "role"],
+        "properties": {
+          "path": {"type": "string"},
+          "sha256": {"type": "string"},
+          "role": {"type": "string"},
+          "bytes": {"type": "integer"}
+        }
+      }
+    }
+  }
+}

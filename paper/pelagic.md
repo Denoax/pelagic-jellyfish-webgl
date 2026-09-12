@@ -1081,13 +1081,19 @@ differences.
 
 **Table 5. Engineering questions and evidence interpretation.**
 
-| Comparison | What it can establish | What it cannot establish |
+| Evidence | Observation / question | Limit |
 |----|----|----|
-| Optical compositor enabled/disabled at matched state | live image displacement and added presentation | physically correct multilayer refraction |
-| Connected particulate visible/hidden | local visual contribution | hydrodynamic accuracy or perceptual preference |
-| Persistent field at rest/after pointer/recovery | remembered deformation and settling | conserved liquid volume |
-| Historical independent camera corrections vs bounded pose path | why ownership was simplified | an isolated benchmark speedup |
-| Historical separate idle renderer vs shared M7 | architectural change and source ownership | universal browser compatibility |
+| Frozen hero-refraction on/off, Figure 8 | live image displacement; ambient films retained | not physically correct multilayer refraction |
+| Pointer, rest and recovery, S10 | time-course observation of remembered deformation | not an isolated solver ablation or conserved liquid |
+| Historical camera correction vs bounded path, supplement N1 | rationale for simpler ownership | not an isolated benchmark speedup |
+| Historical separate idle renderer vs shared M7, supplement N4 | architecture and source ownership | not universal browser compatibility |
+
+A connected-particulate visible/hidden ablation was not run for this
+publication; S3 is an activation time course, not that controlled
+comparison. The frozen optical pair has SSIM about 0.969, a descriptive
+image difference only: it is neither a visual-quality score nor evidence
+of physically correct refraction. The comparison uses the existing
+review interface, not edited runtime source.
 
 Rejected giant dark lenses, bright repetitive geology and early camera
 corrections are presented as development history, not as straw-man

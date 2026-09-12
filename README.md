@@ -1,216 +1,177 @@
 # Pelagic
 
-> A silent, interactive descent through a living WebGL jellyfish ocean.
+> A real-time mathematical rendering study of procedural jellyfish, stateful appendages, underwater optics and live liquid glass.
 
-[![Verify Pelagic](https://github.com/Denoax/pelagic-jellyfish-webgl/actions/workflows/ci.yml/badge.svg)](https://github.com/Denoax/pelagic-jellyfish-webgl/actions/workflows/ci.yml)
-[![GitHub Pages](https://github.com/Denoax/pelagic-jellyfish-webgl/actions/workflows/pages.yml/badge.svg)](https://denoax.github.io/pelagic-jellyfish-webgl/)
+**Mani Marami Milani · Independent technical preprint · Local review edition**
 
-**[Enter the live ocean →](https://denoax.github.io/pelagic-jellyfish-webgl/)**
+[Live ocean](https://denoax.github.io/pelagic-jellyfish-webgl/) · [Paper](paper/pelagic.md) · [PDF](paper/pelagic.pdf) · [Project page](public/paper/index.html) · [Reproduce](REPRODUCIBILITY.md) · [Cite](CITATION.bib) · [Local release package](paper/RELEASE_PACKAGE.md)
 
-An interactive WebGL ocean, a living jellyfish swarm, and an original liquid-glass clock built as a text-free digital art study.
+![A luminous jellyfish swims through dark water; activation brightens its tissue and nearby suspended material. Actual approved-runtime browser motion, S3.](paper/media/hero.gif)
 
-![Pelagic ocean journey in motion](docs/media/pelagic-art-journey.gif)
+The public ocean link is an existing visitor experience, not a guarantee that Pages matches this artifact. This publication describes approved runtime **`bce3571b0300ecfe5dc6e5dd45f28a9cda57006e`**. Documentation lives on a separate local branch. No new release or deployment is implied. Later Asset2 experiments are excluded from primary figures and results because they were not explicitly approved.
 
-## The journey
+## Abstract
 
-| Surface | Mid-water | Deep-water |
+Real-time organism scenes become difficult to maintain when anatomy, motion, environmental effects, camera control and interface optics evolve as unrelated demonstrations. Pelagic is a browser-based rendering study that connects these systems while preserving an art-directed jellyfish identity. Its implementation combines a procedural mantle and folded oral membranes, pulse-coupled locomotion, persistent constrained appendages, bounded world-space currents, projected-size population detail, and an input-driven six-degree-of-freedom camera journey. A shared optical compositor samples one live ocean image for refractive bubbles, localized thermal shimmer and an interactive liquid clock. The clock combines authored implicit-surface choreography with a low-resolution persistent spring/advection field. The paper describes the actual Three.js 0.175.0 implementation, distinguishes code-equivalent equations from abstractions and artistic heuristics, and links the methods to reproducible source locations. The accompanying artifact includes browser motion evidence, deterministic tests, historical rejected approaches and fresh frame-interval measurements of the approved runtime. The work is a systems and visual-engineering study, not a fluid–structure interaction model, calibrated biological simulation or claim of algorithmic priority. Image-space optics cannot recover unseen radiance; liquid topology is not mass-conserving; performance and compatibility evidence remain specific to the tested hardware and backend.
+
+## Contributions
+
+These are contributions of the implementation and documentation, not claims that the component techniques were invented here.
+
+1. **A continuous procedural animal.** Bell, rim, folded oral membranes and reconstructed tentacles preserve a coordinated identity through contraction, recovery, turning and changing scale. Geometry contracts remain distinct from the controller moving the animal.
+2. **Persistent appendage history.** Stateful chains carry inertia through body transforms instead of resetting to a fresh wobble each frame. Their constrained points feed both sheets and tubes. Detail transitions reuse that state.
+3. **A connected, bounded environment.** Marine snow, localized pulse wakes, activation and neighbor response share world-space current information. Pools and finite lifetimes make the response temporary rather than a permanent halo.
+4. **Population detail with hysteresis.** Projected bell diameter chooses near, medium and far representations. Persistent resources and adjacent-tier morphing separate visual importance from resource lifetime, avoiding repeated geometry creation at thresholds.
+5. **One clean live ocean for multiple optical effects.** Bubbles, thermal shimmer and liquid-clock output sample the same source image. The compositor neither recursively reads its own output nor maintains a duplicate ocean.
+6. **A documented ocean-to-glass transition.** Authored implicit contact, merging and pinch choreography combines with a small persistent displacement field. Browser motion, code-mapped mathematics and explicit optical limits make the method inspectable.
+
+## Journey
+
+| Surface encounter | Pelagic water | Abyssal sanctuary |
 | --- | --- | --- |
-| ![Surface encounter with the hero jellyfish](docs/media/07-art-surface.png) | ![Mid-water swarm and featured jellyfish](docs/media/08-art-depth.png) | ![Dark departure frame near the seabed](docs/media/09-art-departure.png) |
+| ![Large cyan and pink jellyfish in the approved opening environment.](paper/media/surface.jpg) | ![An oblique luminous jellyfish against dark mid-water.](paper/media/pelagic.jpg) | ![Dark connected basalt and a localized sanctuary plume.](paper/media/abyss.jpg) |
 
-The persistent labels are real links; every other visible page label was removed. Empty semantic chapters remain in the document only as scroll-length and camera-timing tracks, so the scene can still travel through an authored beginning, encounters and departure.
+These are browser frames, not generated concept paintings. “Surface,” “pelagic” and “abyss” describe an authored journey, not measured ecological strata. Camera range, fog and geological visibility are artistic choices. Distant geology can remain visible in the approved surface composition.
 
-## Water and glass refinement
+Four authored observer modes and Explore share one persistent world. Scrolling changes a bounded scalar along a baked pose track, rather than translating an unrelated camera independently in several places. View changes do not create a second school. A subject can leave the frame, become less important and later return while organism and environmental state continue. That continuity matters more than arranging a single flattering still.
 
-![Persistent liquid-glass clock after interaction](docs/implementation/screens/glass-drag.png)
+The sanctuary changes visual scale without changing the renderer. Procedural masses, mineral variation, sparse benthic life and localized discharge form a dark geological endpoint. Its active material uses an authored unlit/node response with mapped detail; it is not a calibrated rock BRDF. The publication records that distinction rather than describing every attractive mineral highlight as physically based shading.
 
-The newest rendering pass adds stateful elastic glass, a prepared idle transition, shared underwater visibility, layered geology and visible graphics recovery. [See the implementation, current captures and measured test results](docs/implementation/2026-09-05-rendering-pass.md). The original GIFs and evolution gallery below document earlier stages; they are not new performance evidence.
+## Selected mathematics
 
-## What is built in
+The paper contains 22 numbered equation groups. Each is classified and linked to pinned source in [the equation/source map](paper/source-map.md); [notation](paper/notation.md) defines the spaces and major symbols. These compact explanations are not an alternative implementation.
 
-- A persistent Three.js ocean with depth fog, marine snow, current veils, god rays and a procedural seabed.
-- Eight independent foreground jellyfish plus a distant school, each with deforming tissue and simulated appendage lag.
-- Bell-coupled locomotion: contraction produces thrust, refill produces drag, and momentum carries the coast.
-- Stable-scale departures: animals swim beyond the frame and settle into depth haze instead of shrinking away.
-- A cinematic scroll camera with continuous orbit, subject handoffs and separate position/target damping.
-- Raycast interaction that sends bioluminescent recoil through an individual animal and its nearby school.
-- A full-screen `HH:MM` liquid-glass idle clock with GPU texture morphing and an intentionally slow pointer wake.
-- Responsive desktop and portrait compositions, reduced-motion handling, WebGL 2 fallback, and static-host packaging.
+### Persistent appendage prediction
 
-## How it was built
+$$
+\mathbf{x}^{*}=\mathbf{x}+d(\mathbf{x}-\mathbf{x}_{\mathrm{old}})+\Delta\mathbf{x}_{\mathrm{forcing}}.
+$$
 
-### 1. A persistent 3D ocean
+Positions are chain points in transported simulation space; the previous point supplies history. Damping and bounded increments come from the active solver. Root attachment and iterative segment-length corrections follow prediction. This is an explanatory abstraction of `LivingAppendages`, not a claim that the complete implementation is a single textbook Verlet equation. Both histories move when coordinates change, avoiding accidental velocity from a body transform. Pause recovery bounds admitted time rather than running an unlimited catch-up solve. Paper Section 9 distinguishes prediction, constraints and reconstruction.
 
-`HeroScene.jsx` owns the persistent Three.js scene. It reads the actual backend after initialization, including automatic WebGPU-to-WebGL fallback. Both backends use the direct render path; the inherited MRT bloom chain is disabled. Pixel ratio starts at a maximum of `1.25` on desktop and `1` on mobile, and can step down after sustained slow frames. Graphics denial/loss shows recovery artwork and a compatibility retry instead of a silent black canvas.
+### Projected visual importance
 
-The seabed and animals share directional water radiance and distance-dependent, channel-specific attenuation. A nonuniform terrain grid concentrates detail around the camera path. Triplanar scanned albedo, multi-scale sediment noise, terrain-integrated contact shading and localized hot crust replace the old bright plane and circular shadow stickers. See the [implementation and verification record](docs/implementation/2026-09-05-rendering-pass.md).
+$$
+D_{\mathrm{px}}=\frac{2rH}{2z\tan(\theta_y/2)}.
+$$
 
-The environment is built from:
+Here $r$ is world-space bell radius, $H$ is CSS viewport height, $z$ is positive camera-space depth and $\theta_y$ is vertical field of view. The diameter is combined with visibility and hysteresis rather than treated as a universal perceptual metric. Medium promotion/retention use 32/24 CSS pixels; near promotion/retention use 110/90. An adjacent-tier morph lasts 1.2 seconds. Changing drawing-buffer DPR therefore does not silently alter the anatomical tier. Section 12 explains resource reuse and offscreen work as well as the thresholds.
 
-- several depth bands of marine snow;
-- animated current veils and god-ray lighting;
-- a hero jellyfish plus independent background organisms;
-- dark physical lighting and selective tissue/crust emission;
-- scroll-controlled depth, exposure, and camera framing.
+### Smooth liquid occupancy
 
-### 2. Jellyfish that swim instead of sliding
+$$
+F(\mathbf{u},t)=\sum_i a_i(t)\exp\!\left[-\frac{\|\mathbf{u}-\mathbf{c}_i(t)\|^2}{2\sigma_i(t)^2}\right].
+$$
 
-Each organism uses a timed rowing cycle rather than moving along a path at constant speed:
+This abstraction describes Gaussian contributions in aspect-corrected screen coordinates. The implementation also has authored contact/throat terms and transition envelopes; it is not simply this sum thresholded once. The field supplies a coherent optical boundary as centers, amplitudes and widths change. Its topology merges or separates without rebuilding a triangulated fluid surface. Amplitudes and widths are art-directed, not volume-conserving. Sections 17–18 explain how this boundary interacts with persistent pointer displacement and the actual ocean image.
 
-1. The bell contracts quickly.
-2. The contraction produces the main thrust impulse.
-3. The bell refills more slowly while drag increases.
-4. A smaller secondary impulse approximates the stopping vortex.
-5. The animal coasts before the next pulse.
+## System architecture
 
-`JellySchoolDirector.js` uses that cycle to add momentum along an authored route. The route only steers the animal; it does not directly teleport it. Nearby organisms also receive separation forces so a cluster does not collapse into one mesh.
-
-`LivingAppendages.js` reconstructs each visible animal as layered geometry: a deforming mantle, internal crown, organs, oral-arm ribbons, and constrained tentacle chains. The appendages retain their previous positions, so they lag behind acceleration and turning instead of rotating rigidly with the bell.
-
-Lifecycle visibility never changes an animal's physical scale. Jellyfish leave by continuing their pulse-driven route beyond the camera frame; completed actors remain as faint, full-sized silhouettes in depth haze instead of shrinking into miniature objects or popping out of existence.
-
-### 3. A camera that explores the swarm
-
-`PelagicCameraRig.js` separates three ideas that are often incorrectly combined:
-
-- camera position;
-- point of interest;
-- featured animal.
-
-This lets the camera travel around and through the water while different jellyfish enter, become the subject, and leave. Position, target, field of view, and the very small amount of camera bank are damped independently. Mobile uses a shorter, wider orbit and no authored bank.
-
-### 4. Physical interaction
-
-Pointer movement becomes a decaying current vector. It influences nearby tissue and the water field without steering the camera. A raycast identifies individual jellyfish; clicking one sends a bioluminescent wave through that animal, applies a localized recoil to its soft body, and triggers a weaker delayed response in nearby members of the school.
-
-### 5. The liquid clock
-
-![Pelagic liquid clock in motion](docs/media/liquid-clock-showcase.gif)
-
-`IdleGlassScene.jsx` is a transparent Three.js renderer prepared before idle entry and retained between visits. The live ocean remains underneath. The fade waits for the first rendered enhancement frame; dormant glass does not continuously draw.
-
-The original glass pipeline:
-
-1. Canvas 2D caches softened clock masks, updating only when needed.
-2. Small paired render targets retain velocity and displacement between frames.
-3. Cursor-segment impulses pull the field; advection, neighbor coupling and spring restoration carry and settle the wake.
-4. Smooth droplet level sets cover the viewport and share the clock's displacement.
-5. Thickness gradients drive rounded highlights, rim light and transparency.
-6. Signed half-float storage preserves precision near rest. A packed 16-bit RGBA8 displacement path supports devices without float render targets.
-
-Desktop draws `HH:MM` as one composition. Portrait screens use a separate texture and stack hours and minutes vertically.
-
-Ambient movement stays slow. Direct manipulation is continuous, with a bounded field that remembers a sweep and then returns to rest. This is an original elastic-flow model, not a full Navier–Stokes solver. The transparent overlay does not yet refract the ocean framebuffer itself.
-
-### 6. Smooth minute changes
-
-Two clock textures are kept in memory. When the minute changes, the next time is drawn into the hidden texture and a spatially staggered transition takes `2.8s`. Textures swap roles and are reused. Hidden clocks refresh ahead of entry so a stale-minute upload is not normally coupled to the visible fade.
-
-### 7. Idle and accessibility behavior
-
-`useIdleScreen.js` listens for pointer, keyboard, wheel, touch, focus, scroll, and visibility activity. It does not activate while a form control is being edited or while the document is hidden. The animation is completely disabled when `prefers-reduced-motion` is enabled. The overlay never traps focus, plays sound, or destroys the live ocean beneath it.
-
-The clock appears automatically after 30 seconds without input. Add `?idle=1` while developing to reveal it after one second. Click, tap, press Enter, Space, or Escape to return to the ocean.
-
-| Desktop clock | Portrait clock |
-| --- | --- |
-| ![Desktop liquid clock over the living ocean](docs/media/05-final-liquid-clock.png) | ![Stacked portrait liquid clock](docs/media/06-final-mobile.png) |
-
-## Evolution
-
-This was not the first version. The strongest visual and technical decisions came from repeatedly replacing approaches that failed in motion.
-
-| Stage | Capture | What changed next |
-| --- | --- | --- |
-| Selected concept | ![Original selected abyssal concept](docs/media/01-selected-concept.jpg) | Prove the mood with real geometry instead of shipping the reference image. |
-| First live geometry | ![First live jellyfish geometry](docs/media/02-first-live-geometry.jpg) | Replace disconnected glass domes with coherent tissue, appendages, and biological movement. |
-| Living swarm | ![Working jellyfish swarm](docs/media/03-living-swarm.jpg) | Add independent actors, pulse-driven travel, camera handoffs, and click interaction. |
-| First idle experiment | ![Early fluid idle experiment](docs/media/04-first-idle-experiment.jpg) | Remove the soft CSS-like blobs and rebuild the clock as a transparent GPU liquid field. |
-| Current result | ![Final liquid clock](docs/media/05-final-liquid-clock.png) | Expand the droplets edge-to-edge, reduce the clock to hours and minutes, slow the wake, and leave only the minimal identity/navigation chrome. |
-
-## Architecture
-
-```text
-React application
-├── invisible scroll choreography + minimal persistent chrome
-├── idle-state and motion-preference controller
-├── persistent ocean renderer
-│   ├── Aurelia scene foundation
-│   ├── LivingAppendages soft-body presentation
-│   ├── JellySchoolDirector pulse-driven swarm
-│   ├── PelagicCameraRig authored camera journey
-│   └── PelagicEnvironment particles and current
-└── transparent idle renderer
-    ├── dual CanvasTexture clock masks
-    ├── original GLSL liquid/droplet shader
-    └── persistent spring/advection field + packed compatibility path
+```mermaid
+flowchart TD
+  Input[Input and view selection] --> Camera[Bounded progress and baked pose]
+  Animal[Pulse and locomotion] --> Appendages[Persistent appendage chains]
+  Animal --> Current[Bounded currents and localized wakes]
+  Current --> Snow[Layered marine snow]
+  Importance[Projected importance and hysteresis] --> Appendages
+  Camera --> Ocean[One real ocean scene]
+  Appendages --> Ocean
+  Snow --> Ocean
+  Sanctuary[Geology and local plume] --> Ocean
+  Ocean --> Color[Clean live scene color]
+  Pointer[Pointer and clock choreography] --> Field[Two small field targets]
+  Field --> Output[Shared optical output]
+  Color --> Output
+  Bubble[Bubble and thermal parameters] --> Output
 ```
 
-The high-frequency animation path stays outside React state. React handles readiness and visibility; the clock masks, field, vectors, materials and buffers are reused in place. Reduced motion uses the project poster without starting either graphics renderer.
+The active renderer is Three.js `WebGPURenderer` using its real **WebGL2 fallback** in the publication measurements. A class name is not proof that hardware WebGPU ran. Node/TSL materials belong to that renderer family, and Three.js stays pinned at 0.175.0. React owns application lifecycle; imperative Three.js owns the ocean. React Three Fiber appearing in the dependency list does not mean the active scene uses it.
 
-## Stack
+When optical effects need scene color, the compositor uses a clean RGBA16F target with a depth attachment and an output pass. Idle adds two small RGBA16F field targets, 256×180 at the measured viewport. They store velocity and displacement, not duplicate ocean images. Auxiliary field/output draws are additional work but not extra complete ocean scene renders. A direct path remains available when optical composition is inactive.
 
-- React 19
-- Three.js 0.175
-- React Three Fiber
-- Three.js WebGPU renderer with WebGL 2 fallback
-- TSL for the inherited scene pipeline
-- Original GLSL for the liquid clock
-- Vite 6
-- Fontsource packages for locally bundled fonts
+Transparent tissue complicates depth: its color is layered into the source image, while it generally does not write opaque depth. A bounded virtual background plane supplies information the image lacks. The pinned fallback also has a documented multisample depth-resolve limitation. “Live refraction” therefore means current scene color genuinely bends, not that the system reconstructs transparent-layer depth, unseen radiance or nested physical refractions.
 
-## Run locally
+## Motion results
+
+![The approved liquid clock condenses and joins through a narrowing contact region. Actual browser sequence S9.](paper/media/contact.gif)
+
+**S9 — contact and merge.** This excerpt shows the normal-size browser sequence. The master and timestamps retain approach, contact, neck formation and settlement. It demonstrates authored implicit topology, not a recording of conserved fluid volume.
+
+![The liquid-clock throat narrows and separates during dismissal while the ocean stays visible. Actual browser sequence S12.](paper/media/pinch.gif)
+
+**S12 — pinch dismissal.** The boundary must separate in time while the image beneath remains live. A preview aids browsing; the full-resolution source is the technical evidence. Neither an isolated bright edge nor a favorable screenshot establishes that the interaction succeeds through motion.
+
+The [motion catalog](paper/MOTION_GALLERY.md) covers twelve tasks: pulse; appendage lag; activation; population detail during travel; bubble passage; observer modes; sanctuary plume; idle entry; merging; pointer deformation; minute change; and pinch exit. Metadata records runtime SHA, browser/backend, viewport, drawing buffer, DPR, camera, seed, simulation time and observed source rate. Files are encoded at 30 fps from approximately 30 observed browser frames per second. Encoding may repeat frames and is not a benchmark.
+
+MP4 masters and timestamps stay outside ordinary Git history. Small previews, posters and metadata are tracked; the local review server joins these with staged motion. Remote media URLs will not be guessed before an actual release exists. No generated substitute imagery, browser chrome or private desktop capture is used as runtime evidence. Source-derived diagrams are labeled separately so a plotted profile cannot be mistaken for a rendered specimen.
+
+## Fresh publication performance
+
+The capture-free run uses approved M7, not the later Asset2 experiment. Seven scenes are observed for 30 seconds each after initial and scene-specific warm-up. Existing development fixtures select repeatable states and hold DPR at 1 without adaptive downshift. This is a single-run characterization, not a randomized cross-device study or a comparison against another renderer.
+
+| Scenario | Median (ms) | p95 (ms) | Maximum (ms) | Intervals >50 ms |
+| --- | ---: | ---: | ---: | ---: |
+| Opening | 16.70 | 18.60 | 28.80 | 0 |
+| Midwater | 16.70 | 17.80 | 27.20 | 0 |
+| Bubble passage | 16.70 | 18.70 | 65.30 | 1 |
+| Sanctuary | 16.70 | 18.00 | 25.90 | 0 |
+| Explore | 16.70 | 18.50 | 31.80 | 0 |
+| Settled M7 | 16.70 | 17.90 | 26.00 | 0 |
+| M7 manipulation | 16.70 | 18.20 | 30.00 | 0 |
+
+These are **render-completion intervals, not GPU timings**. Medians near refresh cadence do not reveal spare GPU capacity. One 65.3 ms bubble-passage interval is retained; the run does not identify its cause. Removing that stall or claiming guaranteed 60 fps from the median would misrepresent the evidence.
+
+The browser is Brave/Chromium 152.0.7977.76 using ANGLE on an NVIDIA RTX 4070. Viewport and drawing buffer are both 1280×900, DPR is 1, and production bloom is off. The host has an Intel Core i5-14600K and approximately 64 GB RAM. Full environment and intervals are in [the raw record](paper/results/benchmark.json); [the report](paper/results/README.md) explains contention and measurement scope. No recording or encoding ran during timing. Resolution was not lowered to improve the numbers.
+
+## Read the paper
+
+- [GitHub-native paper](paper/pelagic.md) and [PDF](paper/pelagic.pdf): full implementation description, equations, algorithms, figures, results and limitations.
+- [Supplement](paper/supplement.md) and [supplement PDF](paper/supplement.pdf): motion tasks, numerical qualifications, negative results and optical boundaries.
+- [Source map](paper/source-map.md), [notation](paper/notation.md), [claim ledger](paper/audit/CLAIM_LEDGER.md) and [reference ledger](paper/audit/REFERENCE_LEDGER.md): the bridge between prose and implementation.
+- [Baseline decision](paper/PUBLICATION_BASELINE.md): why approved M7, rather than the latest review-only checkout, defines this artifact.
+
+The PDF and Markdown derive from one canonical manuscript. The paper is an independent technical preprint, with no DOI, arXiv identifier, acceptance, institutional affiliation or peer-review claim. Biological swimming papers motivate unequal contraction/recovery rhythm; they do not validate these parameters as measurements of a real species. Implementation citations are not interchangeable with evidence from biological experiments.
+
+## Reproduce
+
+Use a clean publication checkout or the prepared package. Publication commits contain documentation and tools; the runtime manifest pins the approved source separately.
 
 ```sh
-git clone https://github.com/Denoax/pelagic-jellyfish-webgl.git
-cd pelagic-jellyfish-webgl
-npm install
-npm run dev
+npm ci
+VITE_OCEAN_RELEASE=milestone-2 npm run build
+node --test tests/*.test.mjs
+node scripts/check-approved-motion.mjs
+node scripts/check-default-animal.mjs
+npm run dev -- --host 127.0.0.1
 ```
 
-Open the local URL printed by Vite. To jump directly to the visual clock:
+Open the address printed by Vite. The release flag selects the existing approved path; its historical name does not mean this code stops at Milestone 2. Build before the full tests: a packaging test reads generated output. A missing build artifact is a failed precondition, not a passed test.
 
-```text
-http://localhost:5173/?idle=1
-```
+The [reproducibility guide](REPRODUCIBILITY.md) documents capture, timing, browser selection, required system tools, paper building and local package review. Scripts accept output directories instead of embedding a home directory. Capture presets seed initialization, but wall-clock scheduling and driver behavior still prevent bitwise image reproducibility. Metadata records actual observed states so deviations can be investigated rather than hidden.
 
-Production verification:
+Deterministic parity tests compare approved motion and the default animal against existing baselines. They establish specific numerical contracts, not universal visual correctness. Browser sequences complement them by exposing transparent overlaps, moving silhouettes, refraction and recovery. A convincing result requires both kinds of evidence; a passing unit test cannot establish that a contact neck is legible or an animal moves attractively.
 
-```sh
-npm run build
-npm run test:sites
-```
+## Limitations
 
-The generated static client is written to `dist/client`. The included worker provides a portable single-page fallback for static hosting.
+- This is an artistic organism system, not fluid–structure simulation. Thrust, bounded currents and wakes are heuristics, not estimates of pressure, ocean circulation or energy efficiency.
+- The implicit clock does not conserve mass. Contact and separation are authored transitions aided by persistent deformation, not a general surface-tension solver.
+- Image-space optics lack offscreen color and independent transparent-layer depths. The depth-resolve limitation remains documented, not silently repaired in a publication change.
+- Gelatinous tissue uses an optical/material approximation, not physical framebuffer transmission merely because it looks translucent.
+- Fixed steps exist in several subsystems, but the application is not one globally deterministic solve. Pause recovery bounds time admission rather than simulating every missed second.
+- Single-machine intervals cannot establish hardware WebGPU support, mobile performance, universal compatibility or GPU execution time. Physical mobile, Safari, Firefox and hardware WebGPU are not validated by this publication run.
+- Sanctuary materials and scale are art-directed. Archived scanned assets in the repository are not automatically active in the current geology.
+- Author review and example captures are not a perceptual user study. No quantitative superiority over other artwork or research systems is claimed.
 
-## Controls
+These limits are part of the result. They identify where a reusable visual system ends and a general simulation or rendering problem begins. Future work should be judged against those boundaries, not called solved because one attractive frame can be produced. Historical rejected approaches in the supplement explain engineering choices without turning anecdotal development observations into controlled comparative experiments.
 
-| Input | Result |
-| --- | --- |
-| Scroll | Travel through the ocean and hand the camera between members of the swarm |
-| Move the pointer | Disturb nearby tissue and the water current without steering the camera |
-| Click a jellyfish | Trigger a localized bioluminescent pulse and recoil |
-| Remain idle for 30 seconds | Reveal the liquid-glass clock over the still-living ocean |
-| Click, tap, Enter, Space, or Escape | Return from the clock to the ocean |
-| GitHub | Open [Denoax](https://github.com/Denoax) in a new tab |
+## Citation
 
-## Project map
+Use [CITATION.cff](CITATION.cff) for repository-aware tools or [CITATION.bib](CITATION.bib) for BibTeX. The author is **Mani Marami Milani**. Cite this as an unreleased/local-review technical manuscript until publication is authorized. The citation omits an invented DOI and release date. Record the runtime SHA separately when reporting reproduced results: the identity of an executable experiment is not necessarily the identity of its later documentation commit.
 
-```text
-src/
-├── core/                 idle and motion-preference hooks
-├── scene/                ocean, organisms, camera, environment, liquid clock
-├── ui/                   minimal DOM and idle overlay shell
-├── vendor/aurelia/       modified MIT-licensed scene foundation
-└── App.jsx               silent scroll tracks and persistent art chrome
-docs/media/               curated evolution screenshots, GIFs and MP4s
-licenses/                 bundled third-party license notices
-ASSET_PROVENANCE.md       asset sources, modifications, and license notes
-```
+## Provenance and licensing
 
-## Credits and licensing
+Original source code is **MIT**. Original paper, documentation, diagrams, screenshots and project-generated media are **CC BY 4.0**, to the extent the author can license them. Third-party components retain their licenses; this split does not relicense them. Read [LICENSE.md](LICENSE.md), [ASSET_PROVENANCE.md](ASSET_PROVENANCE.md) and the retained Aurelia notice before redistributing substantial source or assets.
 
-The scene foundation in `src/vendor/aurelia/` is adapted from [Aurelia](https://github.com/holtsetio/aurelia) by Niklas Niehus / Holtsetio under the MIT License. Its notice is retained in `licenses/Aurelia-MIT.txt`.
+Codex/OpenAI assistance covered implementation, research synthesis, writing, source audit and tooling under the author's direction. Runtime captures here were rendered by the project, not generated substitutes. Earlier generated fallback artwork is identified separately in provenance and is not scientific motion evidence. FluidGlass informed visual goals, but its unlicensed implementation is not copied. Scientific citations provide context, not an assertion that Pelagic reproduces those experiments.
 
-[FluidGlass](https://github.com/chiuhans111/fluidglass) was studied as an interaction reference. Its repository did not include a license when reviewed, so no FluidGlass source, shader, layout, image, or asset is included here. The clock renderer is an independent implementation using this project's own shader, composition, ocean, and interaction model.
-
-Font and asset details are recorded in [ASSET_PROVENANCE.md](ASSET_PROVENANCE.md). No project-wide license is implied; add one deliberately before accepting outside code contributions or reuse.
+[CONTRIBUTING.md](CONTRIBUTING.md) describes changes that preserve evidence quality. This branch prepares a local publication package only: no release, Pages update, remote metadata edit or archival submission has been performed.
