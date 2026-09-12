@@ -1,0 +1,38 @@
+{
+  "results": [
+    {
+      "archive": "pelagic-reproducibility.zip",
+      "extraction": "PASS"
+    },
+    {
+      "archive": "pelagic-supplemental-media.zip",
+      "extraction": "PASS"
+    },
+    {
+      "archive": "pelagic-arxiv-source.zip",
+      "extraction": "PASS"
+    },
+    {
+      "file": "pelagic.tex",
+      "extractedBuild": "PASS"
+    },
+    {
+      "file": "supplement.tex",
+      "extractedBuild": "PASS"
+    },
+    {
+      "snapshotSha": "bce3571b0300ecfe5dc6e5dd45f28a9cda57006e",
+      "filesVerified": 116,
+      "cleanInstall": "PASS",
+      "productionBuild": "PASS",
+      "historicalParity": "Requires original Git history; not claimed for history-free snapshot"
+    },
+    {
+      "combinedReproducibilityRoot": {
+        "cleanInstall": "PASS",
+        "snapshotHashes": "PASS",
+        "canonicalPaperBuild": "PASS"
+      }
+    }
+  ]
+}

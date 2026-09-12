@@ -1,0 +1,272 @@
+{
+  "results": [
+    {
+      "viewport": [
+        1280,
+        900
+      ],
+      "layout": {
+        "width": 1280,
+        "scroll": 1280,
+        "brokenImages": [],
+        "videos": 12,
+        "autoplay": false,
+        "mathErrors": 0
+      }
+    },
+    {
+      "viewport": [
+        820,
+        900
+      ],
+      "layout": {
+        "width": 820,
+        "scroll": 820,
+        "brokenImages": [],
+        "videos": 12,
+        "autoplay": false,
+        "mathErrors": 0
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "layout": {
+        "width": 390,
+        "scroll": 390,
+        "brokenImages": [],
+        "videos": 12,
+        "autoplay": false,
+        "mathErrors": 0
+      }
+    },
+    {
+      "links": [
+        {
+          "path": "/paper/",
+          "status": 200
+        },
+        {
+          "path": "/paper/pelagic.html",
+          "status": 200
+        },
+        {
+          "path": "/paper/pelagic.pdf",
+          "status": 200
+        },
+        {
+          "path": "/REPRODUCIBILITY.md",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S1.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S2.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S3.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S4.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S6.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S5.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S7.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S8.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S9.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S10.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S11.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/media/S12.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/results/benchmark.json",
+          "status": 200
+        },
+        {
+          "path": "/paper/results/README.md",
+          "status": 200
+        },
+        {
+          "path": "/paper/supplement.html",
+          "status": 200
+        },
+        {
+          "path": "/paper/RELEASE_PACKAGE.md",
+          "status": 200
+        },
+        {
+          "path": "/paper/source-map.md",
+          "status": 200
+        },
+        {
+          "path": "/paper/supplement.pdf",
+          "status": 200
+        },
+        {
+          "path": "/CITATION.cff",
+          "status": 200
+        },
+        {
+          "path": "/CITATION.bib",
+          "status": 200
+        },
+        {
+          "path": "/ASSET_PROVENANCE.md",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "id": "S1",
+      "duration": 16.033333,
+      "time": 16.033333,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "id": "S2",
+      "duration": 16,
+      "time": 16,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "id": "S3",
+      "duration": 14.033333,
+      "time": 14.033333,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "id": "S4",
+      "duration": 16.4,
+      "time": 16.4,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "id": "S5",
+      "duration": 18.033333,
+      "time": 18.033333,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "id": "S6",
+      "duration": 20.033333,
+      "time": 20.033333,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "id": "S7",
+      "duration": 14.033333,
+      "time": 14.033333,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "id": "S8",
+      "duration": 11.033333,
+      "time": 11.033333,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "id": "S9",
+      "duration": 11.033333,
+      "time": 11.033333,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "id": "S10",
+      "duration": 13.933333,
+      "time": 13.933333,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "id": "S11",
+      "duration": 9.033333,
+      "time": 9.033333,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "id": "S12",
+      "duration": 7.833333,
+      "time": 7.833333,
+      "width": 1280,
+      "height": 900,
+      "quality": {},
+      "error": null
+    },
+    {
+      "reducedMotion": true
+    },
+    {
+      "keyboardFocus": "A"
+    }
+  ],
+  "errors": [],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/152.0.7977.76",
+    "revision": "@06afeb20b5998e787a432fe536c662317517854",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "jsVersion": "15.2.124.19"
+  }
+}

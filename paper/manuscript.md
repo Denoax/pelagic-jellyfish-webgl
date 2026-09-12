@@ -143,6 +143,8 @@ effects. Idle adds small field-simulation passes, not another ocean.
 | Sanctuary | `Sanctuary`, `VentDynamics` | geology resources, plume, pooled illumination |
 | Idle | `OceanIdleGlass`, `IdleDisplacement` | two masks, two field targets, bounded choreography |
 
+Figure 2 summarizes the ownership boundaries and the convergence on one ocean image.
+
 ![Figure 2. Ownership and frame composition. Auxiliary field/output draws are not additional ocean scene renders.](figures/F02-system.png)
 
 # 5. Notation and spaces
@@ -215,6 +217,8 @@ the first fold term keeps the central spine on its simulated centerline.
 Free-edge terms add folding without moving the whole arm as an independent
 object. The procedure remains a surface approximation: intersections can occur
 because folded sheets have no volumetric collision solver.
+
+Figure 3 plots the mantle profile and transverse membrane sections directly from these functions.
 
 ![Figure 3. Mantle coordinates and folded section, plotted from the approved functions rather than traced from a screenshot.](figures/F03-anatomy.png)
 
@@ -474,6 +478,8 @@ histories seeded from a live neighboring strand. Near uses the approved
 implementation. Offscreen surface reconstruction is skipped while state needed
 for return is preserved.
 
+Figure 6 connects the threshold policy to recorded population assignments at three journey positions.
+
 ![Figure 6. Projected-size detail thresholds and actual population snapshots under identical viewport/DPR settings. N/M/F are near/medium/far counts. Different journey positions are not a forced same-pose tier ablation. CSS thresholds do not change with DPR.](figures/F06-lod.png)
 
 **Algorithm 3 — importance detail.**
@@ -655,6 +661,8 @@ than sliding an unrelated bright point across the floor. Channel-dependent
 distance attenuation blends toward directional water radiance. This is not
 volumetric multiple scattering or measured ocean image formation.
 
+Figure 9 shows the resulting sanctuary within the approved ocean rather than an isolated geology renderer.
+
 ![Figure 9. Approved sanctuary at the publication runtime: procedural geology, localized plume and restrained life.](figures/F09-sanctuary.jpg)
 
 # 17. Idle state and implicit liquid topology
@@ -705,6 +713,8 @@ current clean ocean color at clamped $u+\delta u$. Small normal-driven light
 and luminance adaptation support the material; they do not substitute for live
 image displacement. S8–S12 show formation, contact, interaction, minute change
 and dismissal at normal presentation size.
+
+Figure 10 samples contact and formation from S9; its complete motion remains the stronger temporal evidence.
 
 ![Figure 10. Normal-size clock contact and merge sequence. The supplement records actual timing and warns against interpreting the authored neck as conserved fluid.](figures/F10-contact.jpg)
 
@@ -886,6 +896,8 @@ retained in `results/benchmark.json`.
 
 **Table 4. Compatibility scope of this publication, not a general support promise.**
 
+Table 4 separates the actual backend from emulation and untested environments.
+
 | Environment | Scope |
 | --- | --- |
 | NVIDIA RTX 4070, Brave/Chromium, WebGL2 | actual graphics path used for primary captures and fresh results |
@@ -903,6 +915,8 @@ before/after may change several systems and cannot support a causal speedup
 claim without controlling those differences.
 
 **Table 5. Engineering questions and evidence interpretation.**
+
+Table 5 distinguishes the frozen diagnostic, a time course and historical comparisons.
 
 | Evidence | Observation / question | Limit |
 | --- | --- | --- |

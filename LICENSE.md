@@ -8,4 +8,4 @@ Copyright © 2026 Mani Marami Milani, for original contributions to the extent c
 
 Attribute original publication content to **Mani Marami Milani**, identify Pelagic, link the source and license, and indicate changes as required by CC BY 4.0. Scientific references and linked reference artwork are not included as newly licensed project assets. Generated fallback imagery is disclosed separately; the policy does not assert copyright where none exists.
 
-The complete CC text is the canonical [CC BY 4.0 legal code](https://creativecommons.org/licenses/by/4.0/legalcode.txt). Prepared locally under the author's resolved publication decisions; no remote publication has occurred.
+The complete CC license text is reproduced from the [SPDX CC-BY-4.0 record](https://github.com/spdx/license-list-data/blob/main/text/CC-BY-4.0.txt); the controlling license is the [CC BY 4.0 legal code](https://creativecommons.org/licenses/by/4.0/legalcode.en). Prepared locally under the author's resolved publication decisions; no remote publication has occurred.

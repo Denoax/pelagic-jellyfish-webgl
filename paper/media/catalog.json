@@ -134,7 +134,12 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Pulse, refill and coast",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    },
+    "cameraTelemetryNote": "The specimen angle/distance fixture in simulation is authoritative for the view. The legacy route-rig pose field is not the specimen camera transform."
   },
   {
     "id": "S2",
@@ -271,7 +276,12 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Body turn and appendage history",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    },
+    "cameraTelemetryNote": "The specimen angle/distance fixture in simulation is authoritative for the view. The legacy route-rig pose field is not the specimen camera transform."
   },
   {
     "id": "S3",
@@ -542,7 +552,11 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Activation and environmental decay",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    }
   },
   {
     "id": "S4",
@@ -813,7 +827,11 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Projected detail during camera travel",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    }
   },
   {
     "id": "S5",
@@ -1084,7 +1102,11 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Live bubble passage",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    }
   },
   {
     "id": "S6",
@@ -1355,7 +1377,11 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Four views and Explore",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    }
   },
   {
     "id": "S7",
@@ -1626,7 +1652,11 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Sanctuary plume",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    }
   },
   {
     "id": "S8",
@@ -1897,7 +1927,11 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Ocean-to-clock entry",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    }
   },
   {
     "id": "S9",
@@ -2168,7 +2202,11 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Contact and merge",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    }
   },
   {
     "id": "S10",
@@ -2439,7 +2477,11 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Pointer deformation and recovery",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    }
   },
   {
     "id": "S11",
@@ -2710,7 +2752,11 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Minute change",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    }
   },
   {
     "id": "S12",
@@ -2981,6 +3027,10 @@
     "errors": [],
     "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
     "claim": "Pinch dismissal",
-    "captureToolSha": "2859eac"
+    "captureToolSha": "2859eac8fa9e32a75059ffed2d7815c60c01070d",
+    "captureScriptsSha256": {
+      "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+      "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+    }
   }
 ]

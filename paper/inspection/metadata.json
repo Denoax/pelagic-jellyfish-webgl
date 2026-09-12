@@ -2429,5 +2429,13 @@
       "notes": "Browser emulation; not physical-device validation. Resize of the existing runtime, not fresh mobile initialization."
     }
   ],
-  "errors": []
+  "errors": [],
+  "seed": 7183,
+  "captureScript": "scripts/publication/inspection.mjs",
+  "captureScriptsSha256": {
+    "inspection": "2d0149ea2e117ea81cf31de552f8572a37e743f9e8363f4e1b59f00640c3053f",
+    "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+  },
+  "quality": "Approved runtime; DPR 1; bloom off",
+  "captureDate": "2026-09-12T00:16:31.957Z"
 }

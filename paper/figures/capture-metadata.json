@@ -279,5 +279,15 @@
       ],
       "transformation": "Reading order 2×2 layout; each complete 1280×900 browser frame scaled to 640×450; elapsed values in metadata and caption"
     }
-  ]
+  ],
+  "seed": 7183,
+  "captureScript": "scripts/publication/capture.mjs",
+  "captureScriptsSha256": {
+    "capture": "29ce07e4ac3b3088773460bea1b9fb89a81583b646da290c389cf766ba3bedb9",
+    "browser": "574137ea05d512db0b31ce3bd544a71458c381f204f5219601f49a164f600ba9"
+  },
+  "quality": "Approved runtime; DPR 1; bloom off",
+  "overviewCaptureDate": "2026-09-11T23:40:06.111Z",
+  "sanctuaryCaptureDate": "2026-09-11T23:40:24.489Z",
+  "dateProvenance": "Original capture-file modification timestamps, retained before publication processing"
 }

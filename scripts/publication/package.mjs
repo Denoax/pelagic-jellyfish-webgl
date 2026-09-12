@@ -23,9 +23,11 @@ writeFileSync(join(out,'site','index.html'),html);
 for(let n=1;n<=12;n++)for(const f of ['motion.mp4','frame-timestamps.json'])cp(join(evidence,'motion','S'+n,f),join(out,'supplemental-media','S'+n,f));
 for(let n=1;n<=12;n++)cp(`paper/media/S${n}.json`,join(out,'supplemental-media','S'+n,'metadata.json'));
 for(const f of ['LICENSE.md',...walk('LICENSES'),...walk('licenses'),'ASSET_PROVENANCE.md'])cp(f,join(out,'supplemental-media',f));
-for(const f of [...docs.filter(f=>!f.startsWith('paper/media/')&&!/\.(pdf|html|png|jpg|gif)$/.test(f)),...walk('scripts/publication'),'scripts/ocean-completion-probe.mjs','package.json','package-lock.json'])cp(f,join(out,'reproducibility',f));
+for(const f of [...docs,...walk('scripts/publication'),'scripts/ocean-completion-probe.mjs','package.json','package-lock.json'])cp(f,join(out,'reproducibility',f));
 const runtime=JSON.parse(readFileSync('paper/audit/runtime-manifest.json'));
-for(const f of runtime.files)cp(f.path,join(out,'reproducibility','runtime',f.path));
+for(const f of runtime.files){cp(f.path,join(out,'reproducibility','runtime',f.path));cp(f.path,join(out,'reproducibility',f.path));}
+for(const f of walk('public/paper'))cp(f,join(out,'reproducibility',f));
+cp('paper/audit/runtime-manifest.json',join(out,'reproducibility','runtime-manifest.json'));
 for(const f of ['LICENSE.md','ASSET_PROVENANCE.md',...walk('LICENSES'),...walk('licenses'),...walk('scripts/publication'),'scripts/ocean-completion-probe.mjs'])cp(f,join(out,'reproducibility','runtime',f));
 cp('paper/audit/runtime-manifest.json',join(out,'reproducibility','runtime','runtime-manifest.json'));
 writeFileSync(join(out,'reproducibility','runtime','SNAPSHOT.md'),'# Approved runtime snapshot\n\nApproved source: '+runtime.runtimeSha+'. No Git history is included. Run npm ci, then VITE_OCEAN_RELEASE=milestone-2 npm run build and npm run dev. The runtime-manifest.json hashes identify exact files. Publication capture scripts are supplied. Full historical parity tests require the original Git history; do not claim they passed in this snapshot merely because it builds.\n');

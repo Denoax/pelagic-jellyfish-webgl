@@ -16,6 +16,7 @@ for(const [schema,files]of [['motion',Array.from({length:12},(_,i)=>`paper/media
  for(const file of files){assert(validate(JSON.parse(readFileSync(file))),file+JSON.stringify(validate.errors));}
 }
 const manifest=JSON.parse(readFileSync(join(stage,'artifact-manifest.json')));
+const cc=readFileSync('LICENSES/CC-BY-4.0.txt','utf8');assert(cc.length>16000&&cc.includes('Section 8')&&cc.includes('Section 3'),'Complete CC BY legal text must be bundled');
 for(const f of manifest.files){const b=readFileSync(join(stage,f.path));assert.equal(b.length,f.bytes);assert.equal(createHash('sha256').update(b).digest('hex'),f.sha256,f.path);}
 const bad=[];const walk=d=>readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(d,e.name)):e.isFile()?[join(d,e.name)]:[]);
 for(const f of walk(join(stage,'site')).filter(f=>/\.(md|html|tex|json|bib|cff)$/.test(f))){const s=readFileSync(f,'utf8');if(/\/home\/mani|(?:localhost|127\.0\.0\.1):\d+|gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{30,}/.test(s))bad.push(f);}

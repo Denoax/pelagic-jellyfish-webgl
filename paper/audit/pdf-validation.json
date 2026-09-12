@@ -1,0 +1,48 @@
+[
+  {
+    "name": "pelagic",
+    "pages": 29,
+    "metadata": {
+      "format": "PDF 1.5",
+      "title": "Pelagic: A Real-Time Mathematical Rendering System for Procedural Jellyfish, Stateful Appendages, Underwater Optics, and Interactive Liquid Glass",
+      "author": "Mani Marami Milani",
+      "subject": "",
+      "keywords": "",
+      "creator": "LaTeX via pandoc",
+      "producer": "xdvipdfmx (0.1)",
+      "creationDate": "D:20260912004332-00'00'",
+      "modDate": "",
+      "trapped": "",
+      "encryption": null
+    },
+    "characters": 53116,
+    "contactSheets": [
+      "pelagic-pages-1.png",
+      "pelagic-pages-7.png",
+      "pelagic-pages-13.png",
+      "pelagic-pages-19.png",
+      "pelagic-pages-25.png"
+    ]
+  },
+  {
+    "name": "supplement",
+    "pages": 5,
+    "metadata": {
+      "format": "PDF 1.5",
+      "title": "Pelagic \u2014 Technical Supplement",
+      "author": "Mani Marami Milani",
+      "subject": "",
+      "keywords": "",
+      "creator": "LaTeX via pandoc",
+      "producer": "xdvipdfmx (0.1)",
+      "creationDate": "D:20260912004334-00'00'",
+      "modDate": "",
+      "trapped": "",
+      "encryption": null
+    },
+    "characters": 10218,
+    "contactSheets": [
+      "supplement-pages-1.png"
+    ]
+  }
+]

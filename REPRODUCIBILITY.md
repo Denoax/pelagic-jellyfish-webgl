@@ -6,6 +6,8 @@ Approved runtime: `bce3571b0300ecfe5dc6e5dd45f28a9cda57006e`.
 Publication branch: `publication-preprint-v1` (local until authorized).
 The release manifest records the paper/tool commit separately. Do not substitute the newer unapproved Asset2 environment or assume remote main contains this local package. The reproducibility ZIP includes an exact runtime snapshot under `runtime/`, with assets, lockfile, build entry points, notices and a hash manifest. It can build and run without access to an unpublished Git commit. Full historical parity tests still require the original Git history; the snapshot does not pretend to include it.
 
+The archive root also mirrors that source alongside the complete paper assets and publication tools, so both runtime and paper commands have their expected relative paths. The nested `runtime/` is a smaller, clearly separated build snapshot. For a history-free archive, run installation/build/hash verification from either snapshot root; do not run the historical test/parity commands below there. Those commands are for a full publication Git checkout with its recorded historical objects.
+
 ## Runtime
 
 Node 24.20.0 was used, with the committed lockfile. Three.js is pinned at 0.175.0; React is 19.2.0 and Vite 6.4.2. Do not upgrade packages for reproduction.
@@ -64,6 +66,7 @@ Install Pandoc 3.11, Tectonic 0.17.0, FFmpeg and librsvg (`rsvg-convert`) as sep
 node scripts/publication/figures.mjs
 node scripts/publication/inspection.mjs "$BASE_URL" "$EVIDENCE_DIR/inspection-final"
 node scripts/publication/curate-inspection.mjs "$EVIDENCE_DIR"
+node scripts/publication/metadata-provenance.mjs "$EVIDENCE_DIR"
 node scripts/publication/build-paper.mjs
 node scripts/publication/build-page.mjs
 ```
@@ -84,5 +87,20 @@ The preview prints a loopback address and serves the companion `/paper/`, a rend
 The media ZIP contains twelve MP4s, metadata and timestamp records, not raw browser profiles or thousands of intermediate JPEGs. The reproducibility ZIP contains publication tools, pinned manifests, fresh data, captions, instructions and the buildable runtime snapshot. The arXiv-ready source ZIP contains portable TeX/BibTeX, required figures and notices only. Preparation is not submission. `artifact-manifest.json` and `SHA256SUMS` identify exact files; ZIP CRC and extraction checks are part of local validation.
 
 ## Validation boundaries
+
+Publication validators are separate tools, not application dependencies. The review used Mermaid 12.0.0, jsdom 30.0.1, Ajv 8.20.0, cffconvert 2.0.0 and PyMuPDF 1.28.2. A separate tool directory and virtual environment keep the original application lockfile unchanged:
+
+```sh
+npm install --prefix ../publication-validators mermaid@12.0.0 jsdom@30.0.1 ajv@8.20.0
+python -m venv ../publication-pdf-tools
+../publication-pdf-tools/bin/pip install cffconvert==2.0.0 pymupdf==1.28.2
+../publication-pdf-tools/bin/cffconvert --validate -i CITATION.cff
+node scripts/publication/validate.mjs ../publication-validators ../publication-release-review
+node scripts/publication/verify-archives.mjs ../publication-release-review
+../publication-pdf-tools/bin/python scripts/publication/pdf-qa.py ../publication-pdf-review
+node scripts/publication/page-qa.mjs "$REVIEW_URL" ../publication-browser-review
+```
+
+Set `REVIEW_URL` to the loopback address printed by `preview.mjs`, with its trailing slash. PDF and archive checks require the Tectonic/Pandoc variables described above. The page check operates native video controls and waits for every clip to end; do not substitute a direct autoplay call that browser policy rejects. Validate again after regenerating packages, and visually inspect the rendered output as well as passing machine checks.
 
 Actual NVIDIA WebGL2 is the measured path. Desktop/narrow/portrait browser emulation is not physical-mobile testing. Hardware WebGPU, software WebGPU, Safari and Firefox remain NOT TESTED in this publication run. Historical reports may cover other experiments; their numbers are not substituted for fresh publication measurements. No benchmark here claims to fix the legacy full-ocean WebGPU problem.
