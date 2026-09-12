@@ -1,0 +1,54 @@
+{
+  "reference_file": "REF_00_ASSET2_ORIGINAL.png",
+  "dimensions": {
+    "width": 1672,
+    "height": 941,
+    "aspect": 1.7768331562167907
+  },
+  "linear_luminance": {
+    "median": 0.0028948341496288776,
+    "p90": 0.009287344291806221,
+    "p95": 0.01461283303797245,
+    "p99": 0.13705456256866455,
+    "fraction_below_0_01": 0.9117165135328903,
+    "fraction_below_0_02": 0.9611085122718883,
+    "center_mean": 0.013927998952567577,
+    "border_mean": 0.002999800257384777,
+    "center_border_ratio": 4.642975450875517
+  },
+  "screen_space_targets_normalized": {
+    "central_haze_window": {
+      "x0": 0.06578947368421052,
+      "y0": 0.09032943676939426,
+      "x1": 0.7535885167464115,
+      "y1": 0.8395324123273114
+    },
+    "hero_focus": {
+      "x0": 0.5382775119617225,
+      "y0": 0.361317747077577,
+      "x1": 0.8343301435406698,
+      "y1": 0.7810839532412327
+    },
+    "particle_connector": {
+      "x0": 0.20933014354066987,
+      "y0": 0.30818278427205104,
+      "x1": 0.5741626794258373,
+      "y1": 0.536663124335813
+    },
+    "floor_band_y_start": 0.5685441020191286
+  },
+  "art_hierarchy": [
+    "hero jellyfish",
+    "secondary jellyfish",
+    "central atmospheric haze + particle current",
+    "spire silhouettes",
+    "tiny benthic light accents",
+    "floor surface detail"
+  ],
+  "depth_layer_contract": {
+    "near": "real current geology; dark; selective local reveal",
+    "mid": "cheap 3D proxy spires; silhouette first",
+    "far": "very cheap silhouettes; low contrast; fogged",
+    "extreme_far": "nothing except abyss backdrop/haze"
+  }
+}

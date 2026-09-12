@@ -1,5 +1,14 @@
 # Prototype Instructions
 
+## Current release authorization: approved Asset2 publication
+
+Mani approved Asset2 `b4ca42faa3b80e465d39995ebb0537a2aa948148` for main and
+GitHub Pages, superseding the earlier publication-only runtime freeze and
+no-push/deploy restriction for this release. Preserve the README publication,
+exact approved Asset2 runtime and production review-control guards. No redesign,
+new milestone or M8 is authorized. Historical publication metrics stay pinned
+to M7; do not relabel them as Asset2 results.
+
 ## Current publication direction: README salvage (2026-09-12)
 
 README.md is the publication, not a short landing page for a separate paper

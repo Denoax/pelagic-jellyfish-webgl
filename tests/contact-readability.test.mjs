@@ -4,10 +4,11 @@ import {readFileSync} from './release-scope.mjs';
 import {execFileSync} from 'node:child_process';
 import {entryDrop,exitDrop,contactSites} from '../src/scene/glass/LiquidChoreography.js';
 import {IdleLiquidState,DROPLETS} from '../src/scene/glass/IdleLiquidState.js';
+import {withoutAsset2Seams} from './asset2-scope.mjs';
 const a={x:.3,y:.4,surfaceX:.3,surfaceY:.35,start:.55,side:-1};
 test('M7.2 preserves every runtime file outside three authorized glass paths',()=>{
  const sha='bfbe9837f4e0587662f79d481af8e7b1dcb94156';const allowed=new Set(['src/scene/glass/LiquidChoreography.js','src/scene/glass/OceanIdleGlass.js','src/scene/glass/IdleLiquidState.js']);
- for(const file of execFileSync('git',['ls-tree','-r','--name-only',sha,'src'],{encoding:'utf8'}).trim().split('\n'))if(!allowed.has(file)&&!file.endsWith('AGENTS.md'))assert.deepEqual(readFileSync(file),execFileSync('git',['show',sha+':'+file]),file);
+ for(const file of execFileSync('git',['ls-tree','-r','--name-only',sha,'src'],{encoding:'utf8'}).trim().split('\n'))if(!allowed.has(file)&&!file.endsWith('AGENTS.md'))assert.equal(withoutAsset2Seams(readFileSync(file,'utf8')),execFileSync('git',['show',sha+':'+file],{encoding:'utf8'}),file);
  const text=readFileSync('src/scene/glass/OceanIdleGlass.js','utf8'),old=execFileSync('git',['show',sha+':src/scene/glass/OceanIdleGlass.js'],{encoding:'utf8'});
  const minute=s=>s.slice(s.indexOf('    const digits=clockDigits'),s.indexOf('    const probe=this.maskProbe'));
  assert.equal(minute(text),minute(old),'Typography and independent masks unchanged');

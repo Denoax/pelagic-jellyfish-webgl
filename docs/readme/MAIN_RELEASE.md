@@ -1,5 +1,8 @@
 # Approved main / Pages integration
 
+Historical record of `990a4cf`. The subsequent [approved Asset2 release](ASSET2_RELEASE.md)
+supersedes this release's exclusion of the Asset2 environment.
+
 Mani explicitly approved merging/pushing the README to main and publishing
 the artwork on GitHub Pages. This supersedes the local-only restriction for
 this release, not the prohibition on unapproved later artwork.

@@ -48,7 +48,7 @@ specific to the tested hardware and backend.
 | Runtime | Approved M7 bce3571b0300ecfe5dc6e5dd45f28a9cda57006e; Three.js 0.175.0 | Immutable source links and byte guard |
 | Measurement | Actual NVIDIA WebGL2, 1280×900, DPR 1, bloom off | Seven retained capture-free runs |
 
-**README.md is the publication.** No separate paper website is required. The main-branch release combines this approved M7 artwork and README with the existing production safeguards that hide review controls. The equations, captures and measurements remain pinned to the approved runtime above; three runtime files have only exact-tested release-control guards. Later Asset2 is unapproved and excluded from the release, method and performance results.
+**README.md is the publication.** No separate paper website is required. The live release includes Mani's approved **Asset2 background** (`b4ca42faa3b80e465d39995ebb0537a2aa948148`) with production safeguards that hide review controls. This publication's equations, captures and measurements remain pinned to the M7 runtime above; they are not measurements of the newer environment. See the [Asset2 implementation report](docs/implementation/asset2-background/REPORT.md) for its separate visual comparisons, performance results and explicitly unmet numerical targets, and the [release record](docs/readme/ASSET2_RELEASE.md) for integration details.
 
 ## Contributions
 

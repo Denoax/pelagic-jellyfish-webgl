@@ -1,6 +1,6 @@
 // Main already shipped these review-control guards. Preserve them when merging
-// approved M7. Historical byte locks may remove ONLY this enumerated release
-// delta; the complete normalized files must still equal approved M7 exactly.
+// approved Asset2. Historical byte locks may remove ONLY this enumerated release
+// delta; the complete normalized files must still equal approved Asset2 exactly.
 import {readFileSync as read} from 'node:fs';
 import {relative,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -24,5 +24,6 @@ const changes={
 };
 export const releasePaths=Object.keys(changes);
 function normalize(path,text){for(const [now,before]of changes[path]||[]){assert.equal(text.split(now).length,2,'Exact release guard: '+path);text=text.replace(now,before);}return text;}
-for(const path of releasePaths)assert.equal(normalize(path,read(path,'utf8')),execFileSync('git',['show',`bce3571b0300ecfe5dc6e5dd45f28a9cda57006e:${path}`],{encoding:'utf8'}),'Release-only delta: '+path);
+const approved='b4ca42faa3b80e465d39995ebb0537a2aa948148';
+for(const path of execFileSync('git',['ls-tree','-r','--name-only',approved,'src'],{encoding:'utf8'}).trim().split('\n').filter(p=>!p.endsWith('AGENTS.md')))assert.equal(normalize(path,read(path,'utf8')),execFileSync('git',['show',`${approved}:${path}`],{encoding:'utf8'}),'Approved Asset2 plus release-only delta: '+path);
 export function readFileSync(path,options){const key=relative(resolve('.'),path instanceof URL?fileURLToPath(path):resolve(path));if(!changes[key])return read(path,options);const text=normalize(key,read(path,'utf8'));return options==='utf8'||options?.encoding==='utf8'?text:Buffer.from(text);}

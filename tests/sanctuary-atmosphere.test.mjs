@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
+import {withoutAsset2Seams} from './asset2-scope.mjs';
 import {Scene} from 'three/webgpu';
 import {gullyCenter,gullyDepth,floorHeight,basinGeometry,sanctuaryLayout,HERO} from '../src/scene/sanctuary/geology.js';
 import {DIFFUSE} from '../src/scene/sanctuary/VentDynamics.js';
@@ -40,6 +41,6 @@ test('new life shares bounded current, discards background debt, reuses resource
 test('M6.2 leaves plume, thermal optics, renderer, water and application wiring intact',()=>{
  // HeroScene's sole M6.6.1 input-boundary addition is exact-source checked in idle-input-regression.
  for(const file of ['src/scene/sanctuary/VentDynamics.js','src/scene/sanctuary/VentParticles.js','src/scene/sanctuary/ThermalShimmer.js','src/scene/PelagicEnvironment.js']){
-  assert.equal(readFileSync(new URL('../'+file,import.meta.url),'utf8'),execFileSync('git',['show',`cb46120:${file}`],{encoding:'utf8'}),file);
+  assert.equal(withoutAsset2Seams(readFileSync(new URL('../'+file,import.meta.url),'utf8')),execFileSync('git',['show',`cb46120:${file}`],{encoding:'utf8'}),file);
  }
 });
