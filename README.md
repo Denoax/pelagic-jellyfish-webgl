@@ -10,9 +10,9 @@
 
 </div>
 
-<img src="docs/readme/hero.gif" width="100%" alt="Actual browser montage: luminous jellyfish, travelling midwater, dark hydrothermal sanctuary, and the live-ocean liquid clock.">
+<img src="docs/readme/hero.gif" width="100%" alt="Historical M7 browser montage: luminous jellyfish, midwater, pre-Asset2 sanctuary, and live-ocean liquid clock; not current background imagery.">
 
-*Four excerpts from the existing approved-runtime recordings, edited in that order; not one continuous camera take. All motion on this page is actual browser output. Diagrams are labeled separately.*
+*Historical M7 montage (`bce3571`): four browser excerpts, not one continuous camera take. The animal and liquid behavior remain current; the sanctuary lighting/background shown here predates the deployed Asset2 environment. See the Live Demo for current appearance. All motion on this page is actual browser output; diagrams are labeled separately.*
 
 ## Abstract
 
@@ -23,6 +23,10 @@ systems while preserving an art-directed jellyfish identity. Its implementation
 combines a procedural mantle and folded oral membranes, pulse-coupled locomotion,
 persistent constrained appendages, bounded world-space currents, projected-size
 population detail, and an input-driven six-degree-of-freedom camera journey.
+The deep environment combines retained basalt geology with shared mid/far spire
+proxies, world-anchored blue radiance, opaque-only extinction and material-space
+grounding. One existing animal-light owner also modulates local geological
+visibility and particulate presentation without changing the water simulation.
 A shared optical compositor samples one live ocean image for refractive bubbles,
 localized thermal shimmer and an interactive liquid clock. The clock combines
 authored implicit-surface choreography with a low-resolution persistent
@@ -30,8 +34,10 @@ spring/advection field. This paper describes the actual Three.js 0.175.0
 implementation, distinguishes code-equivalent equations from abstractions and
 artistic heuristics, and links the methods to reproducible source locations.
 The accompanying artifact includes browser motion evidence, deterministic tests,
-historical rejected approaches and fresh frame-interval measurements of the
-approved runtime. The work is a systems and visual-engineering study, not a
+historical rejected approaches, retained M7 measurements and a separately
+identified Asset2 frame-interval comparison. Current implementation links target
+published runtime `f926a98`; earlier recordings retain their original provenance.
+The work is a systems and visual-engineering study, not a
 fluid–structure interaction model, calibrated biological simulation or claim of
 algorithmic priority. Image-space optics cannot recover unseen radiance; liquid
 topology is not mass-conserving; performance and compatibility evidence remain
@@ -43,12 +49,14 @@ specific to the tested hardware and backend.
 | --- | --- | --- |
 | Organism | Procedural bell/folded arms, pulse-coupled velocity, persistent constrained chains | Geometry and motion below |
 | Water/population | Bounded current/wakes, layered snow, projected-size detail | Field equations and LOD thresholds |
+| Deep environment | Basalt sanctuary; 30 mid/far spire instances in four batches; analytic radiance/extinction; one reused light | Current environment method and Asset2 comparison below |
 | Observer | Accepted M5.2 bounded progress → baked position/quaternion; four tracks and Explore | Camera method below |
 | Optics | One clean live ocean color/depth source; world bubbles, thermal domains and screen-space liquid | Shared compositor and optical limits |
-| Runtime | Approved M7 bce3571b0300ecfe5dc6e5dd45f28a9cda57006e; Three.js 0.175.0 | Immutable source links and byte guard |
-| Measurement | Actual NVIDIA WebGL2, 1280×900, DPR 1, bloom off | Seven retained capture-free runs |
+| Runtime | Published f926a98379307cf9431511514bc7c993a288d9c4; Three.js 0.175.0 | Approved Asset2 plus exact-tested production review guards |
+| Measurement | Actual NVIDIA WebGL2, 1280×900, DPR 1, bloom off | Six retained M7/Asset2 pairs; seven historical M7-only runs, separately labeled |
+| Validation | 137 tests passing on current main | Deterministic, packaging, historical parity and exact release-delta checks |
 
-**README.md is the publication.** No separate paper website is required. The live release includes Mani's approved **Asset2 background** (`b4ca42faa3b80e465d39995ebb0537a2aa948148`) with production safeguards that hide review controls. This publication's equations, captures and measurements remain pinned to the M7 runtime above; they are not measurements of the newer environment. See the [Asset2 implementation report](docs/implementation/asset2-background/REPORT.md) for its separate visual comparisons, performance results and explicitly unmet numerical targets, and the [release record](docs/readme/ASSET2_RELEASE.md) for integration details.
+**README.md is the publication.** Its current-system analysis describes [published runtime f926a98](https://github.com/Denoax/pelagic-jellyfish-webgl/tree/f926a98379307cf9431511514bc7c993a288d9c4). Asset2 is the production environment, not an optional experiment. The animal, locomotion, camera and M7 optical mathematics remain unchanged from M7; source links below point to current code. Earlier media and benchmark sets stay explicitly historical. The [Asset2 implementation report](docs/implementation/asset2-background/REPORT.md) preserves the original measurements and unmet numerical targets; its review-only status describes the earlier handoff, superseded by the [approved release record](docs/readme/ASSET2_RELEASE.md).
 
 ## Contributions
 
@@ -56,7 +64,7 @@ These are contributions of the implementation and documentation, not claims that
 
 1. **A continuous procedural animal.** Bell, rim, folded oral membranes and reconstructed tentacles preserve a coordinated identity through contraction, recovery, turning and changing scale. Geometry contracts remain distinct from the controller moving the animal.
 2. **Persistent appendage history.** Stateful chains carry inertia through body transforms instead of resetting to a fresh wobble each frame. Their constrained points feed both sheets and tubes. Detail transitions reuse that state.
-3. **A connected, bounded environment.** Marine snow, localized pulse wakes, activation and neighbor response share world-space current information. Pools and finite lifetimes make the response temporary rather than a permanent halo.
+3. **A connected, bounded environment.** Marine snow, localized pulse wakes, activation and neighbor response share world-space current information. Pools and finite lifetimes make the response temporary rather than a permanent halo. The production background observes that state: world-space presentation envelopes and a reused animal light connect particulate and geology, while shared spires and distance/footprint fades conceal the finite basin without another ocean render.
 4. **Population detail with hysteresis.** Projected bell diameter chooses near, medium and far representations. Persistent resources and adjacent-tier morphing separate visual importance from resource lifetime, avoiding repeated geometry creation at thresholds.
 5. **One clean live ocean for multiple optical effects.** Bubbles, thermal shimmer and liquid-clock output sample the same source image. The compositor neither recursively reads its own output nor maintains a duplicate ocean.
 6. **A documented ocean-to-glass transition.** Authored implicit contact, merging and pinch choreography combines with a small persistent displacement field. Browser motion, code-mapped mathematics and explicit optical limits make the method inspectable.
@@ -93,7 +101,9 @@ These are contributions of the implementation and documentation, not claims that
 Pelagic presents a quiet underwater scene rather than a conventional portfolio
 of interface panels. Jellyfish move through open water, an input-driven camera
 visits several compositions, a brief bubble passage bends the live image, and a
-deep basalt sanctuary supplies a different scale of environmental detail.
+deep basalt sanctuary supplies a different scale of environmental detail. Shared
+mid/far spires enclose the background; a world-anchored atmospheric opening and
+bounded extinction reveal the floor selectively rather than exposing its edges.
 After inactivity, the same moving ocean becomes the source image for a liquid
 clock. These changes create a useful engineering problem: the visual identity
 must survive changes in scale, orientation, detail level and optical treatment.
@@ -109,9 +119,12 @@ The publication has a narrower claim than the ambition of the artwork. It
 documents one implemented system and its tradeoffs. It does not compare itself
 numerically with unrelated graphics demos, report user-study outcomes, or infer
 physical fidelity from resemblance. The authoritative runtime is commit
-`bce3571b0300ecfe5dc6e5dd45f28a9cda57006e`. Publication commits add explanation,
-measurement and packaging without changing that artwork. An unapproved later
-background experiment is discussed only as historical negative evidence below.
+`f926a98379307cf9431511514bc7c993a288d9c4`. Relative to the historical M7
+`bce3571` source, the active delta is three environment modules, five integration
+lines across `HeroScene`/`PelagicEnvironment`, and production-only review guards
+in `HeroScene`, `BubblePassage` and `PopulationDetail`. A fourth environment
+module is an unimported GTAO diagnostic, not part of production. No animal,
+camera-track, current solver or M7 optical equation was changed by this delta.
 
 The biological literature distinguishes mechanisms that a stylized animation
 can easily collapse into a single sinusoid. Costello and colleagues review
@@ -244,7 +257,7 @@ Figure 1 plots the mantle profile and transverse membrane sections directly from
 
 Here the surface outputs and $R,H,y_r$ use animal-local world units. Latitude, contraction, lobe phase and local current controls are dimensionless/art-scaled inputs; azimuth is radians. In the membrane equation $b$ is the sideways offset and $f$ the fold offset in the transported section frame; its $t$ is normalized arm length, not seconds.
 
-**Source:** [mantle.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/anatomy/mantle.js#L4-L54).
+**Source:** [mantle.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/anatomy/mantle.js#L4-L54).
 
 ## 2. Bell deformation, rowing cycle, and locomotion
 
@@ -330,7 +343,7 @@ publish pose and pulse for tissue and environmental observers
 
 In equations (3)–(6), $T_1,T_2,refill,coast,drift,motionScale$ are dimensionless authored controls; $scale$ is animal scale. $X,V,e,C_{ij}$ are world position, velocity, route error and route correction, respectively; $h$ is seconds. The distance $d$ in pair separation is between desired positions. Neither that correction nor the soft route tether is a measured hydrodynamic force.
 
-**Source:** [jellyMotion.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/jellyMotion.js#L10-L58) · [JellySchoolDirector.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/JellySchoolDirector.js#L209-L275).
+**Source:** [jellyMotion.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/jellyMotion.js#L10-L58) · [JellySchoolDirector.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/JellySchoolDirector.js#L209-L275).
 
 ## 3. Soft-body appendage dynamics
 
@@ -399,7 +412,7 @@ reconstruct folded membranes and tapered tubes; refresh needed normals
 
 All chain positions, rest lengths and named prediction increments are in the transported animal-local frame; damping $d_0$ and frame scale $\sigma$ are dimensionless. Here $r_i$ denotes the pointer increment, whereas the scalar $r$ in the projection is rest length. The notation is local to these two expressions.
 
-**Source:** [LivingAppendages.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/LivingAppendages.js#L888-L948) · [mantle.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/anatomy/mantle.js#L35-L54).
+**Source:** [LivingAppendages.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/LivingAppendages.js#L888-L948) · [mantle.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/anatomy/mantle.js#L35-L54).
 
 ## 4. Tissue optics and bioluminescence
 
@@ -442,7 +455,7 @@ calling the material physically accurate.
 
 Here $n_v$ and $v_{eye}$ are normalized view-space normal and eye direction. $d_t$ is dimensionless artistic optical thickness; $A$ is an absorption weight, $\alpha$ the alpha coefficient, and $opacity$ a material control. The exponential is Beer–Lambert-inspired, not a calibrated spectral extinction law.
 
-**Source:** [JellyTissue.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/materials/JellyTissue.js#L17-L39).
+**Source:** [JellyTissue.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/materials/JellyTissue.js#L17-L39).
 
 ## 5. Connected ocean current and wake field
 
@@ -484,9 +497,21 @@ Recycling occurs beyond a zero-opacity boundary and fades back in. A separate
 bounded fleck pool follows the same field. S3 shows the local activation
 response and decay; sparse highlights must remain subordinate to the animals.
 
+The production environment also wraps each snow layer's existing opacity node.
+World-space distance from a fixed corridor, the existing animal-light position,
+and outer-world visibility modulate appearance as depth increases. The three
+base multipliers are 0.65/0.40/0.35, with corridor gains 0.25/1.35/0.65 and a
+3.5-unit corridor radius. This is a presentation envelope, not a second flow
+field: particle counts, positions, advection, wake lifetimes and activation
+remain owned by M2. Some midwater particles become more visible locally; the
+whole population is not uniformly brightened. The retained S3 recording shows
+the unchanged activation mechanism before this background modulation.
+
+**Current presentation source:** [Asset2Environment.connect](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/environment/Asset2Environment.js#L120-L139) · [asset2Config.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/environment/asset2Config.js).
+
 Ambient $(x,y,z)$ and wake $X,X_e,r,R,R_0$ are world coordinates/lengths; $t,a,L$ are seconds, $\hat b$ is a unit world axis, and $k,E$ are bounded authored weights. The field supplies artist-scaled world-unit velocity to its observers, not a conserved momentum density.
 
-**Source:** [CurrentField.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/ocean/CurrentField.js#L17-L79) · [ConnectedOcean.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/ocean/ConnectedOcean.js) · [OceanSnow.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/ocean/OceanSnow.js).
+**Source:** [CurrentField.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/ocean/CurrentField.js#L17-L79) · [ConnectedOcean.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/ocean/ConnectedOcean.js) · [OceanSnow.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/ocean/OceanSnow.js).
 
 ## 6. Population and screen-space LOD
 
@@ -544,7 +569,7 @@ retain normal activation eligibility and approved near presentation
 
 $R$ in the projection includes animal world scale; $z$ is positive view depth. $H,D$ are CSS pixels, $Z$ is dimensionless zoom and $f$ is degrees. $d,k$ are detail coordinates (far 0, medium 1, near 2); the transition time uses seconds. Fixed per-ID quality allocation would leave a large distant-route animal crude merely because of its ID. The adopted importance adapter avoids that failure without replacing either route source.
 
-**Source:** [Importance.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/population/Importance.js#L4-L30) · [PopulationDetail.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/population/PopulationDetail.js) · [PopulationAnimal.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/population/PopulationAnimal.js).
+**Source:** [Importance.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/population/Importance.js#L4-L30) · [PopulationDetail.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/population/PopulationDetail.js) · [PopulationAnimal.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/population/PopulationAnimal.js).
 
 ## 7. Camera as a one-parameter journey
 
@@ -594,7 +619,7 @@ simulation steering or a new camera design.
 
 In equation (13), $s,e$ are dimensionless progress, $v$ progress/second, and $a_m$ progress/second². The baked polynomial uses segment-local $t\in[0,1]$, not elapsed seconds; $p,\Delta,m,n$ carry the units of the scalar being authored (world position or unwrapped angle). Playback samples $P(s)$ and $Q(s)$; it does not aim continuously at a moving animal.
 
-**Source:** [JourneyController.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/camera/JourneyController.js#L35-L58) · [CameraTrack.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/camera/CameraTrack.js#L31-L47).
+**Source:** [JourneyController.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/camera/JourneyController.js#L35-L58) · [CameraTrack.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/camera/CameraTrack.js#L31-L47).
 
 ## 8. Live refraction and bubble passage
 
@@ -652,7 +677,7 @@ For equations (15)–(16), $o,d,r$ belong to lens-local ray coordinates, $A,B,C$
 
 **World bubbles and idle liquid are different domains.** Bubbles use world-space analytic interfaces projected into the current ocean image. The clock is a screen-space implicit field. Both sample the clean live ocean, but neither reconstructs complete light transport.
 
-**Source:** [LiveOceanLens.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/glass/LiveOceanLens.js#L171-L259) · [BubblePopulation.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/glass/BubblePopulation.js).
+**Source:** [LiveOceanLens.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/glass/LiveOceanLens.js#L171-L259) · [BubblePopulation.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/glass/BubblePopulation.js).
 
 ## 9. Abyssal hydrothermal sanctuary
 
@@ -685,17 +710,78 @@ physics: no temperature, pressure or buoyancy conservation is solved.
 Localized thermal domains reuse the optical output. Their world-space pattern
 and bounded projection produce shimmer without a second scene render. A single
 pooled animal-derived lighting contribution changes owner through zero rather
-than sliding an unrelated bright point across the floor. Channel-dependent
-distance attenuation blends toward directional water radiance. This is not
-volumetric multiple scattering or measured ocean image formation.
+than sliding an unrelated bright point across the floor. The production
+`Asset2Environment` observes that same owner and wraps opaque sanctuary material
+nodes; it does not change the original geology, plume, animal state or global
+animal fog graph.
 
-Figure 6 shows the resulting sanctuary within the approved ocean rather than an isolated geology renderer.
+### Shared spires and finite-world concealment
 
-![Figure 6. Approved sanctuary at the publication runtime: procedural geology, localized plume and restrained life.](paper/figures/F09-sanctuary.jpg)
+Thirty mid/far proxy instances form six fitted clusters using four deterministic
+closed archetypes, four geometries and one shared material. There are 640 unique
+vertices and 9,456 instanced triangles when all proxies are submitted, with up
+to four added draw calls. Their roots intersect the retained floor-height
+function; the fit uses a frozen approved Drift pose, not a camera modification.
+These are deliberately inexpensive distant silhouettes, not inspectable new
+foreground rocks. Distance fade ends over 42–47 units before the unchanged
+48-unit far plane; approach fade withdraws a proxy as the visitor reaches
+0.8→0.4 of its fitted reference-center distance.
+
+Proxies depth-test but do not write depth, and render before transparent animals.
+Their contrast is mixed into the same analytic water radiance instead of stacking
+weak alpha on every concave triangle. Alpha remains for approach/world withdrawal.
+This avoids invisible depth occluders and triangle bands; it is not exact opaque
+occlusion or a replacement transparency solver.
+
+### Radiance, extinction and geological visibility
+
+The background uses a broad elliptical angular opening around a fixed world
+focus, three spatial noise scales, near-black blue radiance, three weak analytic
+shaft envelopes and static sub-code-value dither. It is not a reference-image
+texture, raymarched volume or second ocean. The depth blend spans 0.08–0.34 of
+the existing `Background.depth = progress^1.68`, roughly 22–53% of the journey.
+The original directional-water function still serves animal shading.
+
+Opaque geology receives RGB transmittance with core
+`exp(-distance * density * [1.1, 1, 0.92])`, multiplied by footprint, clip and
+world-visibility envelopes. Density combines 0.022 base, up to 0.012 near-floor,
+0.035 raised-geology and 0.030 far-distance contributions. Original M6 extinction
+remains underneath: this is layered art-directed attenuation, not one physical
+scattering integral. Contrast withdraws over 34–46 units. A square-footprint
+fade over 65–91 units complements the horizontal corner radius
+`R = 135.7645`; radius alone would expose the nearer edge of the 192×192 basin.
+Radial and below-floor fades also handle unrestricted Explore. They conceal a
+finite world rather than making an infinite seafloor.
+
+### One light, restrained life and material grounding
+
+The existing M6 light supplies position/power to a vertically elongated local
+pickup: Y distance is scaled by 0.4, range is `0.085R`, and squared falloff plus
+normal facing bounds the reveal. Outside it, original surface response is
+multiplied by `[0.57, 0.64, 0.70]`; inside it the multiplier can approach 3.5.
+This reveals mineral detail around the moving animal without adding lights or
+changing the light-selection loop. Ten existing benthic pinpoints retain their
+positions and colors, with 2.6× pre-extinction presentation gain; five colonies
+remain in place. No additional life population is created.
+
+Normal, height and bedding masks provide material-space grounding with up to
+0.35 extra darkening, over the original crevice treatment. There is no sampled
+GTAO in production. The rejected depth-based prototype and its unavailable
+multisample-depth readback are documented below. These lighting and atmosphere
+terms are heuristics, not GI, shadowed volumetric light or calibrated PBR.
+
+**Current background source:** [Asset2Environment.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/environment/Asset2Environment.js) · [asset2Layout.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/environment/asset2Layout.js) · [asset2Config.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/environment/asset2Config.js) · [PelagicEnvironment ownership](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/PelagicEnvironment.js#L533-L576).
+
+Figure 6 is retained as a **historical M7 geology view**, not the current
+background result. It documents the unchanged basin/plume structure; production
+now adds the enclosing spires, stronger blue-center hierarchy and selective
+visibility described above. The current appearance is available in the Live Demo.
+
+![Figure 6. Historical M7 sanctuary before Asset2: retained procedural geology, plume and life; not current background or lighting evidence.](paper/figures/F09-sanctuary.jpg)
 
 The plume uses world-space $X,V,U,U_f,V_d$; $h$ and particle age $a$ are seconds, while the numerical follow gains are artist-selected inverse-time scales. The thermal shimmer samples the shared live image, rather than making the particle field a fluid or temperature solver.
 
-**Source:** [VentDynamics.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/sanctuary/VentDynamics.js#L46-L69) · [Sanctuary.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/sanctuary/Sanctuary.js) · [materials.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/sanctuary/materials.js).
+**Source:** [VentDynamics.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/sanctuary/VentDynamics.js#L46-L69) · [Sanctuary.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/sanctuary/Sanctuary.js) · [materials.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/sanctuary/materials.js).
 
 ## 10. Ocean-to-glass liquid system
 
@@ -813,7 +899,7 @@ blend optical presentation without feeding output color back into state
 
 For equations (18)–(21), $u,\Delta,D$ are screen-UV coordinates/displacements with aspect correction where stated; $W,H$ are drawing-buffer pixels. $F,G,D_j,N_j,R_j,a,b,T,B,I$ are dimensionless fields or envelopes. $V,V_0,V_p$ are screen-space velocity controls, $h$ is seconds, and $i$ is the contact-site index. The entry-drop $t$ is local time after that site’s contact; its radius is in viewport-height units. These are optical/artistic units, not material mass or volume.
 
-**Source:** [OceanIdleGlass.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/glass/OceanIdleGlass.js#L114-L179) · [IdleDisplacement.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/glass/IdleDisplacement.js#L22-L38) · [LiquidChoreography.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/glass/LiquidChoreography.js#L40-L77).
+**Source:** [OceanIdleGlass.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/glass/OceanIdleGlass.js#L114-L179) · [IdleDisplacement.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/glass/IdleDisplacement.js#L22-L38) · [LiquidChoreography.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/glass/LiquidChoreography.js#L40-L77).
 
 ## Numerical robustness
 
@@ -850,7 +936,7 @@ on teardown: stop listeners, settle in-flight ownership, dispose once
 
 Here $A$ is accumulated seconds, $dt$ the admitted frame duration, $N$ the integer number of fixed steps and $h$ their duration. Fixed steps are per-subsystem policies: the whole application is not one globally bitwise-deterministic solve.
 
-**Source:** [IdleLiquidState.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/glass/IdleLiquidState.js#L21-L31) · [HeroScene.jsx](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/HeroScene.jsx).
+**Source:** [IdleLiquidState.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/glass/IdleLiquidState.js#L21-L31) · [HeroScene.jsx](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/HeroScene.jsx).
 
 ## Rendering architecture
 
@@ -860,11 +946,18 @@ flowchart TD
   Animal[Pulse and locomotion] --> Appendages[Persistent appendage chains]
   Animal --> Current[Bounded currents and localized wakes]
   Current --> Snow[Layered marine snow]
+  Animal --> Light[One pooled animal light]
+  Light --> Environment[Asset2 radiance, extinction and material grounding]
+  Environment --> Snow
+  Environment --> Spires[Four shared mid/far spire batches]
+  Spires --> Ocean
   Importance[Projected importance and hysteresis] --> Appendages
   Camera --> Ocean[One real ocean scene]
   Appendages --> Ocean
   Snow --> Ocean
   Sanctuary[Geology and local plume] --> Ocean
+  Environment --> Sanctuary
+  Environment --> Ocean
   Ocean --> Color[Clean live scene color]
   Pointer[Pointer and clock choreography] --> Field[Two small field targets]
   Field --> Output[Shared optical output]
@@ -884,7 +977,11 @@ the detail adapter evaluates screen importance. Connected-ocean state observes
 the animals and updates particulate. Tissue geometry and presentation then
 update, followed by the existing scene render. When optical effects are active,
 that render targets a clean color image and a shared output pass composes the
-effects. Idle adds small field-simulation passes, not another ocean.
+effects. `Asset2Environment`, owned by `PelagicEnvironment`, updates bounded
+shaft time and proxy visibility; its material nodes observe camera/light state
+in the same ocean draw. It owns the background radiance, shared spires and
+opaque/snow presentation wrappers, not their underlying simulations. Idle adds
+small field-simulation passes, not another ocean.
 
 **Table 2. Active responsibilities at the publication runtime.**
 
@@ -898,6 +995,7 @@ effects. Idle adds small field-simulation passes, not another ocean.
 | Camera | `JourneyController`, `TrackPlayer`, `ViewController` | scalar progress, baked poses, Explore state |
 | Optical output | `LiveOceanLens` | clean scene target and output material |
 | Sanctuary | `Sanctuary`, `VentDynamics` | geology resources, plume, pooled illumination |
+| Background presentation | `Asset2Environment`, `asset2Layout`, `asset2Config` | four shared proxy geometries, one material, original-node references, bounded time and presentation uniforms |
 | Idle | `OceanIdleGlass`, `IdleDisplacement` | two masks, two field targets, bounded choreography |
 
 One ocean image supplies all active optical effects. `LiveOceanLens` owns a
@@ -919,6 +1017,13 @@ scratch target is used during idle preparation and then disposed. Ready state
 is published after a valid first optical draw, not merely after allocating a
 material. Figure 9 diagrams source versus output ownership.
 
+The background adds **zero render targets, zero textures and zero ocean/output
+passes**. Its incremental work is up to four proxy draws plus shader arithmetic
+on existing surfaces/snow/background. It introduces no AO history. Original
+material/background nodes are retained for restoration on teardown. The four
+shared proxy geometries/material are disposed once. Performance costs below
+include this arithmetic and overdraw; zero extra passes does not mean free GPU work.
+
 ![Figure 9. Shared clean-image compositor. The output is never sampled as its own input; idle field ping-pong stores state, not ocean color.](paper/figures/F07-compositor.png)
 
 **Algorithm 4 — optical frame.**
@@ -939,8 +1044,11 @@ The locked software stack is React 19.2.0, Three.js 0.175.0 and Vite 6.4.2.
 The build uses the existing static client/Sites packaging path; publication
 does not modify its worker or deployment configuration. Scientific diagrams,
 plots, metadata and portable browser tools are publication additions only.
-The source manifest checks byte parity of runtime files against the approved
-commit rather than inferring parity from a successful build.
+The current release tests compare every approved Asset2 source file after
+reversing only explicitly enumerated production review guards; historical
+M1–M7 tests separately account for the five environment integration lines.
+The older publication source manifest still describes M7 and is not a
+current-main byte-identity check.
 
 The repository contains historical modules and assets that are no longer
 active. Import paths decide implementation truth. In particular, the old idle
@@ -949,7 +1057,7 @@ remain. The provenance audit separates active scanned albedo, archived models,
 generated graphics-recovery artwork, original publication captures and external
 reference-only material.
 
-**Source:** [HeroScene.jsx](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/HeroScene.jsx) · [LiveOceanLens.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/glass/LiveOceanLens.js) · [OceanIdleGlass.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/bce3571b0300ecfe5dc6e5dd45f28a9cda57006e/src/scene/glass/OceanIdleGlass.js).
+**Source:** [HeroScene.jsx](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/HeroScene.jsx) · [LiveOceanLens.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/glass/LiveOceanLens.js) · [OceanIdleGlass.js](https://github.com/Denoax/pelagic-jellyfish-webgl/blob/f926a98379307cf9431511514bc7c993a288d9c4/src/scene/glass/OceanIdleGlass.js).
 
 ## Engineering ablations / failed approaches
 
@@ -963,7 +1071,9 @@ These are development records, not controlled comparisons against other research
 | Repeated shelf primitive | Similar ledges remained obvious across close/medium views | Deterministic shelf-silhouette variation and shared batching, not additional rock count |
 | Separate idle canvas | It did not contain the current ocean color needed for refraction | Shared M7 scene target/output, with only small field-state ping-pong |
 | Idle-return geometry diagnosis | Malformed synthetic pointer coordinates were the earlier invalid state | Finite spatial-input boundary checks, not a final-geometry patch |
-| Asset2 / optional GTAO, review-only | Initial depth-fetch mismatch; corrected prototype returned identity AO and unhelpful depth | Not approved, not the README runtime, not a demonstrated AO improvement |
+| Optional GTAO prototype during Asset2 development | Initial depth-fetch mismatch; corrected prototype returned identity AO and sampled depth uniformly 1 | Rejected, unimported diagnostic; production retains material-space grounding, not GTAO |
+| Weak-alpha concave background proxies | Overlapping triangles exposed bands | Current proxies resolve contrast in radiance; alpha handles withdrawal, with no depth writing |
+| Low-frequency reference guide texture | Tested 0.12 weight gave no useful depth gain and slightly worse image error | Removed; current background is procedural and world-anchored |
 
 A connected-particulate visible/hidden ablation was not run for this
 publication; S3 is an activation time course, not that controlled comparison.
@@ -972,11 +1082,69 @@ only: it is neither a visual-quality score nor evidence of physically correct
 refraction. The comparison uses the existing review interface, not edited
 runtime source.
 
-The later Asset2 experiment retained a material-space approximation rather than useful GTAO. Its measurements are not substituted for the approved-runtime results. The earlier implementation records are preserved as evidence, not examples to recreate for this README.
+The approved Asset2 environment retains material-space grounding. The pinned
+WebGL2 multisample fallback resolved color, not the sampled depth needed by the
+GTAO experiment; fixing a GLSL type mismatch did not make the resulting white AO
+buffer useful. The two prototype targets and one-frame AO history are absent
+from production. See [GTAO experiment](docs/implementation/asset2-background/GTAO_PROTOTYPE.md).
+The retained layer ablations found the strongest qualitative depth gains in
+spires, haze and outer extinction; material grounding and shafts were subtler.
+These are recorded visual judgments, not isolated GPU timings or proof of exact
+reference matching.
 
 ## Performance
 
-The reused publication measurements run separately from screenshots, video capture,
+### Current Asset2 implementation: retained matched comparison
+
+The current environment was measured at runtime commit
+`99ac8336be832c18230dcadefd815308c6c83c8f`, carried unchanged through `b4ca42f`
+into published `f926a98`. The merge adds production review-control guards, not
+new visual algorithms. This is reused evidence for the same approved runtime
+implementation, **not a newly timed production deployment**. The
+[Asset2 performance report](docs/implementation/asset2-background/REPORT.md#performance)
+records these six baseline/candidate pairs; its local raw JSON was checked
+against this table. Raw Asset2 captures/timing files remain outside Git, so the
+report is the repository-accessible record, not a claim of a downloadable archive.
+
+**Table 3a. M7 versus approved Asset2 render-completion intervals, milliseconds.**
+
+| Scene | M7 median / p95 / max | Asset2 median / p95 / max | >50 ms M7 / Asset2 | End-frame draw calls M7 / Asset2 |
+| --- | --- | --- | --- | --- |
+| QA pose | 16.6 / 18.3 / 27.7 | 16.7 / 18.3 / 24.9 | 0 / 0 | 185 / 189 |
+| Journey | 15.4 / 22.2 / 31.0 | 16.7 / 20.8 / 27.6 | 0 / 0 | 188 / 191 |
+| Sanctuary | 16.7 / 17.8 / 27.4 | 16.7 / 18.0 / 21.1 | 0 / 0 | 184 / 188 |
+| Explore near | 16.7 / 18.1 / 25.7 | 16.7 / 18.1 / 26.4 | 0 / 0 | 167 / 171 |
+| Explore abyss | 16.7 / 18.3 / 25.2 | 16.7 / 18.1 / 25.3 | 0 / 0 | 143 / 143 |
+| Settled M7 idle | 16.7 / 17.9 / 28.5 | 16.7 / 18.0 / 24.4 | 0 / 0 | 186 / 190 |
+
+Both sides used RTX 4070 12 GB, i5-14600K, NVIDIA 610.57.04,
+Brave/Chromium 152.0.7977.76 and actual ANGLE NVIDIA WebGL2; viewport and
+drawing buffer 1280×900, DPR 1, exposure 0.94, bloom off and the same MSAA.
+Adaptive reduction was disabled by the existing DEV fixture. Each fresh-browser
+run warmed up for 12 seconds (28 for settled idle) and measured 30 seconds,
+without capture/encoding. The llama service remained running on both sides.
+These are frame intervals, not GPU timings; no repeated-trial confidence
+interval is claimed. Population phase can vary slightly with wall-clock scheduling.
+
+Journey median increased 1.3 ms while p95 decreased 1.4 ms: that is not a GPU
+speedup. Draw counts are end snapshots, not matched-population averages.
+Asset2's added owner bookkeeping averaged 0.0015–0.0023 ms; median/p95 rounded
+to zero at the timer's resolution and maximum was 0.1 ms. That does not measure
+shader cost. Native resize checks retained 75 GL textures, six framebuffers and
+four renderbuffers on both versions; four shared geometries were added. Three's
+reported texture counter rose on resize in both versions despite stable native
+handles. The report preserves that distinction rather than claiming all counters
+were unchanged. No resolution/quality reduction hides the added work.
+
+### Historical M7-only publication benchmark
+
+The following seven-case set and Figure 10 were measured at **M7 `bce3571`**,
+before Asset2. They remain useful for the unchanged systems and preserve the
+adverse bubble-passage interval, but are not current-environment results. In
+particular, the old bubble/manipulation cases do not supply missing Asset2
+measurements of those exact conditions.
+
+These reused M7 publication measurements ran separately from screenshots, video capture,
 encoding, builds and tests. The recorded quantity is the interval between
 completed asynchronous ocean-frame callbacks. It is not a GPU timestamp or a
 measurement of shader duration. The harness records its matching method and
@@ -997,12 +1165,12 @@ together. Adverse intervals remain in the data. A quiet repeated frame does not
 prove that an active transition is equally cheap. Conversely, a capture-induced
 stall is not silently used as evidence of ordinary runtime cost.
 
-Table 3 and Figure 10 are generated from the fresh benchmark record. They use
-the exact approved runtime and preserve all raw adverse samples. Measurements
+Table 3b and Figure 10 are generated from that historical M7 benchmark record.
+They preserve all raw adverse samples. Measurements
 are frame intervals, not GPU timings. No comparative performance claim against
 other projects is made.
 
-**Table 3. Fresh approved-runtime frame intervals (milliseconds).**
+**Table 3b. Historical M7 publication frame intervals (milliseconds), not Asset2.**
 
 | Scenario | Median | p95 | Maximum | >50 ms | Frames |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -1028,32 +1196,35 @@ that timing run; separate diagnostic population records must not be relabeled
 as simultaneous benchmark draw counts. Raw arrays and environment records are
 retained in [the raw benchmark](paper/results/benchmark.json).
 
-![Figure 10. Fresh publication-runtime median and p95 frame intervals. Labels identify scene and measurement conditions; no screenshot/video work runs during timing.](paper/figures/F12-performance.png)
+![Figure 10. Historical M7-only median and p95 frame intervals, not current Asset2 measurements. No screenshot/video work ran during timing.](paper/figures/F12-performance.png)
 
 ## Validation
 
-The source, capture and test records below belong to the approved publication runtime. This README conversion reruns the necessary build/tests/parity and byte guard; it reuses the earlier recordings and capture-free measurements. Those are different validation events.
-
-A clean dependency installation succeeded. The first pre-build suite passed
-129 of 130 tests; the remaining test required generated packaging output.
-Building first satisfied that prerequisite, after which all 130 existing tests
-passed. The approved-motion check covered 720 frames and 24 exact checkpoints;
-the legacy default-animal parity check covered 240 frames and eight checkpoints.
-These narrow checks establish their stated comparisons, not biological
-correctness or universal visual acceptance.
+Current main `f926a98` passes **137/137 tests**, rechecked during this README-only
+synchronization with the existing build output present. Its release also passed
+the production project-subpath build and both animal parity tools. The original
+M7 publication had 130 tests after build (129/130 before the packaging artifact
+existed); the Asset2 handoff had 135. Those historical counts are not relabeled
+as 137. Current release guards and Asset2 scope checks account for the combined
+suite. The [release record](docs/readme/ASSET2_RELEASE.md) separates integration
+checks from the [Asset2 validation campaign](docs/implementation/asset2-background/REPORT.md#validation).
 
 | Check | Evidence and scope |
 | --- | --- |
-| Full tests | 130 passing after the production build; no general npm test script is invented |
+| Full current tests | 137 passing with built packaging artifacts; no general npm test script is invented |
 | Approved motion parity | 720 frames / 24 exact checkpoints |
 | Default animal parity | 240 frames / eight geometry checkpoints and material response |
-| Runtime identity | 116 protected files compared byte-for-byte with approved source |
-| Native motion review | All 12 retained MP4s played to completion; no browser errors in the recorded gallery check |
-| Lifecycle footage | S8 entry, S9 contact, S10 pointer/recovery, S11 minute change, S12 pinch/exit |
+| Runtime identity | Current release tests reverse only enumerated production guards and compare all approved Asset2 source files; earlier 116-file M7 manifest remains historical |
+| Native motion review | Historical M7: 12 retained MP4s; Asset2: eight roughly 30-second clips and 54 review images checked in its local viewer; release: actual browser descent confirms 30 instances/four batches |
+| Lifecycle | Asset2: 20 idle cycles, all five modes, hidden-tab recovery and active resize; release: activation plus idle entry/return; historical S8–S12 retain M7 transition detail |
 | Ownership | One main renderer/context and one ocean render in the active source; extra field/output draws are explicitly counted separately |
 | Responsive evidence | Desktop/narrow/portrait browser inspection, not physical-device validation |
 
-No new 20-cycle or allocation-stability campaign was run for this documentation conversion. Earlier M7 reports contain lifecycle/resource tests on their named commits; they are not relabeled as fresh tests of another runtime. The current source retains bounded accumulators, persistent target ownership and serialized teardown. Those source contracts and the retained clips support narrower claims than a universal leak-free or crash-free guarantee.
+No new graphics benchmark, capture or 20-cycle campaign was run for this README
+edit. Asset2's existing lifecycle, pass-audit and native-resource records cover
+the approved environment; release checks cover the production integration.
+Bounded accumulators, persistent target ownership and serialized teardown remain
+current. Those results are narrower than a universal leak-free/crash-free claim.
 
 **Table 4. Compatibility scope of this publication, not a general support promise.**
 
@@ -1061,22 +1232,33 @@ Table 4 separates the actual backend from emulation and untested environments.
 
 | Environment | Scope |
 | --- | --- |
-| NVIDIA RTX 4070, Brave/Chromium, WebGL2 | actual graphics path used for primary captures and fresh results |
+| NVIDIA RTX 4070, Brave/Chromium, WebGL2 | actual path for Asset2 comparison and production release checks; M7 historical results labeled separately |
 | Narrow and 390×844 portrait viewports | browser emulation; not physical-mobile validation |
 | Hardware WebGPU full ocean | NOT TESTED in this publication; legacy full-ocean issue remains separate |
 | SwiftShader/software WebGPU | NOT TESTED in this publication unless an explicitly separate record is supplied |
 | Safari, Firefox, iOS/Android hardware | NOT TESTED |
 
-Four small inline GIFs make the methods visible without a separate reader site. Ten reused figures include generated diagrams, actual browser captures and a raw-data plot. The [capture catalog](paper/media/catalog.json) preserves renderer, viewport, drawing buffer, DPR, seed, phase and source timing; [README media provenance](docs/readme/media.json) records the exact excerpt and encoding. Original videos are approximately 30 observed browser frames/s, encoded at 30 fps with possible repetitions. The smaller GIFs are 8 fps publication previews, not a runtime frame-rate claim. Masters remain outside normal Git and no unissued remote media URL is invented.
+Four reused inline GIFs and ten figures remain from **M7 `bce3571`**. Anatomy,
+pulse, appendage, LOD, compositor and glass diagrams still describe unchanged
+code. Browser backgrounds and the performance plot are historical, not current
+Asset2 imagery/results; Figure 6 and the opening montage are explicitly labeled.
+The [capture catalog](paper/media/catalog.json) and [media provenance](docs/readme/media.json)
+retain their original SHA, viewport, seed, timing and encoding. Existing Asset2
+captures were inspected but are local, not tracked publication media; no broken
+external/local image link is substituted for them. Original videos are roughly
+30 observed browser frames/s, encoded at 30 fps with possible repetitions;
+the GIFs are 8 fps previews, not runtime frame-rate claims. No media was regenerated.
 
 ## Reproducibility
 
-The executable baseline is **bce3571b0300ecfe5dc6e5dd45f28a9cda57006e**. These commands select that immutable runtime, not an unspecified main branch. The documentation branch is local until authorized; the public demo may still show a different review release.
+The current published runtime is **f926a98379307cf9431511514bc7c993a288d9c4**.
+These commands select that immutable main/Pages release, including Asset2 and
+production guards, rather than the older M7 publication baseline.
 
 ```sh
 git clone https://github.com/Denoax/pelagic-jellyfish-webgl.git
 cd pelagic-jellyfish-webgl
-git switch --detach bce3571b0300ecfe5dc6e5dd45f28a9cda57006e
+git switch --detach f926a98379307cf9431511514bc7c993a288d9c4
 npm ci
 VITE_OCEAN_RELEASE=milestone-2 npm run build
 node --test tests/*.test.mjs
@@ -1085,7 +1267,12 @@ node scripts/check-default-animal.mjs
 npm run dev
 ```
 
-The clone/switch sequence requires the named commit to be available from the remote. This local review does not claim it has been published there. In the existing full publication checkout, skip clone/switch and use its byte-identical runtime. Do not substitute a different remote commit if the requested object is absent. Historical parity scripts require their original Git objects; a history-free runtime snapshot can build but cannot manufacture those comparisons.
+This commit is published on main. Use a full clone: historical parity scripts
+need their original Git objects; a history-free snapshot can build but cannot
+manufacture those comparisons. To reproduce Table 3b or the original paper,
+select historical `bce3571b0300ecfe5dc6e5dd45f28a9cda57006e` instead. Table 3a
+records Asset2 `99ac8336be832c18230dcadefd815308c6c83c8f` against that M7 baseline;
+it was not retimed at the release merge.
 
 Build before tests: the Sites packaging test reads generated output. The historical release flag selects the approved production path; its name does not mean the implementation ends at M2. Vite prints the local development address. `npm run preview` serves the built artwork; no paper route or PDF builder is needed to understand or run the system.
 
@@ -1097,7 +1284,11 @@ Build before tests: the Sites packaging test reads generated output. The histori
 | Camera modes | View → Documentary / Drift / Intimate / Deep / Explore | Existing world and accepted observer controls |
 | Normal liquid clock | Leave input inactive for 30 seconds | Reduced motion/readiness policy applies; pointer deforms, click/keyboard dismisses |
 
-Node 24.20.0 and the committed lockfile were used. Three.js is pinned to 0.175.0. Publication helper dependencies are separate from the application; no runtime package upgrade is needed. In the publication checkout, `node scripts/publication/source-manifest.mjs` verifies approved-file hashes.
+Node 24.20.0 and the committed lockfile were used. Three.js is pinned to 0.175.0.
+Publication helper dependencies are separate from the application. Current
+`node --test tests/*.test.mjs` includes exact Asset2/release scope checks.
+`scripts/publication/source-manifest.mjs` is an archived M7-only validator that
+also writes paper audit output; do not use it to certify current-main identity.
 
 The retained benchmark and motion tools accept an explicit local address and external evidence directory. They record scene state and timing separately; deterministic seeding does not make wall-clock browser scheduling bitwise repeatable. Never run recording/encoding concurrently with timing and report the result as capture-free. [REPRODUCIBILITY.md](REPRODUCIBILITY.md) retains optional tool details and archival paper-build instructions; this README already contains the complete method and runtime commands.
 
@@ -1115,6 +1306,18 @@ coupling, pressure solve, mass conservation, thermal transport or prediction
 of real vent behavior. Distance-dependent water appearance is not a validated
 participating-media reconstruction. Geological textures contribute surface
 detail without converting authored lighting into a measured BRDF.
+
+The approved background remains approximate: four reused proxy shapes withdraw
+before close inspection, original near-rock silhouettes remain angular, and
+non-depth-writing proxy composition is not exact geological occlusion. Analytic
+radiance/extinction and material grounding provide no multiple scattering,
+ray tracing, GI or functional GTAO. Approval does not imply numerical reference
+matching: the recorded low-frequency error improved 1.47% in the selected pose
+and 0.55% pooled over four phases, not the 30% target. Dark coverage was 84.63%
+versus the 87–94% target; center/border ratio 3.338 versus reference 5.227.
+Bottom-third edge density was 0.143282 versus reference 0.079099 and includes
+animal tentacles, so it is not a floor-only quality metric. See the retained
+[reference comparison](docs/implementation/asset2-background/REPORT.md#reference-match).
 
 Image-space optics have finite information. They cannot recover offscreen or
 occluded radiance. Transparent tissue lacks its own resolved depth layer.
@@ -1162,6 +1365,8 @@ The inherited clock can also appear stretched after a portrait resize; the retai
 | src/scene/camera/ | Input-driven journey and observer tracks |
 | src/scene/glass/ | Shared optical output and live-ocean liquid |
 | src/scene/sanctuary/ | Approved deep geology and vent presentation |
+| src/scene/environment/ | Current Asset2 background, spire layout and presentation configuration; unimported GTAO diagnostic is not production |
+| docs/implementation/asset2-background/ | Historical implementation, performance, ablation and validation records for the now-approved environment |
 | docs/readme/ | Small derived GIFs, provenance and README validation |
 | paper/figures/, media/, results/ | Reused source-linked figures, capture metadata and raw measurements |
 | paper/source-map.md | Equation-to-immutable-source index |
@@ -1225,18 +1430,25 @@ Refraction.” *ACM Transactions on Graphics* 24 (3): 1050–53.
 
 ## Citation
 
-Mani Marami Milani is the author. This is an independent technical manuscript in local review, not a conference acceptance or peer-reviewed publication. No DOI, affiliation or release date is invented. The runtime commit identifies the executable experiment separately from this README-only publication commit.
+Mani Marami Milani is the author. This is an independent technical manuscript,
+not a conference acceptance or peer-reviewed publication. No DOI, affiliation
+or release date is invented. This README revision describes published runtime
+`f926a98`; historical experiments retain their own commits. The documentation
+revision awaits review separately from the already-approved live artwork.
 
 ```bibtex
 @unpublished{maramimilani_pelagic,
   author = {Marami Milani, Mani},
   title = {{Pelagic}: A Real-Time Mathematical Rendering System for Procedural Jellyfish, Stateful Appendages, Underwater Optics, and Interactive Liquid Glass},
-  note = {Independent technical preprint, local-review edition; runtime bce3571b0300ecfe5dc6e5dd45f28a9cda57006e},
+  note = {Independent technical preprint; current-system runtime f926a98379307cf9431511514bc7c993a288d9c4; historical results identified separately},
   url = {https://github.com/Denoax/pelagic-jellyfish-webgl}
 }
 ```
 
-[CITATION.cff](CITATION.cff) supports repository-aware citation tools; [CITATION.bib](CITATION.bib) contains the same bibliographic identity.
+[CITATION.cff](CITATION.cff) and [CITATION.bib](CITATION.bib) retain the original
+publication metadata, including its historical runtime identification. They
+were not rewritten for this README-only synchronization; use the current-system
+runtime note above when citing this revision.
 
 ## Licensing and asset provenance
 
