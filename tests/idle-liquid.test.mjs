@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync} from './release-scope.mjs';
 import {execFileSync} from 'node:child_process';
 import {IdleLiquidState,fieldSize,validPoint,clockDigits,DROPLETS} from '../src/scene/glass/IdleLiquidState.js';
 import {m7Paths} from './m7-scope.mjs';

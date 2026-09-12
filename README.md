@@ -48,7 +48,7 @@ specific to the tested hardware and backend.
 | Runtime | Approved M7 bce3571b0300ecfe5dc6e5dd45f28a9cda57006e; Three.js 0.175.0 | Immutable source links and byte guard |
 | Measurement | Actual NVIDIA WebGL2, 1280×900, DPR 1, bloom off | Seven retained capture-free runs |
 
-**README.md is the publication.** No separate paper website is required. The live demo link points to the separately published artwork, not a promise that Pages currently serves this local publication baseline. Later Asset2 is unapproved and excluded from the final method and performance results.
+**README.md is the publication.** No separate paper website is required. The main-branch release combines this approved M7 artwork and README with the existing production safeguards that hide review controls. The equations, captures and measurements remain pinned to the approved runtime above; three runtime files have only exact-tested release-control guards. Later Asset2 is unapproved and excluded from the release, method and performance results.
 
 ## Contributions
 
@@ -1253,4 +1253,4 @@ textures and archived models retain their own terms. This policy does not
 relicense external research material. Scientific figures from other authors
 are linked or cited, not copied into the publication's original figure set.
 
-See [LICENSE.md](LICENSE.md), the complete [MIT](LICENSES/MIT.txt) and [CC BY 4.0](LICENSES/CC-BY-4.0.txt) texts, [ASSET_PROVENANCE.md](ASSET_PROVENANCE.md), and [CONTRIBUTING.md](CONTRIBUTING.md). This documentation does not relicense third-party fonts, Aurelia code, scans or reference material. README preparation has not pushed, merged, deployed, created a release or modified Pages.
+See [LICENSE.md](LICENSE.md), the complete [MIT](LICENSES/MIT.txt) and [CC BY 4.0](LICENSES/CC-BY-4.0.txt) texts, [ASSET_PROVENANCE.md](ASSET_PROVENANCE.md), and [CONTRIBUTING.md](CONTRIBUTING.md). This documentation does not relicense third-party fonts, Aurelia code, scans or reference material. Main/Pages publication was explicitly authorized after README review; no GitHub release, DOI or archival submission is implied.

@@ -338,7 +338,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
         if (populationRequested) {
           const { PopulationDetail } = await import('./population/PopulationDetail.js');
           if (disposed) return;
-          population = new PopulationDetail(app, environment, appendages, { reducedMotion, mobile: isMobile, chamber: query.get('specimen') === '1' });
+          population = new PopulationDetail(app, environment, appendages, { reducedMotion, mobile: isMobile, chamber: import.meta.env.DEV && query.get('specimen') === '1', reviewControls: import.meta.env.DEV });
         }
         updateScrollTarget();
         window.addEventListener("scroll", updateScrollTarget, {
@@ -458,11 +458,11 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
         if (bubblesRequested) {
           const { BubblePassage } = await import('./glass/BubblePassage.js');
           if (disposed) return;
-          bubblePassage = new BubblePassage(app, connectedOcean?.field, appendages);
-          if (query.get('bubbleReview') === '1') bubblePassage.reviewAge = 0;
+          bubblePassage = new BubblePassage(app, connectedOcean?.field, appendages, { reviewControls: import.meta.env.DEV });
+          if (import.meta.env.DEV && query.get('bubbleReview') === '1') bubblePassage.reviewAge = 0;
           liveLens = bubblePassage.lens;
           liveLens.attachThermal(environment.sanctuary.thermal);
-          window.__BUBBLE_PASSAGE__ = {
+          if (import.meta.env.DEV) window.__BUBBLE_PASSAGE__ = {
             state: () => bubblePassage.state(),
             enable: value => { bubblePassage.enabled = Boolean(value); bubblePassage.update(0, scrollProgress); },
             cost: () => bubblePassage.cpu.slice(),
@@ -508,7 +508,7 @@ export function HeroScene({ reducedMotion = false, onStatusChange, onViewReady, 
           if (disposed) return;
           const warmup = await preparePopulationPassage(renderer, app.scene, app.camera, bubblePassage);
           if (disposed) return;
-          window.__POPULATION__.warmup = warmup;
+          if (import.meta.env.DEV) window.__POPULATION__.warmup = warmup;
         }
         // Use the validated direct path on both backends. The inherited MRT
         // bloom pipeline is not a requirement for tissue glow and must not

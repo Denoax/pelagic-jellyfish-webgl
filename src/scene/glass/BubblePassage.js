@@ -6,7 +6,7 @@ import { LiveOceanLens } from './LiveOceanLens.js';
 // Presentation adapter: cheap instanced films + bounded slots in the accepted M3
 // compositor. Never writes the camera, animals, current field or journey.
 export class BubblePassage {
-  constructor(app, field, tissues) {
+  constructor(app, field, tissues, { reviewControls = false } = {}) {
     this.app = app; this.field = field; this.tissues = tissues;
     this.population = new BubblePopulation({ narrow: app.camera.aspect < .85 });
     this.lens = new LiveOceanLens(app.renderer, app.camera, { bubbleCount: PLUME.heroes });
@@ -43,8 +43,10 @@ export class BubblePassage {
     this.metrics = { duration: 0, ambientSeconds: 0, heroSeconds: 0, peakAmbient: 0, peakHeroes: 0 };
     this.onKey = event => { if (event.code === 'KeyB' && !event.ctrlKey && !event.metaKey && !event.target.closest?.('input,textarea,select')) this.reviewAge = 0; };
     this.onWheel = () => { this.reviewAge = null; };
-    window.addEventListener('keydown', this.onKey);
-    window.addEventListener('wheel', this.onWheel, { passive: true });
+    if (reviewControls) {
+      window.addEventListener('keydown', this.onKey);
+      window.addEventListener('wheel', this.onWheel, { passive: true });
+    }
   }
   place(b, random) {
     const camera = this.app.camera;

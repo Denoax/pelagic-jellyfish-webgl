@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync} from './release-scope.mjs';
 import {spawnSync} from 'node:child_process';
 import {sanctuaryLayout,chimneyGeometry,basinGeometry,FLOOR_Y} from '../src/scene/sanctuary/geology.js';
 import {VentDynamics,AnimalLight} from '../src/scene/sanctuary/VentDynamics.js';

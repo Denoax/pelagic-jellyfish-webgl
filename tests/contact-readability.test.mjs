@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync} from './release-scope.mjs';
 import {execFileSync} from 'node:child_process';
 import {entryDrop,exitDrop,contactSites} from '../src/scene/glass/LiquidChoreography.js';
 import {IdleLiquidState,DROPLETS} from '../src/scene/glass/IdleLiquidState.js';
