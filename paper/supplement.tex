@@ -65,6 +65,12 @@
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% Publication typography only; explicit figure numbers come from the manuscript.
+\usepackage{caption}
+\captionsetup{labelformat=empty}
+\usepackage{etoolbox}
+\BeforeBeginEnvironment{Shaded}{\begin{samepage}}
+\AfterEndEnvironment{Shaded}{\end{samepage}}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -273,14 +279,17 @@ multisample fallback resolves color with \texttt{COLOR\_BUFFER\_BIT}
 only.
 
 \textbf{Evidence:} Asset2 \texttt{GTAO\_PROTOTYPE.md} at documentation
-commit \texttt{b4ca42faa3b80e465d39995ebb0537a2aa948148}; its retained
-range/readback record. The main image-metric improvement was about
-1.47\%, not the requested 30\%. Pooled phases improved only about
-0.55\%, with an adverse phase retained. \textbf{Replacement:} the
-candidate retained material-space approximation, not GTAO.
-\textbf{Conclusion boundary:} those timings do not measure useful AO.
-Asset2 is not approved and is excluded from primary publication frames
-and fresh results.
+commit:
+
+\texttt{b4ca42faa3b80e465d39995ebb0537a2aa948148}
+
+Its retained range/readback record documents the failed depth
+experiment. The main image-metric improvement was about 1.47\%, not the
+requested 30\%. Pooled phases improved only about 0.55\%, with an
+adverse phase retained. \textbf{Replacement:} the candidate retained
+material-space approximation, not GTAO. \textbf{Conclusion boundary:}
+those timings do not measure useful AO. Asset2 is not approved and is
+excluded from primary publication frames and fresh results.
 
 \section{S15. Optical information
 boundary}\label{s15.-optical-information-boundary}

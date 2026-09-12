@@ -1,0 +1,6 @@
+% Publication typography only; explicit figure numbers come from the manuscript.
+\usepackage{caption}
+\captionsetup{labelformat=empty}
+\usepackage{etoolbox}
+\BeforeBeginEnvironment{Shaded}{\begin{samepage}}
+\AfterEndEnvironment{Shaded}{\end{samepage}}

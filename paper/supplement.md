@@ -146,9 +146,12 @@ corrected prototype compiled but returned identity AO. Depth readback
 showed no useful variation. The installed WebGL multisample fallback
 resolves color with `COLOR_BUFFER_BIT` only.
 
-**Evidence:** Asset2 `GTAO_PROTOTYPE.md` at documentation commit
-`b4ca42faa3b80e465d39995ebb0537a2aa948148`; its retained range/readback
-record. The main image-metric improvement was about 1.47%, not the
+**Evidence:** Asset2 `GTAO_PROTOTYPE.md` at documentation commit:
+
+`b4ca42faa3b80e465d39995ebb0537a2aa948148`
+
+Its retained range/readback record documents the failed depth
+experiment. The main image-metric improvement was about 1.47%, not the
 requested 30%. Pooled phases improved only about 0.55%, with an adverse
 phase retained. **Replacement:** the candidate retained material-space
 approximation, not GTAO. **Conclusion boundary:** those timings do not

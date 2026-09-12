@@ -10,7 +10,7 @@ mkdirSync('paper/.build',{recursive:true});writeFileSync('paper/.build/manuscrip
 for(const [source,name]of [['.build/manuscript.md','pelagic'],['supplement-source.md','supplement']]){
  const common=[source,'--standalone','--citeproc','--resource-path=.',...(name==='pelagic'?['--bibliography=references.bib']:[])];
  run(pandoc,[...common,'--to=gfm+tex_math_dollars','--wrap=auto','-o',name+'.md']);
- run(pandoc,[...common,'--to=latex','--pdf-engine=tectonic','-V','documentclass=article','-V','fontsize=11pt','-V','geometry=margin=1in','-V','colorlinks=true','-V','linkcolor=teal','-V','urlcolor=teal','-V','linestretch=1.04','-o',name+'.tex']);
- run(pandoc,[...common,'--to=html5','--mathml','--css=paper.css','--metadata','pagetitle=Pelagic technical preprint','-o',name+'.html']);
+ run(pandoc,[...common,'--to=latex','--pdf-engine=tectonic','--include-in-header=preamble.tex','-V','documentclass=article','-V','fontsize=11pt','-V','geometry=margin=1in','-V','colorlinks=true','-V','linkcolor=teal','-V','urlcolor=teal','-V','linestretch=1.04','-o',name+'.tex']);
+ run(pandoc,[...common,'--to=html5','--math-method=mathml','--css=paper.css','--metadata','pagetitle=Pelagic technical preprint','-o',name+'.html']);
  if(!process.argv.includes('--sources-only'))run(tectonic,['--keep-logs',name+'.tex']);
 }

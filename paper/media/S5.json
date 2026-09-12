@@ -1,0 +1,271 @@
+{
+  "id": "S5",
+  "runtimeSha": "bce3571b0300ecfe5dc6e5dd45f28a9cda57006e",
+  "renderer": "Three.js WebGPURenderer r175",
+  "backend": "WebGL 2",
+  "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/152.0.7977.76",
+    "revision": "@06afeb20b5998e787a432fe536c662317517854",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "jsVersion": "15.2.124.19"
+  },
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "drawingBuffer": {
+    "width": 1280,
+    "height": 900
+  },
+  "dpr": 1,
+  "viewMode": "B",
+  "journeyProgress": 0.35,
+  "seed": 7183,
+  "simulationTime": 7.635200000002993,
+  "captureDate": "2026-09-11T23:44:34.935Z",
+  "captureScript": "scripts/publication/capture.mjs",
+  "bloom": "off",
+  "quality": "approved, no reduction",
+  "frames": 540,
+  "durationSeconds": 17.965224981307983,
+  "sourceFps": 30.002407460012634,
+  "encodedFps": 30,
+  "before": {
+    "renderer": {
+      "backend": "WebGL 2",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+      "drawBuffer": [
+        1280,
+        900
+      ]
+    },
+    "camera": {
+      "direction": "B",
+      "mode": "B",
+      "progress": 0.35,
+      "destination": 0.35,
+      "velocity": 0,
+      "acceleration": 0,
+      "lead": 0,
+      "leadClamped": false,
+      "response": "balanced",
+      "free": false,
+      "transitioning": false,
+      "fixedFov": 53,
+      "roll": 1.2431614728268333e-17
+    },
+    "pose": {
+      "direction": "B",
+      "mode": "B",
+      "progress": 0.35,
+      "destination": 0.35,
+      "velocity": 0,
+      "acceleration": 0,
+      "lead": 0,
+      "leadClamped": false,
+      "response": "balanced",
+      "free": false,
+      "transitioning": false,
+      "fixedFov": 53,
+      "roll": 1.2431614728268333e-17,
+      "position": [
+        -0.7418549841269841,
+        0.27176703999999996,
+        1.2779600077175388
+      ],
+      "quaternion": [
+        -0.017436059438698498,
+        -0.043265176562689196,
+        -0.0007551964660325375,
+        0.9989111762346777
+      ]
+    },
+    "simulation": {
+      "time": 7.635200000002993,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": false,
+      "bloom": "off (normal production path)",
+      "phase": 0.6806424278702994,
+      "activation": 0,
+      "frames": 455
+    },
+    "population": {
+      "near": 2,
+      "medium": 10,
+      "far": 1,
+      "hidden": 9,
+      "transitioning": 2
+    },
+    "current": {
+      "time": 7.6333333333333115,
+      "wakes": 2,
+      "activations": 0,
+      "accepted": 0,
+      "capacity": {
+        "wakes": 32,
+        "activations": 8
+      },
+      "echoes": 0,
+      "echoCount": 0,
+      "snowCount": 784,
+      "localFlecks": 600
+    },
+    "idle": {
+      "ready": true,
+      "prewarmMilliseconds": 91,
+      "active": false,
+      "amount": 0,
+      "clock": "17:44",
+      "minute": 1,
+      "phase": "ocean",
+      "time": 0,
+      "size": [
+        1280,
+        900
+      ],
+      "renderer": "WebGL2",
+      "clockTextures": 2,
+      "simulationTargets": 2,
+      "field": [
+        256,
+        180
+      ],
+      "steps": 1,
+      "resources": [
+        "d510ebb2-3c12-4a9f-b72e-5bc7761f4c3a",
+        "3d8bac52-84b9-4ac7-9f5d-d2e4fe6d58c4",
+        "99803993-30d7-412e-9b66-2d1a8ad434b3",
+        "69c3b692-c01b-4d96-ab42-61159ad70889"
+      ]
+    },
+    "dpr": 1,
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    }
+  },
+  "after": {
+    "renderer": {
+      "backend": "WebGL 2",
+      "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+      "drawBuffer": [
+        1280,
+        900
+      ]
+    },
+    "camera": {
+      "direction": "B",
+      "mode": "B",
+      "progress": 0.35,
+      "destination": 0.35,
+      "velocity": 0,
+      "acceleration": 0,
+      "lead": 0,
+      "leadClamped": false,
+      "response": "balanced",
+      "free": false,
+      "transitioning": false,
+      "fixedFov": 53,
+      "roll": 1.2431614728268333e-17
+    },
+    "pose": {
+      "direction": "B",
+      "mode": "B",
+      "progress": 0.35,
+      "destination": 0.35,
+      "velocity": 0,
+      "acceleration": 0,
+      "lead": 0,
+      "leadClamped": false,
+      "response": "balanced",
+      "free": false,
+      "transitioning": false,
+      "fixedFov": 53,
+      "roll": 1.2431614728268333e-17,
+      "position": [
+        -0.7418549841269841,
+        0.27176703999999996,
+        1.2779600077175388
+      ],
+      "quaternion": [
+        -0.017436059438698498,
+        -0.043265176562689196,
+        -0.0007551964660325375,
+        0.9989111762346777
+      ]
+    },
+    "simulation": {
+      "time": 36.76720000000294,
+      "angle": "oblique",
+      "distance": "medium",
+      "candidate": true,
+      "chamber": false,
+      "bloom": "off (normal production path)",
+      "phase": 0.9242078988442781,
+      "activation": 0,
+      "frames": 2203
+    },
+    "population": {
+      "near": 2,
+      "medium": 9,
+      "far": 1,
+      "hidden": 10,
+      "transitioning": 0
+    },
+    "current": {
+      "time": 36.76666666666586,
+      "wakes": 2,
+      "activations": 0,
+      "accepted": 0,
+      "capacity": {
+        "wakes": 32,
+        "activations": 8
+      },
+      "echoes": 0,
+      "echoCount": 0,
+      "snowCount": 784,
+      "localFlecks": 300
+    },
+    "idle": {
+      "ready": true,
+      "prewarmMilliseconds": 91,
+      "active": false,
+      "amount": 0,
+      "clock": "17:44",
+      "minute": 1,
+      "phase": "ocean",
+      "time": 0,
+      "size": [
+        1280,
+        900
+      ],
+      "renderer": "WebGL2",
+      "clockTextures": 2,
+      "simulationTargets": 2,
+      "field": [
+        256,
+        180
+      ],
+      "steps": 1,
+      "resources": [
+        "d510ebb2-3c12-4a9f-b72e-5bc7761f4c3a",
+        "3d8bac52-84b9-4ac7-9f5d-d2e4fe6d58c4",
+        "99803993-30d7-412e-9b66-2d1a8ad434b3",
+        "69c3b692-c01b-4d96-ab42-61159ad70889"
+      ]
+    },
+    "dpr": 1,
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    }
+  },
+  "errors": [],
+  "notes": "Actual browser screencast; measured timestamps retained. CFR encoding may repeat frames. Not performance evidence.",
+  "claim": "Live bubble passage",
+  "captureToolSha": "2859eac"
+}

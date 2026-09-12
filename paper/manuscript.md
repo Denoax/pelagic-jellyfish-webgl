@@ -240,10 +240,10 @@ $m_r=0.78T_1-0.52W(q;0.22,0.66)$.
 The same state reaches geometry and locomotion. It produces a temporal
 relationship, not a claim of measured pressure. Activation adds an integrated
 response through the existing tissue state rather than creating a replacement
-animal. Figure 4 plots the exact signals and pairs them with pulse-phase views;
+animal. Figure 4 plots the exact signals; S1 supplies the corresponding motion;
 S1 shows several cycles without converting timing into a still-image claim.
 
-![Figure 4. Source-derived pulse curves and phase samples: contraction, refill and coast are intentionally unequal.](figures/F04-pulse.png)
+![Figure 4. Exact source-derived pulse curves and four actual browser poses with recorded phase q and simulation time. Fixed specimen view and distance; contraction, refill and coast are unequal. S1 supplies continuous motion.](figures/F04-pulse.png)
 
 # 8. Locomotion and schooling
 
@@ -474,7 +474,7 @@ histories seeded from a live neighboring strand. Near uses the approved
 implementation. Offscreen surface reconstruction is skipped while state needed
 for return is preserved.
 
-![Figure 6. Projected-size detail thresholds and geometric transition policy. CSS-pixel thresholds do not change when DPR changes.](figures/F06-lod.png)
+![Figure 6. Projected-size detail thresholds and actual population snapshots under identical viewport/DPR settings. N/M/F are near/medium/far counts. Different journey positions are not a forced same-pose tier ablation. CSS thresholds do not change with DPR.](figures/F06-lod.png)
 
 **Algorithm 3 — importance detail.**
 
@@ -578,9 +578,11 @@ For lens-local origin $o$, direction $d$ and ellipsoid radii vector $r$, define
 $O=o/r$, $D=d/r$. Equation (15), **CODE-EQUIVALENT**, is
 
 $$
-A=D\cdot D,\quad B=O\cdot D,\quad C=O\cdot O-1,\quad
-t_e=\frac{-B-\sqrt{\max(B^2-AC,10^{-6})}}{A},\quad
-n=\operatorname{normalize}[(o+t_ed)/r^2].
+\begin{aligned}
+A&=D\cdot D,\quad B=O\cdot D,\quad C=O\cdot O-1,\\
+t_e&=\frac{-B-\sqrt{\max(B^2-AC,10^{-6})}}{A},\\
+n&=\operatorname{normalize}[(o+t_ed)/r^2].
+\end{aligned}
 $$
 
 The shader transforms the normal by the appropriate normal matrix and refracts
@@ -593,10 +595,12 @@ $E_v$, outgoing view ray $D_o$, scene view-depth $z_s$, and camera projection
 $P$:
 
 $$
-z_i=\max(z_s,E_{v,z}-6),\quad
-\ell=\max\left(0,\frac{z_i-E_{v,z}}{\min(D_{o,z},-0.05)}\right),\quad
-q=P(E_v+\ell D_o,1),\quad
-uv_r=(q_x/(2q_w)+1/2,\;1/2-q_y/(2q_w)).
+\begin{aligned}
+z_i&=\max(z_s,E_{v,z}-6),\\
+\ell&=\max\left(0,\frac{z_i-E_{v,z}}{\min(D_{o,z},-0.05)}\right),\\
+q&=P(E_v+\ell D_o,1),\\
+uv_r&=(q_x/(2q_w)+1/2,\;1/2-q_y/(2q_w)).
+\end{aligned}
 $$
 
 The actual code guards the homogeneous denominator, grazing rays, source
@@ -614,7 +618,7 @@ lookup. Authored index ratios are softened rather than using a literal water/air
 ratio that would require unavailable reflected scene rays at grazing angles.
 Figure 8 and S5 expose the image bending and its limitations in motion.
 
-![Figure 8. Ray–ellipsoid entry, exit and bounded live-image lookup; the virtual background plane is an approximation, not scene reconstruction.](figures/F08-refraction.png)
+![Figure 8. Analytic-interface schematic, three actual S5 browser frames and a frozen optics-on/off diagnostic. The virtual image plane is approximate; disabling hero refraction through the existing review API retains ambient bubble films. These are live-color distortions, not scene reconstruction.](figures/F08-refraction.png)
 
 # 16. Abyssal sanctuary and participating-media approximation
 
@@ -633,8 +637,10 @@ visit burst. Nearby mineral packets share spatially related eddies. In equation
 into $U_f$, then a target plume velocity $V_d$ is followed:
 
 $$
-U_f^+=U_f+[\operatorname{clamp}(U,-0.65,0.65)-U_f](1-e^{-h/0.85}),
-\quad V^+=V+(V_d-V)(1-e^{-kh}),\quad X^+=X+hV^+.
+\begin{aligned}
+U_f^+&=U_f+[\operatorname{clamp}(U,-0.65,0.65)-U_f](1-e^{-h/0.85}),\\
+V^+&=V+(V_d-V)(1-e^{-kh}),\quad X^+=X+hV^+.
+\end{aligned}
 $$
 
 $k=2.1$ for smoke and 1.2 otherwise. Smoke's vertical target includes
@@ -855,14 +861,26 @@ automated correctness and from any unperformed perception study.
 
 ## 22.3 Fresh performance
 
-The final artifact inserts the generated Table 3 and Figure 12 here. They use
+Table 3 and Figure 12 are generated from the fresh benchmark record. They use
 the exact approved runtime and preserve all raw adverse samples. Measurements
 are frame intervals, not GPU timings. No comparative performance claim against
 other projects is made.
 
 <!-- PUBLICATION_RESULTS -->
 
-![Figure 12. Fresh publication-runtime frame-interval distributions. Labels identify scene and measurement conditions; no screenshot/video work runs during timing.](figures/F12-performance.png)
+The measured browser is Brave/Chromium 152.0.7977.76, with ANGLE OpenGL ES
+3.2 on an NVIDIA RTX 4070. The Linux host uses an Intel Core i5-14600K and
+62.5 GiB RAM. Its local llama service remained running consistently; this run
+does not isolate service contention. Existing development fixtures hold DPR
+at 1 without adaptive downshift. Median and p95 use sorted samples at
+floor(0.5n) and floor(0.95n), respectively. The bubble case retained one
+65.3 ms interval; its cause is not established. The natural bubble window may
+end within the 30-second observation. Draw-call snapshots were not sampled in
+that timing run; separate diagnostic population records must not be relabeled
+as simultaneous benchmark draw counts. Raw arrays and environment records are
+retained in `results/benchmark.json`.
+
+![Figure 12. Fresh publication-runtime median and p95 frame intervals. Labels identify scene and measurement conditions; no screenshot/video work runs during timing.](figures/F12-performance.png)
 
 ## 22.4 Compatibility scope
 
@@ -1001,5 +1019,6 @@ extended measurements, ablations and historical negative results. The manifest
 records file hashes and distinguishes runtime SHA from publication SHA.
 
 Figures 1, 9–11 are runtime evidence; Figures 2–8 include original explanatory
-diagrams or source-derived plots, as their captions state. Figure 12 is generated
+diagrams or source-derived plots. Figures 4, 6 and 8 also include labeled browser
+frames, as their captions state. Figure 12 is generated
 from fresh raw measurements. No diagram is represented as a rendered result.
