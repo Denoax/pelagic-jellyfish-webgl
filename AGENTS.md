@@ -1,5 +1,17 @@
 # Prototype Instructions
 
+## Current publication direction: README salvage (2026-09-12)
+
+README.md is the publication, not a short landing page for a separate paper
+site. Salvage the existing publication prose, verified equations, references,
+figures, motion masters and benchmarks; do not regenerate valid work. The
+approved publication runtime remains `bce3571b0300ecfe5dc6e5dd45f28a9cda57006e`.
+Keep runtime/artwork byte-identical. Continue the current publication branch;
+local commits only. No push, merge, deployment, Pages/settings changes,
+release or M8. The README salvage superpack v5 executor governs this task.
+Retain useful paper sources/evidence as a cache; no separate reader route is
+required. Stop at READY FOR MANI README PUBLICATION REVIEW.
+
 ## Current authorization: M7.2 contact readability + long-run validation (2026-09-10)
 
 Runtime baseline `bfbe9837f4e0587662f79d481af8e7b1dcb94156`; branching from

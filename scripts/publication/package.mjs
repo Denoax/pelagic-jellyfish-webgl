@@ -13,9 +13,10 @@ const allowed=f=>!f.split('/').some(p=>p.startsWith('.')&&!['.npmrc','.openai'].
 const docRoots=['README.md','REPRODUCIBILITY.md','CONTRIBUTING.md','ASSET_PROVENANCE.md','LICENSE.md','CITATION.cff','CITATION.bib'];
 const paperFiles=walk('paper').filter(allowed);const docs=[...docRoots,...paperFiles,...walk('LICENSES'),...walk('licenses')];
 for(const f of docs)cp(f,join(out,'site',f));
-for(const f of walk('public/paper'))cp(f,join(out,'site','paper',relative('public/paper',f)));
+const historicalFrontend=existsSync('public/paper')?walk('public/paper'):[];
+for(const f of historicalFrontend)cp(f,join(out,'site','paper',relative('public/paper',f)));
 // README's repository-source link remains useful in the local rendering too.
-for(const f of walk('public/paper'))cp(f,join(out,'site',f));
+for(const f of historicalFrontend)cp(f,join(out,'site',f));
 const pandoc=process.env.PANDOC||'pandoc';
 const rendered=spawnSync(pandoc,['README.md','--from=gfm+tex_math_dollars','--to=html5','--math-method=mathml','--standalone','--metadata=pagetitle=Pelagic README preview','--css=paper/paper.css'],{encoding:'utf8'});if(rendered.status)throw Error(rendered.stderr);
 const html=rendered.stdout.replace(/<pre class="mermaid">[\s\S]*?<\/pre>/g,'<figure><img src="paper/figures/F02-system.png" alt="Source-derived system architecture"><figcaption>Portable preview of the architecture. The README contains a separately validated Mermaid graph for GitHub.</figcaption></figure>');
@@ -26,7 +27,7 @@ for(const f of ['LICENSE.md',...walk('LICENSES'),...walk('licenses'),'ASSET_PROV
 for(const f of [...docs,...walk('scripts/publication'),'scripts/ocean-completion-probe.mjs','package.json','package-lock.json'])cp(f,join(out,'reproducibility',f));
 const runtime=JSON.parse(readFileSync('paper/audit/runtime-manifest.json'));
 for(const f of runtime.files){cp(f.path,join(out,'reproducibility','runtime',f.path));cp(f.path,join(out,'reproducibility',f.path));}
-for(const f of walk('public/paper'))cp(f,join(out,'reproducibility',f));
+for(const f of historicalFrontend)cp(f,join(out,'reproducibility',f));
 cp('paper/audit/runtime-manifest.json',join(out,'reproducibility','runtime-manifest.json'));
 for(const f of ['LICENSE.md','ASSET_PROVENANCE.md',...walk('LICENSES'),...walk('licenses'),...walk('scripts/publication'),'scripts/ocean-completion-probe.mjs'])cp(f,join(out,'reproducibility','runtime',f));
 cp('paper/audit/runtime-manifest.json',join(out,'reproducibility','runtime','runtime-manifest.json'));

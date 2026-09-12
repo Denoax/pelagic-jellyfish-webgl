@@ -1,5 +1,10 @@
 # Publication baseline
 
+> Historical publication-pack v3 audit. The approved runtime below is unchanged.
+> The later README salvage superpack v5 supersedes the paper-first/site strategy:
+> README.md is the publication. This file remains baseline evidence, not the
+> current execution plan. See `../README_SALVAGE_MATRIX.md`.
+
 Author: **Mani Marami Milani**. Publication version: `1.0.0-preprint` (local,
 unreleased). Audit date: 2026-09-11.
 
@@ -76,4 +81,3 @@ behavior, package version or hosting adapter is modified for publication.
    subjects are retained; the paper owns one consistent figure numbering scheme.
 5. Templates contain prospective release URLs/dates/tags. No unpublished URL,
    release date, DOI, affiliation or identifier will be presented as issued.
-

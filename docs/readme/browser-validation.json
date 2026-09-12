@@ -1,0 +1,251 @@
+{
+  "status": "PASS",
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/152.0.7977.76",
+    "revision": "@06afeb20b5998e787a432fe536c662317517854",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "jsVersion": "15.2.124.19"
+  },
+  "scope": "Local GFM/MathML/Mermaid emulation, not remote GitHub rendering or physical-device validation. Four animated previews observed in real browser; no artwork recapture.",
+  "results": [
+    {
+      "width": 1280,
+      "documentWidth": 1280,
+      "images": [
+        {
+          "src": "docs/readme/hero.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F03-anatomy.png",
+          "complete": true,
+          "naturalWidth": 1200
+        },
+        {
+          "src": "paper/figures/F04-pulse.png",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "docs/readme/appendages.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F05-appendages.png",
+          "complete": true,
+          "naturalWidth": 1200
+        },
+        {
+          "src": "paper/figures/F06-lod.png",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "docs/readme/refraction.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F08-refraction.png",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "paper/figures/F09-sanctuary.jpg",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "docs/readme/liquid.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F10-contact.jpg",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "paper/figures/F11-pinch.jpg",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "paper/figures/F07-compositor.png",
+          "complete": true,
+          "naturalWidth": 1200
+        },
+        {
+          "src": "paper/figures/F12-performance.png",
+          "complete": true,
+          "naturalWidth": 1200
+        }
+      ],
+      "math": 22,
+      "mermaid": true,
+      "missingAnchors": []
+    },
+    {
+      "width": 820,
+      "documentWidth": 820,
+      "images": [
+        {
+          "src": "docs/readme/hero.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F03-anatomy.png",
+          "complete": true,
+          "naturalWidth": 1200
+        },
+        {
+          "src": "paper/figures/F04-pulse.png",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "docs/readme/appendages.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F05-appendages.png",
+          "complete": true,
+          "naturalWidth": 1200
+        },
+        {
+          "src": "paper/figures/F06-lod.png",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "docs/readme/refraction.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F08-refraction.png",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "paper/figures/F09-sanctuary.jpg",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "docs/readme/liquid.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F10-contact.jpg",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "paper/figures/F11-pinch.jpg",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "paper/figures/F07-compositor.png",
+          "complete": true,
+          "naturalWidth": 1200
+        },
+        {
+          "src": "paper/figures/F12-performance.png",
+          "complete": true,
+          "naturalWidth": 1200
+        }
+      ],
+      "math": 22,
+      "mermaid": true,
+      "missingAnchors": []
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "images": [
+        {
+          "src": "docs/readme/hero.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F03-anatomy.png",
+          "complete": true,
+          "naturalWidth": 1200
+        },
+        {
+          "src": "paper/figures/F04-pulse.png",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "docs/readme/appendages.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F05-appendages.png",
+          "complete": true,
+          "naturalWidth": 1200
+        },
+        {
+          "src": "paper/figures/F06-lod.png",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "docs/readme/refraction.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F08-refraction.png",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "paper/figures/F09-sanctuary.jpg",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "docs/readme/liquid.gif",
+          "complete": true,
+          "naturalWidth": 640
+        },
+        {
+          "src": "paper/figures/F10-contact.jpg",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "paper/figures/F11-pinch.jpg",
+          "complete": true,
+          "naturalWidth": 1280
+        },
+        {
+          "src": "paper/figures/F07-compositor.png",
+          "complete": true,
+          "naturalWidth": 1200
+        },
+        {
+          "src": "paper/figures/F12-performance.png",
+          "complete": true,
+          "naturalWidth": 1200
+        }
+      ],
+      "math": 22,
+      "mermaid": true,
+      "missingAnchors": []
+    }
+  ],
+  "errors": []
+}

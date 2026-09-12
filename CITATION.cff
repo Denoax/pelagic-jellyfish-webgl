@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "Please cite the independent Pelagic technical preprint and record the runtime commit used. This is a local-review, unreleased edition."
+message: "Please cite the README-native Pelagic technical publication and record the runtime commit used. This is a local-review, unreleased edition."
 type: software
 title: Pelagic
 authors:
@@ -15,4 +15,4 @@ preferred-citation:
   authors:
     - family-names: Marami Milani
       given-names: Mani
-  notes: "Independent technical preprint, local-review edition. Original publication content is CC BY 4.0. No DOI, release date or peer-review claim."
+  notes: "README-native independent technical publication, local-review edition. Original publication content is CC BY 4.0. No DOI, release date or peer-review claim."

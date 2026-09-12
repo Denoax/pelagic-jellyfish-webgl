@@ -1,5 +1,27 @@
 # Reproducing the Pelagic publication
 
+**README.md is now the complete publication.** Its method, equations,
+figures, results, limitations and references are readable on the repository
+front page. The paper/PDF cache and earlier archive reports below are retained
+history, not a required reader route. No separate paper frontend is shipped.
+
+For README maintenance, edit `README.md` directly. The one-time
+`readme-assemble.mjs` transform records how the previous manuscript was salvaged;
+do not rerun it over later manual edits. Existing figures and benchmark data
+are reused without regeneration. If a motion derivative needs rebuilding:
+
+```sh
+node scripts/publication/readme-media.mjs ../publication-evidence
+node scripts/publication/readme-check.mjs ../publication-validators ../readme-review
+node scripts/publication/readme-preview.mjs ../readme-review ../publication-validators
+```
+
+The checker uses Pandoc and the separate jsdom/Mermaid validator installation
+described below. The preview prints its loopback address and renders README
+only; it is not a new app, deployment or required publication website. Motion
+derivatives are 640 pixels wide at 8 fps, from retained browser recordings at
+original speed. Their exact excerpts/hashes are in `docs/readme/media.json`.
+
 ## Identities and scope
 
 Approved runtime: `bce3571b0300ecfe5dc6e5dd45f28a9cda57006e`.
@@ -58,7 +80,7 @@ When running from the history-free snapshot, set `PUBLICATION_TOOL_SHA` to `pape
 
 Results are async render-completion intervals, **not GPU timings**. Raw intervals, CPU instrumentation and before/after states are retained. These are single runs, not confidence intervals or statistically isolated feature costs. Refresh-paced medians do not measure available GPU headroom. The publication host retained its local llama service throughout; the run does not isolate contention from that service. The adverse 65.3 ms interval is not removed.
 
-## Paper and figures
+## Archived paper and figures (optional)
 
 Install Pandoc 3.11, Tectonic 0.17.0, FFmpeg and librsvg (`rsvg-convert`) as separate publication tools. Tectonic may download its TeX bundle on first use. Tool installation does not modify the application dependencies. Set `PANDOC` and `TECTONIC` if the executables are not on PATH.
 
@@ -68,21 +90,20 @@ node scripts/publication/inspection.mjs "$BASE_URL" "$EVIDENCE_DIR/inspection-fi
 node scripts/publication/curate-inspection.mjs "$EVIDENCE_DIR"
 node scripts/publication/metadata-provenance.mjs "$EVIDENCE_DIR"
 node scripts/publication/build-paper.mjs
-node scripts/publication/build-page.mjs
 ```
 
-Canonical text is `paper/manuscript.md` and `paper/supplement-source.md`. The builder derives Markdown, TeX, HTML/MathML and PDFs, inserting the fresh results table. Figure diagrams are explicitly source-derived, not captured evidence. Generated text and PDFs must be reviewed together. Update raw data and `paper/results/table.md` together if making a new measurement; never silently change the published runtime identity.
+The old manuscript cache is `paper/manuscript.md` and `paper/supplement-source.md`; README.md is now canonical for publication. The archived builder derives Markdown, TeX, HTML/MathML and PDFs, inserting the retained results table. It does not replace README. Figure diagrams are explicitly source-derived, not captured evidence. Generated text and PDFs must be reviewed together if intentionally rebuilt. Do not regenerate these valid assets just to maintain README, and never silently change the measured runtime identity.
 
 The inspection step captures four held pulse phases, a frozen optics-on/off diagnostic, population states and resize behavior. Run `figures.mjs` before `curate-inspection.mjs`: the latter combines the clean diagrams with recorded browser frames. Running it twice without regenerating the diagrams would recursively embed a composite. Population panels match viewport/DPR but intentionally show different journey states; they are not a forced same-pose tier comparison. The inherited portrait-resize clock can appear stretched; publication does not alter that approved behavior.
 
-## Local review and packaging
+## Prior local packaging (historical, not the README workflow)
 
 ```sh
 node scripts/publication/package.mjs "$EVIDENCE_DIR" ../publication-release-review
 node scripts/publication/preview.mjs ../publication-release-review
 ```
 
-The preview prints a loopback address and serves the companion `/paper/`, a rendered README, paper/PDF, gallery, citation and prepared downloads. It supplies local video URLs only; no future GitHub release URLs are invented. Preview the package through this server rather than expecting an ordinary artwork build to contain every staged publication asset. The publication page source lives in `public/paper/`; package assembly supplies its paper assets without altering the runtime build pipeline.
+These tools and the earlier staged archives are preserved for reproducibility history. The separate `public/paper/` frontend and its generator were removed after salvage; their exact prior versions remain in local commit `2bea550`. The old stage may still contain that earlier page and must not be mistaken for the current README review. Use `readme-preview.mjs` above for this task. No future release URL is invented, and no remote publication is authorized.
 
 The media ZIP contains twelve MP4s, metadata and timestamp records, not raw browser profiles or thousands of intermediate JPEGs. The reproducibility ZIP contains publication tools, pinned manifests, fresh data, captions, instructions and the buildable runtime snapshot. The arXiv-ready source ZIP contains portable TeX/BibTeX, required figures and notices only. Preparation is not submission. `artifact-manifest.json` and `SHA256SUMS` identify exact files; ZIP CRC and extraction checks are part of local validation.
 

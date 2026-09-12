@@ -1,0 +1,116 @@
+{
+  "runtimeSha": "bce3571b0300ecfe5dc6e5dd45f28a9cda57006e",
+  "notes": "Existing browser masters only. GIF quantization and temporal subsampling are publication compression, not runtime quality changes. Sources retain original frame timestamps outside Git. No new recording, benchmark or generated imagery.",
+  "totalGifBytes": 11546258,
+  "files": [
+    {
+      "file": "docs/readme/hero.gif",
+      "claim": "Edited sequence: organism, travelling ocean, sanctuary, liquid clock; cuts are not a continuous camera route.",
+      "runtimeSha": "bce3571b0300ecfe5dc6e5dd45f28a9cda57006e",
+      "encoding": {
+        "width": 640,
+        "fps": 8,
+        "colors": 48,
+        "speed": 1
+      },
+      "bytes": 3544981,
+      "sha256": "2dda5338f26c4f43c7642e9abb18ad6565a09fff8277e37684663699cc1e3405",
+      "sources": [
+        {
+          "id": "S3",
+          "startSeconds": 0,
+          "durationSeconds": 2.5,
+          "metadata": "paper/media/S3.json",
+          "masterSha256": "bf16bde5f04fd7d0f605c78f47871a3aaf8b2ac7bc34e66421ab8f7611d4d7db"
+        },
+        {
+          "id": "S4",
+          "startSeconds": 4,
+          "durationSeconds": 2.5,
+          "metadata": "paper/media/S4.json",
+          "masterSha256": "6edc59640973fe4b00924104f02032b144bf6f69ba041d2ad61d12a77b4be2b1"
+        },
+        {
+          "id": "S7",
+          "startSeconds": 3,
+          "durationSeconds": 2.5,
+          "metadata": "paper/media/S7.json",
+          "masterSha256": "b6faa03f47f44cf13f445b9b2fa06e855e718ed8b2fb4a66650e8d831177587f"
+        },
+        {
+          "id": "S8",
+          "startSeconds": 4,
+          "durationSeconds": 2.5,
+          "metadata": "paper/media/S8.json",
+          "masterSha256": "f5964426f0053c9e6322e92163c250a96a3cd40d6e001b8ca1ba8efd1323808a"
+        }
+      ]
+    },
+    {
+      "file": "docs/readme/appendages.gif",
+      "claim": "Oblique near specimen: pulsing body and lagging appendages. No speed change.",
+      "runtimeSha": "bce3571b0300ecfe5dc6e5dd45f28a9cda57006e",
+      "encoding": {
+        "width": 640,
+        "fps": 8,
+        "colors": 48,
+        "speed": 1
+      },
+      "bytes": 2577682,
+      "sha256": "69d249b6b0dbc3818b340bdea563a51ff07dbf975b235cdbbaa6215051211628",
+      "sources": [
+        {
+          "id": "S2",
+          "startSeconds": 1,
+          "durationSeconds": 7,
+          "metadata": "paper/media/S2.json",
+          "masterSha256": "20fa88b338c010e7e9b55a14a5c1143801e821d52ac714c0d36dc6ccd4d0250e"
+        }
+      ]
+    },
+    {
+      "file": "docs/readme/refraction.gif",
+      "claim": "Live moving ocean bends through the sparse refractive bubble passage.",
+      "runtimeSha": "bce3571b0300ecfe5dc6e5dd45f28a9cda57006e",
+      "encoding": {
+        "width": 640,
+        "fps": 8,
+        "colors": 48,
+        "speed": 1
+      },
+      "bytes": 3054081,
+      "sha256": "de94b728cb50f89523be29f7019aa6aa2f3f3f92353910d0ff8059910c174d82",
+      "sources": [
+        {
+          "id": "S5",
+          "startSeconds": 2,
+          "durationSeconds": 7,
+          "metadata": "paper/media/S5.json",
+          "masterSha256": "1e79a71b2e1af90d1cceed2fbdabd6b3964b7da43c1b361e9add4fae3f802c64"
+        }
+      ]
+    },
+    {
+      "file": "docs/readme/liquid.gif",
+      "claim": "Normal-frame clock contact, joining and settlement. Authored topology, not conserved fluid.",
+      "runtimeSha": "bce3571b0300ecfe5dc6e5dd45f28a9cda57006e",
+      "encoding": {
+        "width": 640,
+        "fps": 8,
+        "colors": 48,
+        "speed": 1
+      },
+      "bytes": 2369514,
+      "sha256": "d8d9276847963f72d9d83f53d93ca2c6d48e872424b9322390a8aa6ab75c0906",
+      "sources": [
+        {
+          "id": "S9",
+          "startSeconds": 2,
+          "durationSeconds": 6,
+          "metadata": "paper/media/S9.json",
+          "masterSha256": "3b03fa07cf26d8648ec5ee3ebba106a9c64355acddb2bae38dfa5f700cf26da0"
+        }
+      ]
+    }
+  ]
+}

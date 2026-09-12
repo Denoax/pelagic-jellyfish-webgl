@@ -1,0 +1,22 @@
+{
+  "runtimeSha": "bce3571b0300ecfe5dc6e5dd45f28a9cda57006e",
+  "status": "STATIC CHECKS PASS; browser review recorded separately",
+  "words": 9697,
+  "equationGroups": 22,
+  "originalDisplaysReused": 21,
+  "references": 9,
+  "figures": 10,
+  "gifs": 4,
+  "newGifBytes": 11546258,
+  "totalReferencedMediaBytes": 13617297,
+  "pinnedSourceLinks": 27,
+  "relativeLinksAndMedia": 25,
+  "headingAnchors": 40,
+  "proseReuseEstimate": {
+    "method": "Fraction of normalized README words covered by matching 5-word spans in original manuscript, supplement, notation and previous README; conservative proxy, not an authorship detector",
+    "percent": 70.2
+  },
+  "privatePathScan": "PASS",
+  "equations": "22 parsed; 21 original display groups unchanged, one existing inline group promoted to display",
+  "benchmark": "Reused unchanged; no new timing/capture"
+}
