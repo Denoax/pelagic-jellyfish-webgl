@@ -1452,7 +1452,7 @@ runtime note above when citing this revision.
 
 ## Licensing and asset provenance
 
-Mani Marami Milani directed and reviewed the artwork. Codex/OpenAI models
+Mani Marami Milani directed and created the artwork and code with some help of LLM models
 assisted with implementation, source auditing, documentation, test tooling and
 publication preparation. This disclosure is not an independent verification of
 every generated statement; the source map, measured data and human review gate
