@@ -1,6 +1,6 @@
-<div align="center">
+<img src="docs/readme/pelagic-banner.webp" width="100%" alt="Pelagic — a living WebGL ocean with procedural jellyfish, soft-body motion, and liquid glass.">
 
-# Pelagic
+<div align="center">
 
 **Real-Time Procedural Jellyfish, Soft-Body Animation, Underwater Optics, and Interactive Liquid Glass in Three.js**
 
