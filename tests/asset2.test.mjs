@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,releasePaths} from './release-scope.mjs';
+import {readFileSync,releasePaths,retiredPaths} from './release-scope.mjs';
 import {execFileSync} from 'node:child_process';
 import {spireGeometry,fitSpireLayout} from '../src/scene/environment/asset2Layout.js';
 import {asset2Paths,withoutAsset2Seams} from './asset2-scope.mjs';
@@ -30,7 +30,7 @@ test('Asset 2: bounded ownership restores original environment nodes and never m
 });
 test('Asset 2: every approved runtime source outside the two exact environment seams is byte-identical',()=>{
  const paths=execFileSync('git',['ls-tree','-r','--name-only',baseline,'src'],{encoding:'utf8'}).trim().split('\n');
- for(const p of paths.filter(p=>!p.endsWith('AGENTS.md'))){
+ for(const p of paths.filter(p=>!p.endsWith('AGENTS.md')&&!retiredPaths.has(p))){
   const old=execFileSync('git',['show',`${baseline}:${p}`]);
   if(['src/scene/HeroScene.jsx','src/scene/PelagicEnvironment.js'].includes(p)){
    assert.equal(withoutAsset2Seams(readFileSync(p,'utf8')),old.toString(),p);
@@ -39,7 +39,7 @@ test('Asset 2: every approved runtime source outside the two exact environment s
   }else assert.deepEqual(readFileSync(p),old,p);
  }
  const tracked=execFileSync('git',['diff',baseline,'--name-only','--','src'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
- assert.ok(tracked.every(p=>asset2Paths.includes(p)||releasePaths.includes(p)),tracked.join('\n'));
+ assert.ok(tracked.every(p=>p.endsWith('AGENTS.md')||asset2Paths.includes(p)||releasePaths.includes(p)||retiredPaths.has(p)),tracked.join('\n'));
 });
 test('Asset 2: proxy geometry is deterministic, finite, closed, outward and bounded',()=>{
  for(let i=0;i<4;i++){

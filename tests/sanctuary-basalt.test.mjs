@@ -7,11 +7,12 @@ import {Scene} from 'three/webgpu';
 import {Sanctuary} from '../src/scene/sanctuary/Sanctuary.js';
 import {BASALT_FINISH} from '../src/scene/sanctuary/materials.js';
 import {pinpointLife} from '../src/scene/sanctuary/VentLife.js';
+import {retiredPaths} from './release-scope.mjs';
 const base='518db86f0be40ac4273900081b5385a9f8ca25bf';
 test('M6.5 changes only sanctuary material and pinpoint selection; geometry and other systems stay locked',()=>{
  const changed=execFileSync('git',['diff',base,'--name-only','--','src'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
  // M6.6 authorizes only the post-attachment shelf refinement hook/module.
- assert.ok(changed.filter(f=>!m7Paths.includes(f)).every(f=>['src/scene/sanctuary/materials.js','src/scene/sanctuary/VentLife.js','src/scene/sanctuary/Sanctuary.js','src/scene/sanctuary/shelfSilhouettes.js','src/scene/HeroScene.jsx'].includes(f)),changed.join('\n')); // Narrow M6.6.1 input boundary has its own exact-source lock.
+ assert.ok(changed.filter(f=>!m7Paths.includes(f)&&!retiredPaths.has(f)&&!f.endsWith('AGENTS.md')).every(f=>['src/scene/sanctuary/materials.js','src/scene/sanctuary/VentLife.js','src/scene/sanctuary/Sanctuary.js','src/scene/sanctuary/shelfSilhouettes.js','src/scene/HeroScene.jsx'].includes(f)),changed.join('\n')); // Narrow M6.6.1 input boundary has its own exact-source lock.
  for(const name of ['geology.js','mesoGeology.js','BenthicSediment.js','VentDynamics.js','VentParticles.js','ThermalShimmer.js','atmosphere.js']){
   const path='src/scene/sanctuary/'+name;
   assert.equal(readFileSync(new URL('../'+path,import.meta.url),'utf8'),execFileSync('git',['show',`${base}:${path}`],{encoding:'utf8'}));

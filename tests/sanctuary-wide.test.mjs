@@ -6,6 +6,7 @@ import {execFileSync} from 'node:child_process';
 import {Scene} from 'three/webgpu';
 import {Sanctuary} from '../src/scene/sanctuary/Sanctuary.js';
 import {colonyLayout,wideLifePoints} from '../src/scene/sanctuary/VentLife.js';
+import {retiredPaths} from './release-scope.mjs';
 const baseline='685eaf5960251923bc4ae7012f8fd3c8c42bf46d';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const old=p=>execFileSync('git',['show',`${baseline}:${p}`],{encoding:'utf8'});
@@ -15,7 +16,7 @@ test('M6.4 preserves macro geometry, dynamics, plume, optics, animals, camera, U
  const allowed=['src/scene/sanctuary/materials.js','src/scene/sanctuary/VentLife.js','src/scene/sanctuary/atmosphere.js','src/vendor/aurelia/background.js','src/scene/sanctuary/Sanctuary.js','src/scene/sanctuary/geology.js','src/scene/sanctuary/mesoGeology.js','src/scene/sanctuary/BenthicSediment.js'];
  allowed.push('src/scene/sanctuary/shelfSilhouettes.js'); // Authorized M6.6 shared silhouette variants.
  allowed.push('src/scene/HeroScene.jsx'); // M6.6.1 input validation only; exact delta tested separately.
- assert.ok(changed.filter(f=>!m7Paths.includes(f)).every(f=>allowed.includes(f)),changed.join('\n'));
+ assert.ok(changed.filter(f=>!m7Paths.includes(f)&&!retiredPaths.has(f)&&!f.endsWith('AGENTS.md')).every(f=>allowed.includes(f)),changed.join('\n'));
  for(const f of ['VentDynamics.js','VentParticles.js','ThermalShimmer.js'])assert.equal(read('src/scene/sanctuary/'+f),old('src/scene/sanctuary/'+f));
  const omitShelf=s=>s.replace(/export function shelfGeometry\(\) \{[\s\S]*?\n\}/,'SHELF').replace(/export function fractureGeometry\(\)\{[\s\S]*?\n\}/,'FRACTURE');
  assert.equal(omitShelf(read('src/scene/sanctuary/geology.js')),omitShelf(old('src/scene/sanctuary/geology.js')));

@@ -1,7 +1,0 @@
-evidence/**/motion-*.jpg
-evidence/**/motion.txt
-evidence/reference-*/
-evidence/candidate-draft/
-evidence/candidate-matched/
-evidence/baseline-matched/
-evidence/connected-neighbors-unmatched/

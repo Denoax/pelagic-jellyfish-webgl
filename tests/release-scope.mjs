@@ -23,7 +23,12 @@ const changes={
  ],
 };
 export const releasePaths=Object.keys(changes);
+export const retiredPaths=new Set([
+ 'src/scene/IdleGlassScene.jsx',
+ 'src/scene/ReefEnvironment.js',
+ 'src/scene/environment/Asset2AOProof.js',
+]);
 function normalize(path,text){for(const [now,before]of changes[path]||[]){assert.equal(text.split(now).length,2,'Exact release guard: '+path);text=text.replace(now,before);}return text;}
 const approved='b4ca42faa3b80e465d39995ebb0537a2aa948148';
-for(const path of execFileSync('git',['ls-tree','-r','--name-only',approved,'src'],{encoding:'utf8'}).trim().split('\n').filter(p=>!p.endsWith('AGENTS.md')))assert.equal(normalize(path,read(path,'utf8')),execFileSync('git',['show',`${approved}:${path}`],{encoding:'utf8'}),'Approved Asset2 plus release-only delta: '+path);
+for(const path of execFileSync('git',['ls-tree','-r','--name-only',approved,'src'],{encoding:'utf8'}).trim().split('\n').filter(p=>!p.endsWith('AGENTS.md')&&!retiredPaths.has(p)))assert.equal(normalize(path,read(path,'utf8')),execFileSync('git',['show',`${approved}:${path}`],{encoding:'utf8'}),'Approved Asset2 plus release-only delta: '+path);
 export function readFileSync(path,options){const key=relative(resolve('.'),path instanceof URL?fileURLToPath(path):resolve(path));if(!changes[key])return read(path,options);const text=normalize(key,read(path,'utf8'));return options==='utf8'||options?.encoding==='utf8'?text:Buffer.from(text);}

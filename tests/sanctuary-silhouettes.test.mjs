@@ -7,6 +7,7 @@ import {execFileSync} from 'node:child_process';
 import {Scene,Vector3,Matrix4,Object3D,Raycaster} from 'three/webgpu';
 import {Sanctuary} from '../src/scene/sanctuary/Sanctuary.js';
 import {shelfArchetype,SHELF_ARCHETYPES} from '../src/scene/sanctuary/shelfSilhouettes.js';
+import {retiredPaths} from './release-scope.mjs';
 const hash=v=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const base='dd97923241e1d914e637263a6a94182b074c3bf0';
 test('bounded reusable shelf family has deterministic finite watertight nondegenerate geometry',()=>{
@@ -31,7 +32,7 @@ test('bounded reusable shelf family has deterministic finite watertight nondegen
 });
 test('M6.5 material, life, sediment, geology and camera systems remain source-locked',()=>{
  const changed=execFileSync('git',['diff',base,'--name-only','--','src'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
- assert.ok(changed.filter(f=>!m7Paths.includes(f)).every(f=>['src/scene/sanctuary/Sanctuary.js','src/scene/sanctuary/shelfSilhouettes.js','src/scene/HeroScene.jsx'].includes(f)),changed.join('\n')); // M6.6.1 exact input-only delta is locked by idle-input-regression.
+ assert.ok(changed.filter(f=>!m7Paths.includes(f)&&!retiredPaths.has(f)&&!f.endsWith('AGENTS.md')).every(f=>['src/scene/sanctuary/Sanctuary.js','src/scene/sanctuary/shelfSilhouettes.js','src/scene/HeroScene.jsx'].includes(f)),changed.join('\n')); // M6.6.1 exact input-only delta is locked by idle-input-regression.
  for(const name of ['materials.js','VentLife.js','geology.js','mesoGeology.js','BenthicSediment.js','VentDynamics.js','VentParticles.js','ThermalShimmer.js']){
   const path='src/scene/sanctuary/'+name;assert.equal(readFileSync(new URL('../'+path,import.meta.url),'utf8'),execFileSync('git',['show',base+':'+path],{encoding:'utf8'}));
  }

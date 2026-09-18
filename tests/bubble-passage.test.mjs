@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { retiredPaths } from './release-scope.mjs';
 import { BubblePopulation, densityAt, PLUME, bubbleShape } from '../src/scene/glass/BubblePopulation.js';
 const place = (b, random) => { b.x = random() * 8 - 4; b.y = -3; b.z = random() * 10; };
 const run = (p, seconds, progress = .35, hz = 60) => { for (let i = 0; i < seconds * hz; i++) p.update(1 / hz, progress, null, place); };
@@ -46,7 +47,7 @@ test('approved animals, M2 water and legacy camera remain exact; shell permits M
   const paths = execFileSync('git', ['ls-tree', '-r', '--name-only', '78d723a', 'src'], {encoding:'utf8'}).trim().split('\n')
     // M6 replaces only the deep environment. Its embedded distant-school and
     // water-layer ownership are checked against M5.2 in sanctuary.test.mjs.
-    .filter(p => /\.(js|jsx)$/.test(p) && !['src/App.jsx','src/core/useIdleScreen.js','src/ui/IdleScreen.jsx','src/scene/HeroScene.jsx','src/scene/glass/LiveOceanLens.js','src/scene/PelagicEnvironment.js'].includes(p));
+    .filter(p => /\.(js|jsx)$/.test(p) && !retiredPaths.has(p) && !['src/App.jsx','src/core/useIdleScreen.js','src/ui/IdleScreen.jsx','src/scene/HeroScene.jsx','src/scene/glass/LiveOceanLens.js','src/scene/PelagicEnvironment.js'].includes(p));
   for (const p of paths) {
     let current = readFileSync(p, 'utf8');
     // M6.3 imports the existing water radiance graph from native-ESM tests.

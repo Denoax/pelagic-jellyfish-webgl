@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { retiredPaths } from "./release-scope.mjs";
 import { LensDeformation } from "../src/scene/glass/LensDeformation.js";
 
 test("lens pull is bounded, rate-independent and recovers completely", () => {
@@ -58,7 +59,7 @@ test("approved M1 and M2 runtime ownership remains byte-for-byte unchanged", () 
     .filter(
       (path) =>
         // Authorized M6 deep replacement has a narrower school/water guard.
-        !path.endsWith("/HeroScene.jsx") && !path.endsWith("/PelagicEnvironment.js") && !path.endsWith("/AGENTS.md"),
+        !retiredPaths.has(path) && !path.endsWith("/HeroScene.jsx") && !path.endsWith("/PelagicEnvironment.js") && !path.endsWith("/AGENTS.md"),
     );
   for (const file of files)
     assert.equal(

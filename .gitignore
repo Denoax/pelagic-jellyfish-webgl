@@ -2,7 +2,7 @@ node_modules
 dist/
 .DS_Store
 
-# Local visual QA and reference captures. Curated public media lives in docs/media.
+# Local visual QA and reference captures. Curated public media lives in docs/readme/.
 /qa-*.png
 /qa-*.mp4
 /idle-fluid-*.png
@@ -13,9 +13,3 @@ dist/
 /audit-*/
 /competitive-audit-*/
 /swarm-audit-*/
-
-# Publication build intermediates; curated PDFs/figures are tracked explicitly.
-/paper/.build/
-/paper/*.log
-/paper/*.aux
-/paper/*.out

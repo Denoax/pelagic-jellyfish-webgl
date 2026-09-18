@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from './release-scope.mjs';
+import {readFileSync,retiredPaths} from './release-scope.mjs';
 import {execFileSync} from 'node:child_process';
 import {IdleLiquidState,fieldSize,validPoint,clockDigits,DROPLETS} from '../src/scene/glass/IdleLiquidState.js';
 import {m7Paths} from './m7-scope.mjs';
@@ -8,7 +8,7 @@ const baseline='046430847448206cfc58ce84758d9410121a97d3';
 const read=p=>readFileSync(p,'utf8');
 test('M7 preserves every existing non-integration runtime file exactly',()=>{
  const paths=execFileSync('git',['ls-tree','-r','--name-only',baseline,'src'],{encoding:'utf8'}).trim().split('\n');
- for(const p of paths.filter(p=>!m7Paths.includes(p)&&!p.endsWith('AGENTS.md')))assert.deepEqual(readFileSync(p),execFileSync('git',['show',`${baseline}:${p}`]),p);
+ for(const p of paths.filter(p=>!m7Paths.includes(p)&&!retiredPaths.has(p)&&!p.endsWith('AGENTS.md')))assert.deepEqual(readFileSync(p),execFileSync('git',['show',`${baseline}:${p}`]),p);
 });
 test('implicit droplet seeds are fixed, sparse and bounded',()=>{
  assert.equal(DROPLETS.length,8);assert.ok(Object.isFrozen(DROPLETS));
