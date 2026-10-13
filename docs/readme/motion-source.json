@@ -1,0 +1,141 @@
+{
+  "revision": "66dff315da2290959aa3dd4bf92627e4850bab0d",
+  "capture": {
+    "method": "Original native Deep camera and sanctuary, original scene/material/anatomy. Existing oceanPreview non-chamber authoring fixture, 1/60 native simulation steps, 30fps export. Capture-only time controls, no source changes.",
+    "fps": 30,
+    "frames": 240,
+    "seconds": 8,
+    "before": {
+      "camera": {
+        "direction": "D",
+        "mode": "D",
+        "progress": 1,
+        "destination": 1,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 50,
+        "roll": 0
+      },
+      "deep": {
+        "floorY": -15,
+        "basinSize": 192,
+        "chimney": {
+          "x": -2.4,
+          "z": -24,
+          "height": 12,
+          "radius": 1.65
+        },
+        "solids": 18,
+        "opaque": true,
+        "geometries": 18,
+        "materials": 7,
+        "blockout": false,
+        "plumeCount": 768,
+        "diffuseCount": 16,
+        "localSnowCount": 80,
+        "plumeTime": 25.999999999999805,
+        "light": {
+          "index": 17,
+          "intensity": 0.5653441328243701,
+          "position": [
+            -4.341818809509277,
+            -7.718240261077881,
+            -23.895505905151367
+          ]
+        },
+        "extraOceanPasses": 0
+      },
+      "specimen": {
+        "time": 5.999999999999993,
+        "angle": "oblique",
+        "distance": "medium",
+        "candidate": false,
+        "chamber": false,
+        "bloom": "off (normal production path)",
+        "phase": 0.3301866315584978,
+        "activation": 0,
+        "frames": 360
+      },
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "drawBuffer": [
+          1440,
+          700
+        ]
+      }
+    },
+    "after": {
+      "camera": {
+        "direction": "D",
+        "mode": "D",
+        "progress": 1,
+        "destination": 1,
+        "velocity": 0,
+        "acceleration": 0,
+        "lead": 0,
+        "leadClamped": false,
+        "response": "balanced",
+        "free": false,
+        "transitioning": false,
+        "fixedFov": 50,
+        "roll": 0
+      },
+      "deep": {
+        "floorY": -15,
+        "basinSize": 192,
+        "chimney": {
+          "x": -2.4,
+          "z": -24,
+          "height": 12,
+          "radius": 1.65
+        },
+        "solids": 18,
+        "opaque": true,
+        "geometries": 18,
+        "materials": 7,
+        "blockout": false,
+        "plumeCount": 768,
+        "diffuseCount": 16,
+        "localSnowCount": 80,
+        "plumeTime": 33.96666666666602,
+        "light": {
+          "index": 20,
+          "intensity": 0.47726665242140215,
+          "position": [
+            -3.526906967163086,
+            -10.478927612304688,
+            -23.527273178100586
+          ]
+        },
+        "extraOceanPasses": 0
+      },
+      "specimen": {
+        "time": 13.966666666666667,
+        "angle": "oblique",
+        "distance": "medium",
+        "candidate": false,
+        "chamber": false,
+        "bloom": "off (normal production path)",
+        "phase": 0.03760132738300381,
+        "activation": 0,
+        "frames": 847
+      }
+    },
+    "errors": []
+  },
+  "loop": {
+    "sourceFrames": 240,
+    "outputFrames": 225,
+    "fps": 30,
+    "loop": "0.5 second tail-to-head lap dissolve at original pace; not an unedited live recording",
+    "lapFrames": 15,
+    "bytes": 7691211
+  },
+  "sha256": "89226a46b760309fbaa5930445cd9685476a18ecd79a95de9c236b9ac79a6738"
+}

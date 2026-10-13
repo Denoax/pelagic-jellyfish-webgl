@@ -1,4 +1,4 @@
-<img src="docs/readme/pelagic-banner.webp" width="100%" alt="Pelagic — a living WebGL ocean with procedural jellyfish, soft-body motion, and liquid glass.">
+<img src="docs/readme/pelagic-sanctuary-loop.gif" width="100%" alt="Pelagic — original jellyfish moving through the deepest rock-lit sanctuary.">
 
 <div align="center">
 
@@ -13,6 +13,8 @@ Pelagic is an interactive underwater scene built as one continuous WebGL experie
 The project favors visible systems over presentation-only effects: jellyfish geometry deforms, appendages retain history, distant animals change detail with projected size, and optical effects sample the current ocean render.
 
 <img src="docs/readme/hero.gif" width="100%" alt="Pelagic running in the browser: luminous procedural jellyfish moving through a dark ocean.">
+
+[Deep-view banner capture and loop notes](docs/readme/MOTION_SOURCE.md).
 
 ## Highlights
 
