@@ -4,6 +4,8 @@ The banner is exported from Pelagic's original deepest `D` camera at journey pro
 
 The existing non-chamber `oceanPreview` authoring fixture advances native simulation in 1/60-second steps; 240 source frames cover 8 seconds at a 30 fps export cadence. A 0.5-second tail-to-head lap dissolve produces a 225-frame, 7.5-second repeating documentary loop. This is an edited original-renderer export, not an unedited idle recording.
 
-Output is 990 × 481, 96-color GIF, infinite loop, alternating 30/40 ms delays. Cadence describes the file, not measured device performance. No exposure replacement, new lighting, anatomy changes, generated media or motion interpolation were used. The other demonstration clips remain intact.
+Output is 990 × 352, 96-color GIF, infinite loop, alternating 30/40 ms delays. Cadence describes the file, not measured device performance. No exposure replacement, new lighting, anatomy changes, generated media or motion interpolation were used. The other demonstration clips remain intact.
 
 Exact revision, native camera/light state, renderer and asset hash: [motion-source.json](motion-source.json).
+
+The same native Deep camera/FOV is re-exported at a 1440 × 512 viewport for the common wide banner, then sampled to 990 × 352. There is no stretched 2D frame or change to application code, animals or lighting.
