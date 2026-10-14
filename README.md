@@ -1,4 +1,4 @@
-<img src="docs/readme/pelagic-sanctuary-loop.gif" width="100%" alt="Pelagic — original jellyfish moving through the deepest rock-lit sanctuary.">
+<img src="docs/readme/pelagic-sanctuary-clean-loop.gif" width="100%" alt="Pelagic — original jellyfish swimming in the deepest rock-lit sanctuary, without interface overlays.">
 
 <div align="center">
 

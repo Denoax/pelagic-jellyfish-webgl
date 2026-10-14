@@ -1,10 +1,16 @@
 {
   "revision": "66dff315da2290959aa3dd4bf92627e4850bab0d",
   "capture": {
-    "method": "Original native Deep camera and sanctuary, original scene/material/anatomy. Existing oceanPreview non-chamber authoring fixture, 1/60 native simulation steps, 30fps export. Capture-only time controls, no source changes.",
+    "url": "http://127.0.0.1:4185/?renderer=webgl&qaDebug=1&direction=D&oceanPreview=1&hold=4&animal=baseline",
+    "viewport": [
+      1215,
+      432
+    ],
     "fps": 30,
     "frames": 240,
     "seconds": 8,
+    "method": "Original native Deep camera and rock-lit sanctuary, unchanged original anatomy, materials, lighting and simulation. Capture-only CSS hides every DOM overlay except the ocean canvas; layout remains intact. Capture-only RAF scheduling and GL finish bound the software render queue; original animate callbacks and native 1/60 simulation steps are unchanged and sampled at 30 fps. No idle redraw backlog, no source edits.",
+    "captureCSS": "\n    body, body * { cursor: none !important; }\n    body * { visibility: hidden !important; }\n    body *::before, body *::after { visibility: hidden !important; }\n    .ocean-stage, .ocean-canvas { visibility: visible !important; }\n  ",
     "before": {
       "camera": {
         "direction": "D",
@@ -41,34 +47,39 @@
         "plumeTime": 25.999999999999805,
         "light": {
           "index": 17,
-          "intensity": 0.5653441328243701,
+          "intensity": 0.5658622706548595,
           "position": [
-            -4.341818809509277,
-            -7.718240261077881,
-            -23.895505905151367
+            -4.362385272979736,
+            -7.7247748374938965,
+            -23.896976470947266
           ]
         },
         "extraOceanPasses": 0
       },
       "specimen": {
-        "time": 5.999999999999993,
+        "time": 5.999999999999984,
         "angle": "oblique",
         "distance": "medium",
         "candidate": false,
         "chamber": false,
         "bloom": "off (normal production path)",
-        "phase": 0.3301866315584978,
+        "phase": 0.3301866315584958,
         "activation": 0,
-        "frames": 360
+        "frames": 359
       },
       "renderer": {
         "backend": "WebGL 2",
-        "gpu": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 4070/PCIe/SSE2, OpenGL ES 3.2)",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
         "drawBuffer": [
-          1440,
-          512
+          1215,
+          432
         ]
-      }
+      },
+      "visibleText": [],
+      "visibleControls": [],
+      "visibleCanvasClasses": [
+        "ocean-canvas"
+      ]
     },
     "after": {
       "camera": {
@@ -106,11 +117,11 @@
         "plumeTime": 33.96666666666602,
         "light": {
           "index": 20,
-          "intensity": 0.47726665242140215,
+          "intensity": 0.47726040757402144,
           "position": [
-            -3.526906967163086,
-            -10.478927612304688,
-            -23.527273178100586
+            -3.5273685455322266,
+            -10.477849006652832,
+            -23.52789878845215
           ]
         },
         "extraOceanPasses": 0
@@ -124,26 +135,48 @@
         "bloom": "off (normal production path)",
         "phase": 0.03760132738300381,
         "activation": 0,
-        "frames": 847
-      }
+        "frames": 837
+      },
+      "renderer": {
+        "backend": "WebGL 2",
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "drawBuffer": [
+          1215,
+          432
+        ]
+      },
+      "visibleText": [],
+      "visibleControls": [],
+      "visibleCanvasClasses": [
+        "ocean-canvas"
+      ]
     },
-    "errors": [],
-    "viewport": [
-      1440,
-      512
-    ]
+    "errors": []
   },
   "loop": {
     "sourceFrames": 240,
-    "outputFrames": 225,
+    "retainedSourceFrames": 195,
+    "retainedFirstSourceFrame": 45,
+    "retainedLastSourceFrame": 239,
+    "outputFrames": 180,
     "fps": 30,
-    "loop": "0.5 second tail-to-head lap dissolve at original pace; not an unedited live recording",
+    "sourceTrim": "Omit the first 1.5 seconds while the native idle-glass effect finishes clearing. Retained source frames 45-239 show the original ocean only; the camera, animals, rock lighting and motion are unchanged.",
+    "loop": "0.5-second tail-to-head lap dissolve at original pace; edited renderer export, not an unedited idle recording.",
     "lapFrames": 15,
-    "bytes": 4775064
+    "bytes": 5088397,
+    "paletteColors": 256,
+    "dither": "bayer, scale 4",
+    "delaysMs": [
+      30,
+      40
+    ],
+    "durationMs": 6000,
+    "infinite": true
   },
-  "sha256": "afbbc74cac20913338bb3df5d54058d6fb373e6670081c43e07a7d41d734ebf4",
+  "sha256": "65edd246da56dffb019b654c8756c91473622424758ed744217807e0474fa9e7",
   "outputSize": [
     990,
     352
-  ]
+  ],
+  "overlays": "Capture-only canvas allowlist hides all text, eyebrows, buttons, settings, navigation, footer, debug panels and pointer. Idle-glass settling frames are excluded. Only the native ocean and jellyfish remain in the exported banner. No website source was changed."
 }
